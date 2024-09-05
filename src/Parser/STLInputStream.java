@@ -22,7 +22,7 @@ public class STLInputStream extends DataInputStream {
         readFully(readBuffer, 0, 4);
         int result = 0;
         for (int i = 0; i < 4; i++) {
-            result += readBuffer[i] << (i * 8);
+            result += (0xFF & readBuffer[i]) << (i * 8);
         }
         return result;
     }
