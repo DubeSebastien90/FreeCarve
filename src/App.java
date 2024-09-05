@@ -14,6 +14,8 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) {
+        String file = "teapot.stl";
+
         JFrame frame = new JFrame("Espresso");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000, 750);
@@ -21,7 +23,6 @@ public class App {
         frame.setLocationRelativeTo(null);
         frame.setJMenuBar(new MainMenu());
 
-        String file = "cube.stl";
         DataInputStream dis = null;
         ParsedSTL parsedSTL = null;
         try{

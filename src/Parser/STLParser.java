@@ -9,7 +9,7 @@ public class STLParser {
     private static final int BYTES_ATTRIBUTE = 2;
     public static final int DIMENSIONS = 3;
     public static final int SIDES = 3;
-    private static final float SCALE = 100;
+    private static final float SCALE = 50f;
 
     public static ParsedSTL parse(DataInputStream dis) throws IOException {
         STLInputStream stlis = new STLInputStream(dis);
