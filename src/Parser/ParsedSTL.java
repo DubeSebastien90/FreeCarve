@@ -1,3 +1,3 @@
 package Parser;
 
-public record ParsedSTL(float[][] points, int[][] vectors, float[][] normals){}
+public record ParsedSTL(float[][] vertices, float[][] normals){}
