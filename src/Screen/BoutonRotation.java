@@ -2,6 +2,8 @@ package Screen;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class BoutonRotation implements KeyListener {
 
@@ -18,6 +20,8 @@ public class BoutonRotation implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        ExecutorService executors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        executors.submit(() ->{
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             Matrice rotation = new Matrice(new double[]{
                     Math.cos(0.05), 0, -Math.sin(0.05),
@@ -48,9 +52,10 @@ public class BoutonRotation implements KeyListener {
                     0, Math.cos(-0.05), Math.sin(-0.05),
                     0, -Math.sin(-0.05), Math.cos(-0.05)
             });
-            rotationCurrentShape(rotation);
-        }
 
+            rotationCurrentShape(rotation);
+        }});
+        executors.shutdown();
     }
 
     @Override

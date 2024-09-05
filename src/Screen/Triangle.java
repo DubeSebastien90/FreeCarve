@@ -1,13 +1,11 @@
 package Screen;
 
 import Parser.ParsedSTL;
-import Parser.STLParser;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class Triangle {
     private Vertex vertex1;
@@ -65,26 +63,41 @@ public class Triangle {
         this.panel = panel;
     }
 
-    public static void printTriangles(JPanel panel, Graphics2D graphics2D, ArrayList<Triangle> triangles){
+    public double calculateArea() {
+        return (vertex1.getY() - vertex3.getY()) * (vertex2.getX() - vertex3.getX()) + (vertex2.getY() - vertex3.getY()) * (vertex3.getX() - vertex1.getX());
+    }
+
+    public static void printTriangles(JPanel panel, Graphics2D graphics2D, ArrayList<Triangle> triangles) {
 
         graphics2D.setColor(Color.BLACK);
         for (Triangle t : triangles) {
             Path2D path = new Path2D.Double();
-            path.moveTo(t.vertex1.getX()+ (panel.getWidth()/2), t.vertex1.getY()+ panel.getHeight()/2);
-            path.lineTo(t.vertex2.getX()+ (panel.getWidth()/2), t.vertex2.getY()+panel.getHeight()/2);
-            path.lineTo(t.vertex3.getX()+ (panel.getWidth()/2), t.vertex3.getY()+panel.getHeight()/2);
+            path.moveTo(t.vertex1.getX() + (panel.getWidth() / 2), t.vertex1.getY() + panel.getHeight() / 2);
+            path.lineTo(t.vertex2.getX() + (panel.getWidth() / 2), t.vertex2.getY() + panel.getHeight() / 2);
+            path.lineTo(t.vertex3.getX() + (panel.getWidth() / 2), t.vertex3.getY() + panel.getHeight() / 2);
             path.closePath();
             graphics2D.draw(path);
         }
     }
 
-    public static Triangle[] fromParsedSTL(ParsedSTL parsedSTL, Color color){
+    @Override
+    public String toString() {
+        return "Triangle{" +
+                vertex1 +
+                vertex2 +
+                vertex3 +
+                ", normal =" + normal +
+                ", color =" + color +
+                '}'+"\n";
+    }
+
+    public static Triangle[] fromParsedSTL(ParsedSTL parsedSTL, Color color) {
         Triangle[] triangles = new Triangle[parsedSTL.normals().length];
         for (int i = 0; i < parsedSTL.normals().length; i++) {
             triangles[i] = new Triangle(
-                    new Vertex(parsedSTL.vertices()[i*3]),
-                    new Vertex(parsedSTL.vertices()[i*3+1]),
-                    new Vertex(parsedSTL.vertices()[i*3+2]),
+                    new Vertex(parsedSTL.vertices()[i * 3]),
+                    new Vertex(parsedSTL.vertices()[i * 3 + 1]),
+                    new Vertex(parsedSTL.vertices()[i * 3 + 2]),
                     new Vertex(parsedSTL.normals()[i]),
                     color);
         }

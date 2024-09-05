@@ -14,7 +14,7 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        String file = "teapot.stl";
+        String file = "working/teapot.stl";
 
         JFrame frame = new JFrame("Espresso");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
