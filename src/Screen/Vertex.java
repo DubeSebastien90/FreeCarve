@@ -1,5 +1,7 @@
 package Screen;
 
+import Parser.STLParser;
+
 public class Vertex {
     private double x;
     private double y;
@@ -9,6 +11,15 @@ public class Vertex {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public Vertex(float[] dimensions){
+        if (dimensions.length != STLParser.DIMENSIONS){
+            throw new ArithmeticException("Array should have " + STLParser.DIMENSIONS + " dimensions");
+        }
+        this.x = dimensions[0];
+        this.y = dimensions[1];
+        this.z = dimensions[2];
     }
 
     public double getX() {

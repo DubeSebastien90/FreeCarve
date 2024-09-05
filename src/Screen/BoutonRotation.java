@@ -64,7 +64,7 @@ public class BoutonRotation implements KeyListener {
             Vertex new1 = rotationMatrice.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex1());
             Vertex new2 = rotationMatrice.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex2());
             Vertex new3 = rotationMatrice.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex3());
-            theDessinator.getCurrentShape().set(i, new Triangle(new1, new2, new3, theDessinator.getCurrentShape().get(i).getColor()));
+            theDessinator.getCurrentShape().set(i, new Triangle(new1, new2, new3, new Vertex(0,0,0), theDessinator.getCurrentShape().get(i).getColor()));
         }
         theDessinator.repaint();
     }
