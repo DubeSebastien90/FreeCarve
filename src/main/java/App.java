@@ -42,8 +42,24 @@ public class App {
                 System.out.println(Arrays.toString(e.getStackTrace()));
             }
         }
-
-        frame.add(new TheDessinator(new ArrayList<Triangle>(List.of(Triangle.fromParsedSTL(parsedSTL, Color.RED)))));
+        
+        List<Triangle> cube = new ArrayList<Triangle>(List.of(
+                new Triangle(new Vertex(0,0,0), new Vertex(0,100,0),new Vertex(0,100,100),new Vertex(50,0,50), Color.BLUE),
+                new Triangle(new Vertex(0,0,0), new Vertex(0,0,100),new Vertex(0,100,100),new Vertex(50,0,50) ,Color.BLUE),
+                new Triangle(new Vertex(0,0,0), new Vertex(100,0,0),new Vertex(100,0,100),new Vertex(50,0,50) ,Color.GREEN),
+                new Triangle(new Vertex(0,0,0), new Vertex(0,0,100),new Vertex(100,0,100),new Vertex(50,0,50) ,Color.GREEN),
+                new Triangle(new Vertex(100,100,100), new Vertex(100,0,100),new Vertex(100,0,0),new Vertex(50,0,50) ,Color.YELLOW),
+                new Triangle(new Vertex(100,100,100), new Vertex(100,100,0),new Vertex(100,0,0),new Vertex(50,0,50) ,Color.YELLOW),
+                new Triangle(new Vertex(100,100,100), new Vertex(100,0,100),new Vertex(0,0,100),new Vertex(50,0,50) ,Color.RED),
+                new Triangle(new Vertex(100,100,100), new Vertex(0,100,100),new Vertex(0,0,100),new Vertex(50,0,50) ,Color.RED),
+                new Triangle(new Vertex(0,0,0), new Vertex(0,0,0),new Vertex(0,0,0),new Vertex(50,0,50) ,Color.RED),
+                new Triangle(new Vertex(0,0,0), new Vertex(0,0,0),new Vertex(0,0,0),new Vertex(50,0,50) ,Color.RED),
+                new Triangle(new Vertex(0,0,0), new Vertex(0,0,0),new Vertex(0,0,0),new Vertex(50,0,50) ,Color.RED),
+                new Triangle(new Vertex(0,0,0), new Vertex(0,0,0),new Vertex(0,0,0),new Vertex(50,0,50) ,Color.RED),
+                new Triangle(new Vertex(0,0,0), new Vertex(0,0,0),new Vertex(0,0,0),new Vertex(50,0,50) ,Color.RED)
+        ));
+        frame.add(new TheDessinator(cube));
+        //frame.add(new TheDessinator(new ArrayList<Triangle>(List.of(Triangle.fromParsedSTL(parsedSTL, Color.RED)))));
         frame.setVisible(true);
     }
 }

@@ -1,28 +1,31 @@
 package Screen;
 
 import javax.swing.*;
+
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TheDessinator extends JPanel {
-    private ArrayList<Triangle> currentShape;
+    private List<Triangle> currentShape;
 
-    public ArrayList<Triangle> getCurrentShape() {
+    public List<Triangle> getCurrentShape() {
         return currentShape;
     }
 
-    public void setCurrentShape(ArrayList<Triangle> currentShape) {
+    public void setCurrentShape(List<Triangle> currentShape) {
         this.currentShape = currentShape;
     }
 
-    public TheDessinator(ArrayList<Triangle> triangles) {
+    public TheDessinator(List<Triangle> triangles) {
         setDoubleBuffered(true);
         setFocusable(true);
         requestFocusInWindow();
         requestFocus();
         currentShape = triangles;
         addKeyListener(new BoutonRotation(this));
+
     }
 
     @Override
@@ -30,9 +33,9 @@ public class TheDessinator extends JPanel {
         Graphics2D graphics2D = ((Graphics2D) graphics);
         super.paintComponent(graphics2D);
 
-        BufferedImage img =
-                new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+
         Triangle.printTriangles(this, graphics2D, currentShape);
+
     }
 
 }

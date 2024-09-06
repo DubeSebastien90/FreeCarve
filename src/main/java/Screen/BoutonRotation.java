@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 
 public class BoutonRotation implements KeyListener {
 
-    private TheDessinator theDessinator;
+    private final TheDessinator theDessinator;
 
     public BoutonRotation(TheDessinator theDessinator) {
         this.theDessinator = theDessinator;
@@ -20,6 +20,7 @@ public class BoutonRotation implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+
         ExecutorService executors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         executors.submit(() ->{
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
