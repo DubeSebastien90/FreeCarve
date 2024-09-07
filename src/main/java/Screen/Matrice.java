@@ -2,6 +2,7 @@ package Screen;
 
 import java.util.Arrays;
 
+
 public class Matrice {
     private double[] matrix;
 
@@ -10,14 +11,14 @@ public class Matrice {
     }
 
     public Matrice multiplyMatrice3x3(Matrice other) {
-       double[] newMatrice = new double[9];
+        double[] newMatrice = new double[9];
         int element = 0;
         for (int i = 0; i < 3; i++) {
             int place = 0;
             int start = 0;
             int value = 0;
             for (int j = 0; j < 9; j++) {
-                value += this.matrix[(i*3)+place/3] * other.getMatrix()[place];
+                value += this.matrix[(i * 3) + place / 3] * other.getMatrix()[place];
                 if (place + 3 >= 9) {
                     newMatrice[element] = value;
                     value = 0;

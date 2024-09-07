@@ -31,9 +31,8 @@ public class TheDessinator extends JPanel {
     @Override
     public void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = ((Graphics2D) graphics);
+        this.setBackground(Color.GRAY);
         super.paintComponent(graphics2D);
-
-
         Triangle.printTriangles(this, graphics2D, currentShape);
 
     }

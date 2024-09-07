@@ -13,8 +13,8 @@ public class Vertex {
         this.z = z;
     }
 
-    public Vertex(float[] dimensions){
-        if (dimensions.length != STLParser.DIMENSIONS){
+    public Vertex(float[] dimensions) {
+        if (dimensions.length != STLParser.DIMENSIONS) {
             throw new ArithmeticException("Array should have " + STLParser.DIMENSIONS + " dimensions");
         }
         this.x = dimensions[0];
@@ -53,5 +53,9 @@ public class Vertex {
                 ", y=" + y +
                 ", z=" + z +
                 '}';
+    }
+
+    public Vertex substraction(Vertex other) {
+        return new Vertex(x - other.getX(), y - other.getY(), z - other.getZ());
     }
 }
