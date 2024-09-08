@@ -52,6 +52,8 @@ public class BoutonRotation implements KeyListener {
                 rotationCurrentShape(UP_ROTATION);
             } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                 rotationCurrentShape(DOWN_ROTATION);
+            } else if (e.getKeyCode() == KeyEvent.VK_W){
+                System.out.println("hey");
             }
         });
         executors.shutdown();
@@ -62,12 +64,20 @@ public class BoutonRotation implements KeyListener {
 
     }
 
+    public void translationMesh(Mesh mesh) {
+
+    }
+
     public void rotationCurrentShape(Matrice rotationMatrice) {
-        for (int i = 0; i < theDessinator.getCurrentShape().size(); i++) {
-            Vertex new1 = rotationMatrice.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex1());
-            Vertex new2 = rotationMatrice.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex2());
-            Vertex new3 = rotationMatrice.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex3());
-            theDessinator.getCurrentShape().set(i, new Triangle(new1, new2, new3, new Vertex(0, 0, 0), theDessinator.getCurrentShape().get(i).getColor()));
+        for (Mesh m : theDessinator.getMeshes()) {
+            for (Triangle t : m.getTrianglesList()) {
+                Vertex new1 = rotationMatrice.matriceXVertex3x3(t.getVertex1());
+                Vertex new2 = rotationMatrice.matriceXVertex3x3(t.getVertex2());
+                Vertex new3 = rotationMatrice.matriceXVertex3x3(t.getVertex3());
+                t.setVertex1(new1);
+                t.setVertex2(new2);
+                t.setVertex3(new3);
+            }
         }
         theDessinator.repaint();
     }

@@ -189,44 +189,47 @@ public class Triangle {
      *
      * @param panel      the panel on which the triangles will be painted
      * @param graphics2D the {@code Graphics2D} object associated with the panel
-     * @param triangles  the list of triangles to be drawn
+     * @param meshes  the list of meshes to be drawn
      */
-    public static void printTriangles(JPanel panel, Graphics2D graphics2D, List<Triangle> triangles) {
+    public static void printTriangles(JPanel panel, Graphics2D graphics2D, List<Mesh> meshes) {
         BufferedImage img = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Double[][] pixelsDepthMap = new Double[img.getWidth()][img.getHeight()];
         double panelHalfWidth = panel.getWidth() / 2.0;
         double panelHalfHeight = panel.getHeight() / 2.0;
-        for (Triangle t : triangles) {
-            double[] newCoordinates = {
-                    t.getVertex1().getX() + panelHalfWidth, t.getVertex1().getY() + panelHalfHeight,
-                    t.getVertex2().getX() + panelHalfWidth, t.getVertex2().getY() + panelHalfHeight,
-                    t.getVertex3().getX() + panelHalfWidth, t.getVertex3().getY() + panelHalfHeight};
+        for (Mesh m : meshes) {
 
-            Vertex[] newVertices = {
-                    new Vertex(newCoordinates[0], newCoordinates[1], t.getVertex1().getZ()),
-                    new Vertex(newCoordinates[2], newCoordinates[3], t.getVertex2().getZ()),
-                    new Vertex(newCoordinates[4], newCoordinates[5], t.getVertex3().getZ())};
+            for (Triangle t : m.getTrianglesList()) {
+                double[] newCoordinates = {
+                        t.getVertex1().getX() + panelHalfWidth, t.getVertex1().getY() + panelHalfHeight,
+                        t.getVertex2().getX() + panelHalfWidth, t.getVertex2().getY() + panelHalfHeight,
+                        t.getVertex3().getX() + panelHalfWidth, t.getVertex3().getY() + panelHalfHeight};
 
-            Triangle newTriangle = new Triangle(newVertices[0], newVertices[1], newVertices[2], t.getNormal(), t.getColor());
+                Vertex[] newVertices = {
+                        new Vertex(newCoordinates[0], newCoordinates[1], t.getVertex1().getZ()),
+                        new Vertex(newCoordinates[2], newCoordinates[3], t.getVertex2().getZ()),
+                        new Vertex(newCoordinates[4], newCoordinates[5], t.getVertex3().getZ())};
+
+                Triangle newTriangle = new Triangle(newVertices[0], newVertices[1], newVertices[2], t.getNormal(), t.getColor());
 
 
-            int minX = (int) Math.max(0, Math.min(newCoordinates[0], Math.min(newCoordinates[2], newCoordinates[4])));
-            int maxX = (int) Math.min(img.getWidth(), Math.max(newCoordinates[0], Math.max(newCoordinates[2], newCoordinates[4])));
+                int minX = (int) Math.max(0, Math.min(newCoordinates[0], Math.min(newCoordinates[2], newCoordinates[4])));
+                int maxX = (int) Math.min(img.getWidth(), Math.max(newCoordinates[0], Math.max(newCoordinates[2], newCoordinates[4])));
 
-            int minY = (int) Math.max(0, Math.min(newCoordinates[1], Math.min(newCoordinates[3], newCoordinates[5])));
-            int maxY = (int) Math.min(img.getHeight(), Math.max(newCoordinates[1], Math.max(newCoordinates[3], newCoordinates[5])));
+                int minY = (int) Math.max(0, Math.min(newCoordinates[1], Math.min(newCoordinates[3], newCoordinates[5])));
+                int maxY = (int) Math.min(img.getHeight(), Math.max(newCoordinates[1], Math.max(newCoordinates[3], newCoordinates[5])));
 
-            for (int y = minY; y <= maxY; y++) {
-                for (int x = minX; x <= maxX; x++) {
-                    Vertex bary = findBarycentric(newTriangle, x, y);
-                    if (isInBarycentric(bary)) {
-                        double depth = bary.getX() * newVertices[0].getZ() + bary.getY() * newVertices[1].getZ() + bary.getZ() * newVertices[2].getZ();
-                        Double existingPixel = pixelsDepthMap[x][y];
-                        if (existingPixel == null || existingPixel < depth) {
-                            pixelsDepthMap[x][y] = depth;
-                            newTriangle.calculateNormal();
-                            Color printedColor = newTriangle.calculate_lighting();
-                            img.setRGB(x, y, printedColor.getRGB());
+                for (int y = minY; y <= maxY; y++) {
+                    for (int x = minX; x <= maxX; x++) {
+                        Vertex bary = findBarycentric(newTriangle, x, y);
+                        if (isInBarycentric(bary)) {
+                            double depth = bary.getX() * newVertices[0].getZ() + bary.getY() * newVertices[1].getZ() + bary.getZ() * newVertices[2].getZ();
+                            Double existingPixel = pixelsDepthMap[x][y];
+                            if (existingPixel == null || existingPixel < depth) {
+                                pixelsDepthMap[x][y] = depth;
+                                newTriangle.calculateNormal();
+                                Color printedColor = newTriangle.calculate_lighting();
+                                img.setRGB(x, y, printedColor.getRGB());
+                            }
                         }
                     }
                 }

@@ -8,24 +8,23 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TheDessinator extends JPanel {
-    private List<Triangle> currentShape;
+    private List<Mesh> meshes;
 
-    public List<Triangle> getCurrentShape() {
-        return currentShape;
+    public List<Mesh> getMeshes() {
+        return meshes;
     }
 
-    public void setCurrentShape(List<Triangle> currentShape) {
-        this.currentShape = currentShape;
+    public void setMeshes(List<Mesh> meshes) {
+        this.meshes = meshes;
     }
 
-    public TheDessinator(List<Triangle> triangles) {
+    public TheDessinator(List<Mesh> meshes) {
         setDoubleBuffered(true);
         setFocusable(true);
         requestFocusInWindow();
         requestFocus();
-        currentShape = triangles;
+        setMeshes(meshes);
         addKeyListener(new BoutonRotation(this));
-
     }
 
     @Override
@@ -33,7 +32,7 @@ public class TheDessinator extends JPanel {
         Graphics2D graphics2D = ((Graphics2D) graphics);
         this.setBackground(Color.GRAY);
         super.paintComponent(graphics2D);
-        Triangle.printTriangles(this, graphics2D, currentShape);
+        Triangle.printTriangles(this, graphics2D, meshes);
 
     }
 
