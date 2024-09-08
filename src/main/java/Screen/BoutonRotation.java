@@ -2,15 +2,18 @@ package Screen;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class BoutonRotation implements KeyListener {
+public class BoutonRotation implements KeyListener, MouseListener {
 
     private final TheDessinator theDessinator;
-    private Vertex vertexX = new Vertex(1, 0, 0);
-    private Vertex vertexY = new Vertex(0, 1, 0);
-    private Vertex vertexZ = new Vertex(0, 0, 1);
+    private Vertex vertexX;
+    private Vertex vertexY;
+    private Vertex vertexZ;
+    private Mesh selectedMesh;
 
     private final Matrix RIGHT_ROTATION = new Matrix(new double[]{
             Math.cos(0.05), 0, -Math.sin(0.05),
@@ -35,6 +38,10 @@ public class BoutonRotation implements KeyListener {
 
     public BoutonRotation(TheDessinator theDessinator) {
         this.theDessinator = theDessinator;
+        this.vertexX = new Vertex(1, 0, 0);
+        this.vertexY = new Vertex(0, 1, 0);
+        this.vertexZ = new Vertex(0, 0, 1);
+        this.selectedMesh = null;
     }
 
     @Override
@@ -73,6 +80,12 @@ public class BoutonRotation implements KeyListener {
             case KeyEvent.VK_D:
                 translationMesh(theDessinator.getMeshes().get(0), new Vertex(3, 0, 0));
                 break;
+            case KeyEvent.VK_SPACE:
+                translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, 0, 3));
+                break;
+            case KeyEvent.VK_SHIFT:
+                translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, 0, -3));
+                break;
         }
         });
                executors.shutdown();
@@ -109,5 +122,34 @@ public class BoutonRotation implements KeyListener {
         vertexY.setVertex(rotationMatrice.matriceXVertex3x3(vertexY));
         vertexZ.setVertex(rotationMatrice.matriceXVertex3x3(vertexZ));
         theDessinator.repaint();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if(e.getButton() == 1){
+            //selection de mesh
+            e.getX();
+            e.getY();
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
