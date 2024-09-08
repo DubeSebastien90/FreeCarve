@@ -68,4 +68,8 @@ public class Vertex {
     public Vertex addition(Vertex other){
         return new Vertex(x + other.getX(), y + other.getY(), z + other.getZ());
     }
+
+    public Vertex multiplication(double number){
+        return new Vertex(x*number,y*number,z*number);
+    }
 }
