@@ -72,6 +72,12 @@ public class BoutonRotation implements KeyListener {
                 case KeyEvent.VK_D:
                     translationMesh(theDessinator.getMeshes().get(0), new Vertex(3, 0, 0));
                     break;
+                case KeyEvent.VK_SPACE:
+                    translationMesh(theDessinator.getMeshes().get(0), new Vertex(03, 0, 3));
+                    break;
+                case KeyEvent.VK_SHIFT:
+                    translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, 0, -3));
+                    break;
             }
         });
         executors.shutdown();
