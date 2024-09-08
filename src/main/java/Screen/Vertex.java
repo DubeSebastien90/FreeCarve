@@ -46,6 +46,12 @@ public class Vertex {
         this.z = z;
     }
 
+    public void setVertex(Vertex other){
+        this.x = other.getX();
+        this.y = other.getY();
+        this.z = other.getZ();
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -57,5 +63,9 @@ public class Vertex {
 
     public Vertex substraction(Vertex other) {
         return new Vertex(x - other.getX(), y - other.getY(), z - other.getZ());
+    }
+
+    public Vertex addition(Vertex other){
+        return new Vertex(x + other.getX(), y + other.getY(), z + other.getZ());
     }
 }
