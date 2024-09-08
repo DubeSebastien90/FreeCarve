@@ -44,6 +44,15 @@ public class Vertex {
     }
 
     /**
+     * Constructs a new {@code Vertex} with the values of another {@code Vertex}
+     *
+     * @param vertex the {@code Vertex} that get cloned.
+     */
+    public Vertex(Vertex vertex) {
+        this(vertex.getX(), vertex.getY(), vertex.getZ());
+    }
+
+    /**
      * @return the x position
      */
     public double getX() {
@@ -91,18 +100,15 @@ public class Vertex {
         this.z = z;
     }
 
-
-    public void setVertex(Vertex other){
-        this.x = other.getX();
-        this.y = other.getY();
-        this.z = other.getZ();
+    public void setVertex(Vertex vertex) {
+        setX(vertex.getX());
+        setY(vertex.getY());
+        setZ(vertex.getZ());
     }
-
 
     /**
      * @return a string representation of the {@code Vertex} object
      */
-
     @Override
     public String toString() {
         return "{" +
@@ -122,11 +128,23 @@ public class Vertex {
         return new Vertex(x - other.getX(), y - other.getY(), z - other.getZ());
     }
 
-    public Vertex addition(Vertex other){
+    /**
+     * Adds this instance of {@code Vertex} with another one
+     *
+     * @param other the {@code Vertex} that get added to the current one
+     * @return the resulting {@code Vertex}
+     */
+    public Vertex addition(Vertex other) {
         return new Vertex(x + other.getX(), y + other.getY(), z + other.getZ());
     }
 
-    public Vertex multiplication(double number){
-        return new Vertex(x*number,y*number,z*number);
+    /**
+     * multiply this instance of {@code Vertex} with number
+     *
+     * @param number the number that get multiplied to the current {@code Vertex}
+     * @return the resulting {@code Vertex}
+     */
+    public Vertex multiplication(double number) {
+        return new Vertex(x * number, y * number, z * number);
     }
 }

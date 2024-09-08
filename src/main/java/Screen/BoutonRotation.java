@@ -47,40 +47,35 @@ public class BoutonRotation implements KeyListener {
 
         ExecutorService executors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         executors.submit(() -> {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_RIGHT:
-                    rotationCurrentShape(RIGHT_ROTATION);
-                    break;
-                case KeyEvent.VK_LEFT:
-                    rotationCurrentShape(LEFT_ROTATION);
-                    break;
-                case KeyEvent.VK_UP:
-                    rotationCurrentShape(UP_ROTATION);
-                    break;
-                case KeyEvent.VK_DOWN:
-                    rotationCurrentShape(DOWN_ROTATION);
-                    break;
-                case KeyEvent.VK_W:
-                    translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, -3, 0));
-                    break;
-                case KeyEvent.VK_A:
-                    translationMesh(theDessinator.getMeshes().get(0), new Vertex(-3, 0, 0));
-                    break;
-                case KeyEvent.VK_S:
-                    translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, 3, 0));
-                    break;
-                case KeyEvent.VK_D:
-                    translationMesh(theDessinator.getMeshes().get(0), new Vertex(3, 0, 0));
-                    break;
-                case KeyEvent.VK_SPACE:
-                    translationMesh(theDessinator.getMeshes().get(0), new Vertex(03, 0, 3));
-                    break;
-                case KeyEvent.VK_SHIFT:
-                    translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, 0, -3));
-                    break;
-            }
+
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_RIGHT:
+                rotationCurrentShape(RIGHT_ROTATION);
+                break;
+            case KeyEvent.VK_LEFT:
+                rotationCurrentShape(LEFT_ROTATION);
+                break;
+            case KeyEvent.VK_UP:
+                rotationCurrentShape(UP_ROTATION);
+                break;
+            case KeyEvent.VK_DOWN:
+                rotationCurrentShape(DOWN_ROTATION);
+                break;
+            case KeyEvent.VK_W:
+                translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, -3, 0));
+                break;
+            case KeyEvent.VK_A:
+                translationMesh(theDessinator.getMeshes().get(0), new Vertex(-3, 0, 0));
+                break;
+            case KeyEvent.VK_S:
+                translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, 3, 0));
+                break;
+            case KeyEvent.VK_D:
+                translationMesh(theDessinator.getMeshes().get(0), new Vertex(3, 0, 0));
+                break;
+        }
         });
-        executors.shutdown();
+               executors.shutdown();
     }
 
     @Override
@@ -98,19 +93,11 @@ public class BoutonRotation implements KeyListener {
             t.setVertex1(t.getVertex1().addition(translationModif));
             t.setVertex2(t.getVertex2().addition(translationModif));
             t.setVertex3(t.getVertex3().addition(translationModif));
-
-    public void rotationCurrentShape(Matrix rotationMatrix) {
-        for (int i = 0; i < theDessinator.getCurrentShape().size(); i++) {
-            Vertex new1 = rotationMatrix.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex1());
-            Vertex new2 = rotationMatrix.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex2());
-            Vertex new3 = rotationMatrix.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex3());
-            theDessinator.getCurrentShape().set(i, new Triangle(new1, new2, new3, new Vertex(0, 0, 0), theDessinator.getCurrentShape().get(i).getColor()));
-
         }
         theDessinator.repaint();
     }
 
-    public void rotationCurrentShape(Matrice rotationMatrice) {
+    public void rotationCurrentShape(Matrix rotationMatrice) {
         for (Mesh m : theDessinator.getMeshes()) {
             for (Triangle t : m.getTrianglesList()) {
                 t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1()));

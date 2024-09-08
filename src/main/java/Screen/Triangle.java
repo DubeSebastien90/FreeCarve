@@ -189,11 +189,13 @@ public class Triangle {
      *
      * @param panel      the panel on which the triangles will be painted
      * @param graphics2D the {@code Graphics2D} object associated with the panel
-     * @param meshes  the list of meshes to be drawn
+     * @param meshes     the list of meshes to be drawn
      */
     public static void printTriangles(JPanel panel, Graphics2D graphics2D, List<Mesh> meshes) {
         BufferedImage img = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Double[][] pixelsDepthMap = new Double[img.getWidth()][img.getHeight()];
+        System.out.println(img.getWidth());
+        System.out.println(img.getHeight());
         double panelHalfWidth = panel.getWidth() / 2.0;
         double panelHalfHeight = panel.getHeight() / 2.0;
         for (Mesh m : meshes) {
@@ -223,12 +225,14 @@ public class Triangle {
                         Vertex bary = findBarycentric(newTriangle, x, y);
                         if (isInBarycentric(bary)) {
                             double depth = bary.getX() * newVertices[0].getZ() + bary.getY() * newVertices[1].getZ() + bary.getZ() * newVertices[2].getZ();
-                            Double existingPixel = pixelsDepthMap[x][y];
-                            if (existingPixel == null || existingPixel < depth) {
-                                pixelsDepthMap[x][y] = depth;
-                                newTriangle.calculateNormal();
-                                Color printedColor = newTriangle.calculate_lighting();
-                                img.setRGB(x, y, printedColor.getRGB());
+                            if (x < panel.getWidth() && y < panel.getHeight()) {
+                                Double existingPixel = pixelsDepthMap[x][y];
+                                if ((existingPixel == null || existingPixel < depth)) {
+                                    pixelsDepthMap[x][y] = depth;
+                                    newTriangle.calculateNormal();
+                                    Color printedColor = newTriangle.calculate_lighting();
+                                    img.setRGB(x, y, printedColor.getRGB());
+                                }
                             }
                         }
                     }
