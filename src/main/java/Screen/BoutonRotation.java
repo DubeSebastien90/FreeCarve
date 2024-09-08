@@ -12,22 +12,22 @@ public class BoutonRotation implements KeyListener {
     private Vertex vertexY = new Vertex(0, 1, 0);
     private Vertex vertexZ = new Vertex(0, 0, 1);
 
-    private final Matrice RIGHT_ROTATION = new Matrice(new double[]{
+    private final Matrix RIGHT_ROTATION = new Matrix(new double[]{
             Math.cos(0.05), 0, -Math.sin(0.05),
             0, 1, 0,
             Math.sin(0.05), 0, Math.cos(0.05)
     });
-    private final Matrice LEFT_ROTATION = new Matrice(new double[]{
+    private final Matrix LEFT_ROTATION = new Matrix(new double[]{
             Math.cos(-0.05), 0, -Math.sin(-0.05),
             0, 1, 0,
             Math.sin(-0.05), 0, Math.cos(-0.05)
     });
-    private final Matrice UP_ROTATION = new Matrice(new double[]{
+    private final Matrix UP_ROTATION = new Matrix(new double[]{
             1, 0, 0,
             0, Math.cos(0.05), Math.sin(0.05),
             0, -Math.sin(0.05), Math.cos(0.05)
     });
-    private final Matrice DOWN_ROTATION = new Matrice(new double[]{
+    private final Matrix DOWN_ROTATION = new Matrix(new double[]{
             1, 0, 0,
             0, Math.cos(-0.05), Math.sin(-0.05),
             0, -Math.sin(-0.05), Math.cos(-0.05)
@@ -88,6 +88,7 @@ public class BoutonRotation implements KeyListener {
 
     }
 
+
     public void translationMesh(Mesh mesh, Vertex translation) {
         Vertex translationModif = new Vertex(0, 0, 0);
         translationModif = translationModif.addition(vertexX.multiplication(translation.getX()));
@@ -97,6 +98,14 @@ public class BoutonRotation implements KeyListener {
             t.setVertex1(t.getVertex1().addition(translationModif));
             t.setVertex2(t.getVertex2().addition(translationModif));
             t.setVertex3(t.getVertex3().addition(translationModif));
+
+    public void rotationCurrentShape(Matrix rotationMatrix) {
+        for (int i = 0; i < theDessinator.getCurrentShape().size(); i++) {
+            Vertex new1 = rotationMatrix.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex1());
+            Vertex new2 = rotationMatrix.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex2());
+            Vertex new3 = rotationMatrix.matriceXVertex3x3(theDessinator.getCurrentShape().get(i).getVertex3());
+            theDessinator.getCurrentShape().set(i, new Triangle(new1, new2, new3, new Vertex(0, 0, 0), theDessinator.getCurrentShape().get(i).getColor()));
+
         }
         theDessinator.repaint();
     }
