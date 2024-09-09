@@ -14,6 +14,9 @@ import java.util.List;
  * @since 2024-09-08
  */
 public class Renderer extends JPanel {
+    private Vertex vertexX;
+    private Vertex vertexY;
+    private Vertex vertexZ;
     private List<Mesh> meshes;
     private Vertex mousePos;
     private BoutonRotation boutonRotation;
@@ -44,6 +47,9 @@ public class Renderer extends JPanel {
         setFocusable(true);
         requestFocusInWindow();
         requestFocus();
+        this.vertexX = new Vertex(1, 0, 0);
+        this.vertexY = new Vertex(0, 1, 0);
+        this.vertexZ = new Vertex(0, 0, 1);
         setMeshes(meshes);
         boutonRotation = new BoutonRotation(this);
         addKeyListener(boutonRotation);
@@ -75,6 +81,60 @@ public class Renderer extends JPanel {
             boutonRotation.setSelectedMesh(mesh);
         }
         setMousePos(new Vertex(0, 0, 0));
+    }
+
+    /**
+     * Rotate all of the meshes around the (0,0,0) point
+     * @param rotationMatrice - the rotation matrix
+     */
+    public void rotationCurrentShape(Matrix rotationMatrice) {
+        for (Mesh m : meshes) {
+            for (Triangle t : m.getTrianglesList()) {
+                t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1()));
+                t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2()));
+                t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3()));
+            }
+            m.setVerticesList();
+        }
+        vertexX.setVertex(rotationMatrice.matriceXVertex3x3(vertexX));
+        vertexY.setVertex(rotationMatrice.matriceXVertex3x3(vertexY));
+        vertexZ.setVertex(rotationMatrice.matriceXVertex3x3(vertexZ));
+        repaint();
+    }
+
+    /**
+     * Move a specific mesh in the scene
+     * @param mesh - the mesh to move
+     * @param translation - the movement vector
+     */
+    public void translationMesh(Mesh mesh, Vertex translation) {
+        Vertex translationModif = new Vertex(0, 0, 0);
+        translationModif = translationModif.addition(vertexX.multiplication(translation.getX()));
+        translationModif = translationModif.addition(vertexY.multiplication(translation.getY()));
+        translationModif = translationModif.addition(vertexZ.multiplication(translation.getZ()));
+        for (Triangle t : mesh.getTrianglesList()) {
+            t.setVertex1(t.getVertex1().addition(translationModif));
+            t.setVertex2(t.getVertex2().addition(translationModif));
+            t.setVertex3(t.getVertex3().addition(translationModif));
+        }
+        mesh.setVerticesList();
+        repaint();
+    }
+
+    /**
+     * Rotate a specific mesh around it's center
+     * @param mesh - the mesh to rotate
+     * @param rotationMatrice - the rotation matrix
+     */
+    public void rotationMesh(Mesh mesh, Matrix rotationMatrice){
+        Vertex center = mesh.getCenter();
+        for(Triangle t : mesh.getTrianglesList()){
+            t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1().substraction(center)).addition(center));
+            t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2().substraction(center)).addition(center));
+            t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3().substraction(center)).addition(center));
+        }
+        mesh.setVerticesList();
+        repaint();
     }
 
 }
