@@ -49,8 +49,8 @@ public class Cube extends Mesh {
     }
 
     /**
-     * Calculates the center of the mesh with the vertices
-     * @return the 3D coordinates of the center of the mesh
+     * Calculates the center of the cube with the vertices
+     * @return the 3D coordinates of the center of the cube
      */
     @Override
     public Vertex calculateCenter(){

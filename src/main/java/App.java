@@ -43,9 +43,9 @@ public class App {
 
         Cube cubeBleu = new Cube(new Vertex(200,200,200), Color.BLUE);
         Cube cubeRouge = new Cube(new Vertex(0,0,0), Color.RED);
-        Cube cubeVert = new Cube(new Vertex(-110,110,-110), Color.GREEN);
+        Cube pyramidVerte = new Pyramid(new Vertex(-110,110,-110), Color.GREEN);
 
-        frame.add(new Renderer(new ArrayList<Mesh>(List.of(cubeRouge,cubeBleu, cubeVert))));
+        frame.add(new Renderer(new ArrayList<Mesh>(List.of(cubeRouge,cubeBleu, pyramidVerte))));
         //frame.add(new Renderer(new ArrayList<Triangle>(List.of(Triangle.fromParsedSTL(parsedSTL, Color.RED)))));
         frame.setVisible(true);
     }
