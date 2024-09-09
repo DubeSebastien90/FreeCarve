@@ -191,13 +191,14 @@ public class Triangle {
      * @param graphics2D the {@code Graphics2D} object associated with the panel
      * @param meshes     the list of meshes to be drawn
      */
-    public static void printTriangles(JPanel panel, Graphics2D graphics2D, List<Mesh> meshes) {
+    public static Mesh printTriangles(JPanel panel, Graphics2D graphics2D, List<Mesh> meshes, Vertex mousePos) {
         BufferedImage img = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Double[][] pixelsDepthMap = new Double[img.getWidth()][img.getHeight()];
         System.out.println(img.getWidth());
         System.out.println(img.getHeight());
         double panelHalfWidth = panel.getWidth() / 2.0;
         double panelHalfHeight = panel.getHeight() / 2.0;
+        Mesh meshSelected = null;
         for (Mesh m : meshes) {
 
             for (Triangle t : m.getTrianglesList()) {
@@ -232,6 +233,9 @@ public class Triangle {
                                     newTriangle.calculateNormal();
                                     Color printedColor = newTriangle.calculate_lighting();
                                     img.setRGB(x, y, printedColor.getRGB());
+                                    if (mousePos.getX() == x && mousePos.getY() == y) {
+                                        meshSelected = m;
+                                    }
                                 }
                             }
                         }
@@ -242,6 +246,7 @@ public class Triangle {
 
         graphics2D.drawImage(img, 0, 0, null);
 
+        return meshSelected;
     }
 
     /**

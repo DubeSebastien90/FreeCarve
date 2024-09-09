@@ -55,40 +55,40 @@ public class BoutonRotation implements KeyListener, MouseListener {
         ExecutorService executors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         executors.submit(() -> {
 
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_RIGHT:
-                rotationCurrentShape(RIGHT_ROTATION);
-                break;
-            case KeyEvent.VK_LEFT:
-                rotationCurrentShape(LEFT_ROTATION);
-                break;
-            case KeyEvent.VK_UP:
-                rotationCurrentShape(UP_ROTATION);
-                break;
-            case KeyEvent.VK_DOWN:
-                rotationCurrentShape(DOWN_ROTATION);
-                break;
-            case KeyEvent.VK_W:
-                translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, -3, 0));
-                break;
-            case KeyEvent.VK_A:
-                translationMesh(theDessinator.getMeshes().get(0), new Vertex(-3, 0, 0));
-                break;
-            case KeyEvent.VK_S:
-                translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, 3, 0));
-                break;
-            case KeyEvent.VK_D:
-                translationMesh(theDessinator.getMeshes().get(0), new Vertex(3, 0, 0));
-                break;
-            case KeyEvent.VK_SPACE:
-                translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, 0, 3));
-                break;
-            case KeyEvent.VK_SHIFT:
-                translationMesh(theDessinator.getMeshes().get(0), new Vertex(0, 0, -3));
-                break;
-        }
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_RIGHT:
+                    rotationCurrentShape(RIGHT_ROTATION);
+                    break;
+                case KeyEvent.VK_LEFT:
+                    rotationCurrentShape(LEFT_ROTATION);
+                    break;
+                case KeyEvent.VK_UP:
+                    rotationCurrentShape(UP_ROTATION);
+                    break;
+                case KeyEvent.VK_DOWN:
+                    rotationCurrentShape(DOWN_ROTATION);
+                    break;
+                case KeyEvent.VK_W:
+                    translationMesh(selectedMesh, new Vertex(0, -3, 0));
+                    break;
+                case KeyEvent.VK_A:
+                    translationMesh(selectedMesh, new Vertex(-3, 0, 0));
+                    break;
+                case KeyEvent.VK_S:
+                    translationMesh(selectedMesh, new Vertex(0, 3, 0));
+                    break;
+                case KeyEvent.VK_D:
+                    translationMesh(selectedMesh, new Vertex(3, 0, 0));
+                    break;
+                case KeyEvent.VK_SPACE:
+                    translationMesh(selectedMesh, new Vertex(0, 0, 3));
+                    break;
+                case KeyEvent.VK_SHIFT:
+                    translationMesh(selectedMesh, new Vertex(0, 0, -3));
+                    break;
+            }
         });
-               executors.shutdown();
+        executors.shutdown();
     }
 
     @Override
@@ -124,13 +124,14 @@ public class BoutonRotation implements KeyListener, MouseListener {
         theDessinator.repaint();
     }
 
+    public void setSelectedMesh(Mesh selectedMesh) {
+        this.selectedMesh = selectedMesh;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(e.getButton() == 1){
-            //selection de mesh
-            e.getX();
-            e.getY();
-        }
+        theDessinator.setMousePos(new Vertex(e.getX(), e.getY(), 1));
+        theDessinator.repaint();
     }
 
     @Override

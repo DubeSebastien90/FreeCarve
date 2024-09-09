@@ -9,6 +9,8 @@ import java.util.List;
 
 public class TheDessinator extends JPanel {
     private List<Mesh> meshes;
+    private Vertex mousePos;
+    private BoutonRotation boutonRotation;
 
     public List<Mesh> getMeshes() {
         return meshes;
@@ -24,7 +26,14 @@ public class TheDessinator extends JPanel {
         requestFocusInWindow();
         requestFocus();
         setMeshes(meshes);
-        addKeyListener(new BoutonRotation(this));
+        boutonRotation = new BoutonRotation(this);
+        addKeyListener(boutonRotation);
+        addMouseListener(boutonRotation);
+        this.mousePos = new Vertex(0, 0, 0);
+    }
+
+    public void setMousePos(Vertex mousePos) {
+        this.mousePos = mousePos;
     }
 
     @Override
@@ -32,8 +41,11 @@ public class TheDessinator extends JPanel {
         Graphics2D graphics2D = ((Graphics2D) graphics);
         this.setBackground(Color.GRAY);
         super.paintComponent(graphics2D);
-        Triangle.printTriangles(this, graphics2D, meshes);
-
+        Mesh mesh = Triangle.printTriangles(this, graphics2D, meshes, mousePos);
+        if (mousePos.getZ() == 1) {
+            boutonRotation.setSelectedMesh(mesh);
+        }
+        setMousePos(new Vertex(0,0,0));
     }
 
 }
