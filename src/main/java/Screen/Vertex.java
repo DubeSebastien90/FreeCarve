@@ -153,4 +153,31 @@ public class Vertex {
         Vertex vertex = (Vertex) o;
         return (this.x == vertex.getX() && this.y == vertex.getY() && this.z == vertex.getZ());
     }
+
+    public boolean isParallel(Vertex v){
+        double kx = 0, ky = 0, kz = 0;
+        if (v.getX() != 0) {
+            kx = this.x / v.getX();
+        } else if (this.x == 0){
+            kx = 1;
+        }
+        if (v.getY() != 0) {
+            ky = this.y / v.getY();
+        } else if (this.y == 0){
+            ky = 1;
+        }
+        if (v.getZ() != 0){
+            kz = this.z/v.getZ();
+        } else if (this.z == 0){
+            kz = 1;
+        }
+        System.out.println(kx);
+        System.out.println(ky);
+        System.out.println(kz);
+        return (estProche(kx,ky,0.1) && estProche(kx,kz,0.1));
+    }
+
+    public static boolean estProche(double val1, double val2,double marge){
+        return (Math.abs(val1-val2) < marge);
+    }
 }

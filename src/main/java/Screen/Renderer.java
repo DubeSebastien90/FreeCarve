@@ -85,6 +85,7 @@ public class Renderer extends JPanel {
 
     /**
      * Rotate all of the meshes around the (0,0,0) point
+     *
      * @param rotationMatrice - the rotation matrix
      */
     public void rotationCurrentShape(Matrix rotationMatrice) {
@@ -93,6 +94,7 @@ public class Renderer extends JPanel {
                 t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1()));
                 t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2()));
                 t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3()));
+                t.setNormal(rotationMatrice.matriceXVertex3x3(t.getNormal()));
             }
             m.setVerticesList();
         }
@@ -104,7 +106,8 @@ public class Renderer extends JPanel {
 
     /**
      * Move a specific mesh in the scene
-     * @param mesh - the mesh to move
+     *
+     * @param mesh        - the mesh to move
      * @param translation - the movement vector
      */
     public void translationMesh(Mesh mesh, Vertex translation) {
@@ -123,15 +126,17 @@ public class Renderer extends JPanel {
 
     /**
      * Rotate a specific mesh around it's center
-     * @param mesh - the mesh to rotate
+     *
+     * @param mesh            - the mesh to rotate
      * @param rotationMatrice - the rotation matrix
      */
-    public void rotationMesh(Mesh mesh, Matrix rotationMatrice){
+    public void rotationMesh(Mesh mesh, Matrix rotationMatrice) {
         Vertex center = mesh.getCenter();
-        for(Triangle t : mesh.getTrianglesList()){
+        for (Triangle t : mesh.getTrianglesList()) {
             t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1().substraction(center)).addition(center));
             t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2().substraction(center)).addition(center));
             t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3().substraction(center)).addition(center));
+            t.setNormal(rotationMatrice.matriceXVertex3x3(t.getNormal().substraction(center)).addition(center));
         }
         mesh.setVerticesList();
         repaint();

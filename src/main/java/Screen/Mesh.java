@@ -83,7 +83,8 @@ public abstract class Mesh {
     protected void findEdges(){
         List<List<Integer>> newEdgesList = new ArrayList<>();
         for(Triangle t : trianglesList){
-            //TODO - find connecting vertices
+            boolean add1 = true, add2 = false, add3 = false;
+            //todo ajouter les arrêtes
         }
         this.edgesList = newEdgesList;
     }
