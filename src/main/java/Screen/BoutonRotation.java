@@ -135,6 +135,7 @@ public class BoutonRotation implements KeyListener, MouseListener {
             t.setVertex2(t.getVertex2().addition(translationModif));
             t.setVertex3(t.getVertex3().addition(translationModif));
         }
+        mesh.setVerticesList();
         renderer.repaint();
     }
 
@@ -145,6 +146,7 @@ public class BoutonRotation implements KeyListener, MouseListener {
             t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2().substraction(center)).addition(center));
             t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3().substraction(center)).addition(center));
         }
+        mesh.setVerticesList();
         renderer.repaint();
     }
 
@@ -155,6 +157,7 @@ public class BoutonRotation implements KeyListener, MouseListener {
                 t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2()));
                 t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3()));
             }
+            m.setVerticesList();
         }
         vertexX.setVertex(rotationMatrice.matriceXVertex3x3(vertexX));
         vertexY.setVertex(rotationMatrice.matriceXVertex3x3(vertexY));
@@ -164,6 +167,7 @@ public class BoutonRotation implements KeyListener, MouseListener {
 
     public void setSelectedMesh(Mesh selectedMesh) {
         this.selectedMesh = selectedMesh;
+        System.out.println(selectedMesh.getVerticesList());
     }
 
     @Override

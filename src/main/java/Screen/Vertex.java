@@ -147,4 +147,10 @@ public class Vertex {
     public Vertex multiplication(double number) {
         return new Vertex(x * number, y * number, z * number);
     }
+
+    @Override
+    public boolean equals(Object o){
+        Vertex vertex = (Vertex) o;
+        return (this.x == vertex.getX() && this.y == vertex.getY() && this.z == vertex.getZ());
+    }
 }
