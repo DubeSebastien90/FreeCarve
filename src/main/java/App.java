@@ -1,6 +1,7 @@
 import Parser.ParsedSTL;
 import Parser.STLParser;
 import Screen.*;
+import Screen.Renderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,8 +45,8 @@ public class App {
         Cube cubeRouge = new Cube(new Vertex(0,0,0), Color.RED);
         Cube cubeVert = new Cube(new Vertex(-110,110,-110), Color.GREEN);
 
-        frame.add(new TheDessinator(new ArrayList<Mesh>(List.of(cubeRouge,cubeBleu, cubeVert))));
-        //frame.add(new TheDessinator(new ArrayList<Triangle>(List.of(Triangle.fromParsedSTL(parsedSTL, Color.RED)))));
+        frame.add(new Renderer(new ArrayList<Mesh>(List.of(cubeRouge,cubeBleu, cubeVert))));
+        //frame.add(new Renderer(new ArrayList<Triangle>(List.of(Triangle.fromParsedSTL(parsedSTL, Color.RED)))));
         frame.setVisible(true);
     }
 }

@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 
 public class BoutonRotation implements KeyListener, MouseListener {
 
-    private final TheDessinator theDessinator;
+    private final Renderer renderer;
     private Vertex vertexX;
     private Vertex vertexY;
     private Vertex vertexZ;
@@ -37,8 +37,8 @@ public class BoutonRotation implements KeyListener, MouseListener {
             0, -Math.sin(-0.05), Math.cos(-0.05)
     });
 
-    public BoutonRotation(TheDessinator theDessinator) {
-        this.theDessinator = theDessinator;
+    public BoutonRotation(Renderer renderer) {
+        this.renderer = renderer;
         this.vertexX = new Vertex(1, 0, 0);
         this.vertexY = new Vertex(0, 1, 0);
         this.vertexZ = new Vertex(0, 0, 1);
@@ -86,14 +86,14 @@ public class BoutonRotation implements KeyListener, MouseListener {
                 case KeyEvent.VK_S:
                     if (movementType == 0) {
                         translationMesh(selectedMesh, new Vertex(0, 3, 0));
-                    }else {
+                    } else {
                         rotationMesh(selectedMesh, DOWN_ROTATION);
                     }
                     break;
                 case KeyEvent.VK_D:
                     if (movementType == 0) {
                         translationMesh(selectedMesh, new Vertex(3, 0, 0));
-                    }else {
+                    } else {
                         rotationMesh(selectedMesh, RIGHT_ROTATION);
                     }
                     break;
@@ -135,7 +135,7 @@ public class BoutonRotation implements KeyListener, MouseListener {
             t.setVertex2(t.getVertex2().addition(translationModif));
             t.setVertex3(t.getVertex3().addition(translationModif));
         }
-        theDessinator.repaint();
+        renderer.repaint();
     }
 
     public void rotationMesh(Mesh mesh, Matrix rotationMatrice){
@@ -145,11 +145,11 @@ public class BoutonRotation implements KeyListener, MouseListener {
             t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2().substraction(center)).addition(center));
             t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3().substraction(center)).addition(center));
         }
-        theDessinator.repaint();
+        renderer.repaint();
     }
 
     public void rotationCurrentShape(Matrix rotationMatrice) {
-        for (Mesh m : theDessinator.getMeshes()) {
+        for (Mesh m : renderer.getMeshes()) {
             for (Triangle t : m.getTrianglesList()) {
                 t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1()));
                 t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2()));
@@ -159,7 +159,7 @@ public class BoutonRotation implements KeyListener, MouseListener {
         vertexX.setVertex(rotationMatrice.matriceXVertex3x3(vertexX));
         vertexY.setVertex(rotationMatrice.matriceXVertex3x3(vertexY));
         vertexZ.setVertex(rotationMatrice.matriceXVertex3x3(vertexZ));
-        theDessinator.repaint();
+        renderer.repaint();
     }
 
     public void setSelectedMesh(Mesh selectedMesh) {
@@ -168,8 +168,8 @@ public class BoutonRotation implements KeyListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        theDessinator.setMousePos(new Vertex(e.getX(), e.getY(), 1));
-        theDessinator.repaint();
+        renderer.setMousePos(new Vertex(e.getX(), e.getY(), 1));
+        renderer.repaint();
     }
 
     @Override

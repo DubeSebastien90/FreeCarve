@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TheDessinator extends JPanel {
+public class Renderer extends JPanel {
     private List<Mesh> meshes;
     private Vertex mousePos;
     private BoutonRotation boutonRotation;
+
 
     public List<Mesh> getMeshes() {
         return meshes;
@@ -20,7 +21,7 @@ public class TheDessinator extends JPanel {
         this.meshes = meshes;
     }
 
-    public TheDessinator(List<Mesh> meshes) {
+    public Renderer(List<Mesh> meshes) {
         setDoubleBuffered(true);
         setFocusable(true);
         requestFocusInWindow();

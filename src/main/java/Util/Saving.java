@@ -1,12 +1,12 @@
 package Util;
-import Screen.TheDessinator;
+import Screen.Renderer;
 
 import javax.swing.*;
 import java.io.*;
 import java.util.Optional;
 
 public class Saving {
-    public static void saveMainScreen(TheDessinator mainScreen, JFrame frame) {
+    public static void saveMainScreen(Renderer mainScreen, JFrame frame) {
         Optional<String> response = openFileExplorer(frame, JFileChooser.FILES_AND_DIRECTORIES);
         if (response.isPresent()) {
             File path = new File(response.get());
