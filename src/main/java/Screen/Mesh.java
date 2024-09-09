@@ -25,6 +25,7 @@ public abstract class Mesh {
         centerY = centerY / ((double) (trianglesList.size()) * 3.0);
         centerZ = centerZ / ((double) (trianglesList.size()) * 3.0);
         this.center = new Vertex(centerX, centerY, centerZ);
+        System.out.println(center);
         return center;
     }
 

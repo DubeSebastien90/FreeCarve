@@ -139,10 +139,11 @@ public class BoutonRotation implements KeyListener, MouseListener {
     }
 
     public void rotationMesh(Mesh mesh, Matrix rotationMatrice){
+        Vertex center = mesh.getCenter();
         for(Triangle t : mesh.getTrianglesList()){
-            t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1().substraction(mesh.getCenter())).addition(mesh.getCenter()));
-            t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2().substraction(mesh.getCenter())).addition(mesh.getCenter()));
-            t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3().substraction(mesh.getCenter())).addition(mesh.getCenter()));
+            t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1().substraction(center)).addition(center));
+            t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2().substraction(center)).addition(center));
+            t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3().substraction(center)).addition(center));
         }
         theDessinator.repaint();
     }
