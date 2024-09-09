@@ -27,6 +27,7 @@ public class Cube extends Mesh {
                 new Triangle(new Vertex(100 + position.getX(), 100 + position.getY(), 100 + position.getZ()), new Vertex(100 + position.getX(), 100 + position.getY(), 0 + position.getZ()), new Vertex(0 + position.getX(), 100 + position.getY(), 0 + position.getZ()), new Vertex(50, 0, 50), this.color),
                 new Triangle(new Vertex(100 + position.getX(), 100 + position.getY(), 100 + position.getZ()), new Vertex(0 + position.getX(), 100 + position.getY(), 0 + position.getZ()), new Vertex(0 + position.getX(), 100 + position.getY(), 100 + position.getZ()), new Vertex(50, 0, 50), this.color)
         ));
+        this.calculateCenter();
     }
 
     @Override
