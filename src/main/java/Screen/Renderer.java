@@ -131,7 +131,8 @@ public class Renderer extends JPanel {
      * @param mesh            - the mesh to rotate
      * @param rotationMatrice - the rotation matrix
      */
-    public void rotationMesh(Mesh mesh, Matrix rotationMatrice) {
+    public void rotationMesh(Mesh mesh, Vertex axis, double size) {
+        Matrix rotationMatrice = getRotationMatrixAroundVector(axis,size);
         Vertex center = mesh.getCenter();
         for (Triangle t : mesh.getTrianglesList()) {
             t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1().substraction(center)).addition(center));
@@ -141,6 +142,28 @@ public class Renderer extends JPanel {
         }
         mesh.setVerticesList();
         repaint();
+    }
+
+    private Matrix getRotationMatrixAroundVector(Vertex v, double size) {
+        double ux = v.getX(), uy = v.getY(), uz = v.getZ();
+        double c = Math.cos(0.05*size), s = Math.sin(0.05*size);
+        return new Matrix(new double[]{
+                Math.pow(ux, 2) * (1 - c) + c, ux * uy * (1 - c) - uz * s, ux * uz * (1 - c) + uy * s,
+                ux * uy * (1 - c) + uz * s, Math.pow(uy, 2) * (1 - c) + c, uy * uz * (1 - c) - ux * s,
+                ux * uz * (1 - c) - uy * s, uy * uz * (1 - c) + ux * s, Math.pow(uz, 2) * (1 - c) + c
+        });
+    }
+
+    public Vertex getVertexX(){
+        return vertexX;
+    }
+
+    public Vertex getVertexY(){
+        return vertexY;
+    }
+
+    public Vertex getVertexZ(){
+        return vertexZ;
     }
 
 }
