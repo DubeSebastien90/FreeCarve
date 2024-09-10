@@ -60,7 +60,7 @@ public class BoutonRotation implements KeyListener, MouseListener {
                     if (movementType == 0) {
                         renderer.translationMesh(selectedMesh, new Vertex(0, 3, 0));
                     } else {
-                        renderer.rotationMesh(selectedMesh, renderer.getVertexX(), 1);
+                        renderer.rotationMesh(selectedMesh, renderer.getVertexX(),1);
                     }
                     break;
                 case KeyEvent.VK_D:
