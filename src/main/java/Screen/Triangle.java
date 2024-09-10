@@ -194,8 +194,6 @@ public class Triangle {
     public static Mesh printTriangles(JPanel panel, Graphics2D graphics2D, List<Mesh> meshes, Vertex mousePos) {
         BufferedImage img = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Double[][] pixelsDepthMap = new Double[img.getWidth()][img.getHeight()];
-        System.out.println(img.getWidth());
-        System.out.println(img.getHeight());
         double panelHalfWidth = panel.getWidth() / 2.0;
         double panelHalfHeight = panel.getHeight() / 2.0;
         Mesh meshSelected = null;

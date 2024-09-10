@@ -83,8 +83,90 @@ public abstract class Mesh {
     protected void findEdges(){
         List<List<Integer>> newEdgesList = new ArrayList<>();
         for(Triangle t : trianglesList){
-            boolean add1 = true, add2 = false, add3 = false;
-            //todo ajouter les arrêtes
+            boolean add1 = true, add2 = true, add3 = true;
+            for(List<Integer> edge : newEdgesList){
+                if((t.getVertex1().equals(verticesList.get(edge.get(0))) && t.getVertex2().equals(verticesList.get(edge.get(1)))) || (t.getVertex1().equals(verticesList.get(edge.get(1))) && t.getVertex2().equals(verticesList.get(edge.get(0))))){
+                    add1 = false;
+                }
+                if((t.getVertex1().equals(verticesList.get(edge.get(0))) && t.getVertex3().equals(verticesList.get(edge.get(1)))) || (t.getVertex1().equals(verticesList.get(edge.get(1))) && t.getVertex3().equals(verticesList.get(edge.get(0))))){
+                    add2 = false;
+                }
+                if((t.getVertex2().equals(verticesList.get(edge.get(0))) && t.getVertex3().equals(verticesList.get(edge.get(1)))) || (t.getVertex2().equals(verticesList.get(edge.get(1))) && t.getVertex3().equals(verticesList.get(edge.get(0))))){
+                    add3 = false;
+                }
+            }
+            if (add1) {
+                int num1 = 0;
+                int num2 = 0;
+                for(int i = 0; i < verticesList.size(); i++){
+                    if (verticesList.get(i).equals(t.getVertex1())){
+                        num1 = i;
+                    } else if (verticesList.get(i).equals(t.getVertex2())){
+                        num2 = i;
+                    }
+                }
+                boolean add = true;
+                for (Triangle t2 : trianglesList){
+                    if (t != t2){
+                        if ((t2.getVertex1().equals(t.getVertex1()) || t2.getVertex2().equals(t.getVertex1()) || t2.getVertex3().equals(t.getVertex1())) && (t2.getVertex1().equals(t.getVertex2()) || t2.getVertex2().equals(t.getVertex2()) || t2.getVertex3().equals(t.getVertex2()))){
+                            if(t.getNormal().isParallel(t2.getNormal())){
+                                add = false;
+                            }
+                        }
+                    }
+                }
+                if (add) {
+                    newEdgesList.add(new ArrayList<>(List.of(num1, num2))); //ajouter les index des sommets dans verticesList à la liste d'arrêtes
+                }
+            }
+            if (add2) {
+                int num1 = 0;
+                int num2 = 0;
+                for(int i = 0; i < verticesList.size(); i++){
+                    if (verticesList.get(i).equals(t.getVertex1())){
+                        num1 = i;
+                    } else if (verticesList.get(i).equals(t.getVertex3())){
+                        num2 = i;
+                    }
+                }
+                boolean add = true;
+                for (Triangle t2 : trianglesList){
+                    if (t != t2){
+                        if ((t2.getVertex1().equals(t.getVertex1()) || t2.getVertex2().equals(t.getVertex1()) || t2.getVertex3().equals(t.getVertex1())) && (t2.getVertex1().equals(t.getVertex3()) || t2.getVertex2().equals(t.getVertex3()) || t2.getVertex3().equals(t.getVertex3()))){
+                            if(t.getNormal().isParallel(t2.getNormal())){
+                                add = false;
+                            }
+                        }
+                    }
+                }
+                if (add) {
+                    newEdgesList.add(new ArrayList<>(List.of(num1, num2))); //ajouter les index des sommets dans verticesList à la liste d'arrêtes
+                }
+            }
+            if (add3) {
+                int num1 = 0;
+                int num2 = 0;
+                for(int i = 0; i < verticesList.size(); i++){
+                    if (verticesList.get(i).equals(t.getVertex2())){
+                        num1 = i;
+                    } else if (verticesList.get(i).equals(t.getVertex3())){
+                        num2 = i;
+                    }
+                }
+                boolean add = true;
+                for (Triangle t2 : trianglesList){
+                    if (t != t2){
+                        if ((t2.getVertex1().equals(t.getVertex3()) || t2.getVertex2().equals(t.getVertex3()) || t2.getVertex3().equals(t.getVertex3())) && (t2.getVertex1().equals(t.getVertex2()) || t2.getVertex2().equals(t.getVertex2()) || t2.getVertex3().equals(t.getVertex2()))){
+                            if(t.getNormal().isParallel(t2.getNormal())){
+                                add = false;
+                            }
+                        }
+                    }
+                }
+                if (add) {
+                    newEdgesList.add(new ArrayList<>(List.of(num1, num2))); //ajouter les index des sommets dans verticesList à la liste d'arrêtes
+                }
+            }
         }
         this.edgesList = newEdgesList;
     }
