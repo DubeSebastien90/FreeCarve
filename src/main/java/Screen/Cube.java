@@ -46,6 +46,7 @@ public class Cube extends Mesh {
         this.setVerticesList();
         this.findEdges();
         this.calculateCenter();
+        this.setPosition(center);
     }
 
     /**

@@ -27,6 +27,7 @@ public class Pyramid extends Cube {
         this.setVerticesList();
         this.findEdges();
         this.calculateCenter();
+        this.setPosition(center);
     }
 
     /**

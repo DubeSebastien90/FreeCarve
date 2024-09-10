@@ -187,6 +187,14 @@ public abstract class Mesh {
         return this.edgesList;
     }
 
+    public void setPosition(Vertex v){
+        this.position = v;
+    }
+
+    public Vertex getPosition(){
+        return this.position;
+    }
+
     /**
      * Creates the triangles of the mesh
      */

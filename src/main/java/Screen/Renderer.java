@@ -121,6 +121,7 @@ public class Renderer extends JPanel {
             t.setVertex3(t.getVertex3().addition(translationModif));
         }
         mesh.setVerticesList();
+        mesh.setPosition(mesh.getPosition().addition(translation));
         repaint();
     }
 
