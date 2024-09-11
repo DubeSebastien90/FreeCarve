@@ -147,9 +147,15 @@ public class Renderer extends JPanel {
     /**
      * Rotate a specific mesh around it's center
      *
+<<<<<<< HEAD
      * @param mesh the mesh to rotate
      * @param axis the axis to turn around
      * @param size the direction of the rotation
+=======
+     * @param mesh - the mesh to rotate
+     * @param axis - the axis to turn around
+     * @param size - the direction of the rotation
+>>>>>>> fca9d8e (ajout de la classe box et plane)
      */
     public void rotationMesh(Mesh mesh, Vertex axis, double size) {
         Matrix rotationMatrice = getRotationMatrixAroundVector(axis, size);

@@ -27,6 +27,7 @@ public class App {
         try {
             inputStream = new BufferedInputStream(new FileInputStream(file));
             parsedSTL = STLParser.parse(inputStream);
+
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
         } catch (EOFException e) {
