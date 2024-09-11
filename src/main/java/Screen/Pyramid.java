@@ -32,23 +32,4 @@ public class Pyramid extends Mesh {
         this.calculateCenter();
         this.setPosition(center);
     }
-
-    /**
-     * Calculates the center of the pyramid with the vertices
-     * @return the 3D coordinates of the center of the pyramid
-     */
-    @Override
-    public Vertex calculateCenter(){
-        double centerX = 0.0, centerY = 0.0, centerZ = 0.0;
-        for (Vertex v : verticesList) {
-            centerX += v.getX();
-            centerY += v.getY();
-            centerZ += v.getZ();
-        }
-        centerX = centerX / ((double) (verticesList.size()));
-        centerY = centerY / ((double) (verticesList.size()));
-        centerZ = centerZ / ((double) (verticesList.size()));
-        this.center.setVertex(new Vertex(centerX, centerY, centerZ));
-        return center;
-    }
 }

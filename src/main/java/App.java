@@ -45,7 +45,6 @@ public class App {
         Mesh cubeRouge = new Box(new Vertex(0, 0, 0), 75, 75, 75, Color.RED);
         Mesh pyramidVerte = new Pyramid(new Vertex(-110, 110, 110), Color.GREEN);
         Mesh ground = new Plane(new Vertex(0, 0, 0), 1000, Color.white);
-
         frame.add(new Renderer(new ArrayList<Mesh>(List.of(cubeRouge, cubeBleu, pyramidVerte, ground))));
         frame.setVisible(true);
     }
