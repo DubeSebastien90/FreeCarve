@@ -47,8 +47,9 @@ public class App {
         Mesh pyramidVerte = new Pyramid(new Vertex(-110, 110, 110), Color.GREEN);
         Mesh ground = new Plane(new Vertex(0, 0, 0), 1000, Color.white);
 
+        //cubeBleu.setTriangles(new ArrayList<Triangle>(List.of(Triangle.fromParsedSTL(parsedSTL, Color.RED))));
+
         frame.add(new Renderer(new ArrayList<Mesh>(List.of(cubeRouge, cubeBleu, pyramidVerte, ground))));
-        //frame.add(new Renderer(new ArrayList<Triangle>(List.of(Triangle.fromParsedSTL(parsedSTL, Color.RED)))));
         frame.setVisible(true);
     }
 }

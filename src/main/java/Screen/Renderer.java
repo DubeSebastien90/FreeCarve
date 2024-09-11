@@ -145,6 +145,12 @@ public class Renderer extends JPanel {
         repaint();
     }
 
+    /**
+     * Returns a rotation matrix to apply on a mesh for it to rotate on a certain angle
+     * @param v - the axis to rotate around
+     * @param size - the size of the rotation
+     * @return the rotation matrix to apply on the vectors
+     */
     private Matrix getRotationMatrixAroundVector(Vertex v, double size) {
         double ux = v.getX(), uy = v.getY(), uz = v.getZ();
         double c = Math.cos(0.05*size), s = Math.sin(0.05*size);
@@ -155,14 +161,26 @@ public class Renderer extends JPanel {
         });
     }
 
+    /**
+     * Getter of the vertexX attribute
+     * @return the vertexX attribute
+     */
     public Vertex getVertexX(){
         return vertexX;
     }
 
+    /**
+     * Getter of the vertexY attribute
+     * @return the vertexY attribute
+     */
     public Vertex getVertexY(){
         return vertexY;
     }
 
+    /**
+     * Getter of the vertexZ attribute
+     * @return the vertexZ attribute
+     */
     public Vertex getVertexZ(){
         return vertexZ;
     }

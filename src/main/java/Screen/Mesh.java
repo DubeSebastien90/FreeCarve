@@ -33,7 +33,19 @@ public abstract class Mesh {
      * Calculates the center of the mesh depending on the shape
      * @return the 3D coordinates of the center of the mesh
      */
-    public abstract Vertex calculateCenter();
+    public Vertex calculateCenter(){
+        double centerX = 0.0, centerY = 0.0, centerZ = 0.0;
+        for (Vertex v : verticesList) {
+            centerX += v.getX();
+            centerY += v.getY();
+            centerZ += v.getZ();
+        }
+        centerX = centerX / ((double) (verticesList.size()));
+        centerY = centerY / ((double) (verticesList.size()));
+        centerZ = centerZ / ((double) (verticesList.size()));
+        this.center.setVertex(new Vertex(centerX, centerY, centerZ));
+        return center;
+    }
 
     /**
      * Returns the center point of the mesh
@@ -199,6 +211,10 @@ public abstract class Mesh {
      * Creates the triangles of the mesh
      */
     abstract void setTrianglesList();
+
+    public void setTriangles(List<Triangle> list){
+        this.trianglesList = list;
+    }
 
     /**
      * Returns the triangles of the mesh
