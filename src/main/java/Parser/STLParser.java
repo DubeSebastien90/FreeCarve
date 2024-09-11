@@ -16,7 +16,7 @@ public class STLParser {
 
         stlis.skipBytes(BYTES_HEADER); // Skip header
 
-        int nbTriangles = stlis.readIntLittleEndian();
+        int nbTriangles = Integer.reverseBytes(stlis.readInt());
 
         float[][] vertices = new float[nbTriangles*SIDES][DIMENSIONS];
         float[][] normals = new float[nbTriangles][DIMENSIONS];
