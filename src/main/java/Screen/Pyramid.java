@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pyramid extends Cube {
+public class Pyramid extends Mesh {
     /**
      * Constructor for a Cube object
      *
