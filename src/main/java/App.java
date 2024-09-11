@@ -13,7 +13,7 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        String file = "cube.stl";
+        String file = "teapot.stl";
 
         JFrame frame = new JFrame("Espresso");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -22,20 +22,21 @@ public class App {
         frame.setLocationRelativeTo(null);
         frame.setJMenuBar(new MainMenu());
 
-        DataInputStream dis = null;
+        InputStream inputStream = null;
         ParsedSTL parsedSTL = null;
-        try {
-            dis = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
-            parsedSTL = STLParser.parse(dis);
-        } catch (FileNotFoundException e) {
+
+        try{
+            inputStream = new BufferedInputStream(new FileInputStream(file));
+            parsedSTL = STLParser.parse(inputStream);
+        } catch (FileNotFoundException e){
             System.out.println("File not found");
         } catch (EOFException e) {
         } catch (IOException e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
         } finally {
             try {
-                if (dis != null) {
-                    dis.close();
+                if (inputStream != null) {
+                    inputStream.close();
                 }
             } catch (IOException e) {
                 System.out.println(Arrays.toString(e.getStackTrace()));

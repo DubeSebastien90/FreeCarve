@@ -18,28 +18,28 @@ class STLInputStreamTest {
         // Act
         int value = stlInputStream.readIntLittleEndian();
         // Assert
-        Assertions.assertEquals(value, (int)0xFFFFFFFF);
+        Assertions.assertEquals(value, 0xFFFFFFFF);
     }
 
     @Test
-    void readFloatLittleEndian_HappyPath_ReadsLittleEndian() throws IOException {
+    void readIntLittleEndian_HappyPath_ReadsLittleEndian() throws IOException {
         // Arrange
         InputStream is = new ByteArrayInputStream(new byte[] {(byte) 0x0, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
         STLInputStream stlInputStream = new STLInputStream(is);
         // Act
         int value = stlInputStream.readIntLittleEndian();
         // Assert
-        Assertions.assertEquals(value, (int)0xFFFFFF00);
+        Assertions.assertEquals(value, 0xFFFFFF00);
     }
 
-//    @Test
-//    void readFloatLittleEndian_HappyPath_ReadsLittleEndian() throws IOException {
-//        // Arrange
-//        InputStream is = new ByteArrayInputStream(new byte[] {(byte) 0x0, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
-//        STLInputStream stlInputStream = new STLInputStream(is);
-//        // Act
-//        int value = stlInputStream.readIntLittleEndian();
-//        // Assert
-//        Assertions.assertEquals(value, (int)0xFFFFFF00);
-//    }
+    @Test
+    void readFloatLittleEndian_HappyPath_ReadsLittleEndian() throws IOException {
+        // Arrange
+        InputStream is = new ByteArrayInputStream(new byte[] {(byte) 0xFF, (byte) 0xFF, (byte) 0x7F, (byte) 0xFF});
+        STLInputStream stlInputStream = new STLInputStream(is);
+        // Act
+        float value = stlInputStream.readFloatLittleEndian();
+        // Assert
+        Assertions.assertEquals(value, -3.40282346638528859811704E+38);
+    }
 }

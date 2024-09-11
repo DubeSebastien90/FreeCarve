@@ -2,6 +2,7 @@ package Parser;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 public class STLParser {
@@ -11,27 +12,27 @@ public class STLParser {
     public static final int SIDES = 3;
     private static final float SCALE = 50f;
 
-    public static ParsedSTL parse(DataInputStream dis) throws IOException {
-        STLInputStream stlis = new STLInputStream(dis);
+    public static ParsedSTL parse(InputStream inputStream) throws IOException {
+        STLInputStream stlInputStream = new STLInputStream(inputStream);
 
-        stlis.skipBytes(BYTES_HEADER); // Skip header
+        stlInputStream.skipBytes(BYTES_HEADER); // Skip header
 
-        int nbTriangles = Integer.reverseBytes(stlis.readInt());
+        int nbTriangles = Integer.reverseBytes(stlInputStream.readInt());
 
         float[][] vertices = new float[nbTriangles*SIDES][DIMENSIONS];
         float[][] normals = new float[nbTriangles][DIMENSIONS];
 
         for (int i = 0; i < nbTriangles; i++) {
             for (int k = 0; k < DIMENSIONS; k++) {
-                normals[i][k] = stlis.readFloatLittleEndian();
+                normals[i][k] = stlInputStream.readFloatLittleEndian();
             }
 
             for (int j = 0; j < SIDES; j++) {
                 for (int k = 0; k < DIMENSIONS; k++) {
-                    vertices[i + j][k] = stlis.readFloatLittleEndian() * SCALE;
+                    vertices[i*3 + j][k] = stlInputStream.readFloatLittleEndian() * SCALE;
                 }
             }
-            dis.skipBytes(BYTES_ATTRIBUTE); // Skip attribute byte count
+            stlInputStream.skipBytes(BYTES_ATTRIBUTE); // Skip attribute byte count
         }
 
         return new ParsedSTL(vertices, normals);
