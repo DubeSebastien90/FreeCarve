@@ -20,6 +20,7 @@ public class Plane extends Mesh {
         this.size = size;
         setTrianglesList();
     }
+
     /**
      * Creates the triangles of the cube
      */

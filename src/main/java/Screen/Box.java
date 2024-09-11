@@ -5,12 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-<<<<<<< HEAD
  * Creates a mesh in the shape of a box.
- *
-=======
- * Creates a mesh in the shape of a cube.
->>>>>>> fca9d8e (ajout de la classe box et plane)
  * @author Sébastien Dubé
  * @version 1.0
  * @since 2024-09-08
@@ -22,7 +17,6 @@ public class Box extends Mesh {
     double height;
 
     /**
-<<<<<<< HEAD
      * Constructor for a Box object
      *
      * @param position - the position of the box in the scene
@@ -30,11 +24,6 @@ public class Box extends Mesh {
      * @param length   = the length of the box
      * @param height   = the height of the box
      * @param color    - the color of the box
-=======
-     * Constructor for a Cube object
-     * @param position - the position of the cube in the scene
-     * @param color - the color of the cube
->>>>>>> fca9d8e (ajout de la classe box et plane)
      */
     public Box(Vertex position, double width, double length, double height, Color color) {
         super(position, color);
@@ -45,11 +34,7 @@ public class Box extends Mesh {
     }
 
     /**
-<<<<<<< HEAD
      * Creates the triangles of the box
-=======
-     * Creates the triangles of the cube
->>>>>>> fca9d8e (ajout de la classe box et plane)
      */
     @Override
     public void setTrianglesList() {

@@ -31,8 +31,6 @@ public class Pyramid extends Mesh {
         this.findEdges();
         this.calculateCenter();
         this.setPosition(center);
-<<<<<<< HEAD
-=======
     }
 
     /**
@@ -52,6 +50,5 @@ public class Pyramid extends Mesh {
         centerZ = centerZ / ((double) (verticesList.size()));
         this.center.setVertex(new Vertex(centerX, centerY, centerZ));
         return center;
->>>>>>> 4d4bbc8 (position added)
     }
 }
