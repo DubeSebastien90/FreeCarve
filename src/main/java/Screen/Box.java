@@ -5,7 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * <<<<<<< HEAD
  * Creates a mesh in the shape of a box.
+ * <p>
+ * =======
+ * Creates a mesh in the shape of a cube.
+ * >>>>>>> fca9d8e (ajout de la classe box et plane)
  *
  * @author Sébastien Dubé
  * @version 1.0
@@ -18,6 +23,7 @@ public class Box extends Mesh {
     double height;
 
     /**
+     * <<<<<<< HEAD
      * Constructor for a Box object
      *
      * @param position - the position of the box in the scene
@@ -25,6 +31,11 @@ public class Box extends Mesh {
      * @param length   = the length of the box
      * @param height   = the height of the box
      * @param color    - the color of the box
+     *                 =======
+     *                 Constructor for a Cube object
+     * @param position - the position of the cube in the scene
+     * @param color    - the color of the cube
+     *                 >>>>>>> fca9d8e (ajout de la classe box et plane)
      */
     public Box(Vertex position, double width, double length, double height, Color color) {
         super(position, color);
@@ -35,7 +46,11 @@ public class Box extends Mesh {
     }
 
     /**
+     * <<<<<<< HEAD
      * Creates the triangles of the box
+     * =======
+     * Creates the triangles of the cube
+     * >>>>>>> fca9d8e (ajout de la classe box et plane)
      */
     @Override
     public void setTrianglesList() {
@@ -59,5 +74,25 @@ public class Box extends Mesh {
         this.findEdges();
         this.calculateCenter();
         this.setPosition(center);
+    }
+
+    /**
+     * Calculates the center of the cube with the vertices
+     *
+     * @return the 3D coordinates of the center of the cube
+     */
+    @Override
+    public Vertex calculateCenter() {
+        double centerX = 0.0, centerY = 0.0, centerZ = 0.0;
+        for (Vertex v : verticesList) {
+            centerX += v.getX();
+            centerY += v.getY();
+            centerZ += v.getZ();
+        }
+        centerX = centerX / ((double) (verticesList.size()));
+        centerY = centerY / ((double) (verticesList.size()));
+        centerZ = centerZ / ((double) (verticesList.size()));
+        this.center.setVertex(new Vertex(centerX, centerY, centerZ));
+        return center;
     }
 }
