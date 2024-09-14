@@ -134,7 +134,6 @@ public abstract class Mesh {
                     if (t != t2) {
                         if ((t2.getVertex1().equals(t.getVertex1()) || t2.getVertex2().equals(t.getVertex1()) || t2.getVertex3().equals(t.getVertex1())) && (t2.getVertex1().equals(t.getVertex2()) || t2.getVertex2().equals(t.getVertex2()) || t2.getVertex3().equals(t.getVertex2()))) {
                             if (t.getNormal().isParallel(t2.getNormal())) {
-
                                 add = false;
                             }
                         }
@@ -159,7 +158,6 @@ public abstract class Mesh {
                     if (t != t2) {
                         if ((t2.getVertex1().equals(t.getVertex1()) || t2.getVertex2().equals(t.getVertex1()) || t2.getVertex3().equals(t.getVertex1())) && (t2.getVertex1().equals(t.getVertex3()) || t2.getVertex2().equals(t.getVertex3()) || t2.getVertex3().equals(t.getVertex3()))) {
                             if (t.getNormal().isParallel(t2.getNormal())) {
-
                                 add = false;
                             }
                         }
