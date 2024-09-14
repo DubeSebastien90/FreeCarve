@@ -41,7 +41,7 @@ public abstract class Mesh {
      *
      * @return the 3D coordinates of the center of the mesh
      */
-    public Vertex calculateCenter(){
+    public Vertex calculateCenter() {
         double centerX = 0.0, centerY = 0.0, centerZ = 0.0;
         for (Vertex v : verticesList) {
             centerX += v.getX();
@@ -103,34 +103,34 @@ public abstract class Mesh {
      */
     protected void findEdges() {
         List<List<Integer>> newEdgesList = new ArrayList<>();
-        for(Triangle t : trianglesList){
+        for (Triangle t : trianglesList) {
             boolean add1 = true, add2 = true, add3 = true;
-            for(List<Integer> edge : newEdgesList){
-                if((t.getVertex1().equals(verticesList.get(edge.get(0))) && t.getVertex2().equals(verticesList.get(edge.get(1)))) || (t.getVertex1().equals(verticesList.get(edge.get(1))) && t.getVertex2().equals(verticesList.get(edge.get(0))))){
+            for (List<Integer> edge : newEdgesList) {
+                if ((t.getVertex1().equals(verticesList.get(edge.get(0))) && t.getVertex2().equals(verticesList.get(edge.get(1)))) || (t.getVertex1().equals(verticesList.get(edge.get(1))) && t.getVertex2().equals(verticesList.get(edge.get(0))))) {
                     add1 = false;
                 }
-                if((t.getVertex1().equals(verticesList.get(edge.get(0))) && t.getVertex3().equals(verticesList.get(edge.get(1)))) || (t.getVertex1().equals(verticesList.get(edge.get(1))) && t.getVertex3().equals(verticesList.get(edge.get(0))))){
+                if ((t.getVertex1().equals(verticesList.get(edge.get(0))) && t.getVertex3().equals(verticesList.get(edge.get(1)))) || (t.getVertex1().equals(verticesList.get(edge.get(1))) && t.getVertex3().equals(verticesList.get(edge.get(0))))) {
                     add2 = false;
                 }
-                if((t.getVertex2().equals(verticesList.get(edge.get(0))) && t.getVertex3().equals(verticesList.get(edge.get(1)))) || (t.getVertex2().equals(verticesList.get(edge.get(1))) && t.getVertex3().equals(verticesList.get(edge.get(0))))){
+                if ((t.getVertex2().equals(verticesList.get(edge.get(0))) && t.getVertex3().equals(verticesList.get(edge.get(1)))) || (t.getVertex2().equals(verticesList.get(edge.get(1))) && t.getVertex3().equals(verticesList.get(edge.get(0))))) {
                     add3 = false;
                 }
             }
             if (add1) {
                 int num1 = 0;
                 int num2 = 0;
-                for(int i = 0; i < verticesList.size(); i++){
-                    if (verticesList.get(i).equals(t.getVertex1())){
+                for (int i = 0; i < verticesList.size(); i++) {
+                    if (verticesList.get(i).equals(t.getVertex1())) {
                         num1 = i;
-                    } else if (verticesList.get(i).equals(t.getVertex2())){
+                    } else if (verticesList.get(i).equals(t.getVertex2())) {
                         num2 = i;
                     }
                 }
                 boolean add = true;
-                for (Triangle t2 : trianglesList){
-                    if (t != t2){
-                        if ((t2.getVertex1().equals(t.getVertex1()) || t2.getVertex2().equals(t.getVertex1()) || t2.getVertex3().equals(t.getVertex1())) && (t2.getVertex1().equals(t.getVertex2()) || t2.getVertex2().equals(t.getVertex2()) || t2.getVertex3().equals(t.getVertex2()))){
-                            if(t.getNormal().isParallel(t2.getNormal())){
+                for (Triangle t2 : trianglesList) {
+                    if (t != t2) {
+                        if ((t2.getVertex1().equals(t.getVertex1()) || t2.getVertex2().equals(t.getVertex1()) || t2.getVertex3().equals(t.getVertex1())) && (t2.getVertex1().equals(t.getVertex2()) || t2.getVertex2().equals(t.getVertex2()) || t2.getVertex3().equals(t.getVertex2()))) {
+                            if (t.getNormal().isParallel(t2.getNormal())) {
                                 add = false;
                             }
                         }
@@ -143,18 +143,18 @@ public abstract class Mesh {
             if (add2) {
                 int num1 = 0;
                 int num2 = 0;
-                for(int i = 0; i < verticesList.size(); i++){
-                    if (verticesList.get(i).equals(t.getVertex1())){
+                for (int i = 0; i < verticesList.size(); i++) {
+                    if (verticesList.get(i).equals(t.getVertex1())) {
                         num1 = i;
-                    } else if (verticesList.get(i).equals(t.getVertex3())){
+                    } else if (verticesList.get(i).equals(t.getVertex3())) {
                         num2 = i;
                     }
                 }
                 boolean add = true;
-                for (Triangle t2 : trianglesList){
-                    if (t != t2){
-                        if ((t2.getVertex1().equals(t.getVertex1()) || t2.getVertex2().equals(t.getVertex1()) || t2.getVertex3().equals(t.getVertex1())) && (t2.getVertex1().equals(t.getVertex3()) || t2.getVertex2().equals(t.getVertex3()) || t2.getVertex3().equals(t.getVertex3()))){
-                            if(t.getNormal().isParallel(t2.getNormal())){
+                for (Triangle t2 : trianglesList) {
+                    if (t != t2) {
+                        if ((t2.getVertex1().equals(t.getVertex1()) || t2.getVertex2().equals(t.getVertex1()) || t2.getVertex3().equals(t.getVertex1())) && (t2.getVertex1().equals(t.getVertex3()) || t2.getVertex2().equals(t.getVertex3()) || t2.getVertex3().equals(t.getVertex3()))) {
+                            if (t.getNormal().isParallel(t2.getNormal())) {
                                 add = false;
                             }
                         }
@@ -167,18 +167,18 @@ public abstract class Mesh {
             if (add3) {
                 int num1 = 0;
                 int num2 = 0;
-                for(int i = 0; i < verticesList.size(); i++){
-                    if (verticesList.get(i).equals(t.getVertex2())){
+                for (int i = 0; i < verticesList.size(); i++) {
+                    if (verticesList.get(i).equals(t.getVertex2())) {
                         num1 = i;
-                    } else if (verticesList.get(i).equals(t.getVertex3())){
+                    } else if (verticesList.get(i).equals(t.getVertex3())) {
                         num2 = i;
                     }
                 }
                 boolean add = true;
-                for (Triangle t2 : trianglesList){
-                    if (t != t2){
-                        if ((t2.getVertex1().equals(t.getVertex3()) || t2.getVertex2().equals(t.getVertex3()) || t2.getVertex3().equals(t.getVertex3())) && (t2.getVertex1().equals(t.getVertex2()) || t2.getVertex2().equals(t.getVertex2()) || t2.getVertex3().equals(t.getVertex2()))){
-                            if(t.getNormal().isParallel(t2.getNormal())){
+                for (Triangle t2 : trianglesList) {
+                    if (t != t2) {
+                        if ((t2.getVertex1().equals(t.getVertex3()) || t2.getVertex2().equals(t.getVertex3()) || t2.getVertex3().equals(t.getVertex3())) && (t2.getVertex1().equals(t.getVertex2()) || t2.getVertex2().equals(t.getVertex2()) || t2.getVertex3().equals(t.getVertex2()))) {
+                            if (t.getNormal().isParallel(t2.getNormal())) {
                                 add = false;
                             }
                         }
@@ -210,11 +210,11 @@ public abstract class Mesh {
         return this.edgesList;
     }
 
-    public void setPosition(Vertex v){
+    public void setPosition(Vertex v) {
         this.position = v;
     }
 
-    public Vertex getPosition(){
+    public Vertex getPosition() {
         return this.position;
     }
 
@@ -223,7 +223,7 @@ public abstract class Mesh {
      */
     abstract void setTrianglesList();
 
-    public void setTriangles(List<Triangle> list){
+    public void setTriangles(List<Triangle> list) {
         this.trianglesList = list;
     }
 
