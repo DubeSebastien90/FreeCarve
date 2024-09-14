@@ -29,7 +29,7 @@ public class STLParser {
 
             for (int j = 0; j < SIDES; j++) {
                 for (int k = 0; k < DIMENSIONS; k++) {
-                    vertices[i*3 + j][k] = stlInputStream.readFloatLittleEndian() * SCALE;
+                    vertices[i*SIDES + j][k] = stlInputStream.readFloatLittleEndian() * SCALE;
                 }
             }
             stlInputStream.skipBytes(BYTES_ATTRIBUTE); // Skip attribute byte count
