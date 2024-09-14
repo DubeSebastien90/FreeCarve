@@ -30,9 +30,12 @@ public abstract class Mesh {
         this.position = position;
         this.color = color;
         this.center = new Vertex(0, 0, 0);
+<<<<<<< HEAD
         setTrianglesList();
         setVerticesList();
         calculateCenter();
+=======
+>>>>>>> ee9221a (grid on cube should work)
     }
 
     public void setEdgesList(List<List<Integer>> edgesList) {
@@ -107,6 +110,7 @@ public abstract class Mesh {
     protected void findEdges() {
         List<List<Integer>> newEdgesList = new ArrayList<>();
         for (Triangle t : trianglesList) {
+<<<<<<< HEAD
             boolean add1 = true, add2 = true, add3 = true;
             for (List<Integer> edge : newEdgesList) {
                 if ((t.getVertex1().equals(verticesList.get(edge.get(0))) && t.getVertex2().equals(verticesList.get(edge.get(1)))) || (t.getVertex1().equals(verticesList.get(edge.get(1))) && t.getVertex2().equals(verticesList.get(edge.get(0))))) {
@@ -191,6 +195,10 @@ public abstract class Mesh {
                     newEdgesList.add(new ArrayList<>(List.of(num1, num2))); //ajouter les index des sommets dans verticesList à la liste d'arrêtes
                 }
             }
+=======
+            boolean add1 = true, add2 = false, add3 = false;
+            //todo ajouter les arrêtes
+>>>>>>> ee9221a (grid on cube should work)
         }
         this.edgesList = newEdgesList;
     }
