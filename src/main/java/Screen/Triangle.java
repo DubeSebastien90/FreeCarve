@@ -4,6 +4,7 @@ import Parser.ParsedSTL;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -13,9 +14,6 @@ import java.util.List;
  *
  * @author Adam Côté, with the help of the links in the see also section.
  * @version 1.0
- * @see <a href="http://blog.rogach.org/2015/08/how-to-create-your-own-simple-3d-render.html">Blog on 3D rendering</a>
- * @see <a href="https://gamedev.stackexchange.com/questions/9511/why-do-game-engines-convert-models-to-triangles-instead-of-using-quads">GameDev Stack Exchange</a>
- * @see <a href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system">Wikipedia on Barycentric Coordinate System</a>
  * @since 2024-09-07
  */
 public class Triangle {
@@ -197,6 +195,7 @@ public class Triangle {
         double panelHalfWidth = panel.getWidth() / 2.0;
         double panelHalfHeight = panel.getHeight() / 2.0;
         Mesh meshSelected = null;
+
         for (Mesh m : meshes) {
 
             for (Triangle t : m.getTrianglesList()) {
@@ -212,7 +211,6 @@ public class Triangle {
 
                 Triangle newTriangle = new Triangle(newVertices[0], newVertices[1], newVertices[2], t.getNormal(), t.getColor());
 
-
                 int minX = (int) Math.max(0, Math.min(newCoordinates[0], Math.min(newCoordinates[2], newCoordinates[4])));
                 int maxX = (int) Math.min(img.getWidth(), Math.max(newCoordinates[0], Math.max(newCoordinates[2], newCoordinates[4])));
 
@@ -224,13 +222,22 @@ public class Triangle {
                         Vertex bary = findBarycentric(newTriangle, x, y);
                         if (isInBarycentric(bary)) {
                             double depth = bary.getX() * newVertices[0].getZ() + bary.getY() * newVertices[1].getZ() + bary.getZ() * newVertices[2].getZ();
+
                             if (x < panel.getWidth() && y < panel.getHeight()) {
                                 Double existingPixel = pixelsDepthMap[x][y];
                                 if ((existingPixel == null || existingPixel < depth)) {
                                     pixelsDepthMap[x][y] = depth;
                                     newTriangle.calculateNormal();
                                     Color printedColor = newTriangle.calculate_lighting();
-                                    img.setRGB(x, y, printedColor.getRGB());
+
+                                    double up = t.getVertex1().getU() * bary.getX() + t.getVertex2().getU() * bary.getY() + t.getVertex3().getU() * bary.getZ();
+                                    double vp = (t.getVertex1().getV() * bary.getX()) + (t.getVertex2().getV() * bary.getY()) + (t.getVertex3().getV() * bary.getZ());
+
+                                    if ((vp < 0.30 && vp > 0.29) || (up < 0.30 && up > 0.29)) {
+                                        img.setRGB(x, y, Color.black.getRGB());
+                                    } else {
+                                        img.setRGB(x, y, printedColor.getRGB());
+                                    }
                                     if (mousePos.getX() == x && mousePos.getY() == y) {
                                         meshSelected = m;
                                     }
@@ -303,7 +310,6 @@ public class Triangle {
      * @param pointX   the x-coordinate of the point
      * @param pointY   the y-coordinate of the point
      * @return the barycentric coordinates of the point
-     * @see <a href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system">Wikipedia on Barycentric Coordinate System</a>
      */
     public static Vertex findBarycentric(Triangle triangle, double pointX, double pointY) {
 
@@ -355,4 +361,6 @@ public class Triangle {
             return color;
         }
     }
+
+
 }

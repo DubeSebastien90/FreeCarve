@@ -14,6 +14,8 @@ public class Vertex {
     private double x;
     private double y;
     private double z;
+    private double u;
+    private double v;
 
     /**
      * Constructs a {@code Vertex} with 3 space coordinates.
@@ -26,6 +28,14 @@ public class Vertex {
         setX(x);
         setY(y);
         setZ(z);
+    }
+
+    public Vertex(double x, double y, double z, double u, double v) {
+        setX(x);
+        setY(y);
+        setZ(z);
+        setU(u);
+        setV(v);
     }
 
     /**
@@ -44,12 +54,44 @@ public class Vertex {
     }
 
     /**
+     * @return the first coordinates of the uv point
+     */
+    public double getU() {
+        return u;
+    }
+
+    /**
+     * Sets the u of the uv coordinate of the vertex
+     *
+     * @param u the new value for the u
+     */
+    public void setU(double u) {
+        this.u = u;
+    }
+
+    /**
+     * @return the second coordinate of the uv point
+     */
+    public double getV() {
+        return v;
+    }
+
+    /**
+     * Sets the v of the uv coordinate of the vertex
+     *
+     * @param v the new value for the v
+     */
+    public void setV(double v) {
+        this.v = v;
+    }
+
+    /**
      * Constructs a new {@code Vertex} with the values of another {@code Vertex}
      *
      * @param vertex the {@code Vertex} that get cloned.
      */
     public Vertex(Vertex vertex) {
-        this(vertex.getX(), vertex.getY(), vertex.getZ());
+        this(vertex.getX(), vertex.getY(), vertex.getZ(), vertex.u, vertex.v);
     }
 
     /**
@@ -100,10 +142,17 @@ public class Vertex {
         this.z = z;
     }
 
+    /**
+     * Sets all the coordinates of the {@code Vertex} in function of another one
+     *
+     * @param vertex the cloned vertex
+     */
     public void setVertex(Vertex vertex) {
         setX(vertex.getX());
         setY(vertex.getY());
         setZ(vertex.getZ());
+        setU(vertex.getU());
+        setV(vertex.getV());
     }
 
     /**
@@ -125,7 +174,7 @@ public class Vertex {
      * @return The resulting Vertex
      */
     public Vertex substraction(Vertex other) {
-        return new Vertex(x - other.getX(), y - other.getY(), z - other.getZ());
+        return new Vertex(x - other.getX(), y - other.getY(), z - other.getZ(), u, v);
     }
 
     /**
@@ -135,7 +184,7 @@ public class Vertex {
      * @return the resulting {@code Vertex}
      */
     public Vertex addition(Vertex other) {
-        return new Vertex(x + other.getX(), y + other.getY(), z + other.getZ());
+        return new Vertex(x + other.getX(), y + other.getY(), z + other.getZ(), u, v);
     }
 
     /**
@@ -145,39 +194,56 @@ public class Vertex {
      * @return the resulting {@code Vertex}
      */
     public Vertex multiplication(double number) {
-        return new Vertex(x * number, y * number, z * number);
+        return new Vertex(x * number, y * number, z * number, u, v);
     }
 
+    /**
+     * Checks if this instance of {@code Vertex} is equal to another one
+     *
+     * @param o the other {@code Vertex}
+     * @return true if the two objects are equals
+     */
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         Vertex vertex = (Vertex) o;
         return (this.x == vertex.getX() && this.y == vertex.getY() && this.z == vertex.getZ());
     }
 
-    public boolean isParallel(Vertex v){
+    /**
+     * Checks if the current {@code Vertex} is parallel to another one
+     *
+     * @param v the other {@code Vertex}
+     * @return true if the two are parallel
+     */
+    public boolean isParallel(Vertex v) {
         double kx = 0, ky = 0, kz = 0;
         if (v.getX() != 0) {
             kx = this.x / v.getX();
-        } else if (this.x == 0){
+        } else if (this.x == 0) {
             kx = 1;
         }
         if (v.getY() != 0) {
             ky = this.y / v.getY();
-        } else if (this.y == 0){
+        } else if (this.y == 0) {
             ky = 1;
         }
-        if (v.getZ() != 0){
-            kz = this.z/v.getZ();
-        } else if (this.z == 0){
+        if (v.getZ() != 0) {
+            kz = this.z / v.getZ();
+        } else if (this.z == 0) {
             kz = 1;
         }
-        System.out.println(kx);
-        System.out.println(ky);
-        System.out.println(kz);
-        return (estProche(kx,ky,0.1) && estProche(kx,kz,0.1));
+        return (estProche(kx, ky, 0.1) && estProche(kx, kz, 0.1));
     }
 
-    public static boolean estProche(double val1, double val2,double marge){
-        return (Math.abs(val1-val2) < marge);
+    /**
+     * Checks if two values are close enough
+     *
+     * @param val1  the first value
+     * @param val2  the second value
+     * @param marge the given marge in which the value must be close
+     * @return true if the two value are in the marge
+     */
+    public static boolean estProche(double val1, double val2, double marge) {
+        return (Math.abs(val1 - val2) < marge);
     }
 }

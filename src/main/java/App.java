@@ -25,10 +25,10 @@ public class App {
         InputStream inputStream = null;
         ParsedSTL parsedSTL = null;
 
-        try{
+        try {
             inputStream = new BufferedInputStream(new FileInputStream(file));
             parsedSTL = STLParser.parse(inputStream);
-        } catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             System.out.println("File not found");
         } catch (EOFException e) {
         } catch (IOException e) {
@@ -42,7 +42,6 @@ public class App {
                 System.out.println(Arrays.toString(e.getStackTrace()));
             }
         }
-
         Mesh cubeBleu = new Box(new Vertex(200, 200, 200), 100, 100, 30, Color.BLUE);
         Mesh cubeRouge = new Box(new Vertex(0, 0, 0), 75, 75, 75, Color.RED);
         Mesh pyramidVerte = new Pyramid(new Vertex(-110, 110, 110), Color.GREEN);

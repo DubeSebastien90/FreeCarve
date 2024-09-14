@@ -3,6 +3,8 @@ package Screen;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -94,7 +96,7 @@ public class Renderer extends JPanel {
                 t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1()));
                 t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2()));
                 t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3()));
-                t.setNormal(rotationMatrice.matriceXVertex3x3(t.getNormal()));
+
             }
             m.setVerticesList();
         }
@@ -139,7 +141,6 @@ public class Renderer extends JPanel {
             t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1().substraction(center)).addition(center));
             t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2().substraction(center)).addition(center));
             t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3().substraction(center)).addition(center));
-            t.setNormal(rotationMatrice.matriceXVertex3x3(t.getNormal().substraction(center)).addition(center));
         }
         mesh.setVerticesList();
         repaint();
