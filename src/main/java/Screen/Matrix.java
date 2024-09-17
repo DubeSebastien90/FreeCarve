@@ -12,6 +12,27 @@ import java.util.Arrays;
 public class Matrix {
     private double[] matrix;
 
+    public static final Matrix RIGHT_ROTATION = new Matrix(new double[]{
+            Math.cos(0.05), 0, -Math.sin(0.05),
+            0, 1, 0,
+            Math.sin(0.05), 0, Math.cos(0.05)
+    });
+    public static final Matrix LEFT_ROTATION = new Matrix(new double[]{
+            Math.cos(-0.05), 0, -Math.sin(-0.05),
+            0, 1, 0,
+            Math.sin(-0.05), 0, Math.cos(-0.05)
+    });
+    public static final Matrix UP_ROTATION = new Matrix(new double[]{
+            1, 0, 0,
+            0, Math.cos(0.05), Math.sin(0.05),
+            0, -Math.sin(0.05), Math.cos(0.05)
+    });
+    public static final Matrix DOWN_ROTATION = new Matrix(new double[]{
+            1, 0, 0,
+            0, Math.cos(-0.05), Math.sin(-0.05),
+            0, -Math.sin(-0.05), Math.cos(-0.05)
+    });
+
     /**
      * Constructs a new {@code Matrix} with the specified array of doubles.
      *
@@ -19,37 +40,6 @@ public class Matrix {
      */
     public Matrix(double[] matrix) {
         setMatrix(matrix);
-    }
-
-    /**
-     * Calculates the resulting matrix from the multiplication of two 3x3 matrices, one being this instance of {@code Matrix}.
-     * <b>Note that it can only multiply 3x3 matrices.</b>
-     *
-     * @param other the other {@code Matrix}
-     * @return the resulting {@code Matrix}
-     */
-    public Matrix multiplyMatrice3x3(Matrix other) {
-        double[] newMatrix = new double[9];
-        int element = 0;
-        for (int i = 0; i < 3; i++) {
-            int place = 0;
-            int start = 0;
-            int value = 0;
-            for (int j = 0; j < 9; j++) {
-                value += this.matrix[(i * 3) + place / 3] * other.getMatrix()[place];
-                if (place + 3 >= 9) {
-                    newMatrix[element] = value;
-                    value = 0;
-                    element++;
-                    start++;
-                    place = start;
-
-                } else {
-                    place += 3;
-                }
-            }
-        }
-        return new Matrix(newMatrix);
     }
 
     /**

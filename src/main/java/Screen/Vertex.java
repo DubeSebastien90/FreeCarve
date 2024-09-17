@@ -66,7 +66,13 @@ public class Vertex {
      * @param u the new value for the u
      */
     public void setU(double u) {
-        this.u = u;
+        if (u < 0) {
+            this.u = 0;
+        } else if (u > 1) {
+            this.u = 1;
+        } else {
+            this.u = u;
+        }
     }
 
     /**
@@ -82,7 +88,13 @@ public class Vertex {
      * @param v the new value for the v
      */
     public void setV(double v) {
-        this.v = v;
+        if (v < 0) {
+            this.v = 0;
+        } else if (v > 1) {
+            this.v = 1;
+        } else {
+            this.v = v;
+        }
     }
 
     /**
@@ -168,33 +180,40 @@ public class Vertex {
     }
 
     /**
-     * Subtracts this instance of {@code Vertex} with another one.
+     * Subtracts a {@code Vertex} to this instance.
      *
-     * @param other the vertex that get subtracted to the current {@code Vertex}
-     * @return The resulting Vertex
+     * @param other the vertex that get subtracted to the other one
      */
-    public Vertex substraction(Vertex other) {
-        return new Vertex(x - other.getX(), y - other.getY(), z - other.getZ(), u, v);
+    public void subtraction(Vertex other) {
+        setX(x - other.getX());
+        setY(y - other.getY());
+        setZ(z - other.getZ());
     }
 
     /**
      * Adds this instance of {@code Vertex} with another one
      *
      * @param other the {@code Vertex} that get added to the current one
-     * @return the resulting {@code Vertex}
      */
-    public Vertex addition(Vertex other) {
-        return new Vertex(x + other.getX(), y + other.getY(), z + other.getZ(), u, v);
+    public void addition(Vertex other) {
+        setX(x + other.getX());
+        setY(y + other.getY());
+        setZ(z + other.getZ());
+    }
+
+    public static Vertex addition(Vertex first, Vertex second) {
+        return new Vertex(first.getX() + second.getX(), first.getY() + second.getY(), first.getZ() + second.getZ());
     }
 
     /**
      * multiply this instance of {@code Vertex} with number
      *
      * @param number the number that get multiplied to the current {@code Vertex}
-     * @return the resulting {@code Vertex}
      */
-    public Vertex multiplication(double number) {
-        return new Vertex(x * number, y * number, z * number, u, v);
+    public void multiplication(double number) {
+        setX(x * number);
+        setY(y * number);
+        setZ(z * number);
     }
 
     /**
@@ -206,7 +225,7 @@ public class Vertex {
     @Override
     public boolean equals(Object o) {
         Vertex vertex = (Vertex) o;
-        return (this.x == vertex.getX() && this.y == vertex.getY() && this.z == vertex.getZ());
+        return (this.x == vertex.getX() && this.y == vertex.getY() && this.z == vertex.getZ() && this.u == vertex.getU() && this.v == vertex.getV());
     }
 
     /**
@@ -243,7 +262,7 @@ public class Vertex {
      * @param marge the given marge in which the value must be close
      * @return true if the two value are in the marge
      */
-    public static boolean estProche(double val1, double val2, double marge) {
+    private static boolean estProche(double val1, double val2, double marge) {
         return (Math.abs(val1 - val2) < marge);
     }
 }

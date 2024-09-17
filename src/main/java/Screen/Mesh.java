@@ -30,6 +30,9 @@ public abstract class Mesh {
         this.position = position;
         this.color = color;
         this.center = new Vertex(0, 0, 0);
+        setTrianglesList();
+        setVerticesList();
+        calculateCenter();
     }
 
     public void setEdgesList(List<List<Integer>> edgesList) {

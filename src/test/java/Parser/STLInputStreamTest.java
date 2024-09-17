@@ -13,7 +13,7 @@ class STLInputStreamTest {
     @Test
     void readIntLittleEndian_MaxInt_DoesntOverflow() throws IOException {
         // Arrange
-        InputStream is = new ByteArrayInputStream(new byte[] {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+        InputStream is = new ByteArrayInputStream(new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
         STLInputStream stlInputStream = new STLInputStream(is);
         // Act
         int value = stlInputStream.readIntLittleEndian();
@@ -24,7 +24,7 @@ class STLInputStreamTest {
     @Test
     void readIntLittleEndian_HappyPath_ReadsLittleEndian() throws IOException {
         // Arrange
-        InputStream is = new ByteArrayInputStream(new byte[] {(byte) 0x0, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
+        InputStream is = new ByteArrayInputStream(new byte[]{(byte) 0x0, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF});
         STLInputStream stlInputStream = new STLInputStream(is);
         // Act
         int value = stlInputStream.readIntLittleEndian();
@@ -35,7 +35,7 @@ class STLInputStreamTest {
     @Test
     void readFloatLittleEndian_HappyPath_ReadsLittleEndian() throws IOException {
         // Arrange
-        InputStream is = new ByteArrayInputStream(new byte[] {(byte) 0xFF, (byte) 0xFF, (byte) 0x7F, (byte) 0xFF});
+        InputStream is = new ByteArrayInputStream(new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0x7F, (byte) 0xFF});
         STLInputStream stlInputStream = new STLInputStream(is);
         // Act
         float value = stlInputStream.readFloatLittleEndian();

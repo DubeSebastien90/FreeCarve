@@ -3,10 +3,6 @@ package Screen;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,18 +12,25 @@ import java.util.List;
  * @since 2024-09-08
  */
 public class Renderer extends JPanel {
-    private Vertex vertexX;
-    private Vertex vertexY;
-    private Vertex vertexZ;
+    private final Vertex vertexX;
+    private final Vertex vertexY;
+    private final Vertex vertexZ;
     private List<Mesh> meshes;
     private Vertex mousePos;
-    private BoutonRotation boutonRotation;
+    private final BoutonRotation boutonRotation;
 
     /**
      * @return the {@code List} of {@code Mesh} that need to be rendered
      */
     public List<Mesh> getMeshes() {
         return meshes;
+    }
+
+    /**
+     * @return the mousePos of this instance of {@code Renderer}
+     */
+    public Vertex getMousePos() {
+        return mousePos;
     }
 
     /**
@@ -78,7 +81,14 @@ public class Renderer extends JPanel {
         Graphics2D graphics2D = ((Graphics2D) graphics);
         this.setBackground(Color.GRAY);
         super.paintComponent(graphics2D);
-        Mesh mesh = Triangle.printTriangles(this, graphics2D, meshes, mousePos);
+        Mesh mesh = null;
+        for (Mesh m : meshes) {
+            for (Triangle t : m.getTrianglesList()) {
+                if (t.printTriangles(this, graphics2D)) {
+                    mesh = m;
+                }
+            }
+        }
         if (mousePos.getZ() == 1) {
             boutonRotation.setSelectedMesh(mesh);
         }
@@ -96,7 +106,6 @@ public class Renderer extends JPanel {
                 t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1()));
                 t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2()));
                 t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3()));
-
             }
             m.setVerticesList();
         }
@@ -114,47 +123,65 @@ public class Renderer extends JPanel {
      */
     public void translationMesh(Mesh mesh, Vertex translation) {
         Vertex translationModif = new Vertex(0, 0, 0);
-        translationModif = translationModif.addition(vertexX.multiplication(translation.getX()));
-        translationModif = translationModif.addition(vertexY.multiplication(translation.getY()));
-        translationModif = translationModif.addition(vertexZ.multiplication(translation.getZ()));
+        Vertex tempVertexX = new Vertex(vertexX);
+        tempVertexX.multiplication(translation.getX());
+        translationModif.addition(tempVertexX);
+
+        Vertex tempVertexY = new Vertex(vertexY);
+        tempVertexY.multiplication(translation.getY());
+        translationModif.addition(tempVertexY);
+
+        Vertex tempVertexZ = new Vertex(vertexZ);
+        tempVertexZ.multiplication(translation.getZ());
+        translationModif.addition(tempVertexZ);
         for (Triangle t : mesh.getTrianglesList()) {
-            t.setVertex1(t.getVertex1().addition(translationModif));
-            t.setVertex2(t.getVertex2().addition(translationModif));
-            t.setVertex3(t.getVertex3().addition(translationModif));
+            t.getVertex1().addition(translationModif);
+            t.getVertex2().addition(translationModif);
+            t.getVertex3().addition(translationModif);
         }
         mesh.setVerticesList();
-        mesh.setPosition(mesh.getPosition().addition(translation));
+        mesh.getPosition().addition(translation);
         repaint();
     }
 
     /**
      * Rotate a specific mesh around it's center
      *
-     * @param mesh - the mesh to rotate
-     * @param axis - the axis to turn around
-     * @param size - the direction of the rotation
+     * @param mesh the mesh to rotate
+     * @param axis the axis to turn around
+     * @param size the direction of the rotation
      */
     public void rotationMesh(Mesh mesh, Vertex axis, double size) {
-        Matrix rotationMatrice = getRotationMatrixAroundVector(axis,size);
+        Matrix rotationMatrice = getRotationMatrixAroundVector(axis, size);
         Vertex center = mesh.getCenter();
         for (Triangle t : mesh.getTrianglesList()) {
-            t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1().substraction(center)).addition(center));
-            t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2().substraction(center)).addition(center));
-            t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3().substraction(center)).addition(center));
+            t.getVertex1().subtraction(center);
+            t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1()));
+            t.getVertex1().addition(center);
+
+            t.getVertex2().subtraction(center);
+            t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2()));
+            t.getVertex2().addition(center);
+
+            t.getVertex3().subtraction(center);
+            t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3()));
+            t.getVertex3().addition(center);
         }
         mesh.setVerticesList();
         repaint();
     }
+//1,0,0,,,0,cos(0.05),-sin(0,05),,,,0,sin(0,05),cos(0,05),
 
     /**
      * Returns a rotation matrix to apply on a mesh for it to rotate on a certain angle
-     * @param v - the axis to rotate around
-     * @param size - the size of the rotation
+     *
+     * @param v    the axis to rotate around
+     * @param size the size of the rotation
      * @return the rotation matrix to apply on the vectors
      */
-    private Matrix getRotationMatrixAroundVector(Vertex v, double size) {
+    private static Matrix getRotationMatrixAroundVector(Vertex v, double size) {
         double ux = v.getX(), uy = v.getY(), uz = v.getZ();
-        double c = Math.cos(0.05*size), s = Math.sin(0.05*size);
+        double c = Math.cos(0.05 * size), s = Math.sin(0.05 * size);
         return new Matrix(new double[]{
                 Math.pow(ux, 2) * (1 - c) + c, ux * uy * (1 - c) - uz * s, ux * uz * (1 - c) + uy * s,
                 ux * uy * (1 - c) + uz * s, Math.pow(uy, 2) * (1 - c) + c, uy * uz * (1 - c) - ux * s,
@@ -164,25 +191,28 @@ public class Renderer extends JPanel {
 
     /**
      * Getter of the vertexX attribute
+     *
      * @return the vertexX attribute
      */
-    public Vertex getVertexX(){
+    public Vertex getVertexX() {
         return vertexX;
     }
 
     /**
      * Getter of the vertexY attribute
+     *
      * @return the vertexY attribute
      */
-    public Vertex getVertexY(){
+    public Vertex getVertexY() {
         return vertexY;
     }
 
     /**
      * Getter of the vertexZ attribute
+     *
      * @return the vertexZ attribute
      */
-    public Vertex getVertexZ(){
+    public Vertex getVertexZ() {
         return vertexZ;
     }
 

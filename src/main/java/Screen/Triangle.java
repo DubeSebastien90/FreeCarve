@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The {@code Triangle} class provides methods to render a triangle on the screen using a {@code JPanel} as a container.
@@ -187,71 +188,57 @@ public class Triangle {
      *
      * @param panel      the panel on which the triangles will be painted
      * @param graphics2D the {@code Graphics2D} object associated with the panel
-     * @param meshes     the list of meshes to be drawn
      */
-    public static Mesh printTriangles(JPanel panel, Graphics2D graphics2D, List<Mesh> meshes, Vertex mousePos) {
+    public boolean printTriangles(Renderer panel, Graphics2D graphics2D) {
         BufferedImage img = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Double[][] pixelsDepthMap = new Double[img.getWidth()][img.getHeight()];
         double panelHalfWidth = panel.getWidth() / 2.0;
         double panelHalfHeight = panel.getHeight() / 2.0;
-        Mesh meshSelected = null;
+        Vertex mousePos = panel.getMousePos();
+        boolean isSelected = false;
 
-        for (Mesh m : meshes) {
-
-            for (Triangle t : m.getTrianglesList()) {
-                double[] newCoordinates = {
-                        t.getVertex1().getX() + panelHalfWidth, t.getVertex1().getY() + panelHalfHeight,
-                        t.getVertex2().getX() + panelHalfWidth, t.getVertex2().getY() + panelHalfHeight,
-                        t.getVertex3().getX() + panelHalfWidth, t.getVertex3().getY() + panelHalfHeight};
-
-                Vertex[] newVertices = {
-                        new Vertex(newCoordinates[0], newCoordinates[1], t.getVertex1().getZ()),
-                        new Vertex(newCoordinates[2], newCoordinates[3], t.getVertex2().getZ()),
-                        new Vertex(newCoordinates[4], newCoordinates[5], t.getVertex3().getZ())};
-
-                Triangle newTriangle = new Triangle(newVertices[0], newVertices[1], newVertices[2], t.getNormal(), t.getColor());
-
-                int minX = (int) Math.max(0, Math.min(newCoordinates[0], Math.min(newCoordinates[2], newCoordinates[4])));
-                int maxX = (int) Math.min(img.getWidth(), Math.max(newCoordinates[0], Math.max(newCoordinates[2], newCoordinates[4])));
-
-                int minY = (int) Math.max(0, Math.min(newCoordinates[1], Math.min(newCoordinates[3], newCoordinates[5])));
-                int maxY = (int) Math.min(img.getHeight(), Math.max(newCoordinates[1], Math.max(newCoordinates[3], newCoordinates[5])));
-
-                for (int y = minY; y <= maxY; y++) {
-                    for (int x = minX; x <= maxX; x++) {
-                        Vertex bary = findBarycentric(newTriangle, x, y);
-                        if (isInBarycentric(bary)) {
-                            double depth = bary.getX() * newVertices[0].getZ() + bary.getY() * newVertices[1].getZ() + bary.getZ() * newVertices[2].getZ();
-
-                            if (x < panel.getWidth() && y < panel.getHeight()) {
-                                Double existingPixel = pixelsDepthMap[x][y];
-                                if ((existingPixel == null || existingPixel < depth)) {
-                                    pixelsDepthMap[x][y] = depth;
-                                    newTriangle.calculateNormal();
-                                    Color printedColor = newTriangle.calculate_lighting();
-
-                                    double up = t.getVertex1().getU() * bary.getX() + t.getVertex2().getU() * bary.getY() + t.getVertex3().getU() * bary.getZ();
-                                    double vp = (t.getVertex1().getV() * bary.getX()) + (t.getVertex2().getV() * bary.getY()) + (t.getVertex3().getV() * bary.getZ());
-
-                                    if ((vp < 0.30 && vp > 0.29) || (up < 0.30 && up > 0.29)) {
-                                        img.setRGB(x, y, Color.black.getRGB());
-                                    } else {
-                                        img.setRGB(x, y, printedColor.getRGB());
-                                    }
-                                    if (mousePos.getX() == x && mousePos.getY() == y) {
-                                        meshSelected = m;
-                                    }
-                                }
+        Triangle newTriangle = new Triangle(Vertex.addition(new Vertex(panelHalfWidth, panelHalfHeight, 0), this.getVertex1()), Vertex.addition(new Vertex(panelHalfWidth, panelHalfHeight, 0), this.getVertex2()), Vertex.addition(new Vertex(panelHalfWidth, panelHalfHeight, 0), this.getVertex3()), this.getNormal(), this.getColor());
+        newTriangle.calculateNormal();
+        Color printedColor = calculateLighting(newTriangle);
+        int[] area = findAreaTriangle(newTriangle, img.getWidth(), img.getHeight());
+        for (int y = area[2]; y <= area[3]; y++) {
+            for (int x = area[0]; x <= area[1]; x++) {
+                Vertex bary = findBarycentric(newTriangle, x, y);
+                if (isInBarycentric(bary)) {
+                    double depth = bary.getX() * newTriangle.getVertex1().getZ() + bary.getY() * newTriangle.getVertex2().getZ() + bary.getZ() * newTriangle.getVertex3().getZ();
+                    if (x < panel.getWidth() && y < panel.getHeight()) {
+                        Double existingPixel = pixelsDepthMap[x][y];
+                        if ((existingPixel == null || existingPixel < depth)) {
+                            pixelsDepthMap[x][y] = depth;
+                            img.setRGB(x, y, printedColor.getRGB());
+                            if (mousePos.getX() == x && mousePos.getY() == y) {
+                                isSelected = true;
                             }
                         }
                     }
                 }
             }
         }
-
         graphics2D.drawImage(img, 0, 0, null);
 
-        return meshSelected;
+        return isSelected;
+    }
+
+    /**
+     * Finds a rectangular area around the triangle, it needs a maximum width and maximum height, the minimum x and y are 0
+     *
+     * @param triangle  The {@code Triangle} which the rectangular area is around.
+     * @param maxWidth  The maximum width the x in the area should not exceed.
+     * @param maxHeight The maximum height the y in the area should not exceed.
+     * @return a list with the minimum x, maximum x, minimum y, maximum y
+     */
+    private static int[] findAreaTriangle(Triangle triangle, int maxWidth, int maxHeight) {
+        int minX = (int) Math.max(0, Math.min(triangle.getVertex1().getX(), Math.min(triangle.getVertex2().getX(), triangle.getVertex3().getX())));
+        int maxX = (int) Math.min(maxWidth, Math.max(triangle.getVertex1().getX(), Math.max(triangle.getVertex2().getX(), triangle.getVertex3().getX())));
+        int minY = (int) Math.max(0, Math.min(triangle.getVertex1().getY(), Math.min(triangle.getVertex2().getY(), triangle.getVertex3().getY())));
+        int maxY = (int) Math.min(maxHeight, Math.max(triangle.getVertex1().getY(), Math.max(triangle.getVertex2().getY(), triangle.getVertex3().getY())));
+
+        return new int[]{minX, maxX, minY, maxY};
     }
 
     /**
@@ -269,6 +256,13 @@ public class Triangle {
                 ", normal =" + normal +
                 ", color =" + color +
                 '}' + "\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Triangle triangle)) return false;
+        return getVertex1().equals(triangle.getVertex1()) && getVertex2().equals(triangle.getVertex2()) && getVertex3().equals(triangle.getVertex3()) && Objects.equals(getNormal(), triangle.getNormal()) && getColor().equals(triangle.getColor());
     }
 
     /**
@@ -297,7 +291,7 @@ public class Triangle {
      * @param coordinates the vertex which may contain barycentric coordinates
      * @return true if the vertex represents barycentric coordinates
      */
-    public static boolean isInBarycentric(Vertex coordinates) {
+    private static boolean isInBarycentric(Vertex coordinates) {
         double sum = coordinates.getY() + coordinates.getX() + coordinates.getZ();
         return (sum < 1.05) && (sum > .95) && coordinates.getX() >= 0 && coordinates.getY() >= 0 && coordinates.getZ() >= 0;
     }
@@ -311,7 +305,7 @@ public class Triangle {
      * @param pointY   the y-coordinate of the point
      * @return the barycentric coordinates of the point
      */
-    public static Vertex findBarycentric(Triangle triangle, double pointX, double pointY) {
+    private static Vertex findBarycentric(Triangle triangle, double pointX, double pointY) {
 
         Vertex v1 = triangle.getVertex1();
         Vertex v2 = triangle.getVertex2();
@@ -332,13 +326,19 @@ public class Triangle {
      * The resulting vertex is normalized.
      */
     public void calculateNormal() {
-        Vertex u = getVertex2().substraction(getVertex1());
-        Vertex v = getVertex3().substraction(getVertex1());
+        Vertex u = new Vertex(getVertex2());
+        u.subtraction(getVertex1());
+        Vertex v = new Vertex(getVertex3());
+        v.subtraction(getVertex1());
         double normalX = u.getY() * v.getZ() - u.getZ() * v.getY();
         double normalY = u.getZ() * v.getX() - u.getX() * v.getZ();
         double normalZ = u.getX() * v.getY() - u.getY() * v.getX();
         double magnitude = Math.sqrt(Math.pow(normalX, 2) + Math.pow(normalY, 2) + Math.pow(normalZ, 2));
-        setNormal(new Vertex(normalX / magnitude, normalY / magnitude, normalZ / magnitude));
+        if (magnitude == 0) {
+            setNormal(new Vertex(0, 0, 0));
+        } else {
+            setNormal(new Vertex(normalX / magnitude, normalY / magnitude, normalZ / magnitude));
+        }
     }
 
     /**
@@ -350,7 +350,9 @@ public class Triangle {
      *
      * @return the new color with shading applied
      */
-    public Color calculate_lighting() {
+    private static Color calculateLighting(Triangle triangle) {
+        Vertex normal = triangle.getNormal();
+        Color color = triangle.getColor();
         Vertex lightDirection = new Vertex(1, 1, 1);
         double ligthMagnitude = Math.sqrt(Math.pow(lightDirection.getX(), 2) + Math.pow(lightDirection.getY(), 2) + Math.pow(lightDirection.getZ(), 2));
         float darker = (float) ((lightDirection.getX() * Math.abs(normal.getX()) + lightDirection.getY() * Math.abs(normal.getY()) + lightDirection.getZ() * Math.abs(normal.getZ())) / ligthMagnitude);
