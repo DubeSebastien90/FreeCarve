@@ -1,7 +1,12 @@
 package Domain.ThirdDimension;
 
+import Parser.ParsedSTL;
+import Parser.STLParser;
+
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,7 +16,7 @@ import java.util.List;
  * @version 1.0
  * @since 2024-09-08
  */
-public abstract class Mesh {
+public class Mesh {
     protected List<Triangle> trianglesList;
     protected List<Vertex> verticesList;
     protected List<List<Integer>> edgesList;
@@ -25,17 +30,30 @@ public abstract class Mesh {
      * @param position - the position of the mesh in the scene
      * @param color    - the color of the mesh
      */
-    public Mesh(Vertex position, Color color) {
+    protected Mesh(Vertex position, Color color) {
         this.position = position;
         this.color = color;
         this.center = new Vertex(0, 0, 0);
-        setTrianglesList();
         setVerticesList();
         calculateCenter();
     }
 
     public void setEdgesList(List<List<Integer>> edgesList) {
         this.edgesList = edgesList;
+    }
+
+    /**
+     * Abstract constructor for a Mesh object
+     * @param position - the position of the mesh in the scene
+     * @param color - the color of the mesh
+     */
+    public Mesh(Vertex position, Color color, String stlFilePath) {
+        this(position, color);
+        trianglesList = Arrays.asList(Triangle.fromParsedSTL(parseStlFile(stlFilePath), color));
+        this.setVerticesList();
+        this.findEdges();
+        this.calculateCenter();
+        this.setPosition(center);
     }
 
     /**
@@ -223,10 +241,30 @@ public abstract class Mesh {
     /**
      * Creates the triangles of the mesh
      */
-    public abstract void setTrianglesList();
-
     public void setTriangles(List<Triangle> list) {
         this.trianglesList = list;
+    }
+
+    private ParsedSTL parseStlFile(String path){
+        DataInputStream dis = null;
+        try {
+            dis = new DataInputStream(new BufferedInputStream(new FileInputStream(path)));
+            return STLParser.parse(dis);
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        } catch (EOFException e) {
+        } catch (IOException e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
+        } finally {
+            try {
+                if (dis != null) {
+                    dis.close();
+                }
+            } catch (IOException e) {
+                System.out.println(Arrays.toString(e.getStackTrace()));
+            }
+        }
+        return null;
     }
 
     /**

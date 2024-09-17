@@ -36,7 +36,6 @@ public class Box extends Mesh {
     /**
      * Creates the triangles of the box
      */
-    @Override
     public void setTrianglesList() {
         //create triangles
         this.trianglesList = new ArrayList<>(List.of(

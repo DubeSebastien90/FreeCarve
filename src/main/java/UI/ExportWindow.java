@@ -1,7 +1,6 @@
 package UI;
 
 import Domain.ThirdDimension.Mesh;
-import Domain.ThirdDimension.Plane;
 import Domain.ThirdDimension.Pyramid;
 import Domain.ThirdDimension.Vertex;
 import UI.SubWindows.BasicWindow;

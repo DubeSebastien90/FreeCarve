@@ -19,7 +19,6 @@ public class Pyramid extends Mesh {
     /**
      * Creates the triangles of the box
      */
-    @Override
     public void setTrianglesList() {
         this.trianglesList = new ArrayList<>(List.of(
                 new Triangle(new Vertex(0 + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(100 + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(0 + position.getX(), 100 + position.getY(), 0 + position.getZ()), new Vertex(0, 0, -100), this.color),
