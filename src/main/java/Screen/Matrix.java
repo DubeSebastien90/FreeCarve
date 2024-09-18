@@ -68,7 +68,9 @@ public class Matrix {
      * @return the resulting {@code Vertex}
      */
     public Vertex matriceXVertex3x3(Vertex vertex) {
-
+        if (matrix.length != 9){
+            throw new ArithmeticException("Matrix must be 3x3");
+        }
         double xComponent = vertex.getX() * matrix[0] + vertex.getY() * matrix[3] + vertex.getZ() * matrix[6];
         double yComponent = vertex.getX() * matrix[1] + vertex.getY() * matrix[4] + vertex.getZ() * matrix[7];
         double zComponent = vertex.getX() * matrix[2] + vertex.getY() * matrix[5] + vertex.getZ() * matrix[8];
