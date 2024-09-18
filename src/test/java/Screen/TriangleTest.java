@@ -17,7 +17,7 @@ public class TriangleTest {
         InputStream inputStream = new BufferedInputStream(new FileInputStream(cubeFile));
         ParsedSTL parsedSTL = STLParser.parse(inputStream);
         Triangle[] triangles = Triangle.fromParsedSTL(parsedSTL, Color.ORANGE);
-        Assertions.assertEquals(triangles[0], new Triangle(new Vertex(50, 50, 50), new Vertex(-50, 50, 50), new Vertex(-50, -50, 50), new Vertex(0, 0, 1), Color.ORANGE));
+        Assertions.assertEquals(triangles[0], new Triangle(new Vertex(1, 1, 1), new Vertex(-1, 1, 1), new Vertex(-1, -1, 1), new Vertex(0, 0, 1), Color.ORANGE));
     }
 
     @Test

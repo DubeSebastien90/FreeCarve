@@ -179,64 +179,17 @@ public class Triangle {
     }
 
     /**
-     * Paints all the {@code Triangle} objects in a {@code List} in 3D on a {@code JPanel}.
-     * To be painted on the JPanel, the triangles must be drawn using a {@code Graphics2D} object.
-     * The {@code Graphics2D} object must already be associated with the JPanel.<br/><br/>
-     * The function uses a depth map for to be sure the triangles are displayed correctly,
-     * barycentric coordinates to paint the pixels of the triangle and normal vectors to implement base shading.
-     * <br/><br/>
-     *
-     * @param panel      the panel on which the triangles will be painted
-     * @param graphics2D the {@code Graphics2D} object associated with the panel
-     */
-    public boolean printTriangles(Renderer panel, Graphics2D graphics2D) {
-        BufferedImage img = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Double[][] pixelsDepthMap = new Double[img.getWidth()][img.getHeight()];
-        double panelHalfWidth = panel.getWidth() / 2.0;
-        double panelHalfHeight = panel.getHeight() / 2.0;
-        Vertex mousePos = panel.getMousePos();
-        boolean isSelected = false;
-
-        Triangle newTriangle = new Triangle(Vertex.addition(new Vertex(panelHalfWidth, panelHalfHeight, 0), this.getVertex1()), Vertex.addition(new Vertex(panelHalfWidth, panelHalfHeight, 0), this.getVertex2()), Vertex.addition(new Vertex(panelHalfWidth, panelHalfHeight, 0), this.getVertex3()), this.getNormal(), this.getColor());
-        newTriangle.calculateNormal();
-        Color printedColor = calculateLighting(newTriangle);
-        int[] area = findAreaTriangle(newTriangle, img.getWidth(), img.getHeight());
-        for (int y = area[2]; y <= area[3]; y++) {
-            for (int x = area[0]; x <= area[1]; x++) {
-                Vertex bary = findBarycentric(newTriangle, x, y);
-                if (isInBarycentric(bary)) {
-                    double depth = bary.getX() * newTriangle.getVertex1().getZ() + bary.getY() * newTriangle.getVertex2().getZ() + bary.getZ() * newTriangle.getVertex3().getZ();
-                    if (x < panel.getWidth() && y < panel.getHeight()) {
-                        Double existingPixel = pixelsDepthMap[x][y];
-                        if ((existingPixel == null || existingPixel < depth)) {
-                            pixelsDepthMap[x][y] = depth;
-                            img.setRGB(x, y, printedColor.getRGB());
-                            if (mousePos.getX() == x && mousePos.getY() == y) {
-                                isSelected = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        graphics2D.drawImage(img, 0, 0, null);
-
-        return isSelected;
-    }
-
-    /**
      * Finds a rectangular area around the triangle, it needs a maximum width and maximum height, the minimum x and y are 0
      *
-     * @param triangle  The {@code Triangle} which the rectangular area is around.
      * @param maxWidth  The maximum width the x in the area should not exceed.
      * @param maxHeight The maximum height the y in the area should not exceed.
      * @return a list with the minimum x, maximum x, minimum y, maximum y
      */
-    private static int[] findAreaTriangle(Triangle triangle, int maxWidth, int maxHeight) {
-        int minX = (int) Math.max(0, Math.min(triangle.getVertex1().getX(), Math.min(triangle.getVertex2().getX(), triangle.getVertex3().getX())));
-        int maxX = (int) Math.min(maxWidth, Math.max(triangle.getVertex1().getX(), Math.max(triangle.getVertex2().getX(), triangle.getVertex3().getX())));
-        int minY = (int) Math.max(0, Math.min(triangle.getVertex1().getY(), Math.min(triangle.getVertex2().getY(), triangle.getVertex3().getY())));
-        int maxY = (int) Math.min(maxHeight, Math.max(triangle.getVertex1().getY(), Math.max(triangle.getVertex2().getY(), triangle.getVertex3().getY())));
+    public int[] findArea(int maxWidth, int maxHeight) {
+        int minX = (int) Math.max(0, Math.min(getVertex1().getX(), Math.min(getVertex2().getX(), getVertex3().getX())));
+        int maxX = (int) Math.min(maxWidth, Math.max(getVertex1().getX(), Math.max(getVertex2().getX(), getVertex3().getX())));
+        int minY = (int) Math.max(0, Math.min(getVertex1().getY(), Math.min(getVertex2().getY(), getVertex3().getY())));
+        int maxY = (int) Math.min(maxHeight, Math.max(getVertex1().getY(), Math.max(getVertex2().getY(), getVertex3().getY())));
 
         return new int[]{minX, maxX, minY, maxY};
     }
@@ -286,30 +239,18 @@ public class Triangle {
     }
 
     /**
-     * Validates if a vertex meets the requirements to represent barycentric coordinates of a triangle.
-     *
-     * @param coordinates the vertex which may contain barycentric coordinates
-     * @return true if the vertex represents barycentric coordinates
-     */
-    private static boolean isInBarycentric(Vertex coordinates) {
-        double sum = coordinates.getY() + coordinates.getX() + coordinates.getZ();
-        return (sum < 1.05) && (sum > .95) && coordinates.getX() >= 0 && coordinates.getY() >= 0 && coordinates.getZ() >= 0;
-    }
-
-    /**
      * Finds the barycentric coordinates of a specific point inside a triangle using the Edge approach.
      * If the point is not within the triangle, invalid barycentric coordinates will be returned.
      *
-     * @param triangle the triangle in which the point may or may not be located
      * @param pointX   the x-coordinate of the point
      * @param pointY   the y-coordinate of the point
      * @return the barycentric coordinates of the point
      */
-    private static Vertex findBarycentric(Triangle triangle, double pointX, double pointY) {
+    public Vertex findBarycentric(double pointX, double pointY) {
 
-        Vertex v1 = triangle.getVertex1();
-        Vertex v2 = triangle.getVertex2();
-        Vertex v3 = triangle.getVertex3();
+        Vertex v1 = getVertex1();
+        Vertex v2 = getVertex2();
+        Vertex v3 = getVertex3();
 
         double denominateur = (v2.getY() - v3.getY()) * (v1.getX() - v3.getX()) + (v3.getX() - v2.getX()) * (v1.getY() - v3.getY());
         double firstBary = ((v2.getY() - v3.getY()) * (pointX - v3.getX()) + (v3.getX() - v2.getX()) * (pointY - v3.getY())) / denominateur;
@@ -338,29 +279,6 @@ public class Triangle {
             setNormal(new Vertex(0, 0, 0));
         } else {
             setNormal(new Vertex(normalX / magnitude, normalY / magnitude, normalZ / magnitude));
-        }
-    }
-
-    /**
-     * Uses the normal vector of this instance of {@code Triangle} to calculate the shading to be applied to the triangle.
-     * It uses the dot product formula to find the cosine between the light source and the normal vector.
-     * The resulting value will be multiplied by all the RGB values of the triangle's color.
-     * <b>Note that the normal vector of this instance of {@code Triangle} must be normalized.</b>
-     * If something doesn't work, the triangle's original color will be returned.
-     *
-     * @return the new color with shading applied
-     */
-    private static Color calculateLighting(Triangle triangle) {
-        Vertex normal = triangle.getNormal();
-        Color color = triangle.getColor();
-        Vertex lightDirection = new Vertex(1, 1, 1);
-        double ligthMagnitude = Math.sqrt(Math.pow(lightDirection.getX(), 2) + Math.pow(lightDirection.getY(), 2) + Math.pow(lightDirection.getZ(), 2));
-        float darker = (float) ((lightDirection.getX() * Math.abs(normal.getX()) + lightDirection.getY() * Math.abs(normal.getY()) + lightDirection.getZ() * Math.abs(normal.getZ())) / ligthMagnitude);
-        float[] component = color.getRGBColorComponents(null);
-        try {
-            return new Color(component[0] * darker, component[1] * darker, component[2] * darker);
-        } catch (Exception ignored) {
-            return color;
         }
     }
 

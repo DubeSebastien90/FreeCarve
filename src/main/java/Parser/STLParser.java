@@ -10,7 +10,6 @@ public class STLParser {
     private static final int BYTES_ATTRIBUTE = 2;
     public static final int DIMENSIONS = 3;
     public static final int SIDES = 3;
-    private static final float SCALE = 50f;
 
     public static ParsedSTL parse(InputStream inputStream) throws IOException {
         STLInputStream stlInputStream = new STLInputStream(inputStream);
@@ -29,7 +28,7 @@ public class STLParser {
 
             for (int j = 0; j < SIDES; j++) {
                 for (int k = 0; k < DIMENSIONS; k++) {
-                    vertices[i*SIDES + j][k] = stlInputStream.readFloatLittleEndian() * SCALE;
+                    vertices[i*SIDES + j][k] = stlInputStream.readFloatLittleEndian();
                 }
             }
             stlInputStream.skipBytes(BYTES_ATTRIBUTE); // Skip attribute byte count
