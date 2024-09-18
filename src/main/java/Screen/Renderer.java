@@ -19,7 +19,7 @@ public class Renderer extends JPanel {
     private List<Mesh> meshes;
     private Vertex mousePos;
     private final BoutonRotation boutonRotation;
-    private Double[][] PIXELS_DEPTH_MAP;
+    private Double[][] pixelsDepthMap;
     double panelHalfWidth;
     double panelHalfHeight;
 
@@ -64,7 +64,6 @@ public class Renderer extends JPanel {
         addKeyListener(boutonRotation);
         addMouseListener(boutonRotation);
         this.mousePos = new Vertex(0, 0, 0);
-//        this.PIXELS_DEPTH_MAP = new Double[this.getWidth()][this.getHeight()];
     }
 
     @Override
@@ -93,7 +92,7 @@ public class Renderer extends JPanel {
         Graphics2D graphics2D = ((Graphics2D) graphics);
         this.setBackground(Color.GRAY);
         super.paintComponent(graphics2D);
-        PIXELS_DEPTH_MAP = new Double[this.getWidth()][this.getHeight()];
+        pixelsDepthMap = new Double[this.getWidth()][this.getHeight()];
         panelHalfWidth = getWidth() / 2f;
         panelHalfHeight = getHeight() / 2f;
         Mesh mesh = null;
@@ -139,8 +138,8 @@ public class Renderer extends JPanel {
                 if (isInBarycentric(bary)) {
                     double depth = bary.getX() * newTriangle.getVertex1().getZ() + bary.getY() * newTriangle.getVertex2().getZ() + bary.getZ() * newTriangle.getVertex3().getZ();
                     if (x < getWidth() && y < getHeight()) {
-                        if ((PIXELS_DEPTH_MAP[x][y] == null || PIXELS_DEPTH_MAP[x][y] < depth)) {
-                            PIXELS_DEPTH_MAP[x][y] = depth;
+                        if ((pixelsDepthMap[x][y] == null || pixelsDepthMap[x][y] < depth)) {
+                            pixelsDepthMap[x][y] = depth;
                             img.setRGB(x, y, printedColor.getRGB());
                             if (getMousePos().getX() == x && getMousePos().getY() == y) {
                                 isSelected = true;
