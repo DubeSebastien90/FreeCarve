@@ -1,12 +1,16 @@
 package Screen;
 
+import Annotations.VariableSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -83,4 +87,5 @@ public class RendererTest {
         Assertions.assertEquals(secondTriangle.getVertex3(), new Vertex(0, 0.9987502603949663 * 50 + 0.04997916927067833 * 50 + 50, -0.04997916927067833 * 50 + 0.9987502603949663 * 50 + 50, 0, 0));
 
     }
+
 }

@@ -242,8 +242,8 @@ public class Triangle {
      * Finds the barycentric coordinates of a specific point inside a triangle using the Edge approach.
      * If the point is not within the triangle, invalid barycentric coordinates will be returned.
      *
-     * @param pointX   the x-coordinate of the point
-     * @param pointY   the y-coordinate of the point
+     * @param pointX the x-coordinate of the point
+     * @param pointY the y-coordinate of the point
      * @return the barycentric coordinates of the point
      */
     public Vertex findBarycentric(double pointX, double pointY) {
