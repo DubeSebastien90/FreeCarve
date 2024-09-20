@@ -156,26 +156,28 @@ public class Renderer extends JPanel {
 
     /**
      * Rotate all of the meshes around the (0,0,0) point
+     * TODO put this function in Mesh
      *
-     * @param rotationMatrice - the rotation matrix
+     * @param rotationMatrix - the rotation matrix
      */
-    public void rotationCurrentShape(Matrix rotationMatrice) {
+    public void rotateWorld(Matrix rotationMatrix) {
         for (Mesh m : meshes) {
             for (Triangle t : m.getTrianglesList()) {
-                t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1()));
-                t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2()));
-                t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3()));
+                t.setVertex1(rotationMatrix.matriceXVertex3x3(t.getVertex1()));
+                t.setVertex2(rotationMatrix.matriceXVertex3x3(t.getVertex2()));
+                t.setVertex3(rotationMatrix.matriceXVertex3x3(t.getVertex3()));
             }
             m.setVerticesList();
         }
-        vertexX.setVertex(rotationMatrice.matriceXVertex3x3(vertexX));
-        vertexY.setVertex(rotationMatrice.matriceXVertex3x3(vertexY));
-        vertexZ.setVertex(rotationMatrice.matriceXVertex3x3(vertexZ));
+        vertexX.setVertex(rotationMatrix.matriceXVertex3x3(vertexX));
+        vertexY.setVertex(rotationMatrix.matriceXVertex3x3(vertexY));
+        vertexZ.setVertex(rotationMatrix.matriceXVertex3x3(vertexZ));
         repaint();
     }
 
     /**
      * Move a specific mesh in the scene
+     * TODO put this function in Mesh
      *
      * @param mesh        - the mesh to move
      * @param translation - the movement vector
@@ -205,6 +207,7 @@ public class Renderer extends JPanel {
 
     /**
      * Rotate a specific mesh around it's center
+     * TODO put this function in Mesh
      *
      * @param mesh the mesh to rotate
      * @param axis the axis to turn around

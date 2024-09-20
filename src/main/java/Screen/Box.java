@@ -40,23 +40,18 @@ public class Box extends Mesh {
     public void setTrianglesList() {
         //create triangles
         this.trianglesList = new ArrayList<>(List.of(
-                /*5*/new Triangle(new Vertex(position.getX(), position.getY(), position.getZ(), 1, 1), new Vertex(position.getX(), length + position.getY(), height + position.getZ(), 0, 0), new Vertex(0 + position.getX(), length + position.getY(), 0 + position.getZ(), 1, 0), new Vertex(-1, 0, 0), this.color),
-                /*5*/new Triangle(new Vertex(position.getX(), position.getY(), position.getZ(), 1, 1), new Vertex(position.getX(), 0 + position.getY(), height + position.getZ(), 0, 1), new Vertex(0 + position.getX(), length + position.getY(), height + position.getZ(), 0, 0), new Vertex(-1, 0, 0), this.color),
-
-                /*1*/ new Triangle(new Vertex(position.getX(), position.getY(), position.getZ(), 1, 0), new Vertex(width + position.getX(), 0 + position.getY(), 0 + position.getZ(), 1, 1), new Vertex(width + position.getX(), 0 + position.getY(), height + position.getZ(), 0, 1), new Vertex(0, -1, 0), this.color),
-                /*1*/ new Triangle(new Vertex(position.getX(), position.getY(), position.getZ(), 1, 0), new Vertex(width + position.getX(), 0 + position.getY(), height + position.getZ(), 0, 1), new Vertex(0 + position.getX(), 0 + position.getY(), height + position.getZ(), 0, 0), new Vertex(0, -1, 0), this.color),
-
-                /*6*/new Triangle(new Vertex(position.getX(), position.getY(), position.getZ(), 0, 1), new Vertex(width + position.getX(), length + position.getY(), 0 + position.getZ(), 1, 0), new Vertex(0 + position.getX(), length + position.getY(), 0 + position.getZ(), 0, 0), new Vertex(0, 0, -1), this.color),
-                /*6*/new Triangle(new Vertex(position.getX(), position.getY(), position.getZ(), 0, 1), new Vertex(width + position.getX(), 0 + position.getY(), 0 + position.getZ(), 1, 1), new Vertex(width + position.getX(), length + position.getY(), 0 + position.getZ(), 1, 0), new Vertex(0, 0, -1), this.color),
-
-                /*3*/new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ(), 0, 0), new Vertex(width + position.getX(), 0 + position.getY(), 0 + position.getZ(), 1, 1), new Vertex(width + position.getX(), 0 + position.getY(), height + position.getZ(), 1, 0), new Vertex(1, 0, 0), this.color),
-                /*3*/new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ(), 0, 0), new Vertex(width + position.getX(), length + position.getY(), 0 + position.getZ(), 0, 1), new Vertex(width + position.getX(), 0 + position.getY(), 0 + position.getZ(), 1, 1), new Vertex(1, 0, 0), this.color),
-
-                /*4*/new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ(), 0, 1), new Vertex(0 + position.getX(), 0 + position.getY(), height + position.getZ(), 1, 0), new Vertex(width + position.getX(), 0 + position.getY(), height + position.getZ(), 1, 1), new Vertex(0, 0, 1), this.color),
-                /*4*/new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ(), 0, 1), new Vertex(0 + position.getX(), length + position.getY(), height + position.getZ(), 0, 0), new Vertex(0 + position.getX(), 0 + position.getY(), height + position.getZ(), 1, 0), new Vertex(0, 0, 1), this.color),
-
-                /*2*/new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ(), 1, 0), new Vertex(width + position.getX(), length + position.getY(), 0 + position.getZ(), 1, 1), new Vertex(0 + position.getX(), length + position.getY(), 0 + position.getZ(), 0, 1), new Vertex(0, 1, 0), this.color),
-                /*2*/new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ(), 1, 0), new Vertex(0 + position.getX(), length + position.getY(), 0 + position.getZ(), 0, 1), new Vertex(0 + position.getX(), length + position.getY(), height + position.getZ(), 0, 0), new Vertex(0, 1, 0), this.color)
+                new Triangle(new Vertex(0 + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(0 + position.getX(), length + position.getY(), height + position.getZ()), new Vertex(0 + position.getX(), length + position.getY(), 0 + position.getZ()), new Vertex(-100, 0, 0), this.color),
+                new Triangle(new Vertex(0 + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(0 + position.getX(), 0 + position.getY(), height + position.getZ()), new Vertex(0 + position.getX(), length + position.getY(), height + position.getZ()), new Vertex(-100, 0, 0), this.color),
+                new Triangle(new Vertex(0 + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(width + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(width + position.getX(), 0 + position.getY(), height + position.getZ()), new Vertex(0, -100, 0), this.color),
+                new Triangle(new Vertex(0 + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(width + position.getX(), 0 + position.getY(), height + position.getZ()), new Vertex(0 + position.getX(), 0 + position.getY(), height + position.getZ()), new Vertex(0, -100, 0), this.color),
+                new Triangle(new Vertex(0 + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(width + position.getX(), length + position.getY(), 0 + position.getZ()), new Vertex(0 + position.getX(), length + position.getY(), 0 + position.getZ()), new Vertex(0, 0, -100), this.color),
+                new Triangle(new Vertex(0 + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(width + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(width + position.getX(), length + position.getY(), 0 + position.getZ()), new Vertex(0, 0, -100), this.color),
+                new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ()), new Vertex(width + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(width + position.getX(), 0 + position.getY(), height + position.getZ()), new Vertex(100, 0, 0), this.color),
+                new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ()), new Vertex(width + position.getX(), length + position.getY(), 0 + position.getZ()), new Vertex(width + position.getX(), 0 + position.getY(), 0 + position.getZ()), new Vertex(100, 0, 0), this.color),
+                new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ()), new Vertex(0 + position.getX(), 0 + position.getY(), height + position.getZ()), new Vertex(width + position.getX(), 0 + position.getY(), height + position.getZ()), new Vertex(0, 0, 100), this.color),
+                new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ()), new Vertex(0 + position.getX(), length + position.getY(), height + position.getZ()), new Vertex(0 + position.getX(), 0 + position.getY(), height + position.getZ()), new Vertex(0, 0, 100), this.color),
+                new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ()), new Vertex(width + position.getX(), length + position.getY(), 0 + position.getZ()), new Vertex(0 + position.getX(), length + position.getY(), 0 + position.getZ()), new Vertex(0, 100, 0), this.color),
+                new Triangle(new Vertex(width + position.getX(), length + position.getY(), height + position.getZ()), new Vertex(0 + position.getX(), length + position.getY(), 0 + position.getZ()), new Vertex(0 + position.getX(), length + position.getY(), height + position.getZ()), new Vertex(0, 100, 0), this.color)
         ));
         //find unique vertices
         this.setVerticesList();
@@ -64,6 +59,7 @@ public class Box extends Mesh {
         this.calculateCenter();
         this.setPosition(center);
     }
+
 
     /**
      * Calculates the center of the cube with the vertices

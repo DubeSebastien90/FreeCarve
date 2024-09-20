@@ -74,7 +74,7 @@ public class Matrix {
         double xComponent = vertex.getX() * matrix[0] + vertex.getY() * matrix[3] + vertex.getZ() * matrix[6];
         double yComponent = vertex.getX() * matrix[1] + vertex.getY() * matrix[4] + vertex.getZ() * matrix[7];
         double zComponent = vertex.getX() * matrix[2] + vertex.getY() * matrix[5] + vertex.getZ() * matrix[8];
-        return new Vertex(xComponent, yComponent, zComponent, vertex.getU(), vertex.getV());
+        return new Vertex(xComponent, yComponent, zComponent);
     }
 
     /**

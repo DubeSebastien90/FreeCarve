@@ -14,8 +14,6 @@ public class Vertex {
     private double x;
     private double y;
     private double z;
-    private double u;
-    private double v;
 
     /**
      * Constructs a {@code Vertex} with 3 space coordinates.
@@ -28,14 +26,6 @@ public class Vertex {
         setX(x);
         setY(y);
         setZ(z);
-    }
-
-    public Vertex(double x, double y, double z, double u, double v) {
-        setX(x);
-        setY(y);
-        setZ(z);
-        setU(u);
-        setV(v);
     }
 
     /**
@@ -54,56 +44,12 @@ public class Vertex {
     }
 
     /**
-     * @return the first coordinates of the uv point
-     */
-    public double getU() {
-        return u;
-    }
-
-    /**
-     * Sets the u of the uv coordinate of the vertex
-     *
-     * @param u the new value for the u
-     */
-    public void setU(double u) {
-        if (u < 0) {
-            this.u = 0;
-        } else if (u > 1) {
-            this.u = 1;
-        } else {
-            this.u = u;
-        }
-    }
-
-    /**
-     * @return the second coordinate of the uv point
-     */
-    public double getV() {
-        return v;
-    }
-
-    /**
-     * Sets the v of the uv coordinate of the vertex
-     *
-     * @param v the new value for the v
-     */
-    public void setV(double v) {
-        if (v < 0) {
-            this.v = 0;
-        } else if (v > 1) {
-            this.v = 1;
-        } else {
-            this.v = v;
-        }
-    }
-
-    /**
      * Constructs a new {@code Vertex} with the values of another {@code Vertex}
      *
      * @param vertex the {@code Vertex} that get cloned.
      */
     public Vertex(Vertex vertex) {
-        this(vertex.getX(), vertex.getY(), vertex.getZ(), vertex.u, vertex.v);
+        this(vertex.getX(), vertex.getY(), vertex.getZ());
     }
 
     /**
@@ -163,8 +109,6 @@ public class Vertex {
         setX(vertex.getX());
         setY(vertex.getY());
         setZ(vertex.getZ());
-        setU(vertex.getU());
-        setV(vertex.getV());
     }
 
     /**
@@ -225,7 +169,7 @@ public class Vertex {
     @Override
     public boolean equals(Object o) {
         Vertex vertex = (Vertex) o;
-        return (this.x == vertex.getX() && this.y == vertex.getY() && this.z == vertex.getZ() && this.u == vertex.getU() && this.v == vertex.getV());
+        return (this.x == vertex.getX() && this.y == vertex.getY() && this.z == vertex.getZ());
     }
 
     /**

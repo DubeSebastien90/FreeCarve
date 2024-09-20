@@ -31,16 +31,16 @@ public class BoutonRotation implements KeyListener, MouseListener {
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_RIGHT:
-                    renderer.rotationCurrentShape(Matrix.RIGHT_ROTATION);
+                    renderer.rotateWorld(Matrix.RIGHT_ROTATION);
                     break;
                 case KeyEvent.VK_LEFT:
-                    renderer.rotationCurrentShape(Matrix.LEFT_ROTATION);
+                    renderer.rotateWorld(Matrix.LEFT_ROTATION);
                     break;
                 case KeyEvent.VK_UP:
-                    renderer.rotationCurrentShape(Matrix.UP_ROTATION);
+                    renderer.rotateWorld(Matrix.UP_ROTATION);
                     break;
                 case KeyEvent.VK_DOWN:
-                    renderer.rotationCurrentShape(Matrix.DOWN_ROTATION);
+                    renderer.rotateWorld(Matrix.DOWN_ROTATION);
                     break;
                 case KeyEvent.VK_W:
                     if (movementType == 0) {
