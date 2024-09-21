@@ -58,9 +58,28 @@ public class TopBar extends JMenuBar {
         // https://www.svgrepo.com/svg/525834/diskette
         // https://www.svgrepo.com/svg/525562/undo-left-round
         // https://www.svgrepo.com/svg/525566/undo-right-round
+        // https://www.svgrepo.com/svg/526331/structure
+        // https://www.svgrepo.com/svg/525420/magnet
+        // https://www.svgrepo.com/svg/525558/trash-bin-trash
+        // https://www.svgrepo.com/svg/525496/scale
+        // https://www.svgrepo.com/svg/526006/magnifer-zoom-in
+        // https://www.svgrepo.com/svg/526007/magnifer-zoom-out
+        // https://www.svgrepo.com/svg/526081/pen
+        // https://www.svgrepo.com/svg/526221/settings
+        // https://www.svgrepo.com/svg/525346/forbidden-circle
         //
         // ALL can be found in this portfolio
         // https://www.svgrepo.com/collection/solar-bold-icons/
+
+
+        // https://www.svgrepo.com/svg/379356/border-all
+        // https://www.svgrepo.com/svg/379093/border-horizontal
+        // https://www.svgrepo.com/svg/379254/select-all
+        // https://www.svgrepo.com/svg/379153/flip-to-front
+        // https://www.svgrepo.com/svg/379154/flip-to-back
+        //
+        // ceux juste en haut font partie du portfolio suivant :
+        // https://www.svgrepo.com/collection/tetrisly-interface-icons/
         aide.add(attributionLink);
 
         this.add(fichier);
