@@ -1,9 +1,10 @@
 package UI;
 
 
-
 import UI.Widgets.ColoredBox;
 import com.formdev.flatlaf.ui.FlatArrowButton;
+
+import static Util.UiUtil.createSVGButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
  * @since 2024-09-21
  */
 public class DownBar {
+    private UIConfig uiConfig = UIConfig.INSTANCE;
     private JPanel panel;
     private JScrollPane scrollPane;
     private JPanel container;
@@ -33,8 +35,8 @@ public class DownBar {
     private JButton cutButton;
     private JButton simulationButton;
     private JButton exportButton;
-    private BasicArrowButton arrowLeft;
-    private BasicArrowButton arrowRight;
+    private JButton arrowLeft;
+    private JButton arrowRight;
     private FlatArrowButton arrowTest;
     ArrayList<JButton> buttons;
     ArrayList<JComponent> components;
@@ -49,7 +51,7 @@ public class DownBar {
      * setting up all of the actions of the buttons and setting the {@code folderButton} as the
      * initial state
      */
-    public DownBar(){
+    public DownBar() {
         init();
         this.setupButtonAction();
         updateDownBar(folderButton);
@@ -58,39 +60,38 @@ public class DownBar {
     /**
      * @return the panel container of the {@code DownBar}
      */
-    public JScrollPane getDownBar(){
+    public JScrollPane getDownBar() {
         return scrollPane;
     }
 
     /**
      * @return the current selected button of the {@code DownBar}
      */
-    public JButton getSelectedButtonIndex(){
+    public JButton getSelectedButtonIndex() {
         return buttons.get(selectedButtonIndex);
     }
 
     /**
      * Updates the appearance/functions of the buttons of the {@code DownBar}
      * according to the button that was just clicked
+     *
      * @param buttonClicked the button that was just clicked
      */
-    private void updateDownBar(JButton buttonClicked){
+    private void updateDownBar(JButton buttonClicked) {
         boolean beforeButtonClicked = false;
-        for(int i =0 ; i < buttons.size(); i++){
-            if(buttons.get(i) == buttonClicked){
+        for (int i = 0; i < buttons.size(); i++) {
+            if (buttons.get(i) == buttonClicked) {
                 buttonClicked.setBackground(UIConfig.INSTANCE.getColorGreen1());
                 selectedButtonIndex = i;
                 beforeButtonClicked = true;
-            }
-            else if (beforeButtonClicked){
+            } else if (beforeButtonClicked) {
                 buttons.get(i).setBackground(UIConfig.INSTANCE.getColorButtonBackground());
-            }
-            else{
+            } else {
                 buttons.get(i).setBackground(UIConfig.INSTANCE.getColorBlue1());
             }
 
             // Updates the ColoredBox
-            if(i > 0){
+            if (i > 0) {
                 Color col = buttons.get(i).getBackground();
                 int index = i * 2 - 1;
                 components.get(index).setBackground(col);
@@ -102,8 +103,8 @@ public class DownBar {
     /**
      * Gives every button it's function when clicked
      */
-    private void setupButtonAction(){
-        for(JButton button : buttons){
+    private void setupButtonAction() {
+        for (JButton button : buttons) {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -130,8 +131,8 @@ public class DownBar {
     /**
      * Select the next {@code DownBar} button, while respecting constraints
      */
-    private void moveForward(){
-        if (selectedButtonIndex < buttons.size()-1){
+    private void moveForward() {
+        if (selectedButtonIndex < buttons.size() - 1) {
             selectedButtonIndex++;
             updateDownBar(buttons.get(selectedButtonIndex));
         }
@@ -140,8 +141,8 @@ public class DownBar {
     /**
      * Select the previous {@code DownBar} button, while respecting constraints
      */
-    private void moveBackward(){
-        if (selectedButtonIndex > 0){
+    private void moveBackward() {
+        if (selectedButtonIndex > 0) {
             selectedButtonIndex--;
             updateDownBar(buttons.get(selectedButtonIndex));
         }
@@ -150,8 +151,7 @@ public class DownBar {
     /**
      * Initiates all of the {@code DownBar} components
      */
-    private void init()
-    {
+    private void init() {
         panel = new JPanel();
         scrollPane = new JScrollPane();
         container = new JPanel();
@@ -171,8 +171,8 @@ public class DownBar {
         simulationButton.setToolTipText("Menu simulation");
         exportButton = new JButton("Exportation");
         exportButton.setToolTipText("Menu exportation");
-        arrowLeft = new BasicArrowButton(BasicArrowButton.WEST);
-        arrowRight = new BasicArrowButton(BasicArrowButton.EAST);
+        arrowLeft = createSVGButton("leftArrow", true, uiConfig.getToolIconSize());
+        arrowRight = createSVGButton("rightArrow", true, uiConfig.getToolIconSize());
 
         buttons = new ArrayList<JButton>();
         buttons.add(folderButton);
@@ -184,11 +184,11 @@ public class DownBar {
 
         // Creates the component list by alternating between JButton and ColoredBox
         components = new ArrayList<JComponent>();
-        for(int i = 0; i < buttons.size(); i++){
+        for (int i = 0; i < buttons.size(); i++) {
             buttons.get(i).setMargin(new Insets(5, 20, 5, 20));
             buttons.get(i).setFocusPainted(false);
             components.add(buttons.get(i));
-            if(i < buttons.size()-1){
+            if (i < buttons.size() - 1) {
                 ColoredBox cb = new ColoredBox(coloredBoxColor,
                         ((int) coloredBoxDimension.getWidth()),
                         ((int) coloredBoxDimension.getHeight()));
@@ -197,7 +197,7 @@ public class DownBar {
         }
         // Adds all component to the container
         container.add(arrowLeft);
-        for(JComponent component : components){
+        for (JComponent component : components) {
             container.add(component);
         }
         container.add(arrowRight);

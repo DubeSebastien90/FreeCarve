@@ -1,5 +1,7 @@
 package UI;
+
 import com.formdev.flatlaf.FlatDarkLaf;
+
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -30,7 +32,7 @@ public class MainWindow {
      * Constructs a {@code MainWindow} instance by activating the LaF, initializing
      * it's attributes and setting up all the relevant event listeners functions
      */
-    public MainWindow(){
+    public MainWindow() {
         this.activateFlatLaf();
         this.init();
         this.setupEventListener();
@@ -39,16 +41,17 @@ public class MainWindow {
     /**
      * Starts the {@code MainWindow} by making it's {@code JFrame} visible
      */
-    public void start() {frame.setVisible(true);}
+    public void start() {
+        frame.setVisible(true);
+    }
 
     /**
      * Activates the LaF
      */
-    private void activateFlatLaf(){
-        try{
+    private void activateFlatLaf() {
+        try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }
     }
@@ -56,7 +59,8 @@ public class MainWindow {
     /**
      * Initiates all of the {@code MainWindow} components
      */
-    private void init(){
+    private void init() {
+        ToolTipManager.sharedInstance().setInitialDelay(1000);
         frame = new JFrame();
         uiConfig = UIConfig.INSTANCE;
         borderLayout = new BorderLayout();
@@ -80,7 +84,7 @@ public class MainWindow {
     /**
      * Setup of all event listeners relating to the {@code MainWindow}
      */
-    private void setupEventListener(){
+    private void setupEventListener() {
         frame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {

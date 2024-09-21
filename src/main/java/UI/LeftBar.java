@@ -2,15 +2,13 @@ package UI;
 
 import javax.swing.*;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.ui.FlatButtonBorder;
+import static Util.UiUtil.createSVGButton;
 
 public class LeftBar extends JScrollPane {
 
     UIConfig uiConfig = UIConfig.INSTANCE;
 
     public LeftBar() {
-        ToolTipManager.sharedInstance().setInitialDelay(1000);
         setViewportView(new ToolBar());
         setBorder(null);
         setVisible(true);
@@ -25,37 +23,26 @@ public class LeftBar extends JScrollPane {
         }
 
         private void init() {
-            add(createSVGBUtton("save", true, "Enregistrer"));
+            add(createSVGButton("save", true, "Enregistrer", uiConfig.getToolIconSize()));
             addSeparator();
-            add(createSVGBUtton("undo", false, "Undo"));
-            add(createSVGBUtton("redo", false, "Redo"));
-            add(createSVGBUtton("trash", false, "Delete"));
+            add(createSVGButton("undo", false, "Undo", uiConfig.getToolIconSize()));
+            add(createSVGButton("redo", false, "Redo", uiConfig.getToolIconSize()));
+            add(createSVGButton("trash", false, "Delete", uiConfig.getToolIconSize()));
             addSeparator();
-            add(createSVGBUtton("grid", false, "Activer grille"));
-            add(createSVGBUtton("magnet", false, "Aimanter la grille"));
-            add(createSVGBUtton("scale", false, "Change taille panneau"));
+            add(createSVGButton("grid", false, "Activer grille", uiConfig.getToolIconSize()));
+            add(createSVGButton("magnet", false, "Aimanter la grille", uiConfig.getToolIconSize()));
+            add(createSVGButton("scale", false, "Change taille panneau", uiConfig.getToolIconSize()));
             addSeparator();
-            add(createSVGBUtton("parallel", false, "Coupe parallèle"));
-            add(createSVGBUtton("rectangle", false, "Coupe Rectangle"));
-            add(createSVGBUtton("coupeL", false, "Coupe en L"));
-            add(createSVGBUtton("retailler", false, "Retaille le panneau"));
-            add(createSVGBUtton("modify", false, "Modifier"));
-            add(createSVGBUtton("forbidden", false, "Zone interdite"));
+            add(createSVGButton("parallel", false, "Coupe parallèle", uiConfig.getToolIconSize()));
+            add(createSVGButton("rectangle", false, "Coupe Rectangle", uiConfig.getToolIconSize()));
+            add(createSVGButton("coupeL", false, "Coupe en L", uiConfig.getToolIconSize()));
+            add(createSVGButton("retailler", false, "Retaille le panneau", uiConfig.getToolIconSize()));
+            add(createSVGButton("modify", false, "Modifier", uiConfig.getToolIconSize()));
+            add(createSVGButton("forbidden", false, "Zone interdite", uiConfig.getToolIconSize()));
             addSeparator();
-            add(createSVGBUtton("zoomOut", false, "Rétrécir"));
-            add(createSVGBUtton("zoomIn", false, "Agrandir"));
-            add(createSVGBUtton("setting", true, "Paramètres"));
-        }
-
-        private JButton createSVGBUtton(String iconName, boolean enable, String tooltipMessage) {
-            FlatSVGIcon icon = new FlatSVGIcon("UI/" + iconName + ".svg", uiConfig.getToolIconSize(), uiConfig.getToolIconSize());
-            FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter(color -> UIManager.getColor("Button.foreground"));
-            icon.setColorFilter(filter);
-            JButton button = new JButton(icon);
-            button.setBorder(new FlatButtonBorder());
-            button.setEnabled(enable);
-            button.setToolTipText(tooltipMessage);
-            return button;
+            add(createSVGButton("zoomOut", false, "Rétrécir", uiConfig.getToolIconSize()));
+            add(createSVGButton("zoomIn", false, "Agrandir", uiConfig.getToolIconSize()));
+            add(createSVGButton("setting", true, "Paramètres", uiConfig.getToolIconSize()));
         }
 
         public void makeGridAvailable() {

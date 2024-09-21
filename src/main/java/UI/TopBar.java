@@ -67,6 +67,8 @@ public class TopBar extends JMenuBar {
         // https://www.svgrepo.com/svg/526081/pen
         // https://www.svgrepo.com/svg/526221/settings
         // https://www.svgrepo.com/svg/525346/forbidden-circle
+        // https://www.svgrepo.com/svg/526012/map-arrow-right
+        // https://www.svgrepo.com/svg/526011/map-arrow-left
         //
         // ALL can be found in this portfolio
         // https://www.svgrepo.com/collection/solar-bold-icons/
