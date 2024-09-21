@@ -104,13 +104,15 @@ public class Renderer extends JPanel {
         panelHalfWidth = getWidth() / 2f;
         panelHalfHeight = getHeight() / 2f;
         Mesh mesh = null;
+        BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (Mesh m : meshes) {
             for (Triangle t : m.getTrianglesList()) {
-                if (printTriangle(graphics2D, t)) {
+                if (printTriangle(img, t)) {
                     mesh = m;
                 }
             }
         }
+        graphics2D.drawImage(img, 0, 0, null);
         if (mousePos.getZ() == 1) {
             boutonRotation.setSelectedMesh(mesh);
         }
@@ -125,10 +127,9 @@ public class Renderer extends JPanel {
      * barycentric coordinates to paint the pixels of the triangle and normal vectors to implement base shading.
      * <br/><br/>
      *
-     * @param graphics2D the {@code Graphics2D} object associated with the panel
+     * @param img the {@code Image} object associated with the panel
      */
-    private boolean printTriangle(Graphics2D graphics2D, Triangle triangle) {
-        BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+    private boolean printTriangle(BufferedImage img, Triangle triangle) {
         boolean isSelected = false;
 
         Triangle newTriangle = new Triangle(
@@ -139,7 +140,7 @@ public class Renderer extends JPanel {
         newTriangle.calculateNormal();
 
         Color printedColor = calculateLighting(newTriangle);
-        int[] area = newTriangle.findBoundingRectangle(img.getWidth(), img.getHeight());
+        int[] area = newTriangle.findBoundingRectangle(img.getWidth(null), img.getHeight(null));
         for (int y = area[2]; y <= area[3]; y++) {
             for (int x = area[0]; x <= area[1]; x++) {
                 Vertex bary = newTriangle.findBarycentric(x, y);
@@ -157,7 +158,6 @@ public class Renderer extends JPanel {
                 }
             }
         }
-        graphics2D.drawImage(img, 0, 0, null);
 
         return isSelected;
     }
@@ -207,7 +207,7 @@ public class Renderer extends JPanel {
             t.getVertex2().add(translationModif);
             t.getVertex3().add(translationModif);
         }
-        mesh.setVerticesList();
+        //mesh.setVerticesList();
         mesh.getPosition().add(translation);
         repaint();
     }
@@ -236,7 +236,7 @@ public class Renderer extends JPanel {
             t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3()));
             t.getVertex3().add(center);
         }
-        mesh.setVerticesList();
+        //mesh.setVerticesList();
         repaint();
     }
 //1,0,0,,,0,cos(0.05),-sin(0,05),,,,0,sin(0,05),cos(0,05),

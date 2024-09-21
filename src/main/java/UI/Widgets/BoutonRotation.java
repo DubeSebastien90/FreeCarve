@@ -109,6 +109,8 @@ public class BoutonRotation implements KeyListener, MouseListener {
 
     public void setSelectedMesh(Mesh selectedMesh) {
         this.selectedMesh = selectedMesh;
+        if(selectedMesh != null) {}
+        System.out.println(selectedMesh.getCenter());
     }
 
     @Override
