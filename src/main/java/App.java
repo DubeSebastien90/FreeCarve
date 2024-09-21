@@ -10,9 +10,16 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.formdev.flatlaf.FlatDarkLaf;
 
 public class App {
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel( new FlatDarkLaf() );
+        } catch( Exception ex ) {
+            System.err.println( "Failed to initialize LaF" );
+        }
+
         String file = "teapot.stl";
 
         JFrame frame = new JFrame("Espresso");
