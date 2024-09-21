@@ -50,5 +50,9 @@ public class CutWindow {
         splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panel1, panel2);
         splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panel3, panel4);
         mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane1, splitPane2);
+
+        splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight()/2);
+        splitPane2.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight()/2);
+        mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth()/2);
     }
 }

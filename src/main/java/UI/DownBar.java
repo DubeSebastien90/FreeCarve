@@ -172,7 +172,9 @@ public class DownBar {
         exportButton = new JButton("Exportation");
         exportButton.setToolTipText("Menu exportation");
         arrowLeft = createSVGButton("leftArrow", true, uiConfig.getToolIconSize());
+        arrowLeft.setToolTipText("Menu précédent");
         arrowRight = createSVGButton("rightArrow", true, uiConfig.getToolIconSize());
+        arrowRight.setToolTipText("Menu suivant");
 
         buttons = new ArrayList<JButton>();
         buttons.add(folderButton);
