@@ -24,6 +24,7 @@ public class MainWindow {
     private DownBar downBar;
     private TopBar topBar;
     private LeftBar leftBar;
+    private MiddleContent middleContent;
 
     /**
      * Constructs a {@code MainWindow} instance by activating the LaF, initializing
@@ -62,6 +63,7 @@ public class MainWindow {
         downBar = new DownBar();
         topBar = new TopBar();
         leftBar = new LeftBar();
+        middleContent = new MiddleContent();
 
         frame.setTitle(uiConfig.getWindowTitle());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -71,6 +73,7 @@ public class MainWindow {
         frame.setLayout(borderLayout);
         frame.setJMenuBar(topBar);
         frame.add(leftBar, BorderLayout.WEST);
+        frame.add(middleContent.getMiddleContent(), BorderLayout.CENTER);
         frame.add(downBar.getDownBar(), BorderLayout.SOUTH);
     }
 
