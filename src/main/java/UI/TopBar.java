@@ -55,7 +55,12 @@ public class TopBar extends JMenuBar {
 
         // Je vais marquer les liens ici, on est obligé de les mettre a quelque part dans l'application finale,
         // je pensais peut-être faire un pdf avec tous les liens dedans que quand tu cliques sur cet item dans le menu ca t'ouvre le pdf
-        // https://www.svgrepo.com/svg/521819/save
+        // https://www.svgrepo.com/svg/525834/diskette
+        // https://www.svgrepo.com/svg/525562/undo-left-round
+        // https://www.svgrepo.com/svg/525566/undo-right-round
+        //
+        // ALL can be found in this portfolio
+        // https://www.svgrepo.com/collection/solar-bold-icons/
         aide.add(attributionLink);
 
         this.add(fichier);
