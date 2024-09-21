@@ -174,7 +174,7 @@ public class Renderer extends JPanel {
                 t.setVertex2(rotationMatrix.matriceXVertex3x3(t.getVertex2()));
                 t.setVertex3(rotationMatrix.matriceXVertex3x3(t.getVertex3()));
             }
-            m.setVerticesList();
+            //m.setVerticesList();
         }
         vertexX.setVertex(rotationMatrix.matriceXVertex3x3(vertexX));
         vertexY.setVertex(rotationMatrix.matriceXVertex3x3(vertexY));

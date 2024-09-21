@@ -23,6 +23,7 @@ public class Mesh {
     protected Vertex position;
     protected Color color;
     protected Vertex center;
+    protected float scale;
 
     /**
      * Abstract constructor for a Mesh object
@@ -30,12 +31,11 @@ public class Mesh {
      * @param position - the position of the mesh in the scene
      * @param color    - the color of the mesh
      */
-    protected Mesh(Vertex position, Color color) {
+    protected Mesh(Vertex position, float scale, Color color) {
         this.position = position;
         this.color = color;
         this.center = new Vertex(0, 0, 0);
-        setVerticesList();
-        calculateCenter();
+        this.scale = scale;
     }
 
     public void setEdgesList(List<List<Integer>> edgesList) {
@@ -47,13 +47,9 @@ public class Mesh {
      * @param position - the position of the mesh in the scene
      * @param color - the color of the mesh
      */
-    public Mesh(Vertex position, Color color, String stlFilePath) {
-        this(position, color);
-        trianglesList = Arrays.asList(Triangle.fromParsedSTL(parseStlFile(stlFilePath), color));
-        this.setVerticesList();
-        this.findEdges();
-        this.calculateCenter();
-        this.setPosition(center);
+    public Mesh(Vertex position, Color color, String stlFilePath, float scale) {
+        this(position, scale, color);
+        this.setTriangles(Arrays.asList(Triangle.fromParsedSTL(parseStlFile(stlFilePath), color)));
     }
 
     /**
@@ -243,6 +239,15 @@ public class Mesh {
      */
     public void setTriangles(List<Triangle> list) {
         this.trianglesList = list;
+        for (Triangle t : list) {
+            t.getVertex1().multiply(scale);
+            t.getVertex2().multiply(scale);
+            t.getVertex3().multiply(scale);
+        }
+        this.setVerticesList();
+        this.findEdges();
+        this.calculateCenter();
+        this.setPosition(center);
     }
 
     private ParsedSTL parseStlFile(String path){

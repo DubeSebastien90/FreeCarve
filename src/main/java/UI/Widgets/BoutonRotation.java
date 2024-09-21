@@ -31,9 +31,6 @@ public class BoutonRotation implements KeyListener, MouseListener {
     @Override
     public void keyPressed(KeyEvent e) {
 
-        ExecutorService executors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        executors.submit(() -> {
-
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_RIGHT:
                     renderer.rotateWorld(Matrix.RIGHT_ROTATION);
@@ -103,8 +100,6 @@ public class BoutonRotation implements KeyListener, MouseListener {
                     }
                     break;
             }
-        });
-        executors.shutdown();
     }
 
     @Override

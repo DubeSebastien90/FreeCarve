@@ -1,19 +1,8 @@
 package UI;
 
-import Domain.ThirdDimension.Box;
 import Domain.ThirdDimension.Mesh;
-import Domain.ThirdDimension.Triangle;
-import Domain.ThirdDimension.Vertex;
-import Domain.ThirdDimension.Matrix;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
-
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
 
 public class RendererTest {
 
