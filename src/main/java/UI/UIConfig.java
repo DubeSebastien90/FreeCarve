@@ -1,5 +1,8 @@
 package UI;
 
+import javax.swing.*;
+import java.awt.*;
+
 /**
  * The {@code UIConfig} enum encapsulates a singleton instance of the configurations
  * and parameters of the UI
@@ -11,10 +14,14 @@ package UI;
 public enum UIConfig {
     INSTANCE;
 
-    private String windowTitle = "FreeCarve";
-    private int defaultWindowWidth = 800;
-    private int defaultWindowHeight = 600;
-    private int toolIconSize = 20;
+    private final String windowTitle = "FreeCarve";
+    private final int defaultWindowWidth = 800;
+    private final int defaultWindowHeight = 600;
+    private final int toolIconSize = 20;
+
+    private Color colorGreen1 = new Color(78, 167, 46);
+    private Color colorBlue1 = new Color(21, 96, 130);
+    private Color colorButtonBackground = UIManager.getColor("Button.background");
 
     private UIConfig() {
     }
@@ -45,5 +52,26 @@ public enum UIConfig {
      */
     public int getToolIconSize() {
         return toolIconSize;
+    }
+
+    /**
+     * @return the colorGreen1 of the UI
+     */
+    public Color getColorGreen1(){
+        return colorGreen1;
+    }
+
+    /**
+     * @return the colorBlue1 of the UI
+     */
+    public Color getColorBlue1(){
+        return colorBlue1;
+    }
+
+    /**
+     * @return the color of the button background of the UI
+     */
+    public Color getColorButtonBackground(){
+        return colorButtonBackground;
     }
 }

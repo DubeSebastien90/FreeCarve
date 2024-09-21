@@ -3,9 +3,14 @@ package UI;
 
 
 import UI.Widgets.ColoredBox;
+import com.formdev.flatlaf.ui.FlatArrowButton;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicArrowButton;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
@@ -28,13 +33,26 @@ public class DownBar {
     private JButton cutButton;
     private JButton simulationButton;
     private JButton exportButton;
+    private BasicArrowButton arrowLeft;
+    private BasicArrowButton arrowRight;
+    private FlatArrowButton arrowTest;
     ArrayList<JButton> buttons;
+    ArrayList<JComponent> components;
 
-    private ColoredBox box1;
+    private Dimension coloredBoxDimension;
+    private Color coloredBoxColor;
 
+    int selectedButtonIndex;
 
+    /**
+     * Constructs a {@code DownBar} instance initializing all of it's sub-component,
+     * setting up all of the actions of the buttons and setting the {@code folderButton} as the
+     * initial state
+     */
     public DownBar(){
         init();
+        this.setupButtonAction();
+        updateDownBar(folderButton);
     }
 
     /**
@@ -42,6 +60,91 @@ public class DownBar {
      */
     public JScrollPane getDownBar(){
         return scrollPane;
+    }
+
+    /**
+     * @return the current selected button of the {@code DownBar}
+     */
+    public JButton getSelectedButtonIndex(){
+        return buttons.get(selectedButtonIndex);
+    }
+
+    /**
+     * Updates the appearance/functions of the buttons of the {@code DownBar}
+     * according to the button that was just clicked
+     * @param buttonClicked the button that was just clicked
+     */
+    private void updateDownBar(JButton buttonClicked){
+        boolean beforeButtonClicked = false;
+        for(int i =0 ; i < buttons.size(); i++){
+            if(buttons.get(i) == buttonClicked){
+                buttonClicked.setBackground(UIConfig.INSTANCE.getColorGreen1());
+                selectedButtonIndex = i;
+                beforeButtonClicked = true;
+            }
+            else if (beforeButtonClicked){
+                buttons.get(i).setBackground(UIConfig.INSTANCE.getColorButtonBackground());
+            }
+            else{
+                buttons.get(i).setBackground(UIConfig.INSTANCE.getColorBlue1());
+            }
+
+            // Updates the ColoredBox
+            if(i > 0){
+                Color col = buttons.get(i).getBackground();
+                int index = i * 2 - 1;
+                components.get(index).setBackground(col);
+
+            }
+        }
+    }
+
+    /**
+     * Gives every button it's function when clicked
+     */
+    private void setupButtonAction(){
+        for(JButton button : buttons){
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updateDownBar(button);
+                }
+            });
+        }
+
+        arrowLeft.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                moveBackward();
+            }
+        });
+
+        arrowRight.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                moveForward();
+            }
+        });
+    }
+
+    /**
+     * Select the next {@code DownBar} button, while respecting constraints
+     */
+    private void moveForward(){
+        if (selectedButtonIndex < buttons.size()-1){
+            selectedButtonIndex++;
+            updateDownBar(buttons.get(selectedButtonIndex));
+        }
+    }
+
+    /**
+     * Select the previous {@code DownBar} button, while respecting constraints
+     */
+    private void moveBackward(){
+        if (selectedButtonIndex > 0){
+            selectedButtonIndex--;
+            updateDownBar(buttons.get(selectedButtonIndex));
+        }
     }
 
     /**
@@ -53,6 +156,8 @@ public class DownBar {
         scrollPane = new JScrollPane();
         container = new JPanel();
         horizontalLayout = new BoxLayout(container, BoxLayout.X_AXIS);
+        coloredBoxDimension = new Dimension(20, 10);
+        coloredBoxColor = UIManager.getColor("Button.background");
 
         folderButton = new JButton("Fichier");
         folderButton.setToolTipText("Menu fichier");
@@ -66,7 +171,8 @@ public class DownBar {
         simulationButton.setToolTipText("Menu simulation");
         exportButton = new JButton("Exportation");
         exportButton.setToolTipText("Menu exportation");
-        box1 = new ColoredBox(Color.CYAN, 30, 80);
+        arrowLeft = new BasicArrowButton(BasicArrowButton.WEST);
+        arrowRight = new BasicArrowButton(BasicArrowButton.EAST);
 
         buttons = new ArrayList<JButton>();
         buttons.add(folderButton);
@@ -76,18 +182,31 @@ public class DownBar {
         buttons.add(simulationButton);
         buttons.add(exportButton);
 
-        panel.setBackground(Color.RED);
-        container.setBackground(Color.BLUE);
+        // Creates the component list by alternating between JButton and ColoredBox
+        components = new ArrayList<JComponent>();
+        for(int i = 0; i < buttons.size(); i++){
+            buttons.get(i).setMargin(new Insets(5, 20, 5, 20));
+            buttons.get(i).setFocusPainted(false);
+            components.add(buttons.get(i));
+            if(i < buttons.size()-1){
+                ColoredBox cb = new ColoredBox(coloredBoxColor,
+                        ((int) coloredBoxDimension.getWidth()),
+                        ((int) coloredBoxDimension.getHeight()));
+                components.add(cb);
+            }
+        }
+        // Adds all component to the container
+        container.add(arrowLeft);
+        for(JComponent component : components){
+            container.add(component);
+        }
+        container.add(arrowRight);
+        panel.add(container);
+
+        panel.setBorder(new EmptyBorder(10, 0, 10, 0));
         container.setLayout(horizontalLayout);
         scrollPane.setViewportView(panel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        for (JButton button : buttons) {
-            button.setMargin(new Insets(5, 20, 5, 20));
-            container.add(button);
-        }
-        container.add(box1);
-        panel.add(container);
-
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
     }
 }

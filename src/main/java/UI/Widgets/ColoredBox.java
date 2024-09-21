@@ -12,6 +12,7 @@ public class ColoredBox extends JPanel {
     public ColoredBox(Color color, int width, int height){
         super();
         this.setBackground(color);
-        this.setSize(new Dimension(width, height));
+        this.setMinimumSize(new Dimension(width,height));
+        this.setMaximumSize(new Dimension(width,height));
     }
 }
