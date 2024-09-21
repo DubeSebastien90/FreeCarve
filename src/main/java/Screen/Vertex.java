@@ -10,7 +10,7 @@ import Parser.STLParser;
  * @version 0.1
  * @since 2024-09-07
  */
-public class Vertex {
+public class Vertex implements Cloneable {
     private double x;
     private double y;
     private double z;
@@ -128,7 +128,7 @@ public class Vertex {
      *
      * @param other the vertex that get subtracted to the other one
      */
-    public void subtraction(Vertex other) {
+    public void subtract(Vertex other) {
         setX(x - other.getX());
         setY(y - other.getY());
         setZ(z - other.getZ());
@@ -139,13 +139,13 @@ public class Vertex {
      *
      * @param other the {@code Vertex} that get added to the current one
      */
-    public void addition(Vertex other) {
+    public void add(Vertex other) {
         setX(x + other.getX());
         setY(y + other.getY());
         setZ(z + other.getZ());
     }
 
-    public static Vertex addition(Vertex first, Vertex second) {
+    public static Vertex add(Vertex first, Vertex second) {
         return new Vertex(first.getX() + second.getX(), first.getY() + second.getY(), first.getZ() + second.getZ());
     }
 
@@ -154,7 +154,7 @@ public class Vertex {
      *
      * @param number the number that get multiplied to the current {@code Vertex}
      */
-    public void multiplication(double number) {
+    public void multiply(double number) {
         setX(x * number);
         setY(y * number);
         setZ(z * number);
@@ -195,18 +195,18 @@ public class Vertex {
         } else if (this.z == 0) {
             kz = 1;
         }
-        return (estProche(kx, ky, 0.1) && estProche(kx, kz, 0.1));
+        return (isClose(kx, ky, 0.1) && isClose(kx, kz, 0.1));
     }
 
     /**
      * Checks if two values are close enough
      *
-     * @param val1  the first value
-     * @param val2  the second value
-     * @param marge the given marge in which the value must be close
-     * @return true if the two value are in the marge
+     * @param val1   the first value
+     * @param val2   the second value
+     * @param margin the given margin in which the value must be close
+     * @return true if the two value are within the margin
      */
-    private static boolean estProche(double val1, double val2, double marge) {
-        return (Math.abs(val1 - val2) < marge);
+    private static boolean isClose(double val1, double val2, double margin) {
+        return (Math.abs(val1 - val2) < margin);
     }
 }

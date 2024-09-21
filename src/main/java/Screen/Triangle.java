@@ -2,11 +2,7 @@ package Screen;
 
 import Parser.ParsedSTL;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Line2D;
-import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -39,32 +35,6 @@ public class Triangle {
         setVertex3(vertex3);
         setNormal(normal);
         setColor(color);
-    }
-
-    /**
-     * Construct a new {@code Triangle} with the specified vertices and color but no normal.
-     * The normal will be initialized at (0,0,0).
-     *
-     * @param vertex1 the first vertex of the triangle
-     * @param vertex2 the second vertex of the triangle
-     * @param vertex3 the third vertex of the triangle
-     * @param color   the color of the triangle
-     */
-    public Triangle(Vertex vertex1, Vertex vertex2, Vertex vertex3, Color color) {
-        this(vertex1, vertex2, vertex3, new Vertex(0, 0, 0), color);
-    }
-
-    /**
-     * Constructs a new {@code Triangle} with the specified vertices and color.
-     * The default color is blue.
-     *
-     * @param vertex1 the first vertex of the triangle
-     * @param vertex2 the second vertex of the triangle
-     * @param vertex3 the third vertex of the triangle
-     * @param normal  the normal of the triangle
-     */
-    public Triangle(Vertex vertex1, Vertex vertex2, Vertex vertex3, Vertex normal) {
-        this(vertex1, vertex2, vertex3, normal, Color.BLUE);
     }
 
     /**
@@ -185,7 +155,7 @@ public class Triangle {
      * @param maxHeight The maximum height the y in the area should not exceed.
      * @return a list with the minimum x, maximum x, minimum y, maximum y
      */
-    public int[] findArea(int maxWidth, int maxHeight) {
+    public int[] findBoundingRectangle(int maxWidth, int maxHeight) {
         int minX = (int) Math.max(0, Math.min(getVertex1().getX(), Math.min(getVertex2().getX(), getVertex3().getX())));
         int maxX = (int) Math.min(maxWidth, Math.max(getVertex1().getX(), Math.max(getVertex2().getX(), getVertex3().getX())));
         int minY = (int) Math.max(0, Math.min(getVertex1().getY(), Math.min(getVertex2().getY(), getVertex3().getY())));
@@ -268,9 +238,9 @@ public class Triangle {
      */
     public void calculateNormal() {
         Vertex u = new Vertex(getVertex2());
-        u.subtraction(getVertex1());
+        u.subtract(getVertex1());
         Vertex v = new Vertex(getVertex3());
-        v.subtraction(getVertex1());
+        v.subtract(getVertex1());
         double normalX = u.getY() * v.getZ() - u.getZ() * v.getY();
         double normalY = u.getZ() * v.getX() - u.getX() * v.getZ();
         double normalZ = u.getX() * v.getY() - u.getY() * v.getX();

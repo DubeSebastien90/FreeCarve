@@ -17,7 +17,7 @@ public class MatrixTest {
 
     @ParameterizedTest
     @VariableSource("matriceXVertex3x3_HappyPath")
-    void matriceXVertex3x3_HappyPath_MultipliesCorrectly(Vertex vertex, Matrix matrix, Vertex expected) {
+    void matriceXVertex3x3_happyPath_multipliesCorrectly(Vertex vertex, Matrix matrix, Vertex expected) {
         // Act
         Vertex answer = matrix.matriceXVertex3x3(vertex);
         // Assert
@@ -31,7 +31,7 @@ public class MatrixTest {
 
     @ParameterizedTest
     @VariableSource("matriceXVertex3x3_Not3x3")
-    void matriceXVertex3x3_Not3x3_ThrowsError(Matrix matrix) {
+    void matriceXVertex3x3_not3x3_throwsError(Matrix matrix) {
         // Arrange
         Vertex vertex = new Vertex(1,1,1);
         // Act and Assert

@@ -40,7 +40,11 @@ class VariableArgumentsProvider
         Object value = null;
         try {
             value = field.get(null);
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            System.err.println("Make sure your test class is public");
+            System.err.println("Make sure your test parameters are public and static");
+            e.printStackTrace();
+        }
 
         return value == null ? null : (Stream<Arguments>) value;
     }

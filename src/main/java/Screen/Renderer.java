@@ -119,19 +119,19 @@ public class Renderer extends JPanel {
      *
      * @param graphics2D the {@code Graphics2D} object associated with the panel
      */
-    public boolean printTriangle(Graphics2D graphics2D, Triangle triangle) {
+    private boolean printTriangle(Graphics2D graphics2D, Triangle triangle) {
         BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         boolean isSelected = false;
 
         Triangle newTriangle = new Triangle(
-                Vertex.addition(new Vertex(panelHalfWidth, panelHalfHeight, 0), triangle.getVertex1()),
-                Vertex.addition(new Vertex(panelHalfWidth, panelHalfHeight, 0), triangle.getVertex2()),
-                Vertex.addition(new Vertex(panelHalfWidth, panelHalfHeight, 0), triangle.getVertex3()),
+                Vertex.add(new Vertex(panelHalfWidth, panelHalfHeight, 0), triangle.getVertex1()),
+                Vertex.add(new Vertex(panelHalfWidth, panelHalfHeight, 0), triangle.getVertex2()),
+                Vertex.add(new Vertex(panelHalfWidth, panelHalfHeight, 0), triangle.getVertex3()),
                 triangle.getNormal(), triangle.getColor());
         newTriangle.calculateNormal();
 
         Color printedColor = calculateLighting(newTriangle);
-        int[] area = newTriangle.findArea(img.getWidth(), img.getHeight());
+        int[] area = newTriangle.findBoundingRectangle(img.getWidth(), img.getHeight());
         for (int y = area[2]; y <= area[3]; y++) {
             for (int x = area[0]; x <= area[1]; x++) {
                 Vertex bary = newTriangle.findBarycentric(x, y);
@@ -156,7 +156,6 @@ public class Renderer extends JPanel {
 
     /**
      * Rotate all of the meshes around the (0,0,0) point
-     * TODO put this function in Mesh
      *
      * @param rotationMatrix - the rotation matrix
      */
@@ -185,23 +184,23 @@ public class Renderer extends JPanel {
     public void translationMesh(Mesh mesh, Vertex translation) {
         Vertex translationModif = new Vertex(0, 0, 0);
         Vertex tempVertexX = new Vertex(vertexX);
-        tempVertexX.multiplication(translation.getX());
-        translationModif.addition(tempVertexX);
+        tempVertexX.multiply(translation.getX());
+        translationModif.add(tempVertexX);
 
         Vertex tempVertexY = new Vertex(vertexY);
-        tempVertexY.multiplication(translation.getY());
-        translationModif.addition(tempVertexY);
+        tempVertexY.multiply(translation.getY());
+        translationModif.add(tempVertexY);
 
         Vertex tempVertexZ = new Vertex(vertexZ);
-        tempVertexZ.multiplication(translation.getZ());
-        translationModif.addition(tempVertexZ);
+        tempVertexZ.multiply(translation.getZ());
+        translationModif.add(tempVertexZ);
         for (Triangle t : mesh.getTrianglesList()) {
-            t.getVertex1().addition(translationModif);
-            t.getVertex2().addition(translationModif);
-            t.getVertex3().addition(translationModif);
+            t.getVertex1().add(translationModif);
+            t.getVertex2().add(translationModif);
+            t.getVertex3().add(translationModif);
         }
         mesh.setVerticesList();
-        mesh.getPosition().addition(translation);
+        mesh.getPosition().add(translation);
         repaint();
     }
 
@@ -217,17 +216,17 @@ public class Renderer extends JPanel {
         Matrix rotationMatrice = getRotationMatrixAroundVector(axis, size);
         Vertex center = mesh.getCenter();
         for (Triangle t : mesh.getTrianglesList()) {
-            t.getVertex1().subtraction(center);
+            t.getVertex1().subtract(center);
             t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1()));
-            t.getVertex1().addition(center);
+            t.getVertex1().add(center);
 
-            t.getVertex2().subtraction(center);
+            t.getVertex2().subtract(center);
             t.setVertex2(rotationMatrice.matriceXVertex3x3(t.getVertex2()));
-            t.getVertex2().addition(center);
+            t.getVertex2().add(center);
 
-            t.getVertex3().subtraction(center);
+            t.getVertex3().subtract(center);
             t.setVertex3(rotationMatrice.matriceXVertex3x3(t.getVertex3()));
-            t.getVertex3().addition(center);
+            t.getVertex3().add(center);
         }
         mesh.setVerticesList();
         repaint();

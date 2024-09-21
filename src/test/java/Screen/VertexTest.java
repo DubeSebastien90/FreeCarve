@@ -1,86 +1,106 @@
 package Screen;
 
-import org.junit.jupiter.api.Test;
+import Annotations.VariableSource;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-class VertexTest {
-    @Test
-    void vertex_subtraction_test() {
-        Vertex v1 = new Vertex(-1, 2, 3);
-        Vertex v2 = new Vertex(-1, 2, 3);
-        v1.subtraction(v2);
+import java.util.stream.Stream;
 
-        assert v1.equals(new Vertex(0, 0, 0));
+public class VertexTest {
+    public static Stream<Arguments> substract_HappyPath = Stream.of(
+            Arguments.of(new Vertex(-1, 2, 3), new Vertex(-1, 2, 3), new Vertex(0, 0, 0)),
+            Arguments.of(new Vertex(5, 99, -200), new Vertex(-1, 2, 3), new Vertex(6, 97, -203)));
 
-        v1 = new Vertex(v2);
-        v1.subtraction(v2);
-        assert v1.equals(new Vertex(0, 0, 0));
-
-        v1 = new Vertex(5, 99, -200);
-        v1.subtraction(v2);
-        assert v1.equals(new Vertex(6, 97, -203));
+    @ParameterizedTest
+    @VariableSource("substract_HappyPath")
+    void substract_happyPath_substractsCorrectlyAndChangesVector(Vertex v1, Vertex v2, Vertex expected) {
+        // Arrange
+        Vertex previousV1 = new Vertex(v1);
+        Vertex previousV2 = new Vertex(v2);
+        // Act
+        v1.subtract(v2);
+        // Assert
+        Assertions.assertEquals(v1, expected);
+        Assertions.assertNotEquals(v1, previousV1);
+        Assertions.assertEquals(v2, previousV2);
     }
 
-    @Test
-    void vertex_addition_test() {
-        Vertex v1 = new Vertex(-1, 2, 3);
-        Vertex v2 = new Vertex(-1, 2, 3);
-        v1.addition(v2);
+    public static Stream<Arguments> add_HappyPath = Stream.of(
+            Arguments.of(new Vertex(-1, 2, 3), new Vertex(-1, 2, 3), new Vertex(-2, 4, 6)),
+            Arguments.of(new Vertex(5, 5, 5), new Vertex(-1, 2, 3), new Vertex(4, 7, 8)));
 
-        assert v1.equals(new Vertex(-2, 4, 6));
-
-        v1 = new Vertex(5, 5, 5);
-        v1.addition(v2);
-        assert v1.equals(new Vertex(4, 7, 8));
-
-        v1 = new Vertex(5, 99, -200);
-        v1.addition(v2);
-        assert v1.equals(new Vertex(4, 101, -197));
+    @ParameterizedTest
+    @VariableSource("add_HappyPath")
+    void add_happyPath_addsCorrectlyAndChangesVector(Vertex v1, Vertex v2, Vertex expected) {
+        // Arrange
+        Vertex previousV1 = new Vertex(v1);
+        Vertex previousV2 = new Vertex(v2);
+        // Act
+        v1.add(v2);
+        // Assert
+        Assertions.assertEquals(v1, expected);
+        Assertions.assertNotEquals(v1, previousV1);
+        Assertions.assertEquals(v2, previousV2);
     }
 
-    @Test
-    void vertex_multiplication_test() {
-        Vertex v1 = new Vertex(0, 0, 0);
-        v1.multiplication(213);
-        assert v1.equals(new Vertex(0, 0, 0));
+    public static Stream<Arguments> multiply_HappyPath = Stream.of(
+            Arguments.of(new Vertex(0, 0, 0), 213, new Vertex(0, 0, 0)),
+            Arguments.of(new Vertex(1, 1, -1), 213, new Vertex(213, 213, -213)),
+            Arguments.of(new Vertex(3, 0, -1), -1, new Vertex(-3, 0, 1)));
 
-        v1 = new Vertex(1, 1, -1);
-        v1.multiplication(213);
-        assert v1.equals(new Vertex(213, 213, -213));
-
-        v1 = new Vertex(3, 0, -1);
-        v1.multiplication(-1);
-        assert v1.equals(new Vertex(-3, 0, 1));
+    @ParameterizedTest
+    @VariableSource("multiply_HappyPath")
+    void multiply_happyPath_addsCorrectlyAndChangesVector(Vertex v1, int factor, Vertex expected) {
+        // Act
+        v1.multiply(factor);
+        // Assert
+        Assertions.assertEquals(v1, expected);
     }
 
-    @Test
-    void vertex_parallel_test() {
-        Vertex v1 = new Vertex(1, 1, 1);
-        Vertex v2 = new Vertex(2, 2, 2);
-        assert v1.isParallel(v2);
+    public static Stream<Arguments> isParallel_ParallelVectors = Stream.of(
+            Arguments.of(new Vertex(0, 0, 0), new Vertex(0, 0, 0)),
+            Arguments.of(new Vertex(1, 1, 1), new Vertex(213, 213, 213)),
+            Arguments.of(new Vertex(-1, -1, -1), new Vertex(1, 1, 1)));
 
-        v1 = new Vertex(1, 1, 1);
-        v2 = new Vertex(1, 1, 1);
-        assert v1.isParallel(v2);
-
-        v1 = new Vertex(0, 0, 0);
-        v2 = new Vertex(1, 132, -1);
-        assert v1.isParallel(v2);
+    @ParameterizedTest
+    @VariableSource("isParallel_ParallelVectors")
+    void isParallel_parallelVectors_returnsTrue(Vertex v1, Vertex v2) {
+        // Act
+        boolean result = v1.isParallel(v2);
+        // Assert
+        Assertions.assertTrue(result);
     }
 
-    @Test
-    void vertex_static_addition() {
-        Vertex v1 = new Vertex(-1, 2, 3);
-        Vertex v2 = new Vertex(-1, 2, 3);
-        Vertex v3 = Vertex.addition(v1, v2);
+    public static Stream<Arguments> isParallel_VectorsNotParallel = Stream.of(
+            Arguments.of(new Vertex(0, 0, 0), new Vertex(0, 1, 0)),
+            Arguments.of(new Vertex(-100, 100, 100), new Vertex(213, 213, 213)));
 
-        assert v3.equals(new Vertex(-2, 4, 6));
+    @ParameterizedTest
+    @VariableSource("isParallel_VectorsNotParallel")
+    void isParallel_vectorsNotParallel_returnsFalse(Vertex v1, Vertex v2) {
+        // Act
+        boolean result = v1.isParallel(v2);
+        // Assert
+        Assertions.assertFalse(result);
+    }
 
-        v1 = new Vertex(5, 5, 5);
-        v3 = Vertex.addition(v1, v2);
-        assert v3.equals(new Vertex(4, 7, 8));
+    public static Stream<Arguments> addStatic_HappyPath = Stream.of(
+            Arguments.of(new Vertex(-1, 2, 3), new Vertex(-1, 2, 3), new Vertex(-2, 4, 6)),
+            Arguments.of(new Vertex(5, 5, 5), new Vertex(-1, 2, 3), new Vertex(4, 7, 8)),
+            Arguments.of(new Vertex(5, 99, -200), new Vertex(-1, 2, 3), new Vertex(4, 101, -197)));
 
-        v1 = new Vertex(5, 99, -200);
-        v3 = Vertex.addition(v1, v2);
-        assert v3.equals(new Vertex(4, 101, -197));
+    @ParameterizedTest
+    @VariableSource("addStatic_HappyPath")
+    void addStatic_happyPath_addsCorrectlyAndDoesntChangeVector(Vertex v1, Vertex v2, Vertex expected) {
+        // Arrange
+        Vertex previousV1 = new Vertex(v1);
+        Vertex previousV2 = new Vertex(v2);
+        // Act
+        Vertex result = Vertex.add(v1, v2);
+        // Assert
+        Assertions.assertEquals(result, expected);
+        Assertions.assertEquals(v1, previousV1);
+        Assertions.assertEquals(v2, previousV2);
     }
 }

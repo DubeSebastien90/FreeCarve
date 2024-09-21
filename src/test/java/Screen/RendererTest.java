@@ -28,7 +28,7 @@ public class RendererTest {
     }
 
     @Test
-    void rotateWorld_ValidRotatonMatrix_RotatesMeshesCorrectly() {
+    void rotateWorld_validRotationMatrix_rotatesMeshesCorrectly() {
         // Arrange
         Renderer r = new Renderer(create_mesh_list_for_test());
         Matrix m1 = new Matrix(new double[]{
