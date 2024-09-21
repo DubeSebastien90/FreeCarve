@@ -14,15 +14,18 @@ public enum UIConfig {
     private String windowTitle = "FreeCarve";
     private int defaultWindowWidth = 800;
     private int defaultWindowHeight = 600;
+    private int toolIconSize = 20;
 
-    private UIConfig(){}
+    private UIConfig() {
+    }
 
     /**
      * @return the title of the application
      */
-    public String getWindowTitle(){
+    public String getWindowTitle() {
         return windowTitle;
     }
+
     /**
      * @return the default width of the application on launch
      */
@@ -35,5 +38,12 @@ public enum UIConfig {
      */
     public int getDefaultWindowHeight() {
         return defaultWindowHeight;
+    }
+
+    /**
+     * @return the size which the icons on the toolbar should have
+     */
+    public int getToolIconSize() {
+        return toolIconSize;
     }
 }
