@@ -19,6 +19,7 @@ public class MainWindow {
     private JFrame frame;
     private UIConfig uiConfig;
     private BorderLayout borderLayout;
+    private DownBar downBar;
 
     /**
      * Constructs a {@code MainWindow} instance by activating the LaF, initializing
@@ -35,6 +36,9 @@ public class MainWindow {
      */
     public void start() {frame.setVisible(true);}
 
+    /**
+     * Activates the LaF
+     */
     private void activateFlatLaf(){
         try{
             UIManager.setLookAndFeel(new FlatDarkLaf());
@@ -44,10 +48,14 @@ public class MainWindow {
         }
     }
 
+    /**
+     * Initiates all of the {@code MainWindow} components
+     */
     private void init(){
         frame = new JFrame();
         uiConfig = UIConfig.INSTANCE;
         borderLayout = new BorderLayout();
+        downBar = new DownBar();
 
         frame.setTitle(uiConfig.getWindowTitle());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -55,8 +63,12 @@ public class MainWindow {
         frame.setLocationRelativeTo(null);
 
         frame.setLayout(borderLayout);
+        frame.add(downBar.getDownBar(), BorderLayout.SOUTH);
     }
 
+    /**
+     * Setup of all event listeners relating to the {@code MainWindow}
+     */
     private void setupEventListener(){
         frame.addComponentListener(new ComponentAdapter() {
             @Override
