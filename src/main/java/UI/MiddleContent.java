@@ -13,8 +13,9 @@ import java.awt.*;
  */
 public class MiddleContent {
     private JPanel panel;
-    private CutWindow cutWindow;
     private BorderLayout borderLayout;
+    private CutWindow cutWindow;
+    private ProjectWindow projectWindow;
 
     public MiddleContent(){
         this.init();
@@ -35,8 +36,10 @@ public class MiddleContent {
         panel = new JPanel();
         borderLayout = new BorderLayout();
         cutWindow = new CutWindow();
+        projectWindow = new ProjectWindow();
 
         panel.setLayout(borderLayout);
-        panel.add(cutWindow.getCutWindow(), BorderLayout.CENTER);
+        //panel.add(cutWindow.getCutWindow(), BorderLayout.CENTER);
+        panel.add(projectWindow);
     }
 }
