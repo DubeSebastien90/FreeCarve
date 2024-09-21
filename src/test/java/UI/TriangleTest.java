@@ -1,16 +1,15 @@
-package Screen;
+package UI;
 
 import Annotations.VariableSource;
+import Model.Triangle;
+import Model.Vertex;
 import Parser.ParsedSTL;
-import Parser.STLParser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.awt.*;
-import java.io.*;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 public class TriangleTest {

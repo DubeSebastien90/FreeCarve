@@ -1,4 +1,9 @@
-package Screen;
+package UI.Widgets;
+
+import Model.Mesh;
+import Model.Vertex;
+import UI.Renderer;
+import Util.Matrix;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

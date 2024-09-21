@@ -1,7 +1,6 @@
-package Screen;
+package Model;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +69,7 @@ public abstract class Mesh {
     /**
      * Function that sets reference points of the vertices of the mesh in verticesList
      */
-    protected void setVerticesList() {
+    public void setVerticesList() {
         List<Vertex> newVerticesList = new ArrayList<>();
         newVerticesList.add(this.trianglesList.get(0).getVertex1());
         for (Triangle t : this.trianglesList) {
@@ -104,7 +103,7 @@ public abstract class Mesh {
     /**
      * Function that sets the attribute edgesList at the creation of the mesh
      */
-    protected void findEdges() {
+    public void findEdges() {
         List<List<Integer>> newEdgesList = new ArrayList<>();
         for (Triangle t : trianglesList) {
             boolean add1 = true, add2 = true, add3 = true;
@@ -224,7 +223,7 @@ public abstract class Mesh {
     /**
      * Creates the triangles of the mesh
      */
-    abstract void setTrianglesList();
+    public abstract void setTrianglesList();
 
     public void setTriangles(List<Triangle> list) {
         this.trianglesList = list;
@@ -235,7 +234,7 @@ public abstract class Mesh {
      *
      * @return the triangles of the mesh in a list
      */
-    List<Triangle> getTrianglesList() {
+    public List<Triangle> getTrianglesList() {
         return this.trianglesList;
     }
 

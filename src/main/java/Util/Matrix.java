@@ -1,4 +1,6 @@
-package Screen;
+package Util;
+
+import Model.Vertex;
 
 import java.util.Arrays;
 

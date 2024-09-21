@@ -1,5 +1,10 @@
-package Screen;
+package UI;
 
+import Model.Box;
+import Model.Mesh;
+import Model.Triangle;
+import Model.Vertex;
+import Util.Matrix;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,14 +20,14 @@ public class RendererTest {
 
     private static ArrayList<Mesh> create_mesh_list_for_test() {
         ArrayList<Mesh> meshes = new ArrayList<>();
-        meshes.add(new Mesh(new Vertex(0, 0, 0), Color.RED) {
-            @Override
-            void setTrianglesList() {
-                this.trianglesList = new ArrayList<>(List.of(new Triangle(new Vertex(0, 0, 0), new Vertex(15, 15, 0), new Vertex(15, 0, 0))
-                        , new Triangle(new Vertex(100, 100, 100), new Vertex(15, 15, 0), new Vertex(200, 0, 0))));
-
-            }
-        });
+//        meshes.add(new Mesh(new Vertex(0, 0, 0), Color.RED) {
+//            @Override
+//            void setTrianglesList() {
+//                this.trianglesList = new ArrayList<>(List.of(new Triangle(new Vertex(0, 0, 0), new Vertex(15, 15, 0), new Vertex(15, 0, 0))
+//                        , new Triangle(new Vertex(100, 100, 100), new Vertex(15, 15, 0), new Vertex(200, 0, 0))));
+//
+//            }
+//        });
         meshes.get(0).setTrianglesList();
         return meshes;
     }
@@ -42,7 +47,7 @@ public class RendererTest {
 
         // Assert
         Triangle firstTriangle = r.getMeshes().getFirst().getTrianglesList().getFirst();
-        Triangle secondTriangle = r.getMeshes().getFirst().trianglesList.get(1);
+        Triangle secondTriangle = r.getMeshes().getFirst().getTrianglesList().get(1);
 
         Assertions.assertEquals(firstTriangle.getVertex1(), new Vertex(0, 0, 0));
         Assertions.assertEquals(firstTriangle.getVertex2(), new Vertex(15 * cos(0.05), 15, 15 * -sin(0.05)));
@@ -81,7 +86,7 @@ public class RendererTest {
         Renderer r = new Renderer(new ArrayList<>(List.of(mesh)));
         r.rotationMesh(r.getMeshes().getFirst(), new Vertex(1, 0, 0), 1);
         Triangle firstTriangle = r.getMeshes().get(0).getTrianglesList().getFirst();
-        Triangle secondTriangle = r.getMeshes().get(0).trianglesList.get(1);
+        Triangle secondTriangle = r.getMeshes().get(0).getTrianglesList().get(1);
 
         Assertions.assertEquals(firstTriangle.getVertex2(), new Vertex(0, 0.9987502603949663 * 50 + 0.04997916927067833 * 50 + 50, -0.04997916927067833 * 50 + 0.9987502603949663 * 50 + 50));
         Assertions.assertEquals(secondTriangle.getVertex3(), new Vertex(0, 0.9987502603949663 * 50 + 0.04997916927067833 * 50 + 50, -0.04997916927067833 * 50 + 0.9987502603949663 * 50 + 50));

@@ -1,5 +1,5 @@
 package Util;
-import Screen.Renderer;
+import UI.Renderer;
 
 import javax.swing.*;
 import java.io.*;

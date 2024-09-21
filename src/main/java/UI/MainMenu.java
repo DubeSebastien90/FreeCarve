@@ -1,4 +1,4 @@
-package Screen;
+package UI;
 
 import javax.swing.*;
 

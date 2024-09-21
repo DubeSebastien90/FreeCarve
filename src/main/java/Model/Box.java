@@ -1,4 +1,4 @@
-package Screen;
+package Model;
 
 import java.awt.*;
 import java.util.ArrayList;

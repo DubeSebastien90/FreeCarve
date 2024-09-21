@@ -1,8 +1,9 @@
+import Model.*;
+import Model.Box;
 import Parser.ParsedSTL;
 import Parser.STLParser;
-import Screen.*;
-import Screen.Box;
-import Screen.Renderer;
+import UI.*;
+import UI.Renderer;
 
 import javax.swing.*;
 import java.awt.*;

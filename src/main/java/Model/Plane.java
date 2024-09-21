@@ -1,4 +1,4 @@
-package Screen;
+package Model;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class Plane extends Mesh {
      * Creates the triangles of the cube
      */
     @Override
-    void setTrianglesList() {
+    public void setTrianglesList() {
         this.trianglesList = new ArrayList<>(List.of(
                 new Triangle(new Vertex(position.getX() - size / 2, position.getY() - size / 2, 0), new Vertex(position.getX() + size / 2, position.getY() - size / 2, 0), new Vertex(position.getX() - size / 2, position.getY() + size / 2, 0), new Vertex(0, 0, 100), this.color),
                 new Triangle(new Vertex(position.getX() + size / 2, position.getY() + size / 2, 0), new Vertex(position.getX() - size / 2, position.getY() + size / 2, 0), new Vertex(position.getX() + size / 2, position.getY() - size / 2, 0), new Vertex(0, 0, 100), this.color)
