@@ -6,9 +6,14 @@ import java.awt.*;
 /**
  * The {@code MiddleContent} class encapsulates the UI container of the middle
  * section of the UI : it contains all of the sub-windows
+ *
+ * @author Louis-Etienne Messier
+ * @version 0.1
+ * @since 2024-09-21
  */
 public class MiddleContent {
     private JPanel panel;
+    private CutWindow cutWindow;
 
     public MiddleContent(){
         this.init();
@@ -27,9 +32,8 @@ public class MiddleContent {
      */
     private void init(){
         panel = new JPanel();
+        cutWindow = new CutWindow();
 
+        panel.add(cutWindow.getCutWindow(), BorderLayout.CENTER);
     }
-
-
-
 }
