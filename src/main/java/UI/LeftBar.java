@@ -4,9 +4,12 @@ import javax.swing.*;
 
 import static Util.UiUtil.createSVGButton;
 
+/**
+ * The 
+ */
 public class LeftBar extends JScrollPane {
 
-    UIConfig uiConfig = UIConfig.INSTANCE;
+    private final UIConfig uiConfig = UIConfig.INSTANCE;
 
     public LeftBar() {
         setViewportView(new ToolBar());
@@ -15,6 +18,19 @@ public class LeftBar extends JScrollPane {
     }
 
     public class ToolBar extends JToolBar {
+        public enum Tool {
+            SAVE(1), UNDO(2), REDO(3), TRASH(5), GRID(6), MAGNET(7), SCALE(8), PARALLEL(10), RECTANGLE(11), COUPEL(12), RETAILLER(13), MODIFY(14), FORBIDDEN(15), ZOOMOUT(17), ZOOMIN(18), SETTING(19);
+
+            private final int value;
+
+            Tool(int value) {
+                this.value = value;
+            }
+
+            public int getValue() {
+                return value;
+            }
+        }
 
         public ToolBar() {
             super(VERTICAL);
@@ -45,8 +61,12 @@ public class LeftBar extends JScrollPane {
             add(createSVGButton("setting", true, "Paramètres", uiConfig.getToolIconSize()));
         }
 
-        public void makeGridAvailable() {
+        public void enableTool(Tool tool) {
+            getComponent(tool.value).setEnabled(true);
+        }
 
+        public void disableTool(Tool tool) {
+            getComponent(tool.value).setEnabled(false);
         }
     }
 }

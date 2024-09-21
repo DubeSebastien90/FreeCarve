@@ -2,10 +2,16 @@ package UI;
 
 import javax.swing.*;
 
-
+/**
+ * The {@code TopBar} class creates a menu at the top of the application which contains various functionality and support to the user
+ *
+ * @author Adam Côté
+ * @version 1.0
+ * @since 2024-09-21
+ */
 public class TopBar extends JMenuBar {
 
-    UIConfig uiConfig = UIConfig.INSTANCE;
+    private final UIConfig uiConfig = UIConfig.INSTANCE;
 
     /**
      * Creates a new menu for the top of the application. The items of the menu can be modified in the initiateMenu function

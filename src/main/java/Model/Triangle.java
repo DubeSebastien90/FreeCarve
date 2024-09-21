@@ -9,7 +9,7 @@ import java.util.Objects;
  * The {@code Triangle} class provides methods to render a triangle on the screen using a {@code JPanel} as a container.
  * Each triangle is composed of 3 vertices, a color, and a normal, which can be calculated later if not known before creation.
  *
- * @author Adam Côté, with the help of the links in the see also section.
+ * @author Adam Côté
  * @version 1.0
  * @since 2024-09-07
  */
