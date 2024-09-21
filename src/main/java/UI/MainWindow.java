@@ -82,6 +82,13 @@ public class MainWindow {
     }
 
     /**
+     * @return The leftBar of this mainWindow
+     */
+    public LeftBar getLeftBar() {
+        return this.leftBar;
+    }
+
+    /**
      * Setup of all event listeners relating to the {@code MainWindow}
      */
     private void setupEventListener() {
