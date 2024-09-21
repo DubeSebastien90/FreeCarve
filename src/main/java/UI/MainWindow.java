@@ -7,6 +7,8 @@ import java.awt.event.ComponentEvent;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+
 /**
  * This {@code MainWindow} class encapsulates the main frame of the application.
  * To start it, run the start method.
@@ -20,6 +22,8 @@ public class MainWindow {
     private UIConfig uiConfig;
     private BorderLayout borderLayout;
     private DownBar downBar;
+    private TopBar topBar;
+    private LeftBar leftBar;
 
     /**
      * Constructs a {@code MainWindow} instance by activating the LaF, initializing
@@ -56,6 +60,8 @@ public class MainWindow {
         uiConfig = UIConfig.INSTANCE;
         borderLayout = new BorderLayout();
         downBar = new DownBar();
+        topBar = new TopBar();
+        leftBar = new LeftBar();
 
         frame.setTitle(uiConfig.getWindowTitle());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -63,6 +69,8 @@ public class MainWindow {
         frame.setLocationRelativeTo(null);
 
         frame.setLayout(borderLayout);
+        frame.setJMenuBar(topBar);
+        frame.add(leftBar, BorderLayout.WEST);
         frame.add(downBar.getDownBar(), BorderLayout.SOUTH);
     }
 

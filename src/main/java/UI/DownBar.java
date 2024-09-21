@@ -66,7 +66,7 @@ public class DownBar {
         simulationButton.setToolTipText("Menu simulation");
         exportButton = new JButton("Exportation");
         exportButton.setToolTipText("Menu exportation");
-        box1 = new ColoredBox(Color.CYAN, 30, 50);
+        box1 = new ColoredBox(Color.CYAN, 30, 80);
 
         buttons = new ArrayList<JButton>();
         buttons.add(folderButton);
