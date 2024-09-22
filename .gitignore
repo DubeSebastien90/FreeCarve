@@ -36,3 +36,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Visual Paradigm ###
+.vpp.bak*
+.vpp.lck
