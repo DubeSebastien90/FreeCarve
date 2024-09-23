@@ -17,7 +17,7 @@ public class MiddleContent {
     private CutWindow cutWindow;
     private ProjectWindow projectWindow;
 
-    public MiddleContent(){
+    public MiddleContent() {
         this.init();
         panel.setBackground(Color.RED);
     }
@@ -25,18 +25,18 @@ public class MiddleContent {
     /**
      * @return the panel container of the {@code MiddleContent}
      */
-    public JPanel getMiddleContent(){
+    public JPanel getMiddleContent() {
         return panel;
     }
 
     /**
      * Initiates all of the {@code MiddleContent} components
      */
-    private void init(){
+    private void init() {
         panel = new JPanel();
         borderLayout = new BorderLayout();
         cutWindow = new CutWindow();
-        projectWindow = new ProjectWindow();
+        projectWindow = new ProjectWindow(this);
 
         panel.setLayout(borderLayout);
         //panel.add(cutWindow.getCutWindow(), BorderLayout.CENTER);

@@ -171,10 +171,12 @@ public class DownBar {
         simulationButton.setToolTipText("Menu simulation");
         exportButton = new JButton("Exportation");
         exportButton.setToolTipText("Menu exportation");
-        arrowLeft = createSVGButton("leftArrow", true, uiConfig.getToolIconSize());
-        arrowLeft.setToolTipText("Menu précédent");
-        arrowRight = createSVGButton("rightArrow", true, uiConfig.getToolIconSize());
-        arrowRight.setToolTipText("Menu suivant");
+        arrowLeft = createSVGButton("leftArrow", true, "Menu précédent", uiConfig.getToolIconSize());
+        arrowLeft.setBorder(null);
+        arrowLeft.putClientProperty("JButton.buttonType", "toolBarButton");
+        arrowRight = createSVGButton("rightArrow", true, "Menu suivant", uiConfig.getToolIconSize());
+        arrowRight.setBorder(null);
+        arrowRight.putClientProperty("JButton.buttonType", "toolBarButton");
 
         buttons = new ArrayList<JButton>();
         buttons.add(folderButton);

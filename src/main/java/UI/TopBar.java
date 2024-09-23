@@ -75,6 +75,7 @@ public class TopBar extends JMenuBar {
         // https://www.svgrepo.com/svg/525346/forbidden-circle
         // https://www.svgrepo.com/svg/526012/map-arrow-right
         // https://www.svgrepo.com/svg/526011/map-arrow-left
+        // https://www.svgrepo.com/svg/525896/folder-open
         //
         // ALL can be found in this portfolio
         // https://www.svgrepo.com/collection/solar-bold-icons/
@@ -85,6 +86,7 @@ public class TopBar extends JMenuBar {
         // https://www.svgrepo.com/svg/379254/select-all
         // https://www.svgrepo.com/svg/379153/flip-to-front
         // https://www.svgrepo.com/svg/379154/flip-to-back
+        // https://www.svgrepo.com/svg/379149/file-add
         //
         // ceux juste en haut font partie du portfolio suivant :
         // https://www.svgrepo.com/collection/tetrisly-interface-icons/

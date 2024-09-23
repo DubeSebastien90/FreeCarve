@@ -7,6 +7,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLaf;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -49,6 +50,7 @@ public class MainWindow {
      * Activates the LaF
      */
     private void activateFlatLaf() {
+        FlatLaf.registerCustomDefaultsSource("themes");
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
         } catch (Exception ex) {
