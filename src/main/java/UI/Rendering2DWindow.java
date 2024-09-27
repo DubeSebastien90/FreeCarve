@@ -23,6 +23,7 @@ public class Rendering2DWindow extends JPanel {
         graphics2D.setColor(Color.ORANGE);
         graphics2D.draw(panneau);
         graphics2D.fill(panneau);
+        System.out.println("hello");
     }
 
 
