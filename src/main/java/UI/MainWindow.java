@@ -79,7 +79,7 @@ public class MainWindow {
         frame.setLayout(borderLayout);
         frame.setJMenuBar(topBar);
         frame.add(leftBar, BorderLayout.WEST);
-        frame.add(middleContent.getMiddleContent(), BorderLayout.CENTER);
+        frame.add(middleContent.getPanel(), BorderLayout.CENTER);
         frame.add(downBar.getDownBar(), BorderLayout.SOUTH);
     }
 

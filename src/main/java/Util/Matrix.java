@@ -1,6 +1,6 @@
 package Util;
 
-import Model.Vertex;
+import Domain.Vertex;
 
 import java.util.Arrays;
 

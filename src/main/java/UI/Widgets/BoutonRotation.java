@@ -1,7 +1,7 @@
 package UI.Widgets;
 
-import Model.Mesh;
-import Model.Vertex;
+import Domain.Mesh;
+import Domain.Vertex;
 import UI.Renderer;
 import Util.Matrix;
 

@@ -1,7 +1,7 @@
 package UI;
 
 import Annotations.VariableSource;
-import Model.Vertex;
+import Domain.Vertex;
 import Util.Matrix;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;

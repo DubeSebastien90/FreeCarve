@@ -1,9 +1,9 @@
 package UI;
 
-import Model.Box;
-import Model.Mesh;
-import Model.Triangle;
-import Model.Vertex;
+import Domain.Box;
+import Domain.Mesh;
+import Domain.Triangle;
+import Domain.Vertex;
 import Util.Matrix;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

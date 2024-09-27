@@ -1,17 +1,4 @@
-import Model.*;
-import Model.Box;
-import Parser.ParsedSTL;
-import Parser.STLParser;
 import UI.*;
-import UI.Renderer;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import com.formdev.flatlaf.FlatDarkLaf;
 
 public class App {
     public static void main(String[] args) {

@@ -1,8 +1,8 @@
 package UI;
 
-import Model.Mesh;
-import Model.Triangle;
-import Model.Vertex;
+import Domain.Mesh;
+import Domain.Triangle;
+import Domain.Vertex;
 import UI.Widgets.BoutonRotation;
 import Util.Matrix;
 

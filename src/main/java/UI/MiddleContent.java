@@ -12,34 +12,38 @@ import java.awt.*;
  * @since 2024-09-21
  */
 public class MiddleContent {
+    private final Project.ProjectMiddleWindow thisState = Project.INSTANCE.getProjectMiddleWindow();
     private JPanel panel;
     private BorderLayout borderLayout;
     private CutWindow cutWindow;
-    private ProjectWindow projectWindow;
+    private FolderWindow projectWindow;
 
     public MiddleContent() {
+        this.panel = new JPanel();
+        this.borderLayout = new BorderLayout();
         this.init();
-        panel.setBackground(Color.RED);
+        this.panel.setBackground(Color.RED);
     }
 
-    /**
-     * @return the panel container of the {@code MiddleContent}
-     */
-    public JPanel getMiddleContent() {
+    public JPanel getPanel() {
         return panel;
+    }
+
+    public void setPanel(JPanel panel) {
+        this.panel = panel;
     }
 
     /**
      * Initiates all of the {@code MiddleContent} components
      */
     private void init() {
-        panel = new JPanel();
-        borderLayout = new BorderLayout();
         cutWindow = new CutWindow();
-        projectWindow = new ProjectWindow(this);
+        projectWindow = new FolderWindow();
 
-        panel.setLayout(borderLayout);
+        this.panel.setLayout(borderLayout);
         //panel.add(cutWindow.getCutWindow(), BorderLayout.CENTER);
-        panel.add(projectWindow);
+        panel.add(new Rendering2DWindow());
+        //panel.add(projectWindow);
+        //panel.add(new ConfigWindow());
     }
 }

@@ -1,8 +1,8 @@
 package UI;
 
 import Annotations.VariableSource;
-import Model.Triangle;
-import Model.Vertex;
+import Domain.Triangle;
+import Domain.Vertex;
 import Parser.ParsedSTL;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
