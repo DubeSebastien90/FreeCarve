@@ -3,8 +3,8 @@ stages:
   - test
   - deploy
 
-variables:
-  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end"
+variables:gi
+  MAVEN_CLI_OPTS: "-X --batch-mode --errors --fail-at-end"
 
 cache:
   paths:
