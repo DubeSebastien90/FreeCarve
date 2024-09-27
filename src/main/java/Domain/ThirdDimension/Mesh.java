@@ -77,7 +77,11 @@ public class Mesh {
      * @return the center of the mesh
      */
     public Vertex getCenter() {
-        return this.calculateCenter();
+        return this.center;
+    }
+
+    public void setCenter(Vertex center){
+        this.center = center;
     }
 
     /**

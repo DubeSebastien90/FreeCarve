@@ -174,6 +174,7 @@ public class Renderer extends JPanel {
                 t.setVertex2(rotationMatrix.matriceXVertex3x3(t.getVertex2()));
                 t.setVertex3(rotationMatrix.matriceXVertex3x3(t.getVertex3()));
             }
+            m.setCenter(rotationMatrix.matriceXVertex3x3(m.getCenter()));
             //m.setVerticesList();
         }
         vertexX.setVertex(rotationMatrix.matriceXVertex3x3(vertexX));
@@ -223,6 +224,7 @@ public class Renderer extends JPanel {
     public void rotationMesh(Mesh mesh, Vertex axis, double size) {
         Matrix rotationMatrice = getRotationMatrixAroundVector(axis, size);
         Vertex center = mesh.getCenter();
+        System.out.println(center);
         for (Triangle t : mesh.getTrianglesList()) {
             t.getVertex1().subtract(center);
             t.setVertex1(rotationMatrice.matriceXVertex3x3(t.getVertex1()));
