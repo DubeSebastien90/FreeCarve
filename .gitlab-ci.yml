@@ -1,45 +1,53 @@
+variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+image: maven:latest
+
 stages:
   - build
   - test
+  - package
   - deploy
-
-variables:
-  MAVEN_CLI_OPTS: "-X --batch-mode --errors --fail-at-end"
 
 cache:
   paths:
     - .m2/repository/
-
-before_script:
-  - apt-get update -y && apt-get install -y maven
+    - target
 
 build_job:
   stage: build
+  tags:
+    - docker
   script:
-    - mvn $MAVEN_CLI_OPTS clean compile
-  artifacts:
-    paths:
-      - target/
-  only:
-    - branches
+    - echo "Building the project"
+    - "mvn compile"
 
 test_job:
   stage: test
-  script:
-    - mvn $MAVEN_CLI_OPTS test
+  tags:
+    - docker
   dependencies:
     - build_job
-  artifacts:
-    when: always
-    reports:
-      junit: target/surefire-reports/*.xml
+  script:
+    - echo "Testing the project"
+    - "mvn test"
+
+package_job:
+  stage: package
+  script:
+    - echo "Packaging the project"
+    - "mvn package"
+  dependencies:
+    - test_job
   only:
     - branches
+  when: on_success
 
 deploy_job:
   stage: deploy
   script:
-    - mvn $MAVEN_CLI_OPTS deploy
+    - echo "Deploying the project"
+    - "mvn deploy"
   dependencies:
     - test_job
   only:
