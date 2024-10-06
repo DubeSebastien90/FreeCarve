@@ -1,6 +1,7 @@
-package UI;
+package UI.SubWindows;
 
 import UI.Widgets.CutBox;
+import Util.UiUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,22 +22,21 @@ public class CutList {
     /**
      * Constructs a {@code CutList} by initializing all of it's attributes
      */
-    public CutList(){
+    public CutList() {
         this.init();
     }
 
     /**
-     *
      * @return the {@code JPanel} container of the {@code CutList}
      */
-    public JPanel getCutList(){
+    public JPanel getCutList() {
         return this.panel;
     }
 
     /**
      * Initiates all of the {@code CutList} components
      */
-    private void init(){
+    private void init() {
         panel = new JPanel();
         borderLayout = new BorderLayout();
         cutBoxes = new ArrayList<CutBox>();

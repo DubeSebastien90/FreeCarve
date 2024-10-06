@@ -1,5 +1,7 @@
 package UI;
 
+import Buisness.Project;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -42,8 +44,9 @@ public class MiddleContent {
 
         this.panel.setLayout(borderLayout);
         //panel.add(cutWindow.getCutWindow(), BorderLayout.CENTER);
-        panel.add(new Rendering2DWindow());
+        //panel.add(new Rendering2DWindow());
         //panel.add(projectWindow);
-        //panel.add(new ConfigWindow());
+        panel.add(new ParamWindow());
+        //panel.add(new SimulationWindow());
     }
 }

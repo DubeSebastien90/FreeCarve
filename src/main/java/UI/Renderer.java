@@ -5,6 +5,7 @@ import Domain.Triangle;
 import Domain.Vertex;
 import UI.Widgets.BoutonRotation;
 import Util.Matrix;
+import Util.UiUtil;
 
 import javax.swing.*;
 
@@ -73,7 +74,7 @@ public class Renderer extends JPanel {
     }
 
     @Override
-    public void setSize(int width, int height){
+    public void setSize(int width, int height) {
         super.setSize(width, height);
         panelHalfWidth = width / 2f;
         panelHalfHeight = height / 2f;
@@ -97,6 +98,7 @@ public class Renderer extends JPanel {
     public void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = ((Graphics2D) graphics);
         this.setBackground(Color.GRAY);
+        UiUtil.makeJPanelRoundCorner(this, graphics2D);
         super.paintComponent(graphics2D);
         pixelsDepthMap = new Double[this.getWidth()][this.getHeight()];
         panelHalfWidth = getWidth() / 2f;

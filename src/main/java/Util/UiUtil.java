@@ -72,4 +72,11 @@ public class UiUtil {
         button.setEnabled(enable);
         return button;
     }
+
+    public static void makeJPanelRoundCorner(JPanel panel, Graphics2D graphics2D) {
+        panel.setOpaque(false);
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics2D.setColor(panel.getBackground());
+        graphics2D.fillRoundRect(0, 0, panel.getWidth(), panel.getHeight(), 20, 20);
+    }
 }
