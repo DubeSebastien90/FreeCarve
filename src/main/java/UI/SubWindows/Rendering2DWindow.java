@@ -9,13 +9,16 @@ import java.awt.event.*;
 public class Rendering2DWindow extends JPanel {
     private Rectangle panneau = new Rectangle(100, 100, 500, 300);
     private Point mousePt;
-    private int offsetX;
-    private int offsetY;
+    private double offsetX;
+    private double offsetY;
     private double zoom;
 
     public Rendering2DWindow() {
         super();
         zoom = 1;
+        offsetX = 0;
+        offsetY = 0;
+        mousePt = new Point(0, 0);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -25,8 +28,8 @@ public class Rendering2DWindow extends JPanel {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                offsetX -= mousePt.x - e.getPoint().x;
-                offsetY -= mousePt.y - e.getPoint().y;
+                offsetX -= ((mousePt.x - e.getPoint().x)/zoom);
+                offsetY -= ((mousePt.y - e.getPoint().y)/zoom);
                 mousePt = e.getPoint();
                 repaint();
             }
@@ -70,8 +73,8 @@ public class Rendering2DWindow extends JPanel {
         panneau.setSize(((int) panneau.getWidth()) - deltaWidth, ((int) panneau.getHeight()) - deltaHeight);
     }
 
-    static private Rectangle selonContexte(Rectangle panneau, int offsetX, int offsetY, double zoom) {
-        return new Rectangle(panneau.x+offsetX,panneau.y+offsetY,(int) (panneau.width*zoom),(int) (panneau.height*zoom));
+    static private Rectangle selonContexte(Rectangle panneau, double offsetX, double offsetY, double zoom) {
+        return new Rectangle((int)((panneau.x+offsetX)*zoom),(int)((panneau.y+offsetY)*zoom),(int) (panneau.width*zoom),(int) (panneau.height*zoom));
     }
 
 }
