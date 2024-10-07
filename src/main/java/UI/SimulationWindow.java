@@ -6,7 +6,6 @@ import Domain.Pyramid;
 import Domain.Vertex;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.CutList;
-import UI.SubWindows.Rendering2DWindow;
 import UI.Widgets.BigButton;
 
 import javax.swing.*;
