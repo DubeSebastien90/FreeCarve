@@ -4,27 +4,22 @@ import Util.UiUtil;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 
 public class Rendering2DWindow extends JPanel {
     private Rectangle panneau = new Rectangle(100, 100, 500, 300);
     private Point mousePt;
     private int offsetX;
     private int offsetY;
+    private double zoom;
 
     public Rendering2DWindow() {
         super();
+        zoom = 1;
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 mousePt = e.getPoint();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                //paintComponent(getGraphics());
             }
         });
         addMouseMotionListener(new MouseMotionAdapter() {
@@ -33,6 +28,17 @@ public class Rendering2DWindow extends JPanel {
                 offsetX -= mousePt.x - e.getPoint().x;
                 offsetY -= mousePt.y - e.getPoint().y;
                 mousePt = e.getPoint();
+                repaint();
+            }
+        });
+        addMouseWheelListener(new MouseWheelListener() {
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                if (e.getWheelRotation() > 0) {
+                    zoom -= zoom/((double) 15 /e.getWheelRotation());
+                }
+                if (e.getWheelRotation() < 0) {
+                    zoom -= zoom/((double) 15 /e.getWheelRotation());
+                }
                 repaint();
             }
         });
@@ -50,7 +56,7 @@ public class Rendering2DWindow extends JPanel {
     private void drawRectangle(Graphics2D graphics2D) {
         Color color = new Color(222, 184, 135);
         graphics2D.setColor(color);
-        Rectangle panneauOffset = selonContexte(panneau,offsetX,offsetY);
+        Rectangle panneauOffset = selonContexte(panneau,offsetX,offsetY, zoom);
         graphics2D.draw(panneauOffset);
         graphics2D.fill(panneauOffset);
     }
@@ -64,8 +70,8 @@ public class Rendering2DWindow extends JPanel {
         panneau.setSize(((int) panneau.getWidth()) - deltaWidth, ((int) panneau.getHeight()) - deltaHeight);
     }
 
-    static private Rectangle selonContexte(Rectangle panneau, int offsetX, int offsetY) {
-        return new Rectangle(panneau.x+offsetX,panneau.y+offsetY,panneau.width,panneau.height);
+    static private Rectangle selonContexte(Rectangle panneau, int offsetX, int offsetY, double zoom) {
+        return new Rectangle(panneau.x+offsetX,panneau.y+offsetY,(int) (panneau.width*zoom),(int) (panneau.height*zoom));
     }
 
 }
