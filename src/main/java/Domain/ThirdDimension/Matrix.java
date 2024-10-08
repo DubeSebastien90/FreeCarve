@@ -78,6 +78,23 @@ public class Matrix {
     }
 
     /**
+     * Returns a rotation matrix to apply on a mesh for it to rotate on a certain angle
+     *
+     * @param v    the axis to rotate around
+     * @param radians the radians of the rotation
+     * @return the rotation matrix to apply on the vectors
+     */
+    public static Matrix getRotationMatrixAroundVector(Vertex v, double radians) {
+        double ux = v.getX(), uy = v.getY(), uz = v.getZ();
+        double c = Math.cos(radians), s = Math.sin(radians);
+        return new Matrix(new double[]{
+                Math.pow(ux, 2) * (1 - c) + c, ux * uy * (1 - c) - uz * s, ux * uz * (1 - c) + uy * s,
+                ux * uy * (1 - c) + uz * s, Math.pow(uy, 2) * (1 - c) + c, uy * uz * (1 - c) - ux * s,
+                ux * uz * (1 - c) - uy * s, uy * uz * (1 - c) + ux * s, Math.pow(uz, 2) * (1 - c) + c
+        });
+    }
+
+    /**
      * @return a string representation of the {@code Matrix} object
      */
     @Override

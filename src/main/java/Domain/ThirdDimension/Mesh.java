@@ -18,11 +18,9 @@ import java.util.List;
  */
 public class Mesh {
     protected List<Triangle> trianglesList;
-    protected List<Vertex> verticesList;
-    protected List<List<Integer>> edgesList;
     protected Vertex position;
+    private Vertex rotation;
     protected Color color;
-    protected Vertex center;
     protected float scale;
 
     /**
@@ -31,15 +29,12 @@ public class Mesh {
      * @param position - the position of the mesh in the scene
      * @param color    - the color of the mesh
      */
-    protected Mesh(Vertex position, float scale, Color color) {
+    protected Mesh(Vertex position, float scale, Color color, List<Triangle> trianglesList) {
         this.position = position;
         this.color = color;
-        this.center = new Vertex(0, 0, 0);
         this.scale = scale;
-    }
-
-    public void setEdgesList(List<List<Integer>> edgesList) {
-        this.edgesList = edgesList;
+        setTrianglesList(trianglesList);
+        translateTriangles(Vertex.multiply(calculateCenter(), -1));
     }
 
     /**
@@ -47,9 +42,38 @@ public class Mesh {
      * @param position - the position of the mesh in the scene
      * @param color - the color of the mesh
      */
-    public Mesh(Vertex position, Color color, String stlFilePath, float scale) {
-        this(position, scale, color);
-        this.setTriangles(Arrays.asList(Triangle.fromParsedSTL(parseStlFile(stlFilePath), color)));
+    public Mesh(Vertex position, Color color, String stlFilePath, float scale) throws IOException {
+        this(position, scale, color, Arrays.asList(Triangle.fromParsedSTL(parseStlFile(stlFilePath), color)));
+    }
+
+    /**
+     * Constructor for a Box object
+     *
+     * @param position - the position of the box in the scene
+     * @param width    = the width of the box
+     * @param length   = the length of the box
+     * @param height   = the height of the box
+     * @param color    - the color of the box
+     */
+    public Mesh(Vertex position, double width, double length, double height, Color color) {
+        this(position, 1, color, generateRectangularPrism(width, length, height, color));
+    }
+    
+    private static List<Triangle> generateRectangularPrism(double width, double length, double height, Color color) {
+        return new ArrayList<>(List.of(
+                new Triangle(new Vertex(0, 0, 0), new Vertex(0, length, height), new Vertex(0, length, 0), new Vertex(-100, 0, 0), color),
+                new Triangle(new Vertex(0, 0, 0), new Vertex(0, 0, height), new Vertex(0, length, height), new Vertex(-100, 0, 0), color),
+                new Triangle(new Vertex(0, 0, 0), new Vertex(width, 0, 0), new Vertex(width, 0, height), new Vertex(0, -100, 0), color),
+                new Triangle(new Vertex(0, 0, 0), new Vertex(width, 0, height), new Vertex(0, 0, height), new Vertex(0, -100, 0), color),
+                new Triangle(new Vertex(0, 0, 0), new Vertex(width, length, 0), new Vertex(0, length, 0), new Vertex(0, 0, -100), color),
+                new Triangle(new Vertex(0, 0, 0), new Vertex(width, 0, 0), new Vertex(width, length, 0), new Vertex(0, 0, -100), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(width, 0, 0), new Vertex(width, 0, height), new Vertex(100, 0, 0), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(width, length, 0), new Vertex(width, 0, 0), new Vertex(100, 0, 0), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(0, 0, height), new Vertex(width, 0, height), new Vertex(0, 0, 100), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(0, length, height), new Vertex(0, 0, height), new Vertex(0, 0, 100), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(width, length, 0), new Vertex(0, length, 0), new Vertex(0, 100, 0), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(0, length, 0), new Vertex(0, length, height), new Vertex(0, 100, 0), color)
+        ));
     }
 
     /**
@@ -59,80 +83,67 @@ public class Mesh {
      */
     public Vertex calculateCenter() {
         double centerX = 0.0, centerY = 0.0, centerZ = 0.0;
-        for (Vertex v : verticesList) {
-            centerX += v.getX();
-            centerY += v.getY();
-            centerZ += v.getZ();
+        for(Triangle triangle : trianglesList) {
+            for (Vertex v : triangle.getVertices()) {
+                centerX += v.getX();
+                centerY += v.getY();
+                centerZ += v.getZ();
+            }
         }
-        centerX = centerX / ((double) (verticesList.size()));
-        centerY = centerY / ((double) (verticesList.size()));
-        centerZ = centerZ / ((double) (verticesList.size()));
-        this.center.setVertex(new Vertex(centerX, centerY, centerZ));
+        Vertex center = new Vertex(centerX, centerY, centerZ);
+        center.multiply(trianglesList.size());
         return center;
     }
-
-    /**
-     * Returns the center point of the mesh
-     *
-     * @return the center of the mesh
-     */
-    public Vertex getCenter() {
-        return this.center;
-    }
-
-    public void setCenter(Vertex center){
-        this.center = center;
-    }
-
+    
     /**
      * Function that sets reference points of the vertices of the mesh in verticesList
      */
-    public void setVerticesList() {
+    protected List<Vertex> calculateVerticesList() {
         List<Vertex> newVerticesList = new ArrayList<>();
-        newVerticesList.add(this.trianglesList.get(0).getVertex1());
-        for (Triangle t : this.trianglesList) {
+        newVerticesList.add(trianglesList.get(0).getVertex(1));
+        for (Triangle t : trianglesList) {
             boolean add1 = true;
             boolean add2 = true;
             boolean add3 = true;
             for (Vertex v : newVerticesList) {
-                if (t.getVertex1().equals(v)) {
+                if (t.getVertex(1).equals(v)) {
                     add1 = false;
                 }
-                if (t.getVertex2().equals(v)) {
+                if (t.getVertex(2).equals(v)) {
                     add2 = false;
                 }
-                if (t.getVertex3().equals(v)) {
+                if (t.getVertex(3).equals(v)) {
                     add3 = false;
                 }
             }
             if (add1) {
-                newVerticesList.add(t.getVertex1());
+                newVerticesList.add(t.getVertex(1));
             }
             if (add2) {
-                newVerticesList.add(t.getVertex2());
+                newVerticesList.add(t.getVertex(2));
             }
             if (add3) {
-                newVerticesList.add(t.getVertex3());
+                newVerticesList.add(t.getVertex(3));
             }
         }
-        this.verticesList = newVerticesList;
+        return newVerticesList;
     }
 
     /**
-     * Function that sets the attribute edgesList at the creation of the mesh
+     * Function that calculates the edgesList at the creation of the mesh
      */
-    public void findEdges() {
+    protected List<List<Integer>> findEdges(List<Vertex> verticesList) {
         List<List<Integer>> newEdgesList = new ArrayList<>();
         for (Triangle t : trianglesList) {
             boolean add1 = true, add2 = true, add3 = true;
             for (List<Integer> edge : newEdgesList) {
-                if ((t.getVertex1().equals(verticesList.get(edge.get(0))) && t.getVertex2().equals(verticesList.get(edge.get(1)))) || (t.getVertex1().equals(verticesList.get(edge.get(1))) && t.getVertex2().equals(verticesList.get(edge.get(0))))) {
+                if ((t.getVertex(1).equals(verticesList.get(edge.get(0))) && t.getVertex(2).equals(verticesList.get(edge.get(1)))) || (t.getVertex(1).equals(verticesList.get(edge.get(1))) && t.getVertex(2).equals(verticesList.get(edge.get(0))))) {
                     add1 = false;
                 }
-                if ((t.getVertex1().equals(verticesList.get(edge.get(0))) && t.getVertex3().equals(verticesList.get(edge.get(1)))) || (t.getVertex1().equals(verticesList.get(edge.get(1))) && t.getVertex3().equals(verticesList.get(edge.get(0))))) {
+                if ((t.getVertex(1).equals(verticesList.get(edge.get(0))) && t.getVertex(3).equals(verticesList.get(edge.get(1)))) || (t.getVertex(1).equals(verticesList.get(edge.get(1))) && t.getVertex(3).equals(verticesList.get(edge.get(0))))) {
                     add2 = false;
                 }
-                if ((t.getVertex2().equals(verticesList.get(edge.get(0))) && t.getVertex3().equals(verticesList.get(edge.get(1)))) || (t.getVertex2().equals(verticesList.get(edge.get(1))) && t.getVertex3().equals(verticesList.get(edge.get(0))))) {
+                if ((t.getVertex(2).equals(verticesList.get(edge.get(0))) && t.getVertex(3).equals(verticesList.get(edge.get(1)))) || (t.getVertex(2).equals(verticesList.get(edge.get(1))) && t.getVertex(3).equals(verticesList.get(edge.get(0))))) {
                     add3 = false;
                 }
             }
@@ -140,16 +151,16 @@ public class Mesh {
                 int num1 = 0;
                 int num2 = 0;
                 for (int i = 0; i < verticesList.size(); i++) {
-                    if (verticesList.get(i).equals(t.getVertex1())) {
+                    if (verticesList.get(i).equals(t.getVertex(1))) {
                         num1 = i;
-                    } else if (verticesList.get(i).equals(t.getVertex2())) {
+                    } else if (verticesList.get(i).equals(t.getVertex(2))) {
                         num2 = i;
                     }
                 }
                 boolean add = true;
                 for (Triangle t2 : trianglesList) {
                     if (t != t2) {
-                        if ((t2.getVertex1().equals(t.getVertex1()) || t2.getVertex2().equals(t.getVertex1()) || t2.getVertex3().equals(t.getVertex1())) && (t2.getVertex1().equals(t.getVertex2()) || t2.getVertex2().equals(t.getVertex2()) || t2.getVertex3().equals(t.getVertex2()))) {
+                        if ((t2.getVertex(1).equals(t.getVertex(1)) || t2.getVertex(2).equals(t.getVertex(1)) || t2.getVertex(3).equals(t.getVertex(1))) && (t2.getVertex(1).equals(t.getVertex(2)) || t2.getVertex(2).equals(t.getVertex(2)) || t2.getVertex(3).equals(t.getVertex(2)))) {
                             if (t.getNormal().isParallel(t2.getNormal())) {
                                 add = false;
                             }
@@ -164,16 +175,16 @@ public class Mesh {
                 int num1 = 0;
                 int num2 = 0;
                 for (int i = 0; i < verticesList.size(); i++) {
-                    if (verticesList.get(i).equals(t.getVertex1())) {
+                    if (verticesList.get(i).equals(t.getVertex(1))) {
                         num1 = i;
-                    } else if (verticesList.get(i).equals(t.getVertex3())) {
+                    } else if (verticesList.get(i).equals(t.getVertex(3))) {
                         num2 = i;
                     }
                 }
                 boolean add = true;
                 for (Triangle t2 : trianglesList) {
                     if (t != t2) {
-                        if ((t2.getVertex1().equals(t.getVertex1()) || t2.getVertex2().equals(t.getVertex1()) || t2.getVertex3().equals(t.getVertex1())) && (t2.getVertex1().equals(t.getVertex3()) || t2.getVertex2().equals(t.getVertex3()) || t2.getVertex3().equals(t.getVertex3()))) {
+                        if ((t2.getVertex(1).equals(t.getVertex(1)) || t2.getVertex(2).equals(t.getVertex(1)) || t2.getVertex(3).equals(t.getVertex(1))) && (t2.getVertex(1).equals(t.getVertex(3)) || t2.getVertex(2).equals(t.getVertex(3)) || t2.getVertex(3).equals(t.getVertex(3)))) {
                             if (t.getNormal().isParallel(t2.getNormal())) {
                                 add = false;
                             }
@@ -188,16 +199,16 @@ public class Mesh {
                 int num1 = 0;
                 int num2 = 0;
                 for (int i = 0; i < verticesList.size(); i++) {
-                    if (verticesList.get(i).equals(t.getVertex2())) {
+                    if (verticesList.get(i).equals(t.getVertex(2))) {
                         num1 = i;
-                    } else if (verticesList.get(i).equals(t.getVertex3())) {
+                    } else if (verticesList.get(i).equals(t.getVertex(3))) {
                         num2 = i;
                     }
                 }
                 boolean add = true;
                 for (Triangle t2 : trianglesList) {
                     if (t != t2) {
-                        if ((t2.getVertex1().equals(t.getVertex3()) || t2.getVertex2().equals(t.getVertex3()) || t2.getVertex3().equals(t.getVertex3())) && (t2.getVertex1().equals(t.getVertex2()) || t2.getVertex2().equals(t.getVertex2()) || t2.getVertex3().equals(t.getVertex2()))) {
+                        if ((t2.getVertex(1).equals(t.getVertex(3)) || t2.getVertex(2).equals(t.getVertex(3)) || t2.getVertex(3).equals(t.getVertex(3))) && (t2.getVertex(1).equals(t.getVertex(2)) || t2.getVertex(2).equals(t.getVertex(2)) || t2.getVertex(3).equals(t.getVertex(2)))) {
                             if (t.getNormal().isParallel(t2.getNormal())) {
                                 add = false;
                             }
@@ -209,80 +220,117 @@ public class Mesh {
                 }
             }
         }
-        this.edgesList = newEdgesList;
-    }
-
-    /**
-     * Returns the mesh's vertices in a list
-     *
-     * @return the list of the mesh's Vertices
-     */
-    public List<Vertex> getVerticesList() {
-        return this.verticesList;
-    }
-
-    /**
-     * Returns the list of the edges of the mesh in a tuple format. (1,2), (1,3), (2,4)... The integers represents the index of the Vertex in verticesList
-     *
-     * @return the edges of the mesh
-     */
-    public List<List<Integer>> getEdgesList() {
-        return this.edgesList;
+        return newEdgesList;
     }
 
     public void setPosition(Vertex v) {
-        this.position = v;
+        position = v;
     }
 
     public Vertex getPosition() {
-        return this.position;
+        return position;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        color = color;
+    }
+
+    public Vertex getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(Vertex rotation) {
+        if(rotation.getX() >= 2*Math.PI)
+            rotation.setX(Math.asin(Math.sin(rotation.getX())));
+        if(rotation.getY() >= 2*Math.PI)
+            rotation.setY(Math.asin(Math.sin(rotation.getY())));
+        if(rotation.getZ() >= 2*Math.PI)
+            rotation.setZ(Math.asin(Math.sin(rotation.getZ())));
+        rotation = rotation;
+    }
+
+    /**
+     * Move a specific mesh in the scene
+     *
+     * @param translation - the movement vector
+     */
+    public void translateTriangles(Vertex translation) {
+        Vertex translationModif = new Vertex(0, 0, 0);
+        Vertex tempVertexX = new Vertex(Renderer.getWorldX());
+        tempVertexX.multiply(translation.getX());
+        translationModif.add(tempVertexX);
+
+        Vertex tempVertexY = new Vertex(Renderer.getWorldY());
+        tempVertexY.multiply(translation.getY());
+        translationModif.add(tempVertexY);
+
+        Vertex tempVertexZ = new Vertex(Renderer.getWorldZ());
+        tempVertexZ.multiply(translation.getZ());
+        translationModif.add(tempVertexZ);
+        for (Triangle t : getTrianglesList()) {
+            for(Vertex v : t.getVertices()){
+                v.add(translationModif);
+            }
+        }
+        getPosition().add(translation);
+    }
+
+    /**
+     * Rotate a specific mesh around it's center
+     *
+     * @param axis the axis to turn around
+     * @param radians the angle of the rotation
+     */
+    public void rotateTriangles(Vertex axis, double radians) {
+        Matrix rotationMatrice = Matrix.getRotationMatrixAroundVector(axis, radians);
+        Vertex center = getPosition();
+        System.out.println(center);
+        for (Triangle t : getTrianglesList()) {
+            Vertex[] vertices = t.getVertices();
+            for (int i = 0; i < vertices.length; i++) {
+                vertices[i].subtract(center);
+                t.setVertex(rotationMatrice.matrixXVertex3X(3vertices[i]), i);
+                vertices[i].add(center);
+            }
+        }
     }
 
     /**
      * Creates the triangles of the mesh
      */
-    public void setTriangles(List<Triangle> list) {
-        this.trianglesList = list;
+    public void setTrianglesList(List<Triangle> list){
+        trianglesList = list;
         for (Triangle t : list) {
-            t.getVertex1().multiply(scale);
-            t.getVertex2().multiply(scale);
-            t.getVertex3().multiply(scale);
+            t.getVertex(1).multiply(scale);
+            t.getVertex(2).multiply(scale);
+            t.getVertex(3).multiply(scale);
         }
-        this.setVerticesList();
-        this.findEdges();
-        this.calculateCenter();
-        this.setPosition(center);
+        calculateCenter();
     }
 
-    private ParsedSTL parseStlFile(String path){
+    private static ParsedSTL parseStlFile(String path) throws IOException {
         DataInputStream dis = null;
-        try {
+        try{
             dis = new DataInputStream(new BufferedInputStream(new FileInputStream(path)));
             return STLParser.parse(dis);
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
-        } catch (EOFException e) {
-        } catch (IOException e) {
-            System.out.println(Arrays.toString(e.getStackTrace()));
         } finally {
-            try {
-                if (dis != null) {
-                    dis.close();
-                }
-            } catch (IOException e) {
-                System.out.println(Arrays.toString(e.getStackTrace()));
-            }
+            dis.close();
         }
-        return null;
     }
+
 
     /**
      * Returns the triangles of the mesh
      *
      * @return the triangles of the mesh in a list
      */
-    public List<Triangle> getTrianglesList() {
-        return this.trianglesList;
+
+    List<Triangle> getTrianglesList() {
+        return trianglesList;
     }
 
 

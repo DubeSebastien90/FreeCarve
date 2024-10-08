@@ -20,9 +20,9 @@ public class MatrixTest {
 
     @ParameterizedTest
     @VariableSource("matriceXVertex3x3_HappyPath")
-    void matriceXVertex3x3_happyPath_multipliesCorrectly(Vertex vertex, Matrix matrix, Vertex expected) {
+    void matrixXVertex3X3_happyPath_multipliesCorrectly(Vertex vertex, Matrix matrix, Vertex expected) {
         // Act
-        Vertex answer = matrix.matriceXVertex3x3(vertex);
+        Vertex answer = matrix.matrixXVertex3X(3vertex);
         // Assert
         Assertions.assertEquals(expected, answer);
     }
@@ -34,10 +34,10 @@ public class MatrixTest {
 
     @ParameterizedTest
     @VariableSource("matriceXVertex3x3_Not3x3")
-    void matriceXVertex3x3_not3x3_throwsError(Matrix matrix) {
+    void matrixXVertex3X3_not3X3_throwsError(Matrix matrix) {
         // Arrange
         Vertex vertex = new Vertex(1,1,1);
         // Act and Assert
-        assertThrows(ArithmeticException.class, ()->matrix.matriceXVertex3x3(vertex));
+        Assert.assertThrows(ArithmeticException.class, ()->matrix.matrixXVertex3X(3vertex));
     }
 }

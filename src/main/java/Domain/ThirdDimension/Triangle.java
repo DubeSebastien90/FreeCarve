@@ -3,6 +3,7 @@ package Domain.ThirdDimension;
 import Parser.ParsedSTL;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -14,9 +15,7 @@ import java.util.Objects;
  * @since 2024-09-07
  */
 public class Triangle {
-    private Vertex vertex1;
-    private Vertex vertex2;
-    private Vertex vertex3;
+    private Vertex[] vertices;
     private Vertex normal;
     private Color color;
 
@@ -30,9 +29,7 @@ public class Triangle {
      * @param color   the color of the triangle
      */
     public Triangle(Vertex vertex1, Vertex vertex2, Vertex vertex3, Vertex normal, Color color) {
-        setVertex1(vertex1);
-        setVertex2(vertex2);
-        setVertex3(vertex3);
+        setVertices(new Vertex[]{vertex1, vertex2, vertex3});
         setNormal(normal);
         setColor(color);
     }
@@ -55,61 +52,44 @@ public class Triangle {
      * @param triangle the other triangle.
      */
     public Triangle(Triangle triangle) {
-        this(triangle.getVertex1(), triangle.getVertex2(), triangle.getVertex3(), triangle.getNormal(), triangle.getColor());
+        this(triangle.getVertex(1), triangle.getVertex(2), triangle.getVertex(3), triangle.getNormal(), triangle.getColor());
     }
 
     /**
-     * Returns the first vertex of the triangle.
+     * Returns the vertices of the triangle.
      *
-     * @return the first vertex of the triangle
+     * @return the vertices of the triangle
      */
-    public Vertex getVertex1() {
-        return vertex1;
+    public Vertex[] getVertices() {
+        return vertices;
+    }
+
+    /**
+     * Returns the vertices of the triangle.
+     *
+     * @return the vertex at the index of the triangle
+     */
+    public Vertex getVertex(int index) {
+        return vertices[index];
     }
 
     /**
      * Sets the first vertex of the triangle.
      *
-     * @param vertex1 the new first vertex of the triangle
+     * @param vertices the new first vertex of the triangle
      */
-    public void setVertex1(Vertex vertex1) {
-        this.vertex1 = vertex1;
+    public void setVertices(Vertex[] vertices) {
+        this.vertices = vertices;
     }
 
     /**
-     * Returns the second vertex of the triangle.
+     * Sets the vertex at the index of the triangle.
      *
-     * @return the second vertex of the triangle
+     * @param vertex the new vertex of the triangle
+     * @param index the index of the triangle to set  
      */
-    public Vertex getVertex2() {
-        return vertex2;
-    }
-
-    /**
-     * Sets the second vertex of the triangle.
-     *
-     * @param vertex2 the new second vertex of the triangle
-     */
-    public void setVertex2(Vertex vertex2) {
-        this.vertex2 = vertex2;
-    }
-
-    /**
-     * Returns the third vertex of the triangle.
-     *
-     * @return the third vertex of the triangle
-     */
-    public Vertex getVertex3() {
-        return vertex3;
-    }
-
-    /**
-     * Sets the third of the triangle.
-     *
-     * @param vertex3 the new third vertex of the triangle
-     */
-    public void setVertex3(Vertex vertex3) {
-        this.vertex3 = vertex3;
+    public void setVertex(Vertex vertex, int index) {
+        this.vertices[index] = vertex;
     }
 
     /**
@@ -156,10 +136,10 @@ public class Triangle {
      * @return a list with the minimum x, maximum x, minimum y, maximum y
      */
     public int[] findBoundingRectangle(int maxWidth, int maxHeight) {
-        int minX = (int) Math.max(0, Math.min(getVertex1().getX(), Math.min(getVertex2().getX(), getVertex3().getX())));
-        int maxX = (int) Math.min(maxWidth, Math.max(getVertex1().getX(), Math.max(getVertex2().getX(), getVertex3().getX())));
-        int minY = (int) Math.max(0, Math.min(getVertex1().getY(), Math.min(getVertex2().getY(), getVertex3().getY())));
-        int maxY = (int) Math.min(maxHeight, Math.max(getVertex1().getY(), Math.max(getVertex2().getY(), getVertex3().getY())));
+        int minX = (int) Math.max(0, Math.min(getVertex(1).getX(), Math.min(getVertex(2).getX(), getVertex(3).getX())));
+        int maxX = (int) Math.min(maxWidth, Math.max(getVertex(1).getX(), Math.max(getVertex(2).getX(), getVertex(3).getX())));
+        int minY = (int) Math.max(0, Math.min(getVertex(1).getY(), Math.min(getVertex(2).getY(), getVertex(3).getY())));
+        int maxY = (int) Math.min(maxHeight, Math.max(getVertex(1).getY(), Math.max(getVertex(2).getY(), getVertex(3).getY())));
 
         return new int[]{minX, maxX, minY, maxY};
     }
@@ -173,9 +153,9 @@ public class Triangle {
     @Override
     public String toString() {
         return "Triangle{" +
-                vertex1 +
-                vertex2 +
-                vertex3 +
+                vertices[0] +
+                vertices[1] +
+                vertices[2] +
                 ", normal =" + normal +
                 ", color =" + color +
                 '}' + "\n";
@@ -185,7 +165,7 @@ public class Triangle {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Triangle triangle)) return false;
-        return getVertex1().equals(triangle.getVertex1()) && getVertex2().equals(triangle.getVertex2()) && getVertex3().equals(triangle.getVertex3()) && Objects.equals(getNormal(), triangle.getNormal()) && getColor().equals(triangle.getColor());
+        return Arrays.equals(getVertices(), triangle.getVertices()) && Objects.equals(getNormal(), triangle.getNormal()) && getColor().equals(triangle.getColor());
     }
 
     /**
@@ -218,9 +198,9 @@ public class Triangle {
      */
     public Vertex findBarycentric(double pointX, double pointY) {
 
-        Vertex v1 = getVertex1();
-        Vertex v2 = getVertex2();
-        Vertex v3 = getVertex3();
+        Vertex v1 = getVertex(1);
+        Vertex v2 = getVertex(2);
+        Vertex v3 = getVertex(3);
 
         double denominateur = (v2.getY() - v3.getY()) * (v1.getX() - v3.getX()) + (v3.getX() - v2.getX()) * (v1.getY() - v3.getY());
         double firstBary = ((v2.getY() - v3.getY()) * (pointX - v3.getX()) + (v3.getX() - v2.getX()) * (pointY - v3.getY())) / denominateur;
@@ -237,10 +217,10 @@ public class Triangle {
      * The resulting vertex is normalized.
      */
     public void calculateNormal() {
-        Vertex u = new Vertex(getVertex2());
-        u.subtract(getVertex1());
-        Vertex v = new Vertex(getVertex3());
-        v.subtract(getVertex1());
+        Vertex u = new Vertex(getVertex(2));
+        u.subtract(getVertex(1));
+        Vertex v = new Vertex(getVertex(3));
+        v.subtract(getVertex(1));
         double normalX = u.getY() * v.getZ() - u.getZ() * v.getY();
         double normalY = u.getZ() * v.getX() - u.getX() * v.getZ();
         double normalZ = u.getX() * v.getY() - u.getY() * v.getX();

@@ -14,6 +14,7 @@ public class Vertex implements Cloneable {
     private double x;
     private double y;
     private double z;
+    public enum Axis{X,Y,Z}
 
     /**
      * Create a domain vertex based on a VertexDTO
@@ -171,6 +172,15 @@ public class Vertex implements Cloneable {
     }
 
     /**
+     * multiply this instance of {@code Vertex} with number
+     *
+     * @param number the number that get multiplied to the current {@code Vertex}
+     */
+    public static Vertex multiply(Vertex vertex, float number) {
+        return new Vertex(vertex.getX() * number, vertex.getY() * number, vertex.getZ() * number);
+    }
+
+    /**
      * Checks if this instance of {@code Vertex} is equal to another one
      *
      * @param o the other {@code Vertex}
@@ -180,6 +190,10 @@ public class Vertex implements Cloneable {
     public boolean equals(Object o) {
         Vertex vertex = (Vertex) o;
         return (this.x == vertex.getX() && this.y == vertex.getY() && this.z == vertex.getZ());
+    }
+
+    public static Vertex rotated(Vertex vertex, Vertex axis, double radians) {
+        return Matrix.getRotationMatrixAroundVector(axis, radians).matrixXVertex3X(3vertex);
     }
 
     /**
