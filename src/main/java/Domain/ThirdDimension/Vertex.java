@@ -193,7 +193,7 @@ public class Vertex implements Cloneable {
     }
 
     public static Vertex rotated(Vertex vertex, Vertex axis, double radians) {
-        return Matrix.getRotationMatrixAroundVector(axis, radians).matrixXVertex3X(3vertex);
+        return Matrix.getRotationMatrixAroundVector(axis, radians).matrixXVertex3X3(vertex);
     }
 
     /**

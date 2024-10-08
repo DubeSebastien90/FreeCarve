@@ -171,14 +171,14 @@ public class Renderer extends JPanel {
             for (Triangle t : m.getTrianglesList()) {
                 Vertex[] vertices = t.getVertices();
                 for(int i = 0; i < vertices.length; i++) {
-                    t.setVertex(rotationMatrix.matrixXVertex3X(3vertices[i]),i);
+                    t.setVertex(rotationMatrix.matrixXVertex3X3(vertices[i]),i);
                 }
             }
-            m.setPosition(rotationMatrix.matrixXVertex3X(3m.getPosition()));
+            m.setPosition(rotationMatrix.matrixXVertex3X3(m.getPosition()));
         }
-        worldX.setVertex(rotationMatrix.matrixXVertex3X(3worldX));
-        worldY.setVertex(rotationMatrix.matrixXVertex3X(3worldY));
-        worldZ.setVertex(rotationMatrix.matrixXVertex3X(3worldZ));
+        worldX.setVertex(rotationMatrix.matrixXVertex3X3(worldX));
+        worldY.setVertex(rotationMatrix.matrixXVertex3X3(worldY));
+        worldZ.setVertex(rotationMatrix.matrixXVertex3X3(worldZ));
     }
 
     /**

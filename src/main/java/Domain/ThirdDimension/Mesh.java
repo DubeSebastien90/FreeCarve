@@ -293,7 +293,7 @@ public class Mesh {
             Vertex[] vertices = t.getVertices();
             for (int i = 0; i < vertices.length; i++) {
                 vertices[i].subtract(center);
-                t.setVertex(rotationMatrice.matrixXVertex3X(3vertices[i]), i);
+                t.setVertex(rotationMatrice.matrixXVertex3X3(vertices[i]), i);
                 vertices[i].add(center);
             }
         }

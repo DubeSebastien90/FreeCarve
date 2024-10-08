@@ -22,7 +22,7 @@ public class MatrixTest {
     @VariableSource("matriceXVertex3x3_HappyPath")
     void matrixXVertex3X3_happyPath_multipliesCorrectly(Vertex vertex, Matrix matrix, Vertex expected) {
         // Act
-        Vertex answer = matrix.matrixXVertex3X(3vertex);
+        Vertex answer = matrix.matrixXVertex3X3(vertex);
         // Assert
         Assertions.assertEquals(expected, answer);
     }
@@ -38,6 +38,6 @@ public class MatrixTest {
         // Arrange
         Vertex vertex = new Vertex(1,1,1);
         // Act and Assert
-        Assert.assertThrows(ArithmeticException.class, ()->matrix.matrixXVertex3X(3vertex));
+        Assert.assertThrows(ArithmeticException.class, ()->matrix.matrixXVertex3X3(vertex));
     }
 }

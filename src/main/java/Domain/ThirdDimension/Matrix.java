@@ -67,8 +67,8 @@ public class Matrix {
      * @param vertex the {@code Vertex} to be multiplied
      * @return the resulting {@code Vertex}
      */
-    public Vertex matriceXVertex3x3(Vertex vertex) {
-        if (matrix.length != 9) {
+    public Vertex matrixXVertex3X3(Vertex vertex) {
+        if (matrix.length != 9){
             throw new ArithmeticException("Matrix must be 3x3");
         }
         double xComponent = vertex.getX() * matrix[0] + vertex.getY() * matrix[3] + vertex.getZ() * matrix[6];
