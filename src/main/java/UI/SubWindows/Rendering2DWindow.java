@@ -51,8 +51,7 @@ public class Rendering2DWindow extends JPanel {
         });
         addMouseWheelListener(new MouseWheelListener() {
             public void mouseWheelMoved(MouseWheelEvent e) {
-                double zoomFactor = ((double) 15 / e.getWheelRotation());
-                double zoomDiv = zoom / zoomFactor;
+                double zoomFactor = ((double) 25 / Math.signum(e.getWheelRotation()));
                 if (e.getWheelRotation() > 0) {
                     zoom -= zoom / zoomFactor;
                 }
@@ -69,6 +68,9 @@ public class Rendering2DWindow extends JPanel {
             public void componentResized(ComponentEvent e) {
                 wW = getWidth();
                 wH = getHeight();
+                offsetX = 100;
+                offsetY = 100;
+                zoom = 1;
                 repaint();
             }
         });
