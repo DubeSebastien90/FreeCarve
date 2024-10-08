@@ -45,20 +45,22 @@ public class Rendering2DWindow extends JPanel {
             @Override
             public void mouseMoved(MouseEvent e) {
                 mousePt = e.getPoint();
-                fakeMousePt.setLocation((mousePt.x - (offsetX*zoom))/zoom, ((-1 * (mousePt.y - wH)) - offsetY*zoom)/zoom);
+                fakeMousePt.setLocation((mousePt.x - (offsetX*zoom))/zoom, ((-1 * (mousePt.y - wH)) - (offsetY*zoom))/zoom);
                 repaint();
             }
         });
         addMouseWheelListener(new MouseWheelListener() {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 double zoomFactor = ((double) 15 / e.getWheelRotation());
-                double zoomDiv = zoomFactor / zoom;
+                double zoomDiv = zoom / zoomFactor;
                 if (e.getWheelRotation() > 0) {
                     zoom -= zoom / zoomFactor;
                 }
                 if (e.getWheelRotation() < 0) {
                     zoom -= zoom / zoomFactor;
                 }
+                offsetX = (mousePt.x - (fakeMousePt.x*zoom))/zoom;
+                offsetY = ((-1*(mousePt.y-wH)) - (fakeMousePt.y*zoom))/zoom;
                 repaint();
             }
         });
