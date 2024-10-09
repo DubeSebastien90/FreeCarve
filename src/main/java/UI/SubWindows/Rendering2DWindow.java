@@ -52,12 +52,7 @@ public class Rendering2DWindow extends JPanel {
         addMouseWheelListener(new MouseWheelListener() {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 double zoomFactor = ((double) 25 / Math.signum(e.getWheelRotation()));
-                if (e.getWheelRotation() > 0) {
-                    zoom -= zoom / zoomFactor;
-                }
-                if (e.getWheelRotation() < 0) {
-                    zoom -= zoom / zoomFactor;
-                }
+                zoom -= zoom / zoomFactor;
                 offsetX = (mousePt.x - (fakeMousePt.x*zoom))/zoom;
                 offsetY = ((-1*(mousePt.y-wH)) - (fakeMousePt.y*zoom))/zoom;
                 repaint();
