@@ -4,7 +4,7 @@ import Domain.Mesh;
 import Domain.Plane;
 import Domain.Pyramid;
 import Domain.Vertex;
-import UI.SubWindows.ConfigWindow;
+import UI.SubWindows.BasicWindow;
 import UI.SubWindows.CutList;
 import UI.SubWindows.Rendering2DWindow;
 import UI.Widgets.BigButton;
@@ -16,9 +16,16 @@ import java.util.List;
 
 public class SimulationWindow extends JPanel {
 
+    private BigButton nextButton = new BigButton("Suivant");
+    private Renderer renderer;
+
     public SimulationWindow() {
         this.setLayout(new GridBagLayout());
         init();
+    }
+
+    public Renderer getRenderer() {
+        return renderer;
     }
 
     public void init() {
@@ -28,8 +35,7 @@ public class SimulationWindow extends JPanel {
         Mesh cubeRouge = new Domain.Box(new Vertex(0, 0, 0), 75, 75, 75, Color.RED);
         Mesh pyramidVerte = new Pyramid(new Vertex(-110, 110, 110), Color.GREEN);
         Mesh ground = new Plane(new Vertex(0, 0, 0), 1000, Color.white);
-        Renderer rend = (new Renderer(new ArrayList<Mesh>(List.of(cubeRouge, cubeBleu, pyramidVerte, ground))));
-        CutList cutList = new CutList();
+        renderer = (new Renderer(new ArrayList<Mesh>(List.of(cubeRouge, cubeBleu, pyramidVerte, ground))));
         gbc.insets = new Insets(0, 0, 0, 10);
 
         gbc.gridx = 0;
@@ -38,7 +44,7 @@ public class SimulationWindow extends JPanel {
         gbc.weightx = 5;
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        add(rend, gbc);
+        add(renderer, gbc);
         gbc.insets = new Insets(0, 0, 0, 5);
 
         gbc.gridx = 1;
@@ -47,7 +53,7 @@ public class SimulationWindow extends JPanel {
         gbc.weightx = 3;
         gbc.weighty = 0.80;
         gbc.fill = GridBagConstraints.BOTH;
-        add(cutList.getCutList(), gbc);
+        add(new BasicWindow(true), gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -55,6 +61,14 @@ public class SimulationWindow extends JPanel {
         gbc.weightx = 3;
         gbc.weighty = 0.20;
         gbc.fill = GridBagConstraints.BOTH;
-        add(new BigButton("Suivant"), gbc);
+        add(nextButton, gbc);
     }
+
+    @Override
+    public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+        nextButton.revalidate();
+    }
+
+
 }

@@ -1,6 +1,5 @@
 package UI.Widgets;
 
-import UI.UIConfig;
 import Util.UiUtil;
 
 import javax.swing.*;
@@ -9,6 +8,18 @@ import java.awt.*;
 public class BigButton extends JPanel {
     private JButton button;
 
+    /**
+     * @return The button
+     */
+    public JButton getButton() {
+        return button;
+    }
+
+    /**
+     * Constructs a BigButton, a JPanel that contains a JButton. The JButton is orange and have round corners.
+     *
+     * @param text The text displayed on the button.
+     */
     public BigButton(String text) {
         this.setLayout(new GridBagLayout());
         this.setPreferredSize(new Dimension(0, 0));
@@ -19,8 +30,14 @@ public class BigButton extends JPanel {
         button.setForeground(this.getBackground());
     }
 
+    /**
+     * Paints the button in the panel and do all the manipulations so the buttons look like it should
+     *
+     * @param graphics A graphic object to be paint on the JPanel
+     */
     @Override
     public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
         Graphics2D graphics2D = ((Graphics2D) graphics);
         UiUtil.makeJPanelRoundCorner(this, graphics2D);
 
@@ -33,6 +50,5 @@ public class BigButton extends JPanel {
 
         button.setPreferredSize(new Dimension(this.getWidth() / 3 * 2, this.getHeight() / 2));
         add(button, gbc);
-
     }
 }

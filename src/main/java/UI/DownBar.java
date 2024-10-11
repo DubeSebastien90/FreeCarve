@@ -30,28 +30,30 @@ public class DownBar {
     private BoxLayout horizontalLayout;
 
     private JButton folderButton;
-    private JButton canvasButton;
     private JButton bitsButton;
     private JButton cutButton;
     private JButton simulationButton;
     private JButton exportButton;
+
     private JButton arrowLeft;
     private JButton arrowRight;
-    private FlatArrowButton arrowTest;
+
     ArrayList<JButton> buttons;
     ArrayList<JComponent> components;
 
     private Dimension coloredBoxDimension;
     private Color coloredBoxColor;
-
     int selectedButtonIndex;
+
+    private MainWindow mainWindow;
 
     /**
      * Constructs a {@code DownBar} instance initializing all of it's sub-component,
      * setting up all of the actions of the buttons and setting the {@code folderButton} as the
      * initial state
      */
-    public DownBar() {
+    public DownBar(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
         init();
         this.setupButtonAction();
         updateDownBar(folderButton);
@@ -109,6 +111,7 @@ public class DownBar {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     updateDownBar(button);
+                    mainWindow.getMiddleContent().changePanel(MiddleContent.MiddleWindowType.values()[selectedButtonIndex]);
                 }
             });
         }
@@ -117,6 +120,7 @@ public class DownBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 moveBackward();
+                mainWindow.getMiddleContent().previousWindow();
             }
         });
 
@@ -124,6 +128,7 @@ public class DownBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 moveForward();
+                mainWindow.getMiddleContent().nextWindow();
             }
         });
     }
@@ -161,10 +166,8 @@ public class DownBar {
 
         folderButton = new JButton("Fichier");
         folderButton.setToolTipText("Menu fichier");
-        canvasButton = new JButton("Canvas");
-        canvasButton.setToolTipText("Menu canvas");
-        bitsButton = new JButton("Outils");
-        bitsButton.setToolTipText("Menu outils");
+        bitsButton = new JButton("Configuration");
+        bitsButton.setToolTipText("Menu configuration");
         cutButton = new JButton("Coupes");
         cutButton.setToolTipText("Menu coupes");
         simulationButton = new JButton("Simulation");
@@ -180,7 +183,6 @@ public class DownBar {
 
         buttons = new ArrayList<JButton>();
         buttons.add(folderButton);
-        buttons.add(canvasButton);
         buttons.add(bitsButton);
         buttons.add(cutButton);
         buttons.add(simulationButton);

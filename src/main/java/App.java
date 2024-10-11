@@ -11,7 +11,7 @@ public class App {
             System.err.println( "Failed to initialize LaF" );
         }
 
-        MainWindow mainWindow = new MainWindow();
+        MainWindow mainWindow = MainWindow.INSTANCE;
         mainWindow.start();
     }
 }

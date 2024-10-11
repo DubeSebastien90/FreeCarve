@@ -1,6 +1,7 @@
 package UI;
 
 import Buisness.Project;
+import Util.Cut;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,30 +10,38 @@ import java.awt.*;
  * The {@code MiddleContent} class encapsulates the UI container of the middle
  * section of the UI : it contains all of the sub-windows
  *
- * @author Louis-Etienne Messier
+ * @author Louis-Etienne Messier & Adam Côté
  * @version 0.1
  * @since 2024-09-21
  */
 public class MiddleContent {
+
+    /**
+     * Enumeration used to represent one of the different window that can be displayed
+     */
+    public enum MiddleWindowType {
+        FOLDER, CONFIG, CUT, SIMULATION, EXPORT
+    }
+
     private final Project.ProjectMiddleWindow thisState = Project.INSTANCE.getProjectMiddleWindow();
     private JPanel panel;
-    private BorderLayout borderLayout;
     private CutWindow cutWindow;
     private FolderWindow projectWindow;
+    private ConfigChoiceWindow configChoiceWindow;
+    private SimulationWindow simulationWindow;
+    private MiddleWindowType current;
 
     public MiddleContent() {
         this.panel = new JPanel();
-        this.borderLayout = new BorderLayout();
-        this.init();
+        init();
         this.panel.setBackground(Color.RED);
     }
 
+    /**
+     * @return The panel of the middle window
+     */
     public JPanel getPanel() {
         return panel;
-    }
-
-    public void setPanel(JPanel panel) {
-        this.panel = panel;
     }
 
     /**
@@ -41,12 +50,74 @@ public class MiddleContent {
     private void init() {
         cutWindow = new CutWindow();
         projectWindow = new FolderWindow();
+        simulationWindow = new SimulationWindow();
+        configChoiceWindow = new ConfigChoiceWindow();
 
-        this.panel.setLayout(borderLayout);
-        //panel.add(cutWindow.getCutWindow(), BorderLayout.CENTER);
-        //panel.add(new Rendering2DWindow());
-        //panel.add(projectWindow);
-        panel.add(new ParamWindow());
-        //panel.add(new SimulationWindow());
+        this.panel.setLayout(new CardLayout());
+        panel.add(projectWindow, "folder");
+        panel.add(configChoiceWindow, "config");
+        panel.add(cutWindow.getCutWindow(), "cut");
+        panel.add(simulationWindow, "simulation");
+
+        current = MiddleWindowType.FOLDER;
+    }
+
+    /**
+     * Navigates to the next window and display it on screen
+     */
+    public void nextWindow() {
+        int ordinal = current.ordinal();
+        if (ordinal + 1 < MiddleWindowType.values().length) {
+            changePanel(MiddleWindowType.values()[ordinal + 1]);
+        }
+    }
+
+    /**
+     * Navigates to the next window and display it on screen
+     */
+    public void previousWindow() {
+        int ordinal = current.ordinal();
+        if (ordinal - 1 < MiddleWindowType.values().length) {
+            changePanel(MiddleWindowType.values()[ordinal - 1]);
+        }
+    }
+
+    /**
+     * Navigates to the desired window and display it on screen
+     *
+     * @param type The window that need to be displayed.
+     */
+    public void changePanel(MiddleWindowType type) {
+        switch (type) {
+            case FOLDER -> {
+                ((CardLayout) panel.getLayout()).show(panel, "folder");
+                current = MiddleWindowType.FOLDER;
+                projectWindow.requestFocusInWindow();
+                break;
+            }
+            case CONFIG -> {
+                ((CardLayout) panel.getLayout()).show(panel, "config");
+                current = MiddleWindowType.CONFIG;
+                configChoiceWindow.requestFocusInWindow();
+                break;
+            }
+            case CUT -> {
+                ((CardLayout) panel.getLayout()).show(panel, "cut");
+                current = MiddleWindowType.CUT;
+                cutWindow.getScreen(1).requestFocusInWindow();
+                break;
+            }
+            case SIMULATION -> {
+                ((CardLayout) panel.getLayout()).show(panel, "simulation");
+                current = MiddleWindowType.SIMULATION;
+                simulationWindow.getRenderer().requestFocusInWindow();
+                break;
+            }
+            case EXPORT -> {
+                current = MiddleWindowType.EXPORT;
+
+                break;
+            }
+        }
     }
 }

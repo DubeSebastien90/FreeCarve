@@ -1,8 +1,11 @@
 package UI;
 
+import UI.SubWindows.Rendering2DWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -20,7 +23,8 @@ import javax.swing.border.Border;
  * @version 0.1
  * @since 2024-09-21
  */
-public class MainWindow {
+public enum MainWindow {
+    INSTANCE;
     private JFrame frame;
     private UIConfig uiConfig;
     private BorderLayout borderLayout;
@@ -33,16 +37,19 @@ public class MainWindow {
      * Constructs a {@code MainWindow} instance by activating the LaF, initializing
      * it's attributes and setting up all the relevant event listeners functions
      */
-    public MainWindow() {
-        this.activateFlatLaf();
-        this.init();
-        this.setupEventListener();
-    }
+//    public MainWindow() {
+//        this.activateFlatLaf();
+//        this.init();
+//        this.setupEventListener();
+//    }
 
     /**
      * Starts the {@code MainWindow} by making it's {@code JFrame} visible
      */
     public void start() {
+        this.activateFlatLaf();
+        this.init();
+        this.setupEventListener();
         frame.setVisible(true);
     }
 
@@ -66,7 +73,7 @@ public class MainWindow {
         frame = new JFrame();
         uiConfig = UIConfig.INSTANCE;
         borderLayout = new BorderLayout();
-        downBar = new DownBar();
+        downBar = new DownBar(this);
         topBar = new TopBar();
         leftBar = new LeftBar();
         middleContent = new MiddleContent();
@@ -88,6 +95,10 @@ public class MainWindow {
      */
     public LeftBar getLeftBar() {
         return this.leftBar;
+    }
+
+    public MiddleContent getMiddleContent() {
+        return this.middleContent;
     }
 
     /**
