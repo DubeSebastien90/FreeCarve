@@ -29,6 +29,8 @@ public class MiddleContent {
     private FolderWindow projectWindow;
     private ConfigChoiceWindow configChoiceWindow;
     private SimulationWindow simulationWindow;
+    private ExportWindow exportWindow;
+
     private MiddleWindowType current;
 
     public MiddleContent() {
@@ -52,12 +54,15 @@ public class MiddleContent {
         projectWindow = new FolderWindow();
         simulationWindow = new SimulationWindow();
         configChoiceWindow = new ConfigChoiceWindow();
+        exportWindow = new ExportWindow();
+
 
         this.panel.setLayout(new CardLayout());
         panel.add(projectWindow, "folder");
         panel.add(configChoiceWindow, "config");
         panel.add(cutWindow.getCutWindow(), "cut");
         panel.add(simulationWindow, "simulation");
+        panel.add(exportWindow, "export");
 
         current = MiddleWindowType.FOLDER;
     }
@@ -114,8 +119,10 @@ public class MiddleContent {
                 break;
             }
             case EXPORT -> {
+                ((CardLayout) panel.getLayout()).show(panel, "export");
                 current = MiddleWindowType.EXPORT;
-
+                exportWindow.getRenderer().requestFocusInWindow();
+                current = MiddleWindowType.EXPORT;
                 break;
             }
         }

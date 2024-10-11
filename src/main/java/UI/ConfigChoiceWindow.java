@@ -8,9 +8,9 @@ import UI.Widgets.ChooseDimension;
 import Util.UiUtil;
 
 import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class ConfigChoiceWindow extends JPanel {
     private Rendering2DWindow rend;
@@ -79,6 +79,25 @@ public class ConfigChoiceWindow extends JPanel {
                 MainWindow.INSTANCE.getMiddleContent().nextWindow();
             }
         });
+        for (int i = 0; i < bitWindow.getBitList().length; i++) {
+            JToggleButton bit = bitWindow.getBitList()[i];
+            int finalI = i;
+            bit.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    GridBagConstraints gbc = new GridBagConstraints();
+                    gbc.gridy = 1;
+                    attributeWindow.add(new JLabel(bit.getText()), gbc);
+                    for (int j = 0; j < bitWindow.getBitList().length; j++) {
+                        bitWindow.getBitList()[j].setSelected(finalI ==j);
+                    }
+                    if (attributeWindow.getComponents().length > 1) {
+                        attributeWindow.remove(attributeWindow.getComponents().length - 1);
+                    }
+
+                }
+            });
+        }
     }
 
     @Override
