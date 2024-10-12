@@ -104,7 +104,7 @@ public class CutList extends BasicWindow{
                 temp.getPanel().setBackground(UIManager.getColor("SubWindow.background"));
             }
             else{
-                temp.getPanel().setBackground(UIManager.getColor("SubWindow.header"));
+                temp.getPanel().setBackground(UIManager.getColor("SubWindow.secondaryBackground"));
             }
             this.cutBoxes.add(temp);
         }
