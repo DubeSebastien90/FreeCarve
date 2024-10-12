@@ -46,7 +46,11 @@ public class CutList extends BasicWindow{
         layout = new BoxLayout(scrollablePanel, BoxLayout.Y_AXIS);
         scrollPane = new JScrollPane(scrollablePanel);
         scrollablePanel.setLayout(layout);
-        this.setupHeader("Coupes", scrollablePanel);
+        scrollablePanel.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBorder(null);
+        this.setupHeader("Coupes", scrollPane);
 
         //TEST FOR DRAWING
         cuts.add(new CutDTO(new UUID(100000, 100000),

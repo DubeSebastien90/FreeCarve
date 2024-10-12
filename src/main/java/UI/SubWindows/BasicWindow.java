@@ -31,6 +31,18 @@ public class BasicWindow extends JPanel {
         this.add(underHeaderPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Instantiate the header of the subwindow, adding the header and the panel going under it
+     * @param headerName name of the header
+     * @param underHeaderPanel {@code JPanel} that goes under the header
+     */
+    public void setupHeader(String headerName, JScrollPane underHeaderPanel){
+        this.setLayout(new BorderLayout());
+        Header header = new Header(headerName);
+        this.add(header, BorderLayout.NORTH);
+        this.add(underHeaderPanel, BorderLayout.CENTER);
+    }
+
     @Override
     public void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
