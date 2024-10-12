@@ -82,7 +82,7 @@ public class MiddleContent {
      */
     public void previousWindow() {
         int ordinal = current.ordinal();
-        if (ordinal - 1 < MiddleWindowType.values().length) {
+        if (ordinal - 1 >= 0) {
             changePanel(MiddleWindowType.values()[ordinal - 1]);
         }
     }
