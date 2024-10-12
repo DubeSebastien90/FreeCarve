@@ -5,6 +5,7 @@ import Domain.Plane;
 import Domain.Pyramid;
 import Domain.Vertex;
 import UI.SubWindows.BasicWindow;
+import UI.SubWindows.CutList;
 import UI.SubWindows.Rendering2DWindow;
 import UI.Widgets.ChooseDimension;
 
@@ -29,6 +30,7 @@ public class CutWindow {
     private JPanel panel2;
     private JPanel panel3;
     private JPanel panel4;
+    private CutList cutList;
 
     /**
      * Constructs a {@code CutWindow} instance initializing all of it's sub-panels
@@ -59,16 +61,17 @@ public class CutWindow {
      */
     private void init() {
         panel1 = new Rendering2DWindow();
-        panel1.setBackground(Color.BLUE);
+
 
         BasicWindow attribute = new BasicWindow(true);
         attribute.add(new ChooseDimension());
         panel2 = attribute;
-        panel2.setBackground(Color.GREEN);
+
         panel3 = new JPanel();
-        panel3.setBackground(Color.YELLOW);
-        panel4 = new JPanel();
-        panel4.setBackground(Color.CYAN);
+
+        CutList cutList = new CutList(true);
+        panel4 = cutList;
+
         splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panel1, panel2);
         splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panel3, panel4);
         mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane1, splitPane2);

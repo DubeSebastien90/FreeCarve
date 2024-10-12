@@ -20,10 +20,6 @@ public enum UIConfig {
     private final int toolIconSize = 20;
     private final int projectSelectionMenuButtonSize = 50;
 
-    private Color colorGreen1 = new Color(78, 167, 46);
-    private Color colorBlue1 = new Color(21, 96, 130);
-    private Color colorButtonBackground = UIManager.getColor("Button.background");
-
     private UIConfig() {
     }
 
@@ -62,24 +58,4 @@ public enum UIConfig {
         return projectSelectionMenuButtonSize;
     }
 
-    /**
-     * @return the colorGreen1 of the UI
-     */
-    public Color getColorGreen1() {
-        return colorGreen1;
-    }
-
-    /**
-     * @return the colorBlue1 of the UI
-     */
-    public Color getColorBlue1() {
-        return colorBlue1;
-    }
-
-    /**
-     * @return the color of the button background of the UI
-     */
-    public Color getColorButtonBackground() {
-        return colorButtonBackground;
-    }
 }

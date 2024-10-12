@@ -6,6 +6,7 @@ import com.formdev.flatlaf.ui.FlatButtonBorder;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Path2D;
 
 /**
  * This class regroup useful function for the UI of the application
@@ -78,5 +79,17 @@ public class UiUtil {
         graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics2D.setColor(panel.getBackground());
         graphics2D.fillRoundRect(0, 0, panel.getWidth(), panel.getHeight(), 20, 20);
+    }
+
+    /**
+     * Draws a RoundRect but extends the height in order to hide the rounded bottom
+     * @param panel JPanel that wants to be drawned
+     * @param graphics2D reference to the graphics2d object
+     */
+    public static void makeJPanelHeaderCorner(JPanel panel, Graphics2D graphics2D) {
+        panel.setOpaque(false);
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics2D.setColor(panel.getBackground());
+        graphics2D.fillRoundRect(0, 0, panel.getWidth(), panel.getHeight() + 30, 20, 20);
     }
 }

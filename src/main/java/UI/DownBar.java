@@ -83,13 +83,13 @@ public class DownBar {
         boolean beforeButtonClicked = false;
         for (int i = 0; i < buttons.size(); i++) {
             if (buttons.get(i) == buttonClicked) {
-                buttonClicked.setBackground(UIConfig.INSTANCE.getColorGreen1());
+                buttonClicked.setBackground(UIManager.getColor("Button.green"));
                 selectedButtonIndex = i;
                 beforeButtonClicked = true;
             } else if (beforeButtonClicked) {
-                buttons.get(i).setBackground(UIConfig.INSTANCE.getColorButtonBackground());
+                buttons.get(i).setBackground(UIManager.getColor("Button.background"));
             } else {
-                buttons.get(i).setBackground(UIConfig.INSTANCE.getColorBlue1());
+                buttons.get(i).setBackground(UIManager.getColor("Button.blue"));
             }
 
             // Updates the ColoredBox
