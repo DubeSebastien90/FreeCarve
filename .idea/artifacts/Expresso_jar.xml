@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Expresso:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Expresso_jar</output-path>
+    <root id="archive" name="Expresso.jar">
+      <element id="module-output" name="Expresso" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/formdev/svgSalamander/1.1.3/svgSalamander-1.1.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/formdev/flatlaf-extras/3.1.1/flatlaf-extras-3.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/formdev/flatlaf/3.5.1/flatlaf-3.5.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
