@@ -2,6 +2,7 @@ package UI.SubWindows;
 
 import Domain.DTO.CutDTO;
 import Domain.CutType;
+import UI.UIConfig;
 import UI.Widgets.CutBox;
 import Domain.Cut;
 import Util.UiUtil;
@@ -19,7 +20,6 @@ import java.util.UUID;
  * @since 2024-09-21
  */
 public class CutList extends BasicWindow{
-    private BorderLayout borderLayout;
     private ArrayList<CutBox> cutBoxes;
     private ArrayList<CutDTO> cuts;
     private BasicWindow scrollablePanel;
@@ -40,17 +40,19 @@ public class CutList extends BasicWindow{
     private void init() {
         this.cuts = new ArrayList<CutDTO>();
 
-        borderLayout = new BorderLayout();
         cutBoxes = new ArrayList<CutBox>();
         scrollablePanel = new BasicWindow(true);
-        layout = new BoxLayout(scrollablePanel, BoxLayout.Y_AXIS);
+        layout = new BoxLayout(scrollablePanel, BoxLayout.PAGE_AXIS);
         scrollPane = new JScrollPane(scrollablePanel);
         scrollablePanel.setLayout(layout);
         scrollablePanel.setBorder(null);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(UIConfig.INSTANCE.getScrollbarSpeed());
         this.setupHeader("Coupes", scrollPane);
+        scrollablePanel.setAlignmentX(0);
+        scrollPane.setAlignmentX(0);
 
         //TEST FOR DRAWING
         cuts.add(new CutDTO(new UUID(100000, 100000),
@@ -59,15 +61,15 @@ public class CutList extends BasicWindow{
 
         cuts.add(new CutDTO(new UUID(100000, 100000),
                 0.8f, 7,
-                CutType.L_SHAPE));
+                CutType.LINE_VERTICAL));
 
         cuts.add(new CutDTO(new UUID(100000, 100000),
                 0.8f, 7,
-                CutType.L_SHAPE));
+                CutType.BORDER));
 
         cuts.add(new CutDTO(new UUID(100000, 100000),
                 0.8f, 7,
-                CutType.L_SHAPE));
+                CutType.RECTANGULAR));
 
         cuts.add(new CutDTO(new UUID(100000, 100000),
                 0.8f, 7,
@@ -97,14 +99,14 @@ public class CutList extends BasicWindow{
      */
     private void updateCutBoxes(){
         this.cutBoxes = new ArrayList<CutBox>();
-        for (CutDTO cut : cuts){
-
-            CutBox temp = new CutBox(cut);
+        for (int i =0; i < cuts.size(); i++){
+            CutDTO cut = cuts.get(i);
+            CutBox temp = new CutBox(cut, i);
             if (this.cutBoxes.size() % 2 == 0){
-                temp.getPanel().setBackground(UIManager.getColor("SubWindow.background"));
+                temp.getPanel().setBackground(UIManager.getColor("SubWindow.darkBackground1"));
             }
             else{
-                temp.getPanel().setBackground(UIManager.getColor("SubWindow.secondaryBackground"));
+                temp.getPanel().setBackground(UIManager.getColor("SubWindow.darkBackground2"));
             }
             this.cutBoxes.add(temp);
         }

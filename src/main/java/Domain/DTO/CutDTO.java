@@ -15,13 +15,36 @@ public class CutDTO {
     private UUID idCut;
     private float depth;
     private int bitIndex;
-//    private List<Vertex3dDTO>;
+    private List<VertexDTO> points;
     private CutType type;
 
+    /**
+     * Basic constructor of the {@code CutDTO}
+     * @param idCut id of the cut
+     * @param depth depth of the cut
+     * @param bitIndex index of the bit used to make the cut
+     * @param type type of the cut {@code CutType}
+     */
     public CutDTO(UUID idCut, float depth, int bitIndex, CutType type){
         this.idCut = idCut;
         this.depth = depth;
         this.bitIndex = bitIndex;
         this.type = type;
+    }
+
+    public int getBitIndex() {
+        return this.bitIndex;
+    }
+
+    public float getDepth(){
+        return this.depth;
+    }
+
+    public UUID getId(){
+        return this.idCut;
+    }
+
+    public CutType getCutType(){
+        return this.type;
     }
 }

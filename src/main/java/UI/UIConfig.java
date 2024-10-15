@@ -19,6 +19,8 @@ public enum UIConfig {
     private final int defaultWindowHeight = 600;
     private final int toolIconSize = 20;
     private final int projectSelectionMenuButtonSize = 50;
+    private final int cutBoxIconSize = 20;
+    private final int scrollbarSpeed = 16;
 
     private UIConfig() {
     }
@@ -57,5 +59,15 @@ public enum UIConfig {
     public int getProjectSelectionMenuButtonSize() {
         return projectSelectionMenuButtonSize;
     }
+
+    /**
+     * @return The size which the icons of the cutBoxes in the CutList should be
+     */
+    public int getCutBoxIconSize() {return cutBoxIconSize;}
+
+    /**
+     * @return The speed of what the scrollbar should be
+     */
+    public int getScrollbarSpeed() {return scrollbarSpeed;}
 
 }

@@ -65,15 +65,25 @@ public class UiUtil {
      * @return the newly created {@code JButton}
      */
     public static JButton createSVGButton(String iconName, boolean enable, int size, Color buttonColor) {
-        FlatSVGIcon icon = new FlatSVGIcon("UI/" + iconName + ".svg", size, size);
-        FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter(color -> buttonColor);
-        icon.setColorFilter(filter);
+        FlatSVGIcon icon = getIcon(iconName, size, buttonColor);
         JButton button = new JButton(icon);
         button.setBorder(new FlatButtonBorder());
         button.setEnabled(enable);
         return button;
     }
 
+    public static FlatSVGIcon getIcon(String iconName, int size, Color iconColor){
+        FlatSVGIcon icon = new FlatSVGIcon("UI/" + iconName + ".svg", size, size);
+        FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter(color -> iconColor);
+        icon.setColorFilter(filter);
+        return icon;
+    }
+
+    /**
+     * Draws a RoundRect of a JPanel
+     * @param panel JPanel that wants to be drawned
+     * @param graphics2D reference to the graphics2d object
+     */
     public static void makeJPanelRoundCorner(JPanel panel, Graphics2D graphics2D) {
         panel.setOpaque(false);
         graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
