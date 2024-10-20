@@ -3,12 +3,13 @@ package UI;
 import Annotations.VariableSource;
 import Domain.Vertex;
 import Util.Matrix;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MatrixTest {
 
@@ -37,6 +38,6 @@ public class MatrixTest {
         // Arrange
         Vertex vertex = new Vertex(1,1,1);
         // Act and Assert
-        Assert.assertThrows(ArithmeticException.class, ()->matrix.matriceXVertex3x3(vertex));
+        assertThrows(ArithmeticException.class, ()->matrix.matriceXVertex3x3(vertex));
     }
 }

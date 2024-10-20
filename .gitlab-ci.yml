@@ -1,55 +1,13 @@
-variables:
-    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-
-image: maven:latest
-
 stages:
-  - build
   - test
-  - package
-  - deploy
 
-cache:
-  paths:
-    - .m2/repository/
-    - target
-
-build_job:
-  stage: build
-  tags:
-    - docker
-  script:
-    - echo "Building the project"
-    - "mvn compile"
-
-test_job:
+test:
+  image: maven:3.8.5-jdk-11  # Use a Maven image with the desired JDK
   stage: test
-  tags:
-    - docker
-  dependencies:
-    - build_job
   script:
-    - echo "Testing the project"
-    - "mvn test"
-
-package_job:
-  stage: package
-  script:
-    - echo "Packaging the project"
-    - "mvn package"
-  dependencies:
-    - test_job
+    - mvn clean test  # Runs Maven clean and test
+  artifacts:
+    reports:
+      junit: target/surefire-reports/*.xml  # Collect JUnit test reports
   only:
-    - branches
-  when: on_success
-
-deploy_job:
-  stage: deploy
-  script:
-    - echo "Deploying the project"
-    - "mvn deploy"
-  dependencies:
-    - test_job
-  only:
-    - branches
-  when: on_success
+    - branches  # Run this job for all branches

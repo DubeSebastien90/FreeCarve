@@ -14,7 +14,6 @@ import java.util.List;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
-import static org.junit.Assert.assertEquals;
 
 public class RendererTest {
 
