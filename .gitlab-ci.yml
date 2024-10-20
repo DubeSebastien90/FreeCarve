@@ -10,4 +10,4 @@ test:
     reports:
       junit: target/surefire-reports/*.xml
   only:
-    - branches
+    - merge_requests  # Run this job only for merge requests
