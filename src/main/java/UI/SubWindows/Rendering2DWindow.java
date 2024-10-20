@@ -9,7 +9,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Rendering2DWindow extends JPanel {
-    private Rectangle panneau = new Rectangle(0, 0, 200, 100);
+    private Rectangle board = new Rectangle(0, 0, 200, 100);
     private Point mousePt;
     private Point fakeMousePt;
     private double offsetX;
@@ -85,7 +85,7 @@ public class Rendering2DWindow extends JPanel {
     private void drawRectangle(Graphics2D graphics2D) {
         Color color = new Color(222, 184, 135);
         graphics2D.setColor(color);
-        Rectangle panneauOffset = selonContexte(panneau);
+        Rectangle panneauOffset = convertTomm(board);
         graphics2D.draw(panneauOffset);
         graphics2D.fill(panneauOffset);
     }
@@ -97,15 +97,15 @@ public class Rendering2DWindow extends JPanel {
 
 
     private void resizePanneau(int newWidth, int newHeight) {
-        panneau.setSize(newWidth, newHeight);
+        board.setSize(newWidth, newHeight);
     }
 
     private void deltaResizePanneau(int deltaWidth, int deltaHeight) {
-        panneau.setSize(((int) panneau.getWidth()) - deltaWidth, ((int) panneau.getHeight()) - deltaHeight);
+        board.setSize(((int) board.getWidth()) - deltaWidth, ((int) board.getHeight()) - deltaHeight);
     }
 
-    private Rectangle selonContexte(Rectangle panneau) {
-        return new Rectangle((int) ((panneau.x + offsetX) * zoom), (int) (((-1 * (panneau.y - wH)) - ((offsetY + panneau.height)*zoom))), (int) (panneau.width * zoom), (int) (panneau.height * zoom));
+    private Rectangle convertTomm(Rectangle rectangle) {
+        return new Rectangle((int) ((rectangle.x + offsetX) * zoom), (int) (((-1 * (rectangle.y - wH)) - ((offsetY + rectangle.height)*zoom))), (int) (rectangle.width * zoom), (int) (rectangle.height * zoom));
     }
 
 }
