@@ -2,12 +2,12 @@ stages:
   - test
 
 test:
-  image: maven:3.8.5-jdk-11  # Use a Maven image with the desired JDK
+  image: maven:3.9.9-sapmachine-21
   stage: test
   script:
-    - mvn clean test  # Runs Maven clean and test
+    - mvn clean test
   artifacts:
     reports:
-      junit: target/surefire-reports/*.xml  # Collect JUnit test reports
+      junit: target/surefire-reports/*.xml
   only:
-    - branches  # Run this job for all branches
+    - branches
