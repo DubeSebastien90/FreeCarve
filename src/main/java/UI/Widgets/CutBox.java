@@ -1,7 +1,7 @@
 package UI.Widgets;
 
-import Domain.CutDTO;
-import Util.Cut;
+import Domain.DTO.CutDTO;
+import Domain.Cut;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

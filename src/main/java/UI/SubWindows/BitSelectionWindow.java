@@ -1,7 +1,7 @@
 package UI.SubWindows;
 
 import UI.Widgets.BitInfoDisplay;
-import Util.Bit;
+import Domain.Bit;
 
 import javax.swing.*;
 import java.awt.*;

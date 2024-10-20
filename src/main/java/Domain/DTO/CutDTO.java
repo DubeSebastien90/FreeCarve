@@ -1,4 +1,6 @@
-package Domain;
+package Domain.DTO;
+
+import Domain.CutType;
 
 import java.util.List;
 import java.util.UUID;

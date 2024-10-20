@@ -1,9 +1,9 @@
 package UI;
 
-import Domain.Mesh;
-import Domain.Plane;
-import Domain.Pyramid;
-import Domain.Vertex;
+import Domain.ThirdDimension.Mesh;
+import Domain.ThirdDimension.Plane;
+import Domain.ThirdDimension.Pyramid;
+import Domain.ThirdDimension.Vertex;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.CutList;
 import UI.SubWindows.Rendering2DWindow;

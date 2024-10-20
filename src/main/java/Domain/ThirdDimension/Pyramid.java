@@ -1,4 +1,4 @@
-package Domain;
+package Domain.ThirdDimension;
 
 import java.awt.*;
 import java.util.ArrayList;

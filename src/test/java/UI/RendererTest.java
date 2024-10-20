@@ -1,10 +1,10 @@
 package UI;
 
-import Domain.Box;
-import Domain.Mesh;
-import Domain.Triangle;
-import Domain.Vertex;
-import Util.Matrix;
+import Domain.ThirdDimension.Box;
+import Domain.ThirdDimension.Mesh;
+import Domain.ThirdDimension.Triangle;
+import Domain.ThirdDimension.Vertex;
+import Domain.ThirdDimension.Matrix;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

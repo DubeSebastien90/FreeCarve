@@ -1,9 +1,9 @@
 package UI.SubWindows;
 
-import Domain.CutDTO;
+import Domain.DTO.CutDTO;
 import Domain.CutType;
 import UI.Widgets.CutBox;
-import Util.Cut;
+import Domain.Cut;
 import Util.UiUtil;
 
 import javax.swing.*;

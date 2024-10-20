@@ -1,7 +1,5 @@
 package UI;
-
-import Buisness.Project;
-import Util.Cut;
+import Domain.Cut;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,8 +20,6 @@ public class MiddleContent {
     public enum MiddleWindowType {
         FOLDER, CONFIG, CUT, SIMULATION, EXPORT
     }
-
-    private final Project.ProjectMiddleWindow thisState = Project.INSTANCE.getProjectMiddleWindow();
     private JPanel panel;
     private CutWindow cutWindow;
     private FolderWindow projectWindow;

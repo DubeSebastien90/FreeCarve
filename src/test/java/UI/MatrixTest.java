@@ -1,8 +1,8 @@
 package UI;
 
 import Annotations.VariableSource;
-import Domain.Vertex;
-import Util.Matrix;
+import Domain.ThirdDimension.Vertex;
+import Domain.ThirdDimension.Matrix;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

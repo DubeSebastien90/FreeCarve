@@ -1,10 +1,10 @@
 package UI;
 
-import Domain.Mesh;
-import Domain.Triangle;
-import Domain.Vertex;
+import Domain.ThirdDimension.Mesh;
+import Domain.ThirdDimension.Triangle;
+import Domain.ThirdDimension.Vertex;
 import UI.Widgets.BoutonRotation;
-import Util.Matrix;
+import Domain.ThirdDimension.Matrix;
 import Util.UiUtil;
 
 import javax.swing.*;

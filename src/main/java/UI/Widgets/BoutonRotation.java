@@ -1,9 +1,9 @@
 package UI.Widgets;
 
-import Domain.Mesh;
-import Domain.Vertex;
+import Domain.ThirdDimension.Mesh;
+import Domain.ThirdDimension.Vertex;
 import UI.Renderer;
-import Util.Matrix;
+import Domain.ThirdDimension.Matrix;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
