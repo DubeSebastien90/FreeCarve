@@ -17,15 +17,18 @@ public class Controller {
     private final FileManager fileManager = new FileManager();
     private final UndoRedo undoRedo;
     private final ProjectState currentProjectState;
+    private Grid grid;
 
     public Controller() {
         undoRedo = new UndoRedo();
         currentProjectState = new ProjectState();
     }
+
     public Controller(UndoRedo undoRedo, ProjectState projectState) {
         this.undoRedo = undoRedo;
         this.currentProjectState = projectState;
     }
+
 
     /**
      * Requests a cut to do on the panel of the current {@code ProjectState}
@@ -51,17 +54,17 @@ public class Controller {
         return getProjectStateDTO().getPanelDTO();
     }
 
-    public Optional<CutDTO> findSpecificCut(UUID id){
+    public Optional<CutDTO> findSpecificCut(UUID id) {
         List<CutDTO> cutsDTO = getProjectStateDTO().getPanelDTO().getCutsDTO();
-        for (CutDTO c : cutsDTO){
-            if (c.getId() == id){
+        for (CutDTO c : cutsDTO) {
+            if (c.getId() == id) {
                 return Optional.of(c);
             }
         }
         return Optional.empty();
     }
 
-    public List<CutDTO> getCutListDTO(){
+    public List<CutDTO> getCutListDTO() {
         return getProjectStateDTO().getPanelDTO().getCutsDTO();
     }
 
@@ -141,9 +144,19 @@ public class Controller {
      * @param precision The precision with which the grid should be calculated.
      * @return The list of intersections of the grid.
      */
-    public List<VertexDTO> putGrid(int precision) {
-        //todo
+    public List<VertexDTO> putGrid(int precision, int magnetPrecision) {
+        this.grid = new Grid(precision, magnetPrecision);
         return null;
+    }
+
+
+    /**
+     * Function that returns the grid
+     *
+     * @return the grid
+     */
+    public Grid getGrid() {
+        return this.grid;
     }
 
     /**

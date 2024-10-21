@@ -3,6 +3,7 @@ package UI.SubWindows;
 import UI.LeftBar;
 import UI.MainWindow;
 import UI.Widgets.PersoPoint;
+import Domain.Grid;
 import Util.UiUtil;
 
 import javax.swing.*;
@@ -21,13 +22,15 @@ import java.util.ArrayList;
 public class Rendering2DWindow extends JPanel {
     private final Rectangle board = new Rectangle(0, 0, 200, 100);
     private Point mousePt = new Point(0, 0);
-    private final Point fakeMousePt = new Point(0, 0);
+    private final Point mmMousePt = new Point(0, 0);
     private double offsetX = 100;
     private double offsetY = 100;
     private double zoom = 1;
     private double prevZoom;
     private int wW;
     private int wH;
+    private MainWindow mainWindow;
+    ArrayList<Double> areammBoard = new ArrayList<>();
     private boolean draggingAPoint = false;
     private final ArrayList<PersoPoint> points = new ArrayList<>();
     private MouseMotionListener scaleListener;
@@ -35,8 +38,14 @@ public class Rendering2DWindow extends JPanel {
     /**
      * Constructs a new {@code Rendering2dWindow} object and set the different listener useful for the zooming and more.
      */
-    public Rendering2DWindow() {
+    public Rendering2DWindow(MainWindow mainWindow) {
         super();
+        this.mainWindow = mainWindow;
+        zoom = 1;
+        mousePt = new Point(0, 0);
+        offsetY = 100;
+        offsetX = 100;
+        mainWindow.getController().putGrid(7, 10);
         addMouseListener();
         addMouseMotionListener();
         addMouseWheelListener();
@@ -127,7 +136,7 @@ public class Rendering2DWindow extends JPanel {
             public void mouseMoved(MouseEvent e) {
                 if (!draggingAPoint) {
                     mousePt = e.getPoint();
-                    fakeMousePt.setLocation((mousePt.x - (offsetX * zoom)) / zoom, ((-1 * (mousePt.y - wH)) - (offsetY * zoom)) / zoom);
+                    mmMousePt.setLocation((mousePt.x - (offsetX * zoom)) / zoom, ((-1 * (mousePt.y - wH)) - (offsetY * zoom)) / zoom);
                     repaint();
                 }
             }
@@ -142,8 +151,8 @@ public class Rendering2DWindow extends JPanel {
         addMouseWheelListener(e -> {
             double zoomFactor = ((double) 25 / Math.signum(e.getWheelRotation()));
             zoom -= zoom / zoomFactor;
-            offsetX = (mousePt.x - (fakeMousePt.x * zoom)) / zoom;
-            offsetY = ((-1 * (mousePt.y - wH)) - (fakeMousePt.y * zoom)) / zoom;
+            offsetX = (mousePt.x - (mmMousePt.x * zoom)) / zoom;
+            offsetY = ((-1 * (mousePt.y - wH)) - (mmMousePt.y * zoom)) / zoom;
             points.clear();
             repaint();
         });
@@ -178,20 +187,21 @@ public class Rendering2DWindow extends JPanel {
         UiUtil.makeJPanelRoundCorner(this, graphics2D);
         super.paintComponent(graphics2D);
         drawRectangle(graphics2D);
+        drawGrid(graphics2D);
         drawMousePos(graphics2D);
         drawPoints(graphics2D);
     }
 
 
     /**
-     * Draws the board on this JPanel.
+     * Draws the board on the screen
      *
-     * @param graphics2D A graphics object which is painted on this JPanel.
+     * @param graphics2D the <code>Graphics</code> object to protect
      */
     private void drawRectangle(Graphics2D graphics2D) {
         Color color = new Color(222, 184, 135);
         graphics2D.setColor(color);
-        Rectangle panneauOffset = convertTomm(board);
+        Rectangle panneauOffset = convertToPixels(board);
         graphics2D.draw(panneauOffset);
         graphics2D.fill(panneauOffset);
     }
@@ -221,7 +231,24 @@ public class Rendering2DWindow extends JPanel {
     private void drawMousePos(Graphics2D graphics2D) {
         if (isPointonPanel()) {
             graphics2D.setColor(Color.BLACK);
-            graphics2D.drawString(fakeMousePt.x + ", " + fakeMousePt.y, 20, 20);
+            graphics2D.drawString(mmMousePt.x + ", " + mmMousePt.y, 20, 20);
+        }
+    }
+
+    /**
+     * Draws the grid on the board
+     *
+     * @param graphics2D the <code>Graphics</code> object to protect
+     */
+    private void drawGrid(Graphics2D graphics2D) {
+        graphics2D.setColor(new Color(0, 0, 0, (int) (Math.min(255, 127 * zoom))));
+        double size = mainWindow.getController().getGrid().getSize();
+        size = size * (zoom);
+        for (double i = areammBoard.get(0); i < areammBoard.get(1); i += size) {
+            graphics2D.drawLine((int) i, areammBoard.get(3).intValue(), (int) i, areammBoard.get(2).intValue());
+        }
+        for (double i = areammBoard.get(3); i > areammBoard.get(2); i -= size) {
+            graphics2D.drawLine(areammBoard.get(0).intValue(), (int) i, areammBoard.get(1).intValue(), (int) i);
         }
     }
 
@@ -230,7 +257,7 @@ public class Rendering2DWindow extends JPanel {
      * @return True if the mouse is on the board.
      */
     private boolean isPointonPanel() {
-        return fakeMousePt.x >= 0 && fakeMousePt.y >= 0 && fakeMousePt.x <= board.width && fakeMousePt.y <= board.height;
+        return mmMousePt.x >= 0 && mmMousePt.y >= 0 && mmMousePt.x <= board.width && mmMousePt.y <= board.height;
     }
 
     /**
@@ -253,11 +280,6 @@ public class Rendering2DWindow extends JPanel {
     private void deltaResizePanneau(int deltaWidth, int deltaHeight) {
         board.setSize(((int) board.getWidth()) - deltaWidth, ((int) board.getHeight()) - deltaHeight);
         MainWindow.INSTANCE.getController().resizePanel(board.width, board.height);
-    }
-
-
-    private Rectangle convertTomm(Rectangle rectangle) {
-        return new Rectangle((int) ((rectangle.x + offsetX) * zoom), (int) (((-1 * (rectangle.y - wH)) - ((offsetY + rectangle.height) * zoom))), (int) (rectangle.width * zoom), (int) (rectangle.height * zoom));
     }
 
     /**
@@ -360,6 +382,62 @@ public class Rendering2DWindow extends JPanel {
     private void clearPoints() {
         points.clear();
         removeMouseMotionListener(scaleListener);
+    }
+
+    /**
+     * Function that returns the magnetised position of the mouse based on the grid
+     *
+     * @param mousePt The mouse coordinates point in pixel
+     * @return the mouse coordinates if it's not close enough to an intersection, the intersection coordinates in pixels if the mouse is close enough
+     */
+    public Point getMagnetisedPos(Point mousePt) {
+        Grid grid = mainWindow.getController().getGrid();
+        for (double i = areammBoard.get(0); i < areammBoard.get(1); i += grid.getSize() * zoom) {
+            if (Math.abs((mousePt.x - i)) <= grid.getMagnetPrecision()) {
+                for (double j = areammBoard.get(3); j > areammBoard.get(2); j -= grid.getSize() * zoom) {
+                    if (Point.distance(mousePt.x, mousePt.y, i, j) <= grid.getMagnetPrecision()) {
+                        return new Point((int) i, (int) j);
+                    }
+                }
+                break;
+            }
+        }
+        return mousePt;
+    }
+
+    /**
+     * Converts a point in mm into pixels
+     *
+     * @param mmPt The point in mm
+     * @return The point in pixel
+     */
+    public Point mmTopixel(Point mmPt) {
+        return new Point((int) ((mmPt.x * zoom) + (offsetX * zoom)), (int) ((-1 * ((mmPt.y * zoom) + (offsetY * zoom))) + wH));
+    }
+
+    /**
+     * Converts a point in pixels into milimeters
+     *
+     * @param pixelPt The point in pixel
+     * @return The point in mm
+     */
+    public Point pixelTomm(Point pixelPt) {
+        return new Point((int) ((pixelPt.x - (offsetX * zoom)) / zoom), (int) (((-1 * (pixelPt.y - wH)) - (offsetY * zoom)) / zoom));
+    }
+
+    /**
+     * Converts a board to be displayed with the zoom and offset
+     *
+     * @param rectangle the board
+     * @return A rectangle object shaped with the zoom
+     */
+    private Rectangle convertToPixels(Rectangle rectangle) {
+        areammBoard.clear();
+        areammBoard.add((rectangle.x + offsetX) * zoom);
+        areammBoard.add((rectangle.x + offsetX) * zoom + (rectangle.width * zoom));
+        areammBoard.add((((-1 * (rectangle.y - wH)) - ((offsetY + rectangle.height) * zoom))));
+        areammBoard.add((((-1 * (rectangle.y - wH)) - ((offsetY + rectangle.height) * zoom))) + (rectangle.height * zoom));
+        return new Rectangle(areammBoard.get(0).intValue(), areammBoard.get(2).intValue(), (int) (rectangle.width * zoom), (int) (rectangle.height * zoom));
     }
 
 }

@@ -6,6 +6,7 @@ import UI.SubWindows.Rendering2DWindow;
 import UI.Widgets.BigButton;
 import UI.Widgets.BitInfoDisplay;
 import UI.Widgets.ChooseDimension;
+import com.sun.tools.javac.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,13 +28,14 @@ public class ConfigChoiceWindow extends JPanel {
     private BitSelectionPanel bitWindow;
     private BasicWindow attributeWindow;
     private int selectedBit;
+    private MainWindow mainWindow;
 
     /**
      * Constructs a ConfigChoiceWindow and initializes its components and layout.
      */
-    public ConfigChoiceWindow() {
+    public ConfigChoiceWindow(MainWindow mainWindow) {
         this.setLayout(new GridBagLayout());
-        rend = new Rendering2DWindow();
+        rend = new Rendering2DWindow(mainWindow);
         bitWindow = new BitSelectionPanel();
         attributeWindow = new BasicWindow(true);
         setFocusable(true);
@@ -41,6 +43,7 @@ public class ConfigChoiceWindow extends JPanel {
         init();
         setButtonEventHandler();
         this.selectedBit = 0;
+        this.mainWindow = mainWindow;
     }
 
     /**
@@ -125,7 +128,7 @@ public class ConfigChoiceWindow extends JPanel {
                     }
                     attributeWindow.removeAll();
                     attributeWindow.repaint();
-                    BitInfoDisplay bitInfo = new BitInfoDisplay(MainWindow.INSTANCE.getController().getBitsDTO()[finalI], true, ConfigChoiceWindow.this);
+                    BitInfoDisplay bitInfo = new BitInfoDisplay(mainWindow.getController().getBitsDTO()[finalI], true, ConfigChoiceWindow.this);
                     attributeWindow.add(bitInfo, gbc);
                     selectedBit = finalI;
                 }

@@ -1,7 +1,4 @@
 package UI;
-import Domain.Controller;
-import Domain.BitDTO;
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,7 +35,7 @@ public class MiddleContent {
     public MiddleContent(MainWindow mainWindow) {
         this.panel = new JPanel();
         this.mainWindow = mainWindow;
-        init();
+        init(mainWindow);
         this.panel.setBackground(Color.RED);
     }
 
@@ -66,11 +63,11 @@ public class MiddleContent {
     /**
      * Initiates all of the {@code MiddleContent} components
      */
-    private void init() {
-        cutWindow = new CutWindow();
+    private void init(MainWindow mainWindow) {
+        cutWindow = new CutWindow(mainWindow);
         projectWindow = new FolderWindow();
         simulationWindow = new SimulationWindow();
-        configChoiceWindow = new ConfigChoiceWindow();
+        configChoiceWindow = new ConfigChoiceWindow(mainWindow);
         exportWindow = new ExportWindow();
 
 

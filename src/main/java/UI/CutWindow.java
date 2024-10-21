@@ -35,9 +35,8 @@ public class CutWindow implements ChangeAttributeListener {
      * Constructs a {@code CutWindow} instance initializing all of it's sub-panels
      * and sub-components
      */
-    public CutWindow() {
-        super();
-        this.init();
+    public CutWindow(MainWindow mainWindow) {
+        this.init(mainWindow);
     }
 
     /**
@@ -75,8 +74,8 @@ public class CutWindow implements ChangeAttributeListener {
     /**
      * Initiates all of the {@code CutWindow} components
      */
-    private void init() {
-        panel1 = new Rendering2DWindow();
+    private void init(MainWindow mainWindow) {
+        panel1 = new Rendering2DWindow(mainWindow);
 
         attributePanel = new AttributePanel(true);
         panel2 = attributePanel;

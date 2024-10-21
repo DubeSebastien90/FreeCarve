@@ -12,50 +12,28 @@ import java.util.List;
  * @since 2024-10-20
  */
 public class Grid {
-    private int precision;
-    private float width;
-    private float height;
-    private List<Vertex> grid;
+    private int size;
+    private int magnetPrecision;
 
-    Grid(int precision, float width, float height) {
-        this.precision = precision;
-        this.width = width;
-        this.height = height;
-        calculateAllIntersection();
+    Grid(int size, int magnetPrecision) {
+        this.size = size;
+        this.magnetPrecision = magnetPrecision;
     }
 
-    int getPrecision() {
-        return precision;
+    public int getSize() {
+        return this.size;
     }
 
-    void setPrecision(int precision) {
-        this.precision = precision;
+    void setSize(int size) {
+        this.size = size;
     }
 
-    float getWidth() {
-        return width;
+    public int getMagnetPrecision() {
+        return this.magnetPrecision;
     }
 
-    void setWidth(float width) {
-        this.width = width;
-    }
-
-    float getHeight() {
-        return height;
-    }
-
-    void setHeight(float height) {
-        this.height = height;
-    }
-
-    List<Vertex> getGrid() {
-        return grid;
-    }
-
-    /**
-     * Calculates the intersections using the height, width and precision of the current {@code Grid}
-     */
-    void calculateAllIntersection() {
-        //todo, must set the grid to the list of intersection (this.grid == intersection)
+    void setMagnetPrecision(int magnetPrecision) {
+        this.magnetPrecision = magnetPrecision;
     }
 }
+

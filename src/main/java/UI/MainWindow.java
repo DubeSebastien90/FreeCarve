@@ -1,20 +1,13 @@
 package UI;
 
 import Domain.Controller;
-import Domain.CutType;
-import Domain.ProjectStateDTO;
-import Domain.RequestCutDTO;
-import Domain.ThirdDimension.VertexDTO;
-import UI.SubWindows.Rendering2DWindow;
-import UI.Widgets.CutBox;
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLaf;
 
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+
+import com.formdev.flatlaf.FlatLaf;
 
 import javax.swing.*;
 
@@ -41,6 +34,7 @@ public enum MainWindow {
     private LeftBar leftBar;
     private MiddleContent middleContent;
     private Controller controller;
+
 
     /**
      * Starts the {@code MainWindow} by making it's {@code JFrame} visible
@@ -75,7 +69,6 @@ public enum MainWindow {
      */
     private void init() {
         this.controller = new Controller();
-
         ToolTipManager.sharedInstance().setInitialDelay(1000);
         frame = new JFrame();
         uiConfig = UIConfig.INSTANCE;
@@ -96,15 +89,6 @@ public enum MainWindow {
         mainInsidePanel.add(middleContent.getPanel(), BorderLayout.CENTER);
         mainInsidePanel.add(downBar.getDownBar(), BorderLayout.SOUTH);
         frame.add(mainInsidePanel);
-    }
-
-    /**
-     * Returns the controller associated with this {@code MainWindow}.
-     *
-     * @return the {@link Controller} instance managing application logic.
-     */
-    public Controller getController() {
-        return controller;
     }
 
     /**
@@ -141,6 +125,10 @@ public enum MainWindow {
      */
     public MiddleContent getMiddleContent() {
         return this.middleContent;
+    }
+
+    public Controller getController() {
+        return this.controller;
     }
 
     /**
