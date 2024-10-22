@@ -3,6 +3,7 @@ import Domain.Controller;
 import Domain.Cut;
 import Domain.DTO.BitDTO;
 
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -22,7 +23,8 @@ public class MiddleContent {
     public enum MiddleWindowType {
         FOLDER, CONFIG, CUT, SIMULATION, EXPORT
     }
-    private JPanel panel;
+
+    private final JPanel panel;
     private CutWindow cutWindow;
     private FolderWindow projectWindow;
     private ConfigChoiceWindow configChoiceWindow;
@@ -92,37 +94,37 @@ public class MiddleContent {
      * @param type The window that need to be displayed.
      */
     public void changePanel(MiddleWindowType type) {
+        DownBar db = MainWindow.INSTANCE.getDownBar();
         switch (type) {
             case FOLDER -> {
                 ((CardLayout) panel.getLayout()).show(panel, "folder");
                 current = MiddleWindowType.FOLDER;
                 projectWindow.requestFocusInWindow();
-                break;
+                db.setButtonBlueToIndex(0);
             }
             case CONFIG -> {
                 ((CardLayout) panel.getLayout()).show(panel, "config");
                 current = MiddleWindowType.CONFIG;
                 configChoiceWindow.requestFocusInWindow();
-                break;
+                db.setButtonBlueToIndex(1);
             }
             case CUT -> {
                 ((CardLayout) panel.getLayout()).show(panel, "cut");
                 current = MiddleWindowType.CUT;
                 cutWindow.getScreen(1).requestFocusInWindow();
-                break;
+                db.setButtonBlueToIndex(2);
             }
             case SIMULATION -> {
                 ((CardLayout) panel.getLayout()).show(panel, "simulation");
                 current = MiddleWindowType.SIMULATION;
                 simulationWindow.getRenderer().requestFocusInWindow();
-                break;
+                db.setButtonBlueToIndex(3);
             }
             case EXPORT -> {
                 ((CardLayout) panel.getLayout()).show(panel, "export");
                 current = MiddleWindowType.EXPORT;
                 exportWindow.getRenderer().requestFocusInWindow();
-                current = MiddleWindowType.EXPORT;
-                break;
+                db.setButtonBlueToIndex(4);
             }
         }
     }

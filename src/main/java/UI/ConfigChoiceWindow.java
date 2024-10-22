@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class ConfigChoiceWindow extends JPanel {
-    private Rendering2DWindow rend;
+    private final Rendering2DWindow rend;
     private final BigButton nextButton = new BigButton("Suivant");
     private BitSelectionPanel bitWindow;
     private BasicWindow attributeWindow;
@@ -92,7 +92,7 @@ public class ConfigChoiceWindow extends JPanel {
                     gbc.gridy = 1;
                     attributeWindow.add(new JLabel(bit.getText()), gbc);
                     for (int j = 0; j < bitWindow.getBitList().length; j++) {
-                        bitWindow.getBitList()[j].setSelected(finalI ==j);
+                        bitWindow.getBitList()[j].setSelected(finalI == j);
                     }
                     attributeWindow.removeAll();
                     attributeWindow.repaint();

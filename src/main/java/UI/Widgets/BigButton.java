@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BigButton extends JPanel {
-    private JButton button;
+    private final JButton button;
 
     /**
      * @return The button

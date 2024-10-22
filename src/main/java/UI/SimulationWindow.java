@@ -9,17 +9,20 @@ import UI.Widgets.BigButton;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SimulationWindow extends JPanel {
 
-    private BigButton nextButton = new BigButton("Suivant");
+    private final BigButton nextButton = new BigButton("Suivant");
     private Renderer renderer;
 
     public SimulationWindow() {
         this.setLayout(new GridBagLayout());
         init();
+        setButtonEventHandler();
     }
 
     public Renderer getRenderer() {
@@ -68,5 +71,12 @@ public class SimulationWindow extends JPanel {
         nextButton.revalidate();
     }
 
-
+    private void setButtonEventHandler() {
+        nextButton.getButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainWindow.INSTANCE.getMiddleContent().nextWindow();
+            }
+        });
+    }
 }

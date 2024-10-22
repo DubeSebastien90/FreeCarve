@@ -5,16 +5,12 @@ import UI.SubWindows.Rendering2DWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 
 /**
  * This {@code MainWindow} class encapsulates the main frame of the application.
@@ -77,7 +73,7 @@ public enum MainWindow {
         frame = new JFrame();
         uiConfig = UIConfig.INSTANCE;
         borderLayout = new BorderLayout();
-        downBar = new DownBar(this);
+        downBar = new DownBar();
         topBar = new TopBar();
         leftBar = new LeftBar();
         middleContent = new MiddleContent(this);
@@ -99,6 +95,13 @@ public enum MainWindow {
      */
     public LeftBar getLeftBar() {
         return this.leftBar;
+    }
+
+    /**
+     * @return The {@code Downbar} of this {@code MainWindow}
+     */
+    public DownBar getDownBar() {
+        return this.downBar;
     }
 
     public MiddleContent getMiddleContent() {

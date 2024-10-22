@@ -58,8 +58,7 @@ public class ProjectState {
      * change the name or diameter of a bit.
      *
      * @param position The position of the bit in the bitList
-     * @param name     The name of the bit
-     * @param diameter The diameter of the bit
+     * @param bitDTO The DTO of the bit
      */
     void updateBit(int position, BitDTO bitDTO) {
         if (position < 0 || position > bitList.length)

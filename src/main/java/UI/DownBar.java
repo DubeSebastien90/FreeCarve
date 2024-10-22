@@ -2,13 +2,11 @@ package UI;
 
 
 import UI.Widgets.ColoredBox;
-import com.formdev.flatlaf.ui.FlatArrowButton;
 
 import static Util.UiUtil.createSVGButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicArrowButton;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,40 +21,29 @@ import java.util.ArrayList;
  * @since 2024-09-21
  */
 public class DownBar {
-    private UIConfig uiConfig = UIConfig.INSTANCE;
-    private JPanel panel;
+    private final UIConfig uiConfig = UIConfig.INSTANCE;
     private JScrollPane scrollPane;
-    private JPanel container;
-    private BoxLayout horizontalLayout;
-
-    private JButton folderButton;
-    private JButton bitsButton;
-    private JButton cutButton;
-    private JButton simulationButton;
-    private JButton exportButton;
 
     private JButton arrowLeft;
     private JButton arrowRight;
+    private final Color seenColor = UIManager.getColor("Button.blue");
+    private final Color currentColor = UIManager.getColor("Button.green");
+    private final Color notSeenColor = UIManager.getColor("Button.background");
 
     ArrayList<JButton> buttons;
     ArrayList<JComponent> components;
 
-    private Dimension coloredBoxDimension;
-    private Color coloredBoxColor;
-    int selectedButtonIndex;
-
-    private MainWindow mainWindow;
+    private final MainWindow mainWindow = MainWindow.INSTANCE;
 
     /**
      * Constructs a {@code DownBar} instance initializing all of it's sub-component,
      * setting up all of the actions of the buttons and setting the {@code folderButton} as the
      * initial state
      */
-    public DownBar(MainWindow mainWindow) {
-        this.mainWindow = mainWindow;
+    public DownBar() {
         init();
         this.setupButtonAction();
-        updateDownBar(folderButton);
+        setButtonBlueToIndex(0);
     }
 
     /**
@@ -67,38 +54,25 @@ public class DownBar {
     }
 
     /**
-     * @return the current selected button of the {@code DownBar}
-     */
-    public JButton getSelectedButtonIndex() {
-        return buttons.get(selectedButtonIndex);
-    }
-
-    /**
-     * Updates the appearance/functions of the buttons of the {@code DownBar}
-     * according to the button that was just clicked
+     * Sets all the buttons before the one clicked to blue, the button clicked to green and all the buttons after to the default button background color.
      *
-     * @param buttonClicked the button that was just clicked
+     * @param index the index of the clicked button
      */
-    private void updateDownBar(JButton buttonClicked) {
-        boolean beforeButtonClicked = false;
-        for (int i = 0; i < buttons.size(); i++) {
-            if (buttons.get(i) == buttonClicked) {
-                buttonClicked.setBackground(UIManager.getColor("Button.green"));
-                selectedButtonIndex = i;
-                beforeButtonClicked = true;
-            } else if (beforeButtonClicked) {
-                buttons.get(i).setBackground(UIManager.getColor("Button.background"));
-            } else {
-                buttons.get(i).setBackground(UIManager.getColor("Button.blue"));
-            }
-
-            // Updates the ColoredBox
+    public void setButtonBlueToIndex(int index) {
+        index = Math.max(Math.min(index, buttons.size()), 0);
+        for (int i = 0; i < index; i++) {
+            buttons.get(i).setBackground(seenColor);
             if (i > 0) {
-                Color col = buttons.get(i).getBackground();
-                int index = i * 2 - 1;
-                components.get(index).setBackground(col);
-
+                components.get(i * 2 - 1).setBackground(seenColor);
             }
+        }
+        if (index * 2 - 1 > 0) {
+            components.get(index * 2 - 1).setBackground(currentColor);
+        }
+        buttons.get(index).setBackground(currentColor);
+        for (int i = index + 1; i < buttons.size(); i++) {
+            buttons.get(i).setBackground(notSeenColor);
+            components.get(i * 2 - 1).setBackground(notSeenColor);
         }
     }
 
@@ -106,12 +80,14 @@ public class DownBar {
      * Gives every button it's function when clicked
      */
     private void setupButtonAction() {
-        for (JButton button : buttons) {
+        for (int i = 0; i < buttons.size(); i++) {
+            JButton button = buttons.get(i);
+            int finalI = i;
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    updateDownBar(button);
-                    mainWindow.getMiddleContent().changePanel(MiddleContent.MiddleWindowType.values()[selectedButtonIndex]);
+                    setButtonBlueToIndex(finalI);
+                    mainWindow.getMiddleContent().changePanel(MiddleContent.MiddleWindowType.values()[finalI]);
                 }
             });
         }
@@ -119,7 +95,6 @@ public class DownBar {
         arrowLeft.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                moveBackward();
                 mainWindow.getMiddleContent().previousWindow();
             }
         });
@@ -127,52 +102,31 @@ public class DownBar {
         arrowRight.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                moveForward();
                 mainWindow.getMiddleContent().nextWindow();
             }
         });
     }
 
     /**
-     * Select the next {@code DownBar} button, while respecting constraints
-     */
-    private void moveForward() {
-        if (selectedButtonIndex < buttons.size() - 1) {
-            selectedButtonIndex++;
-            updateDownBar(buttons.get(selectedButtonIndex));
-        }
-    }
-
-    /**
-     * Select the previous {@code DownBar} button, while respecting constraints
-     */
-    private void moveBackward() {
-        if (selectedButtonIndex > 0) {
-            selectedButtonIndex--;
-            updateDownBar(buttons.get(selectedButtonIndex));
-        }
-    }
-
-    /**
      * Initiates all of the {@code DownBar} components
      */
     private void init() {
-        panel = new JPanel();
+        JPanel panel = new JPanel();
         scrollPane = new JScrollPane();
-        container = new JPanel();
-        horizontalLayout = new BoxLayout(container, BoxLayout.X_AXIS);
-        coloredBoxDimension = new Dimension(20, 10);
-        coloredBoxColor = UIManager.getColor("Button.background");
+        JPanel container = new JPanel();
+        BoxLayout horizontalLayout = new BoxLayout(container, BoxLayout.X_AXIS);
+        Dimension coloredBoxDimension = new Dimension(20, 10);
+        Color coloredBoxColor = UIManager.getColor("Button.background");
 
-        folderButton = new JButton("Fichier");
+        JButton folderButton = new JButton("Fichier");
         folderButton.setToolTipText("Menu fichier");
-        bitsButton = new JButton("Configuration");
+        JButton bitsButton = new JButton("Configuration");
         bitsButton.setToolTipText("Menu configuration");
-        cutButton = new JButton("Coupes");
+        JButton cutButton = new JButton("Coupes");
         cutButton.setToolTipText("Menu coupes");
-        simulationButton = new JButton("Simulation");
+        JButton simulationButton = new JButton("Simulation");
         simulationButton.setToolTipText("Menu simulation");
-        exportButton = new JButton("Exportation");
+        JButton exportButton = new JButton("Exportation");
         exportButton.setToolTipText("Menu exportation");
         arrowLeft = createSVGButton("leftArrow", true, "Menu précédent", uiConfig.getToolIconSize());
         arrowLeft.setBorder(null);
