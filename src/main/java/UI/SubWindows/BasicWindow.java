@@ -37,9 +37,11 @@ public class BasicWindow extends JPanel {
      * @param underHeaderPanel {@code JPanel} that goes under the header
      */
     public void setupHeader(String headerName, JScrollPane underHeaderPanel){
+        this.setBackground(UIManager.getColor("SubWindow.header"));
         this.setLayout(new BorderLayout());
         Header header = new Header(headerName);
         this.add(header, BorderLayout.NORTH);
+        this.setBorder(new EmptyBorder(0,0, 10, 0));
         this.add(underHeaderPanel, BorderLayout.CENTER);
     }
 

@@ -1,18 +1,14 @@
 package UI;
 
-import Domain.ThirdDimension.Mesh;
-import Domain.ThirdDimension.Plane;
-import Domain.ThirdDimension.Pyramid;
-import Domain.ThirdDimension.Vertex;
+import UI.SubWindows.AttributePanel;
 import UI.SubWindows.BasicWindow;
-import UI.SubWindows.CutList;
+import UI.SubWindows.CutListPanel;
 import UI.SubWindows.Rendering2DWindow;
+import UI.Widgets.Attributable;
 import UI.Widgets.ChooseDimension;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The {@code CutWindow} class encapsulates the sub-windows necessary for using the
@@ -29,8 +25,9 @@ public class CutWindow {
     private JPanel panel1;
     private JPanel panel2;
     private JPanel panel3;
-    private JPanel panel4;
-    private CutList cutList;
+    private CutListPanel cutListPanel;
+    private AttributePanel attributePanel;
+    private Attributable selectedAttributable;
 
     /**
      * Constructs a {@code CutWindow} instance initializing all of it's sub-panels
@@ -57,27 +54,30 @@ public class CutWindow {
     }
 
     /**
+     * Set the selected element of the CutWindow and changed the AttributePanel accordingly
+     * @param selectedAttributable the selectedAttribute selected
+     */
+    public void setSelectedAttributable(Attributable selectedAttributable) {
+        this.selectedAttributable = selectedAttributable;
+        this.attributePanel.updateAttribute(this.selectedAttributable);
+    }
+
+    /**
      * Initiates all of the {@code CutWindow} components
      */
     private void init() {
         panel1 = new Rendering2DWindow();
 
+        attributePanel = new AttributePanel(true, this);
+        panel2 = attributePanel;
 
-        BasicWindow attribute = new BasicWindow(true);
-        attribute.add(new ChooseDimension());
-        panel2 = attribute;
+        cutListPanel = new CutListPanel(true, this);
+        panel3 = cutListPanel;
 
-        panel3 = new JPanel();
-
-        CutList cutList = new CutList(true);
-        panel4 = cutList;
-
-        splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panel1, panel2);
-        splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panel3, panel4);
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane1, splitPane2);
+        splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panel2, panel3);
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel1, splitPane1);
 
         splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 2);
-        splitPane2.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 2);
         mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 2);
     }
 }

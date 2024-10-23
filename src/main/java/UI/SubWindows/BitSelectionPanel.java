@@ -1,18 +1,12 @@
 package UI.SubWindows;
 
-import UI.Widgets.BitInfoDisplay;
-import Domain.Bit;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.List;
 
-public class BitSelectionWindow extends BasicWindow {
+public class BitSelectionPanel extends BasicWindow {
     private JToggleButton[] bitList = new JToggleButton[12];
 
-    public BitSelectionWindow() {
+    public BitSelectionPanel() {
         super(true);
         for (int i = 0; i < bitList.length; i++) {
             bitList[i] = new JToggleButton("bit" + i);

@@ -1,27 +1,25 @@
 package UI;
 
 import UI.SubWindows.BasicWindow;
-import UI.SubWindows.BitSelectionWindow;
+import UI.SubWindows.BitSelectionPanel;
 import UI.SubWindows.Rendering2DWindow;
 import UI.Widgets.BigButton;
 import UI.Widgets.ChooseDimension;
-import Util.UiUtil;
 
 import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.*;
 
 public class ConfigChoiceWindow extends JPanel {
     private Rendering2DWindow rend;
     private final BigButton nextButton = new BigButton("Suivant");
-    private BitSelectionWindow bitWindow;
+    private BitSelectionPanel bitWindow;
     private BasicWindow attributeWindow;
 
     public ConfigChoiceWindow() {
         this.setLayout(new GridBagLayout());
         rend = new Rendering2DWindow();
-        bitWindow = new BitSelectionWindow();
+        bitWindow = new BitSelectionPanel();
         attributeWindow = new BasicWindow(true);
         setFocusable(true);
         requestFocusInWindow();

@@ -2,6 +2,8 @@ package Domain.DTO;
 
 import Domain.CutType;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +17,7 @@ public class CutDTO {
     private UUID idCut;
     private float depth;
     private int bitIndex;
-    private List<VertexDTO> points;
+    private ArrayList<VertexDTO> points;
     private CutType type;
 
     /**
@@ -25,11 +27,12 @@ public class CutDTO {
      * @param bitIndex index of the bit used to make the cut
      * @param type type of the cut {@code CutType}
      */
-    public CutDTO(UUID idCut, float depth, int bitIndex, CutType type){
+    public CutDTO(UUID idCut, float depth, int bitIndex, CutType type, ArrayList<VertexDTO> points){
         this.idCut = idCut;
         this.depth = depth;
         this.bitIndex = bitIndex;
         this.type = type;
+        this.points = points;
     }
 
     public int getBitIndex() {
@@ -47,4 +50,6 @@ public class CutDTO {
     public CutType getCutType(){
         return this.type;
     }
+
+    public List<VertexDTO> getPoints() {return this.points;}
 }

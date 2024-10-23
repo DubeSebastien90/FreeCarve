@@ -2,15 +2,17 @@ package UI.Widgets;
 
 import Domain.DTO.CutDTO;
 import Domain.CutType;
+import Domain.DTO.VertexDTO;
+import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
-import Domain.Cut;
 import Util.UiUtil;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.LabelUI;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.List;
 
 /**
  * The {@code CutBox} class is a UI class that encapsulates a box containing all the informations
@@ -20,7 +22,7 @@ import java.awt.*;
  * @version 0.1
  * @since 2024-09-21
  */
-public class CutBox {
+public class CutBox implements Attributable {
     private CutDTO cut;
     private JPanel panel;
     private GridBagLayout layout;
@@ -28,13 +30,146 @@ public class CutBox {
     private JLabel numberLabel;
     private RoundedJLabel coordinateLabel;
     private JLabel imageLabel;
+    private int index;
+    private boolean selected;
+    private CutListPanel parent;
+    private PointsBox pointsBox;
 
-    public CutBox(CutDTO cutDTO, int index){
+    /**
+     * Basic constructor of {@code CutBox}, initiates all of the UI values and get a reference to the CutList parent
+     * @param cutDTO cut that CutBox will present
+     * @param index index of the cut
+     * @param parent reference to the CutList parent
+     */
+    public CutBox(CutDTO cutDTO, int index, CutListPanel parent){
         this.cut = cutDTO;
+        this.index = index;
+        this.parent = parent;
         this.init();
-        this.updatePanel(this.cut, index);
+        this.setBackgroundToIndex();
+        this.updatePanel(this.cut);
+        this.setupMouseEvents();
     }
 
+    @Override
+    public JLabel showName(){
+        JLabel label = new JLabel(this.imageLabel.getIcon());
+        label.setText("Coupe " + this.index);
+        label.setBackground(Color.YELLOW);
+        label.setBorder(new EmptyBorder(0,0,10, 0));
+        return label;
+    }
+
+    /**
+     * Function override of the Attributable interface
+     * @return {@code JPanel} of the attribute modification of the CutBox
+     */
+    @Override
+    public JPanel showAttribute() {
+        pointsBox = new PointsBox(true);
+        return pointsBox;
+    }
+
+    /**
+     * Modify all of the attributes and UI values of the CutBox based on a new CutDTO
+     * @param newCutDTO new CutDTO to modify the CutBox with
+     */
+    public void updatePanel(CutDTO newCutDTO){
+        this.cut = newCutDTO;
+
+        // Setting the bit info
+        bitnameLabel.setText((String.valueOf(newCutDTO.getBitIndex())));
+
+        // Setting the index of the cut
+        numberLabel.setText(String.valueOf(this.index));
+
+        // Setting the image of the cutbox
+        CutType type = this.cut.getCutType();
+        String iconName = "";
+        switch(type){
+            case BORDER -> iconName = "forbidden";
+            case L_SHAPE -> iconName = "coupeL";
+            case RECTANGULAR -> iconName = "rectangle";
+            case LINE_HORIZONTAL -> iconName = "parallel";
+            case LINE_VERTICAL -> iconName = "parallel";
+            default -> iconName = "forbidden"; // default in case of bad name of icon
+        }
+        imageLabel.setIcon(UiUtil.getIcon(iconName, UIConfig.INSTANCE.getCutBoxIconSize(),
+                UIManager.getColor("button.Foreground")));
+
+        // Setting the coordiante value of the Cut
+        List<VertexDTO> points = newCutDTO.getPoints();
+        String coordinateText = points.getFirst().format2D() + " - " + points.getLast().format2D();
+        coordinateLabel.setText(coordinateText);
+    }
+
+    /**
+     * @return {@code JPanel} of the CutBox
+     */
+    public JPanel getPanel(){
+        return this.panel;
+    }
+
+    /**
+     * Set the CutBox as non-selected
+     */
+    public void deselect(){
+        this.selected = false;
+        setBackgroundToIndex();
+
+    }
+
+    /**
+     * Set the background of the CutBox according to it's index
+     */
+    private void setBackgroundToIndex(){
+        if (this.index % 2 == 0){
+            this.panel.setBackground(UIManager.getColor("SubWindow.darkBackground1"));
+        }
+        else{
+            this.panel.setBackground(UIManager.getColor("SubWindow.darkBackground2"));
+        }
+    }
+
+    /**
+     * Setup the custom mouse events of the CutBox
+     */
+    private void setupMouseEvents(){
+        this.panel.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                parent.setSelectedCutWindow(CutBox.this);
+                parent.refreshSelectedCutBox();
+                selected = true;
+                panel.setBackground(UIManager.getColor("Button.green"));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if(!selected) panel.setBackground(UIManager.getColor("Button.blue"));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if(!selected) setBackgroundToIndex();
+            }
+        });
+    }
+
+    /**
+     * Initialize the UI components
+     */
     private void init(){
 
         layout = new GridBagLayout();
@@ -85,28 +220,5 @@ public class CutBox {
         panel.add(coordinateLabel, gc);
     }
 
-    public void updatePanel(CutDTO newCutDTO, int index){
-        this.cut = newCutDTO;
-        bitnameLabel.setText((String.valueOf(newCutDTO.getBitIndex())));
-        numberLabel.setText(String.valueOf(index));
-
-        CutType type = this.cut.getCutType();
-        String iconName = "";
-        switch(type){
-            case BORDER -> iconName = "forbidden";
-            case L_SHAPE -> iconName = "coupeL";
-            case RECTANGULAR -> iconName = "rectangle";
-            case LINE_HORIZONTAL -> iconName = "parallel";
-            case LINE_VERTICAL -> iconName = "parallel";
-            default -> iconName = "forbidden"; // default in case of bad name of icon
-        }
-        //        coordinateLabel.setText();
-        imageLabel.setIcon(UiUtil.getIcon(iconName, UIConfig.INSTANCE.getCutBoxIconSize(),
-                UIManager.getColor("button.Foreground")));
-    }
-
-    public JPanel getPanel(){
-        return this.panel;
-    }
 
 }

@@ -29,4 +29,11 @@ public class VertexDTO {
     public float getZ() {
         return z;
     }
+
+    /**
+     * @return a formatted string of the 2D components of the vertex
+     */
+    public String format2D (){
+        return "(" + x + "," + y + ")";
+    }
 }
