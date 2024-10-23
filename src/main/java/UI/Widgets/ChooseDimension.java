@@ -1,11 +1,13 @@
 package UI.Widgets;
 
 import UI.SubWindows.BasicWindow;
-import Util.UiUtil;
 
 import javax.swing.*;
 import java.awt.*;
 
+//TODO Right now its really nothing, but it is supposed to be a little jpanel with fields for the inputs of the new dimensions of the board.
+// Activates only when clicked on the board or the clampzones
+// feel free to completely changes this class
 public class ChooseDimension extends BasicWindow {
 
     public ChooseDimension() {

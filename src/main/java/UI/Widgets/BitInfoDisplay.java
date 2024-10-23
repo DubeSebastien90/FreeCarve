@@ -9,6 +9,7 @@ import Domain.Bit;
 import javax.swing.*;
 import java.awt.*;
 
+//TODO, Supposed to be a small jpanel linked with a bit and when the attributes in the JPanel changes the bit changes
 public class BitInfoDisplay extends BasicWindow {
     private BitDTO bit;
     private Boolean editable;

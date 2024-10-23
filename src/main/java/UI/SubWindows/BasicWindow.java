@@ -2,15 +2,12 @@ package UI.SubWindows;
 
 import UI.Widgets.Header;
 import Util.UiUtil;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class BasicWindow extends JPanel {
-
 
     public BasicWindow(boolean haveBackground) {
         this.setLayout(new GridBagLayout());
@@ -21,10 +18,11 @@ public class BasicWindow extends JPanel {
 
     /**
      * Instantiate the header of the subwindow, adding the header and the panel going under it
-     * @param headerName name of the header
+     *
+     * @param headerName       name of the header
      * @param underHeaderPanel {@code JPanel} that goes under the header
      */
-    public void setupHeader(String headerName, JPanel underHeaderPanel){
+    public void setupHeader(String headerName, JPanel underHeaderPanel) {
         this.setLayout(new BorderLayout());
         Header header = new Header(headerName);
         this.add(header, BorderLayout.NORTH);
@@ -33,7 +31,8 @@ public class BasicWindow extends JPanel {
 
     /**
      * Instantiate the header of the subwindow, adding the header and the panel going under it
-     * @param headerName name of the header
+     *
+     * @param headerName       name of the header
      * @param underHeaderPanel {@code JPanel} that goes under the header
      */
     public void setupHeader(String headerName, JScrollPane underHeaderPanel){
