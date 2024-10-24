@@ -2,8 +2,8 @@ package UI.Widgets;
 
 import Domain.ThirdDimension.Mesh;
 import Domain.ThirdDimension.Vertex;
-import UI.Renderer;
 import Domain.ThirdDimension.Matrix;
+import UI.SubWindows.Renderer;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -65,7 +65,7 @@ public class BoutonRotation implements KeyListener, MouseListener {
                     if (movementType == 0) {
                         renderer.translationMesh(selectedMesh, new Vertex(0, 3, 0));
                     } else {
-                        renderer.rotationMesh(selectedMesh, renderer.getVertexX(),1);
+                        renderer.rotationMesh(selectedMesh, renderer.getVertexX(), 1);
                     }
                     break;
                 case KeyEvent.VK_D:

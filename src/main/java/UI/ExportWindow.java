@@ -6,6 +6,7 @@ import Domain.ThirdDimension.Pyramid;
 import Domain.ThirdDimension.Vertex;
 import UI.SubWindows.BasicWindow;
 import UI.Widgets.BigButton;
+import UI.SubWindows.Renderer;
 
 import javax.swing.*;
 import java.awt.*;

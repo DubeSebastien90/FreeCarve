@@ -1,4 +1,4 @@
-package UI;
+package UI.SubWindows;
 
 import Domain.ThirdDimension.Mesh;
 import Domain.ThirdDimension.Triangle;

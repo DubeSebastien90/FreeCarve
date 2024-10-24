@@ -7,6 +7,9 @@ import Domain.DTO.BitDTO;
 import javax.swing.*;
 import java.awt.*;
 
+import UI.LeftBar.ToolBar.Tool;
+import UI.SubWindows.Rendering2DWindow;
+
 /**
  * The {@code MiddleContent} class encapsulates the UI container of the middle
  * section of the UI : it contains all of the sub-windows
@@ -38,6 +41,20 @@ public class MiddleContent {
         this.mainWindow = mainWindow;
         init();
         this.panel.setBackground(Color.RED);
+    }
+
+    /**
+     * @return The configChoiceWindow of the project.
+     */
+    public ConfigChoiceWindow getConfigChoiceWindow() {
+        return this.configChoiceWindow;
+    }
+
+    /**
+     * @return The currently displayed window
+     */
+    public MiddleWindowType getCurrent() {
+        return this.current;
     }
 
     /**
@@ -95,6 +112,7 @@ public class MiddleContent {
      */
     public void changePanel(MiddleWindowType type) {
         DownBar db = MainWindow.INSTANCE.getDownBar();
+        LeftBar lb = MainWindow.INSTANCE.getLeftBar();
         switch (type) {
             case FOLDER -> {
                 ((CardLayout) panel.getLayout()).show(panel, "folder");
@@ -107,12 +125,16 @@ public class MiddleContent {
                 current = MiddleWindowType.CONFIG;
                 configChoiceWindow.requestFocusInWindow();
                 db.setButtonBlueToIndex(1);
+                lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.SCALE, Tool.FORBIDDEN});
+                lb.getToolBar().disableTools(new Tool[]{Tool.COUPEL, Tool.GRID, Tool.MAGNET, Tool.MODIFY, Tool.PARALLEL, Tool.RECTANGLE, Tool.TRASH, Tool.RETAILLER});
             }
             case CUT -> {
                 ((CardLayout) panel.getLayout()).show(panel, "cut");
                 current = MiddleWindowType.CUT;
                 cutWindow.getScreen(1).requestFocusInWindow();
                 db.setButtonBlueToIndex(2);
+                lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.COUPEL, Tool.GRID, Tool.MAGNET, Tool.MODIFY, Tool.PARALLEL, Tool.RECTANGLE, Tool.RETAILLER});
+                lb.getToolBar().disableTools(new Tool[]{Tool.SCALE, Tool.FORBIDDEN, Tool.TRASH});
             }
             case SIMULATION -> {
                 ((CardLayout) panel.getLayout()).show(panel, "simulation");
@@ -126,6 +148,19 @@ public class MiddleContent {
                 exportWindow.getRenderer().requestFocusInWindow();
                 db.setButtonBlueToIndex(4);
             }
+        }
+    }
+
+    /**
+     * Zooms on the origin of the Rendering2dWindow if one is currently displayed on this JPanel
+     *
+     * @param zoomfactor The zooming delta. A negative one will make the board seems bigger.
+     */
+    public void zoom(int zoomfactor) {
+        if (current == MiddleWindowType.CONFIG) {
+            configChoiceWindow.getRendering2DWindow().zoomOrigin(zoomfactor);
+        } else if (current == MiddleWindowType.CUT) {
+            ((Rendering2DWindow) cutWindow.getScreen(1)).zoomOrigin(zoomfactor);
         }
     }
 }

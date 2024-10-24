@@ -178,4 +178,14 @@ public class Rendering2DWindow extends JPanel {
         return new Rectangle((int) ((rectangle.x + offsetX) * zoom), (int) (((-1 * (rectangle.y - wH)) - ((offsetY + rectangle.height) * zoom))), (int) (rectangle.width * zoom), (int) (rectangle.height * zoom));
     }
 
+    /**
+     * Zooms to the center of this panel.
+     *
+     * @param zoomFactor The zooming delta. A negative one will make the board seems bigger.
+     */
+    public void zoomOrigin(double zoomFactor) {
+        zoom -= zoom / zoomFactor;
+        repaint();
+    }
+
 }

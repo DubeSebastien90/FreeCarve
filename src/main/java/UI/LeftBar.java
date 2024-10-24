@@ -2,6 +2,9 @@ package UI;
 
 import javax.swing.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import static Util.UiUtil.createSVGButton;
 
 /**
@@ -15,7 +18,7 @@ import static Util.UiUtil.createSVGButton;
 public class LeftBar extends JScrollPane {
 
     private final UIConfig uiConfig = UIConfig.INSTANCE;
-    private ToolBar toolBar;
+    private final ToolBar toolBar;
 
     /**
      * Constructs a new {@code LeftBar} object and initialize it with a new {@code ToolBar}
@@ -25,6 +28,7 @@ public class LeftBar extends JScrollPane {
         setViewportView(toolBar);
         setBorder(null);
         setVisible(true);
+        activateAllListener();
     }
 
     /**
@@ -48,7 +52,7 @@ public class LeftBar extends JScrollPane {
          * Take note that if you add a tool to the toolbar, you must update the {@code Tool} enum.
          */
         public enum Tool {
-            SAVE(0), UNDO(2), REDO(3), TRASH(5), GRID(6), MAGNET(7), SCALE(8), PARALLEL(10), RECTANGLE(11), COUPEL(12), RETAILLER(13), MODIFY(14), FORBIDDEN(15), ZOOMOUT(17), ZOOMIN(18), SETTING(19);
+            SAVE(0), UNDO(2), REDO(3), TRASH(4), GRID(6), MAGNET(7), SCALE(8), PARALLEL(10), RECTANGLE(11), COUPEL(12), RETAILLER(13), MODIFY(14), FORBIDDEN(15), ZOOMOUT(17), ZOOMIN(18), SETTING(19);
 
             private final int value;
 
@@ -82,7 +86,8 @@ public class LeftBar extends JScrollPane {
          * Initiates the {@code ToolBar} with some predefine tools
          */
         private void init() {
-            add(createSVGButton("save", true, "Enregistrer", uiConfig.getToolIconSize()));
+            JButton save = createSVGButton("save", true, "Enregistrer", uiConfig.getToolIconSize());
+            add(save);
             addSeparator();
             add(createSVGButton("undo", false, "Undo", uiConfig.getToolIconSize()));
             add(createSVGButton("redo", false, "Redo", uiConfig.getToolIconSize()));
@@ -123,6 +128,28 @@ public class LeftBar extends JScrollPane {
         }
 
         /**
+         * Enables multiples tools in the {@code ToolBar}
+         *
+         * @param tools A list of tools that needs to be enabled
+         */
+        public void enableTools(Tool[] tools) {
+            for (Tool tool : tools) {
+                enableTool(tool);
+            }
+        }
+
+        /**
+         * Disables multiples tools in the {@code ToolBar}
+         *
+         * @param tools A list of tools that needs to be disabled
+         */
+        public void disableTools(Tool[] tools) {
+            for (Tool tool : tools) {
+                disableTool(tool);
+            }
+        }
+
+        /**
          * Assumes every tool is a JButton.
          *
          * @param tool The tool you want to get
@@ -131,5 +158,35 @@ public class LeftBar extends JScrollPane {
         public JButton getTool(Tool tool) {
             return (JButton) getComponent(tool.value);
         }
+    }
+
+    private void activateAllListener() {
+        saveActionListener();
+        zoomActionListener();
+    }
+
+    private void saveActionListener() {
+        toolBar.getTool(ToolBar.Tool.SAVE).addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //todo
+            }
+        });
+    }
+
+    private void zoomActionListener() {
+        toolBar.getTool(ToolBar.Tool.ZOOMIN).addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainWindow.INSTANCE.getMiddleContent().zoom(-5);
+            }
+        });
+
+        toolBar.getTool(ToolBar.Tool.ZOOMOUT).addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainWindow.INSTANCE.getMiddleContent().zoom(5);
+            }
+        });
     }
 }

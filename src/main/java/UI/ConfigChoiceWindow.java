@@ -31,6 +31,10 @@ public class ConfigChoiceWindow extends JPanel {
         this.selectedBit = 0;
     }
 
+    public Rendering2DWindow getRendering2DWindow() {
+        return this.rend;
+    }
+
     public void init() {
         GridBagConstraints gbc = new GridBagConstraints();
 
