@@ -106,7 +106,7 @@ public class PanelCNC {
      * @param width  The new width of the board.
      * @param height The new height of the board.
      */
-    void rezise(float width, float height) {
+    void resize(float width, float height) {
         //todo
     }
 

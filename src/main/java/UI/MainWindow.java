@@ -31,7 +31,6 @@ public enum MainWindow {
     private MiddleContent middleContent;
     private Controller controller;
 
-
     /**
      * Constructs a {@code MainWindow} instance by activating the LaF, initializing
      * it's attributes and setting up all the relevant event listeners functions
@@ -41,6 +40,9 @@ public enum MainWindow {
 //        this.init();
 //        this.setupEventListener();
 //    }
+    public Controller getController() {
+        return controller;
+    }
 
     /**
      * Starts the {@code MainWindow} by making it's {@code JFrame} visible
@@ -118,9 +120,5 @@ public enum MainWindow {
 
             }
         });
-    }
-
-    public Controller getController(){
-        return controller;
     }
 }

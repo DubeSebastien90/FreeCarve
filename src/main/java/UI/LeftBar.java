@@ -160,11 +160,18 @@ public class LeftBar extends JScrollPane {
         }
     }
 
+    /**
+     * Sets all the action listener on the different tools in the toolbar.
+     */
     private void activateAllListener() {
         saveActionListener();
         zoomActionListener();
+        scaleActionListener();
     }
 
+    /**
+     * Sets the save button in the toolBar to save the project at the default place on the machine.
+     */
     private void saveActionListener() {
         toolBar.getTool(ToolBar.Tool.SAVE).addActionListener(new ActionListener() {
             @Override
@@ -174,6 +181,9 @@ public class LeftBar extends JScrollPane {
         });
     }
 
+    /**
+     * Sets the two zoom button to zoom or de zoom the 2dRenderer if one is displayed on screen.
+     */
     private void zoomActionListener() {
         toolBar.getTool(ToolBar.Tool.ZOOMIN).addActionListener(new ActionListener() {
             @Override
@@ -186,6 +196,21 @@ public class LeftBar extends JScrollPane {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainWindow.INSTANCE.getMiddleContent().zoom(5);
+            }
+        });
+    }
+
+    /**
+     * Sets the scale tool to initiate the scaling procedure.
+     */
+    private void scaleActionListener() {
+        toolBar.getTool(ToolBar.Tool.SCALE).addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MiddleContent middle = MainWindow.INSTANCE.getMiddleContent();
+                if (middle.getCurrent() == MiddleContent.MiddleWindowType.CONFIG) {
+                    middle.getConfigChoiceWindow().getRendering2DWindow().scale();
+                }
             }
         });
     }

@@ -15,10 +15,10 @@ import java.util.UUID;
  */
 public class Controller {
     private final FileManager fileManager = new FileManager();
-    private final UndoRedo undoRedo;
+    private UndoRedo undoRedo;
 
     public Controller() {
-        undoRedo = new UndoRedo();
+
     }
     public Controller(UndoRedo undoRedo) {
         this.undoRedo = undoRedo;
@@ -48,6 +48,16 @@ public class Controller {
      */
     public PanelDTO getPanelCNC() {
         return getProjectState().getBoard();
+    }
+
+    /**
+     * Resizes the board to the desired size. The desired size must respect the CNC size constraints.
+     *
+     * @param width  The new width of the board.
+     * @param height The new height of the board.
+     */
+    public void resizePanel(float width, float height) {
+        this.undoRedo.getCurrentState().getBoard().resize(width, height);
     }
 
     /**

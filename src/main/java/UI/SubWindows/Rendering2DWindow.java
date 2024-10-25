@@ -1,10 +1,13 @@
 package UI.SubWindows;
 
+import UI.MainWindow;
+import UI.Widgets.PersoPoint;
 import Util.UiUtil;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 /**
  * The {@code Rendering2DWindow} class is used to construct and display a board which represent the panel on the CNC. This
@@ -24,6 +27,8 @@ public class Rendering2DWindow extends JPanel {
     private double prevZoom;
     private int wW;
     private int wH;
+    private boolean draggingAPoint = false;
+    private final ArrayList<PersoPoint> points = new ArrayList<>();
 
     /**
      * Constructs a new {@code Rendering2dWindow} object and set the different listener useful for the zooming and more.
@@ -37,6 +42,22 @@ public class Rendering2DWindow extends JPanel {
     }
 
     /**
+     * @return The points displayed on the board.
+     */
+    public ArrayList<PersoPoint> getPoints() {
+        return points;
+    }
+
+    /**
+     * Sets the dragging a point attribute to a new value.
+     *
+     * @param draggingAPoint The new boolean value.
+     */
+    public void setDraggingAPoint(boolean draggingAPoint) {
+        this.draggingAPoint = draggingAPoint;
+    }
+
+    /**
      * Initiates the basic mouse listener for when the mouse is pressed.
      */
     private void addMouseListener() {
@@ -44,7 +65,6 @@ public class Rendering2DWindow extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 mousePt = e.getPoint();
-                System.out.println(zoom);
             }
         });
     }
@@ -57,17 +77,21 @@ public class Rendering2DWindow extends JPanel {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                offsetX -= ((mousePt.x - e.getPoint().x) / zoom);
-                offsetY += ((mousePt.y - e.getPoint().y) / zoom);
-                mousePt = e.getPoint();
-                repaint();
+                if (!draggingAPoint) {
+                    offsetX -= ((mousePt.x - e.getPoint().x) / zoom);
+                    offsetY += ((mousePt.y - e.getPoint().y) / zoom);
+                    mousePt = e.getPoint();
+                    repaint();
+                }
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                mousePt = e.getPoint();
-                fakeMousePt.setLocation((mousePt.x - (offsetX * zoom)) / zoom, ((-1 * (mousePt.y - wH)) - (offsetY * zoom)) / zoom);
-                repaint();
+                if (!draggingAPoint) {
+                    mousePt = e.getPoint();
+                    fakeMousePt.setLocation((mousePt.x - (offsetX * zoom)) / zoom, ((-1 * (mousePt.y - wH)) - (offsetY * zoom)) / zoom);
+                    repaint();
+                }
             }
         });
     }
@@ -117,6 +141,7 @@ public class Rendering2DWindow extends JPanel {
         super.paintComponent(graphics2D);
         drawRectangle(graphics2D);
         drawMousePos(graphics2D);
+        drawPoints(graphics2D);
     }
 
 
@@ -131,6 +156,18 @@ public class Rendering2DWindow extends JPanel {
         Rectangle panneauOffset = convertTomm(board);
         graphics2D.draw(panneauOffset);
         graphics2D.fill(panneauOffset);
+    }
+
+    /**
+     * Draws the points on this JPanel.
+     *
+     * @param graphics2D A graphics object which is painted on the JPanel.
+     */
+    private void drawPoints(Graphics2D graphics2D) {
+        graphics2D.setColor(Color.BLACK);
+        for (PersoPoint point : points) {
+            graphics2D.drawOval(((int) point.getLocationX()), ((int) point.getLocationY()), ((int) point.getRadius()), ((int) point.getRadius()));
+        }
     }
 
     /**
@@ -161,6 +198,7 @@ public class Rendering2DWindow extends JPanel {
      */
     private void resizePanneau(int newWidth, int newHeight) {
         board.setSize(newWidth, newHeight);
+        MainWindow.INSTANCE.getController().resizePanel(board.width, board.height);
     }
 
     /**
@@ -171,6 +209,7 @@ public class Rendering2DWindow extends JPanel {
      */
     private void deltaResizePanneau(int deltaWidth, int deltaHeight) {
         board.setSize(((int) board.getWidth()) - deltaWidth, ((int) board.getHeight()) - deltaHeight);
+        MainWindow.INSTANCE.getController().resizePanel(board.width, board.height);
     }
 
 
@@ -184,8 +223,120 @@ public class Rendering2DWindow extends JPanel {
      * @param zoomFactor The zooming delta. A negative one will make the board seems bigger.
      */
     public void zoomOrigin(double zoomFactor) {
+        points.clear();
         zoom -= zoom / zoomFactor;
         repaint();
+    }
+
+
+    /**
+     * Initializes the points and behavior for resizing the board.
+     * This includes setting up the necessary components and defining how
+     * the board responds to resize events.
+     */
+    public void scale() {
+        double locationX = (offsetX + board.x + board.width) * zoom;
+        double locationY = getHeight() - (board.y + offsetY + board.height) * zoom;
+        PersoPoint p = new PersoPoint(locationX, locationY, 5);
+        points.add(p);
+        setBasicPointMouseListener(p);
+        setScalePointMouseListener();
+        repaint();
+    }
+
+    /**
+     * Determines whether the mouse cursor is currently positioned over
+     * the board or a any other component.
+     *
+     * @param e The mouse event that triggered this check, providing details
+     *          about the current mouse position and state.
+     * @return {@code true} if the mouse is over the board or another component; {@code false} otherwise.
+     */
+    public boolean mouseOnSomething(MouseEvent e) {
+        if (isPointonPanel()) {
+            return true;
+        }
+        for (PersoPoint point : points) {
+            if (isPointClose(e, point)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a given mouse event is close to a specified point.
+     *
+     * @param e     The mouse event that contains the current mouse position.
+     * @param point The point to check against.
+     * @return {@code true} if the mouse event's position is within a threshold
+     * distance of the point; {@code false} otherwise.
+     */
+    private boolean isPointClose(MouseEvent e, PersoPoint point) {
+        double dx = e.getX() - point.getLocationX();
+        double dy = e.getY() - point.getLocationY();
+        return Math.sqrt(dx * dx + dy * dy) < 10;
+    }
+
+    /**
+     * Sets up basic mouse listeners for a specified point to handle dragging and
+     * interaction events. This should be called for each point that should be interactive.
+     *
+     * @param point The point for which the mouse listeners are being set up.
+     */
+    private void setBasicPointMouseListener(PersoPoint point) {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                if (!mouseOnSomething(e)) {
+                    points.clear();
+                    repaint();
+                } else if (isPointClose(e, point)) {
+                    draggingAPoint = true;
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (draggingAPoint) {
+                    super.mouseReleased(e);
+                    draggingAPoint = false;
+                    points.clear();
+                    repaint();
+                }
+            }
+        });
+
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (draggingAPoint) {
+                    super.mouseDragged(e);
+                    point.movePoint(e.getX(), e.getY());
+                    repaint();
+                }
+            }
+        });
+    }
+
+    /**
+     * Sets up a mouse motion listener to handle resizing the board when a
+     * point is being dragged.
+     */
+    private void setScalePointMouseListener() {
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (draggingAPoint) {
+                    super.mouseDragged(e);
+                    double newWidth = board.width + e.getX() - (offsetX + board.x + board.width) * zoom;
+                    double newHeight = board.height - e.getY() + (getHeight() - (board.y + offsetY + board.height) * zoom);
+                    resizePanneau((int) newWidth, (int) newHeight);
+                    repaint();
+                }
+            }
+        });
     }
 
 }
