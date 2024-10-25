@@ -15,6 +15,7 @@ public class PersoPoint {
     private double locationY;
     private double radius;
     private final Color color = Color.BLACK;
+    private final boolean filled;
 
     /**
      * Constructs a PersoPoint with the specified location and radius.
@@ -23,10 +24,18 @@ public class PersoPoint {
      * @param locationY The y-coordinate of the point.
      * @param radius    The radius of the point.
      */
-    public PersoPoint(double locationX, double locationY, double radius) {
+    public PersoPoint(double locationX, double locationY, double radius, boolean filled) {
         this.locationX = locationX;
         this.locationY = locationY;
         this.radius = radius;
+        this.filled = filled;
+    }
+
+    /**
+     * @return The filled value of the point.
+     */
+    public boolean getFilled() {
+        return filled;
     }
 
     /**

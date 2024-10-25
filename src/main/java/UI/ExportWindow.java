@@ -13,20 +13,41 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents an export window that displays a 3D renderer for visualizing
+ * the final board, and provides an export button to convert the board into GCode instructions.
+ *
+ * @author Adam Côté
+ * @version 1.0
+ * @since 2024-10-25
+ */
 public class ExportWindow extends JPanel {
 
     private BigButton nextButton = new BigButton("Export");
     private Renderer renderer;
 
+    /**
+     * Constructs an ExportWindow and initializes its layout and components.
+     */
     public ExportWindow() {
         this.setLayout(new GridBagLayout());
         init();
     }
 
+    /**
+     * Returns the renderer used in this export window.
+     *
+     * @return The Renderer instance responsible for displaying 3D shapes.
+     */
     public Renderer getRenderer() {
         return renderer;
     }
 
+    /**
+     * Initializes the layout and adds components to the export window.
+     * This method creates various 3D meshes and sets up the renderer with
+     * those meshes.
+     */
     public void init() {
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -71,6 +92,12 @@ public class ExportWindow extends JPanel {
         add(nextButton, gbc);
     }
 
+    /**
+     * Paints the component. This method calls the superclass's paint method
+     * and revalidates the export button.
+     *
+     * @param graphics The graphics context used for painting.
+     */
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);

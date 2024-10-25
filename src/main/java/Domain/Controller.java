@@ -15,10 +15,10 @@ import java.util.UUID;
  */
 public class Controller {
     private final FileManager fileManager = new FileManager();
-    private UndoRedo undoRedo;
+    private final UndoRedo undoRedo;
 
     public Controller() {
-
+        undoRedo = new UndoRedo();
     }
     public Controller(UndoRedo undoRedo) {
         this.undoRedo = undoRedo;

@@ -12,6 +12,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * Represents a configuration choice window that allows users to select
+ * options for the project. This window contains various components
+ * such as a rendering area, a bit selection window, and dimension
+ * configuration options.
+ *
+ * @author Adam Côté
+ * @version 1.0
+ * @since 2024-10-25
+ */
 public class ConfigChoiceWindow extends JPanel {
     private final Rendering2DWindow rend;
     private final BigButton nextButton = new BigButton("Suivant");
@@ -19,6 +29,9 @@ public class ConfigChoiceWindow extends JPanel {
     private BasicWindow attributeWindow;
     private int selectedBit;
 
+    /**
+     * Constructs a ConfigChoiceWindow and initializes its components and layout.
+     */
     public ConfigChoiceWindow() {
         this.setLayout(new GridBagLayout());
         rend = new Rendering2DWindow();
@@ -31,10 +44,19 @@ public class ConfigChoiceWindow extends JPanel {
         this.selectedBit = 0;
     }
 
+    /**
+     * Returns the Rendering2DWindow contained in this configuration choice window.
+     *
+     * @return The Rendering2DWindow instance.
+     */
     public Rendering2DWindow getRendering2DWindow() {
         return this.rend;
     }
 
+    /**
+     * Initializes the layout and adds the necessary components to the window.
+     * This method sets up the grid bag constraints for arranging components.
+     */
     public void init() {
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -78,6 +100,10 @@ public class ConfigChoiceWindow extends JPanel {
         add(nextButton, gbc);
     }
 
+    /**
+     * Sets the event handler for the next button. When the button is clicked,
+     * it triggers the action to proceed to the next window in the main interface.
+     */
     private void setButtonEventHandler() {
         nextButton.getButton().addActionListener(new ActionListener() {
             @Override
@@ -108,6 +134,12 @@ public class ConfigChoiceWindow extends JPanel {
         }
     }
 
+    /**
+     * Paints the component. This method calls the superclass's paint method
+     * and revalidates the next button.
+     *
+     * @param graphics The graphics context used for painting.
+     */
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);

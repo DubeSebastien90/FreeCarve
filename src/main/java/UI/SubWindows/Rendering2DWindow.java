@@ -81,6 +81,7 @@ public class Rendering2DWindow extends JPanel {
                     offsetX -= ((mousePt.x - e.getPoint().x) / zoom);
                     offsetY += ((mousePt.y - e.getPoint().y) / zoom);
                     mousePt = e.getPoint();
+                    points.clear();
                     repaint();
                 }
             }
@@ -106,6 +107,7 @@ public class Rendering2DWindow extends JPanel {
                 zoom -= zoom / zoomFactor;
                 offsetX = (mousePt.x - (fakeMousePt.x * zoom)) / zoom;
                 offsetY = ((-1 * (mousePt.y - wH)) - (fakeMousePt.y * zoom)) / zoom;
+                points.clear();
                 repaint();
             }
         });
@@ -166,7 +168,12 @@ public class Rendering2DWindow extends JPanel {
     private void drawPoints(Graphics2D graphics2D) {
         graphics2D.setColor(Color.BLACK);
         for (PersoPoint point : points) {
-            graphics2D.drawOval(((int) point.getLocationX()), ((int) point.getLocationY()), ((int) point.getRadius()), ((int) point.getRadius()));
+            if (point.getFilled()) {
+                graphics2D.fillOval(((int) point.getLocationX()), ((int) point.getLocationY()), ((int) point.getRadius()), ((int) point.getRadius()));
+            } else {
+                graphics2D.drawOval(((int) point.getLocationX()), ((int) point.getLocationY()), ((int) point.getRadius()), ((int) point.getRadius()));
+
+            }
         }
     }
 
@@ -235,10 +242,16 @@ public class Rendering2DWindow extends JPanel {
      * the board responds to resize events.
      */
     public void scale() {
-        double locationX = (offsetX + board.x + board.width) * zoom;
-        double locationY = getHeight() - (board.y + offsetY + board.height) * zoom;
-        PersoPoint p = new PersoPoint(locationX, locationY, 5);
+        double radius = 5;
+        double locationX = (offsetX + board.x + board.width) * zoom - radius / 2;
+        double locationY = getHeight() - (board.y + offsetY + board.height) * zoom - radius / 2;
+
+        PersoPoint p = new PersoPoint(locationX, locationY, radius, false);
+        PersoPoint p1 = new PersoPoint(locationX - board.width, locationY, radius, true);
+        PersoPoint p2 = new PersoPoint(locationX, locationY + board.height, radius, true);
+        points.add(p1);
         points.add(p);
+        points.add(p2);
         setBasicPointMouseListener(p);
         setScalePointMouseListener();
         repaint();
@@ -330,8 +343,11 @@ public class Rendering2DWindow extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 if (draggingAPoint) {
                     super.mouseDragged(e);
-                    double newWidth = board.width + e.getX() - (offsetX + board.x + board.width) * zoom;
-                    double newHeight = board.height - e.getY() + (getHeight() - (board.y + offsetY + board.height) * zoom);
+                    PersoPoint p = points.get(1);
+                    double newWidth = board.width + e.getX() - (offsetX + board.x + board.width) * zoom + p.getRadius() / 2;
+                    double newHeight = board.height - e.getY() + (getHeight() - (board.y + offsetY + board.height) * zoom) - p.getRadius() / 2;
+                    points.get(0).movePoint(p.getLocationX() - newWidth, p.getLocationY());
+                    points.get(2).movePoint(p.getLocationX(), p.getLocationY() + newHeight);
                     resizePanneau((int) newWidth, (int) newHeight);
                     repaint();
                 }
