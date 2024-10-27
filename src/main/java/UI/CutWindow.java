@@ -1,5 +1,7 @@
 package UI;
 
+import UI.Events.ChangeAttributeEvent;
+import UI.Events.ChangeAttributeListener;
 import UI.SubWindows.AttributePanel;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.CutListPanel;
@@ -18,7 +20,7 @@ import java.awt.*;
  * @version 0.1
  * @since 2024-09-21
  */
-public class CutWindow {
+public class CutWindow implements ChangeAttributeListener {
     private JSplitPane mainSplitPane;
     private JSplitPane splitPane1;
     private JSplitPane splitPane2;
@@ -34,6 +36,7 @@ public class CutWindow {
      * and sub-components
      */
     public CutWindow() {
+        super();
         this.init();
     }
 
@@ -55,10 +58,11 @@ public class CutWindow {
 
     /**
      * Set the selected element of the CutWindow and changed the AttributePanel accordingly
-     * @param selectedAttributable the selectedAttribute selected
+     * @param event ChangeAttributeEvent being called by a child class
      */
-    public void setSelectedAttributable(Attributable selectedAttributable) {
-        this.selectedAttributable = selectedAttributable;
+    @Override
+    public void changeAttributeEventOccurred(ChangeAttributeEvent event) {
+        this.selectedAttributable = event.getAttribute();
         this.attributePanel.updateAttribute(this.selectedAttributable);
     }
 
@@ -68,7 +72,7 @@ public class CutWindow {
     private void init() {
         panel1 = new Rendering2DWindow();
 
-        attributePanel = new AttributePanel(true, this);
+        attributePanel = new AttributePanel(true);
         panel2 = attributePanel;
 
         cutListPanel = new CutListPanel(true, this);

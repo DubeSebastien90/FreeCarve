@@ -33,6 +33,7 @@ public enum MainWindow {
     private LeftBar leftBar;
     private MiddleContent middleContent;
 
+
     /**
      * Constructs a {@code MainWindow} instance by activating the LaF, initializing
      * it's attributes and setting up all the relevant event listeners functions

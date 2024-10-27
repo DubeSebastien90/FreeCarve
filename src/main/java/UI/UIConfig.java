@@ -15,12 +15,13 @@ public enum UIConfig {
     INSTANCE;
 
     private final String windowTitle = "FreeCarve";
-    private final int defaultWindowWidth = 800;
-    private final int defaultWindowHeight = 600;
+    private final int defaultWindowWidth = 1200;
+    private final int defaultWindowHeight = 800;
     private final int toolIconSize = 20;
     private final int projectSelectionMenuButtonSize = 50;
     private final int cutBoxIconSize = 20;
     private final int scrollbarSpeed = 16;
+    private final int defaultPadding = 10;
 
     private UIConfig() {
     }
@@ -69,5 +70,10 @@ public enum UIConfig {
      * @return The speed of what the scrollbar should be
      */
     public int getScrollbarSpeed() {return scrollbarSpeed;}
+
+    /**
+     * @return the default padding of the element of this application
+     */
+    public int getDefaultPadding() {return defaultPadding;}
 
 }

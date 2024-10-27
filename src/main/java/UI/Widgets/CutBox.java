@@ -3,6 +3,9 @@ package UI.Widgets;
 import Domain.DTO.CutDTO;
 import Domain.CutType;
 import Domain.DTO.VertexDTO;
+import UI.Events.ChangeAttributeEvent;
+import UI.Events.ChangeAttributeListener;
+import UI.SubWindows.BasicWindow;
 import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
 import Util.UiUtil;
@@ -32,19 +35,18 @@ public class CutBox implements Attributable {
     private JLabel imageLabel;
     private int index;
     private boolean selected;
-    private CutListPanel parent;
-    private PointsBox pointsBox;
+    private ChangeAttributeListener listener;
 
     /**
      * Basic constructor of {@code CutBox}, initiates all of the UI values and get a reference to the CutList parent
      * @param cutDTO cut that CutBox will present
      * @param index index of the cut
-     * @param parent reference to the CutList parent
+     * @param listener reference to the parent listener
      */
-    public CutBox(CutDTO cutDTO, int index, CutListPanel parent){
+    public CutBox(CutDTO cutDTO, int index, ChangeAttributeListener listener){
         this.cut = cutDTO;
         this.index = index;
-        this.parent = parent;
+        this.listener = listener;
         this.init();
         this.setBackgroundToIndex();
         this.updatePanel(this.cut);
@@ -56,7 +58,7 @@ public class CutBox implements Attributable {
         JLabel label = new JLabel(this.imageLabel.getIcon());
         label.setText("Coupe " + this.index);
         label.setBackground(Color.YELLOW);
-        label.setBorder(new EmptyBorder(0,0,10, 0));
+        label.setBorder(new EmptyBorder(0,0,UIConfig.INSTANCE.getDefaultPadding(), 0));
         return label;
     }
 
@@ -66,8 +68,25 @@ public class CutBox implements Attributable {
      */
     @Override
     public JPanel showAttribute() {
-        pointsBox = new PointsBox(true);
-        return pointsBox;
+        BasicWindow container = new BasicWindow(true);
+        container.setBackground(null);
+        container.setOpaque(false);
+        GridBagLayout layout = new GridBagLayout();
+        GridBagConstraints gc = new GridBagConstraints();
+        container.setLayout(layout);
+        PointsBox pointsBox1 = new PointsBox(true, "Point1", this.cut.getPoints().get(0));
+        PointsBox pointsBox2 = new PointsBox(true, "Point2", this.cut.getPoints().get(1));
+        gc.gridx = 0; gc.gridy = 0;
+        gc.weightx = 1; gc.weighty = 1;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding()/3, 0);
+        container.add(pointsBox1, gc);
+
+        gc.gridx = 0; gc.gridy = 1;
+        gc.insets = new Insets(0, 0, 0,  0);
+        container.add(pointsBox2, gc);
+
+        return container;
     }
 
     /**
@@ -139,8 +158,8 @@ public class CutBox implements Attributable {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                parent.setSelectedCutWindow(CutBox.this);
-                parent.refreshSelectedCutBox();
+                ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
+                listener.changeAttributeEventOccurred(event);
                 selected = true;
                 panel.setBackground(UIManager.getColor("Button.green"));
             }
@@ -167,6 +186,7 @@ public class CutBox implements Attributable {
         });
     }
 
+
     /**
      * Initialize the UI components
      */
@@ -175,7 +195,8 @@ public class CutBox implements Attributable {
         layout = new GridBagLayout();
         panel = new JPanel(layout);
         panel.setAlignmentX(0);
-        panel.setBorder(new EmptyBorder(5,5,5,5));
+        panel.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
+                UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding()));
         GridBagConstraints gc = new GridBagConstraints();
         bitnameLabel = new RoundedJLabel("Bitname placeholder", 15);
         numberLabel = new JLabel("Number placeholder");

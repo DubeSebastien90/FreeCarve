@@ -4,11 +4,14 @@ import Domain.DTO.CutDTO;
 import Domain.CutType;
 import Domain.DTO.VertexDTO;
 import UI.CutWindow;
+import UI.Events.ChangeAttributeEvent;
+import UI.Events.ChangeAttributeListener;
 import UI.UIConfig;
 import UI.Widgets.CutBox;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.UUID;
 
 /**
@@ -18,21 +21,21 @@ import java.util.UUID;
  * @version 0.1
  * @since 2024-09-21
  */
-public class CutListPanel extends BasicWindow{
+public class CutListPanel extends BasicWindow implements  ChangeAttributeListener{
     private ArrayList<CutBox> cutBoxes;
     private ArrayList<CutDTO> cuts;
     private BasicWindow panel;
     private BoxLayout layout;
     private JScrollPane scrollPane;
-    private CutWindow parent;
+    private ChangeAttributeListener listener;
 
     /**
      * Constructs a {@code CutList} by initializing all of it's attributes
      */
-    public CutListPanel(boolean haveBackground, CutWindow parent) {
+    public CutListPanel(boolean haveBackground, ChangeAttributeListener listener) {
         super(haveBackground);
+        this.listener = listener;
         this.init();
-        this.parent = parent;
     }
 
     /**
@@ -71,14 +74,6 @@ public class CutListPanel extends BasicWindow{
     }
 
     /**
-     * Set the selectedAttributable of the parent window. The point is to simply pass down that information to the parent
-     * @param selectedCutBox the cutBox that was selected
-     */
-    public void setSelectedCutWindow(CutBox selectedCutBox){
-        parent.setSelectedAttributable(selectedCutBox);
-    }
-
-    /**
      * Initiates all of the {@code CutList} components
      */
     private void init() {
@@ -103,6 +98,10 @@ public class CutListPanel extends BasicWindow{
         tempList.add(new VertexDTO(0, 0, 0));
         tempList.add(new VertexDTO(5.0f/3.14f, 4.00006f, 34.34f));
 
+        ArrayList<VertexDTO> tempList2 = new ArrayList<VertexDTO>();
+        tempList2.add(new VertexDTO(45.0f, 12.0f, 0));
+        tempList2.add(new VertexDTO(3.3333f, 4.00006f, 34.34f));
+
         //TEST FOR DRAWING
         cuts.add(new CutDTO(new UUID(100000, 100000),
                 0.5f, 5,
@@ -117,7 +116,7 @@ public class CutListPanel extends BasicWindow{
         cuts.add(new CutDTO(new UUID(100000, 100000),
                 0.8f, 7,
                 CutType.BORDER,
-                tempList));
+                tempList2));
 
         cuts.add(new CutDTO(new UUID(100000, 100000),
                 0.8f, 7,
@@ -127,12 +126,12 @@ public class CutListPanel extends BasicWindow{
         cuts.add(new CutDTO(new UUID(100000, 100000),
                 0.8f, 7,
                 CutType.L_SHAPE,
-                tempList));
+                tempList2));
 
         cuts.add(new CutDTO(new UUID(100000, 100000),
                 0.8f, 7,
                 CutType.L_SHAPE,
-                tempList));
+                tempList2));
 
         cuts.add(new CutDTO(new UUID(100000, 100000),
                 0.8f, 7,
@@ -140,5 +139,14 @@ public class CutListPanel extends BasicWindow{
                 tempList));
 
         updateCutBoxes();
+    }
+    /**
+     * Set the selectedAttributable of the parent window. The point is to simply pass down that information to the parent
+     */
+    @Override
+    public void changeAttributeEventOccurred(ChangeAttributeEvent e) {
+        refreshSelectedCutBox();
+        ChangeAttributeEvent event = new ChangeAttributeEvent(this, e.getAttribute());
+        listener.changeAttributeEventOccurred(event);
     }
 }
