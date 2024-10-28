@@ -1,6 +1,10 @@
 package UI;
 
 import Domain.Controller;
+import Domain.CutType;
+import Domain.ProjectStateDTO;
+import Domain.RequestCutDTO;
+import Domain.ThirdDimension.VertexDTO;
 import UI.SubWindows.Rendering2DWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
@@ -8,6 +12,8 @@ import com.formdev.flatlaf.FlatLaf;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -44,7 +50,15 @@ public enum MainWindow {
         this.init();
         this.setupEventListener();
         frame.setVisible(true);
+
+        // TEST DU CONTROLLEUR - A ENLEVER
+        ArrayList<VertexDTO> tempPoints = new ArrayList<VertexDTO>();
+        tempPoints.add(new VertexDTO(0, 0, 0));
+        tempPoints.add(new VertexDTO(400, 300, 0));
+        controller.requestCut(new RequestCutDTO(tempPoints, CutType.RECTANGULAR,
+                0, 1.0f));
     }
+
 
     /**
      * Activates the Look and Feel (LaF) for the application.

@@ -1,8 +1,11 @@
 package UI.SubWindows;
 
+import Domain.CutDTO;
 import UI.CutWindow;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
+import UI.Events.ControllerChangeCutEvent;
+import UI.Events.ControllerChangeCutListener;
 import UI.UIConfig;
 import UI.Widgets.Attributable;
 import org.w3c.dom.Attr;
@@ -22,7 +25,7 @@ import java.util.EventObject;
  * @since 2024-10-23
  */
 
-public class AttributePanel extends BasicWindow {
+public class AttributePanel extends BasicWindow{
     private JPanel panel;
     private JScrollPane scrollPane;
     private GridBagLayout layout;
@@ -87,4 +90,5 @@ public class AttributePanel extends BasicWindow {
         panel.setAlignmentX(0);
         scrollPane.setAlignmentX(0);
     }
+
 }

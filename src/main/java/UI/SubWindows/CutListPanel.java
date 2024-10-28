@@ -5,6 +5,8 @@ import Domain.CutType;
 import Domain.ThirdDimension.VertexDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
+import UI.Events.ControllerChangeCutEvent;
+import UI.Events.ControllerChangeCutListener;
 import UI.UIConfig;
 import UI.Widgets.CutBox;
 
