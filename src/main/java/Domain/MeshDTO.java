@@ -1,4 +1,6 @@
-package Domain.DTO;
+package Domain;
+
+import Domain.ThirdDimension.TriangleDTO;
 
 import java.awt.*;
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
  * @version 1.0
  * @since 2024-10-20
  */
-public class MeshDTO {
+class MeshDTO {
     private final List<TriangleDTO> triangles;
     private Color color = Color.GRAY;
 

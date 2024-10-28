@@ -1,4 +1,4 @@
-package Domain.DTO;
+package Domain.ThirdDimension;
 
 /**
  * The {@code VertexDTO} class is a read-only {@code Vertex}
@@ -8,25 +8,30 @@ package Domain.DTO;
  * @since 2024-10-20
  */
 public class VertexDTO {
-    private final float x;
-    private final float y;
-    private final float z;
+    private final double x;
+    private final double y;
+    private final double z;
 
+    public VertexDTO(Vertex vDomain){
+        this.x = vDomain.getX();
+        this.y = vDomain.getY();
+        this.z = vDomain.getZ();
+    }
     public VertexDTO(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public float getZ() {
+    public double getZ() {
         return z;
     }
 

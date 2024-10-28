@@ -9,7 +9,7 @@ import Domain.DTO.BitDTO;
  * @version 0.1
  * @since 2024-09-21
  */
-public class Bit {
+class Bit {
     private String name;
     private float diameter;
 

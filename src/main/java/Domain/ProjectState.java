@@ -1,7 +1,9 @@
 package Domain;
 
-import Domain.DTO.BitDTO;
-import Domain.DTO.ProjectStateDTO;
+import Domain.BitDTO;
+import Domain.ProjectStateDTO;
+
+import Domain.ThirdDimension.Vertex;
 
 /**
  * The {@code ProjectState} class represent the current state of the project.
@@ -10,10 +12,22 @@ import Domain.DTO.ProjectStateDTO;
  * @version 1.0
  * @since 2024-10-20
  */
-public class ProjectState {
+class ProjectState {
     private final Bit[] bitList = new Bit[12];
     private PanelCNC board;
+    private final Vertex defaultBoardDimension = new Vertex(0.9144, 1.2192, 0);
+    private final float defaultBoardDepth = 1.0f;
 
+    /**
+     * Constructs a default new {@code ProjectState}.
+     *
+     */
+    ProjectState(){
+        for (int i =0; i < bitList.length; i++){
+            bitList[i] = new Bit("Null", -1);
+        }
+        board = new PanelCNC(defaultBoardDimension, defaultBoardDepth);
+    }
     /**
      * Constructs a new {@code ProjectState}.
      *
@@ -31,7 +45,7 @@ public class ProjectState {
         setBoard(board);
     }
 
-    Bit[] getBitList() {
+    public Bit[] getBitList() {
         return bitList;
     }
 
@@ -45,7 +59,7 @@ public class ProjectState {
         this.bitList[index] = bit;
     }
 
-    PanelCNC getBoard() {
+    public PanelCNC getBoard() {
         return board;
     }
 

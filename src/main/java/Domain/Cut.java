@@ -1,10 +1,9 @@
 package Domain;
 
-import Domain.DTO.RequestCutDTO;
-import Domain.DTO.VertexDTO;
+import Domain.ThirdDimension.VertexDTO;
 import Domain.ThirdDimension.Vertex;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -14,14 +13,26 @@ import java.util.UUID;
  * @version 0.1
  * @since 2024-09-21
  */
-public class Cut {
+class Cut {
     private Vertex startPoint;
     private CutType type;
-    private List<Vertex> points;
+    private ArrayList<Vertex> points;
     private int bitIndex;
     private double depth;
     private UUID id;
 
+
+    public Cut(CutDTO uiCut){
+        this.startPoint = new Vertex(uiCut.getPoints().getFirst());
+        this.type = uiCut.getCutType();
+        this.points = new ArrayList<>();
+        for(VertexDTO domainVertex : uiCut.getPoints()){
+            points.add(new Vertex(domainVertex));
+        }
+        this.bitIndex = uiCut.getBitIndex();
+        this.depth = uiCut.getDepth();
+        this.id = uiCut.getId();
+    }
     /**
      * Constructs a new {@code Cut} with all of it's attributes
      *
@@ -31,7 +42,7 @@ public class Cut {
      * @param bitIndex   the index of the bit that is used for the cut
      * @param depth      the depth of the cut
      */
-    public Cut(Vertex startPoint, CutType type, List<Vertex> points, int bitIndex, double depth) {
+    public Cut(Vertex startPoint, CutType type, ArrayList<Vertex> points, int bitIndex, double depth) {
         this.startPoint = startPoint;
         this.type = type;
         this.points = points;
@@ -52,11 +63,11 @@ public class Cut {
         this.startPoint = startPoint;
     }
 
-    public List<Vertex> getPoints() {
+    public ArrayList<Vertex> getPoints() {
         return points;
     }
 
-    public void setPoints(List<Vertex> points) {
+    public void setPoints(ArrayList<Vertex> points) {
         this.points = points;
     }
 
@@ -76,6 +87,9 @@ public class Cut {
         this.depth = depth;
     }
 
+    public UUID getId(){return this.id;}
+
+    public CutType getType() {return this.type;}
 
     /**
      * Finds if a coordinate is in the current {@code Cut} zone.

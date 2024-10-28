@@ -1,4 +1,4 @@
-package Domain.DTO;
+package Domain;
 
 import java.util.ArrayList;
 
@@ -12,6 +12,12 @@ import java.util.ArrayList;
 public class PanelDTO {
     private final ArrayList<CutDTO> cutsDTO;
 
+    public PanelDTO(PanelCNC domainPanel){
+        cutsDTO = new ArrayList<>();
+        for(Cut cDomain : domainPanel.getCutList()){
+            cutsDTO.add(new CutDTO(cDomain));
+        }
+    }
     public PanelDTO(ArrayList<CutDTO> cutsDTO) {
         this.cutsDTO = cutsDTO;
     }

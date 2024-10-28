@@ -22,14 +22,14 @@ public class CustomNumericInputField extends BasicWindow {
     JFormattedTextField numericInput;
     BoxLayout layout;
 
-    CustomNumericInputField(String nameOfInput, float value){
+    CustomNumericInputField(String nameOfInput, double value){
         super(false);
         this.setBackground(null);
         this.setOpaque(false);
         this.init(nameOfInput, value);
     }
 
-    private void init(String nameOfInput, float value){
+    private void init(String nameOfInput, double value){
         this.nameOfInput = new JLabel(nameOfInput);
         this.nameOfInput.setOpaque(true);
         this.nameOfInput.setBackground(UIManager.getColor("SubWindow.lightBackground1"));

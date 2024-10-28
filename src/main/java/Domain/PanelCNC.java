@@ -1,6 +1,6 @@
 package Domain;
 
-import Domain.DTO.*;
+import Domain.ThirdDimension.VertexDTO;
 import Domain.ThirdDimension.Vertex;
 
 import java.util.ArrayList;
@@ -15,24 +15,22 @@ import java.util.UUID;
  * @version 1.0
  * @since 2024-10-20
  */
-public class PanelCNC {
-    private List<Cut> cutList;
-    private List<Bit> bitList;
-    private List<ClampZone> clamps;
-    private final Vertex[] board = new Vertex[2];
+class PanelCNC {
+    private ArrayList<Cut> cutList;
+    private ArrayList<ClampZone> clamps;
+    private final Vertex boardDimension;
     private float depth;
 
     /**
      * Constructs a new {@code PanelCNC} with no {@code Cut} or {@code ClampZone} on it. The dimensions of the board are determined by the {@code Vertex} passed as parameter.
      *
-     * @param firstCorner  A position of one of the corner of the rectangular board.
-     * @param secondCorner The position of the corner opposite to the firstCorner.
+     * @param boardDimension dimensions of the board
+     * @param depth depth of the board
      */
-    PanelCNC(Vertex firstCorner, Vertex secondCorner, float depth) {
+    PanelCNC(Vertex boardDimension, float depth) {
         this.cutList = new ArrayList<>();
         this.clamps = new ArrayList<>();
-        this.board[0] = firstCorner;
-        this.board[1] = secondCorner;
+        this.boardDimension =  boardDimension;
         this.depth = depth;
     }
 
@@ -44,7 +42,7 @@ public class PanelCNC {
         this.depth = depth;
     }
 
-    List<Cut> getCutList() {
+    public ArrayList<Cut> getCutList() {
         return cutList;
     }
 
@@ -54,11 +52,38 @@ public class PanelCNC {
      * @param cut The RequestCut that needs to be valid.
      */
     Optional<UUID> newCut(RequestCutDTO cut) {
-        //todo
-        return null;
+        //todo tester si la coupe est bonne ou non!!
+
+        UUID newUUID = new UUID(1000000, 1000000);
+        CutDTO cutDTO = new CutDTO(
+                newUUID,
+                cut.getDepth(),
+                cut.getBitLocation(),
+                cut.getType(),
+                cut.getPoints()
+        );
+        this.cutList.add(new Cut(cutDTO));
+        return Optional.of(newUUID);
     }
 
-    List<ClampZone> getClamps() {
+    /**
+     * Modify an existing cut, check if the new cut params are valid. If so the UUID is returned
+     * @param cut The new CutDTO need to be valid
+     * @return Optional<UUID>
+     */
+    Optional<UUID> modifyCut(CutDTO cut){
+        //todo tester si la  modification de la coupe est bonne ou non!!
+        for (int i =0; i < this.cutList.size(); i++){
+
+            if (cut.getId() == this.cutList.get(i).getId()){
+                this.cutList.set(i, new Cut(cut));
+                return Optional.of(cut.getId());
+            }
+        }
+        return Optional.empty();
+    }
+
+    ArrayList<ClampZone> getClamps() {
         return clamps;
     }
 
@@ -71,8 +96,8 @@ public class PanelCNC {
         this.clamps.add(clamp);
     }
 
-    Vertex[] getBoard() {
-        return board;
+    Vertex getBoardDimension() {
+        return boardDimension;
     }
 
     /**

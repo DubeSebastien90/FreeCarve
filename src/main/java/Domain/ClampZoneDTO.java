@@ -1,4 +1,4 @@
-package Domain.DTO;
+package Domain;
 
 import Domain.ThirdDimension.Vertex;
 

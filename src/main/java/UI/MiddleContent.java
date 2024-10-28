@@ -1,7 +1,6 @@
 package UI;
 import Domain.Controller;
-import Domain.Cut;
-import Domain.DTO.BitDTO;
+import Domain.BitDTO;
 
 
 import javax.swing.*;

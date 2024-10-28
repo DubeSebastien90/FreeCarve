@@ -1,4 +1,4 @@
-package Domain.DTO;
+package Domain;
 
 /**
  * The {@code ProjectStateDTO} class is a read-only {@code ProjectState}
@@ -10,6 +10,13 @@ package Domain.DTO;
 public class ProjectStateDTO {
     private final BitDTO[] bitList = new BitDTO[12];
     private final PanelDTO board;
+
+    public ProjectStateDTO(ProjectState projectState){
+        for(int i =0; i < bitList.length; i++){
+            bitList[i] = new BitDTO(projectState.getBitList()[i]);
+        }
+        board = new PanelDTO(projectState.getBoard());
+    }
 
     public ProjectStateDTO(BitDTO[] bitList, PanelDTO board) {
         for (int i = 0; i < bitList.length; i++) {

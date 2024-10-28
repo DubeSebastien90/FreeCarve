@@ -1,4 +1,4 @@
-package Domain.DTO;
+package Domain.ThirdDimension;
 
 /**
  * The {@code TriangleDTO} class is a read-only {@code Triangle}

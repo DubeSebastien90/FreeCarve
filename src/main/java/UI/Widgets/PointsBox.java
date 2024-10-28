@@ -1,7 +1,6 @@
 package UI.Widgets;
 
-import Domain.DTO.VertexDTO;
-import Domain.ThirdDimension.Vertex;
+import Domain.ThirdDimension.VertexDTO;
 import UI.SubWindows.BasicWindow;
 import UI.UIConfig;
 

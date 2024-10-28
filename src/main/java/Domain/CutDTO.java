@@ -1,8 +1,8 @@
-package Domain.DTO;
+package Domain;
 
-import Domain.CutType;
+import Domain.ThirdDimension.Vertex;
+import Domain.ThirdDimension.VertexDTO;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,10 +15,21 @@ import java.util.UUID;
  */
 public class CutDTO {
     private UUID idCut;
-    private float depth;
+    private double depth;
     private int bitIndex;
     private ArrayList<VertexDTO> points;
     private CutType type;
+
+    public CutDTO(Cut cut){
+        this.idCut = cut.getId();
+        this.depth = cut.getDepth();
+        this.bitIndex = cut.getBitIndex();
+        this.points = new ArrayList<VertexDTO>();
+        for(Vertex vDomain : cut.getPoints()){
+            this.points.add(new VertexDTO(vDomain));
+        }
+        this.type = cut.getType();
+    }
 
     /**
      * Basic constructor of the {@code CutDTO}
@@ -39,7 +50,7 @@ public class CutDTO {
         return this.bitIndex;
     }
 
-    public float getDepth(){
+    public double getDepth(){
         return this.depth;
     }
 

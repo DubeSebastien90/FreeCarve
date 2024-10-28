@@ -1,6 +1,6 @@
 package Domain;
 
-import Domain.DTO.*;
+import Domain.ThirdDimension.VertexDTO;
 
 import java.util.List;
 import java.util.Optional;

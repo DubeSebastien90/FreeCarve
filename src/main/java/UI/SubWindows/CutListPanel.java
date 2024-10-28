@@ -1,9 +1,8 @@
 package UI.SubWindows;
 
-import Domain.DTO.CutDTO;
+import Domain.CutDTO;
 import Domain.CutType;
-import Domain.DTO.VertexDTO;
-import UI.CutWindow;
+import Domain.ThirdDimension.VertexDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.UIConfig;
@@ -11,7 +10,6 @@ import UI.Widgets.CutBox;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.UUID;
 
 /**

@@ -35,10 +35,9 @@ public enum MainWindow {
     private MiddleContent middleContent;
     private Controller controller;
 
+
     /**
-     * Starts the {@code MainWindow} by making its {@code JFrame} visible.
-     * <p>This method activates the Look and Feel, initializes all components,
-     * sets up event listeners, and finally makes the main window visible.</p>
+     * Starts the {@code MainWindow} by making it's {@code JFrame} visible
      */
     public void start() {
         this.activateFlatLaf();

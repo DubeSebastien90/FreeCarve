@@ -1,10 +1,10 @@
 package UI.Widgets;
 
-import Domain.DTO.BitDTO;
 import UI.ConfigChoiceWindow;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
-import Domain.Bit;
+import Domain.BitDTO;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,6 @@ public class BitInfoDisplay extends BasicWindow {
     private Boolean editable;
     private JButton modifyButton;
     private ConfigChoiceWindow configChoiceWindow;
-
     private JTextArea widthTextArea;
     private JTextArea nameTextArea;
 

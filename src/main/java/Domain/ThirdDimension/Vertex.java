@@ -16,6 +16,16 @@ public class Vertex implements Cloneable {
     private double z;
 
     /**
+     * Create a domain vertex based on a VertexDTO
+     * @param vertexDTO vertexDTO
+     */
+    public Vertex(VertexDTO vertexDTO){
+        setX(vertexDTO.getX());
+        setY(vertexDTO.getY());
+        setZ(vertexDTO.getZ());
+    }
+
+    /**
      * Constructs a {@code Vertex} with 3 space coordinates.
      *
      * @param x the position on the x-axis

@@ -1,12 +1,11 @@
 package UI.Widgets;
 
-import Domain.DTO.CutDTO;
+import Domain.CutDTO;
 import Domain.CutType;
-import Domain.DTO.VertexDTO;
+import Domain.ThirdDimension.VertexDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.SubWindows.BasicWindow;
-import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
 import Util.UiUtil;
 
@@ -36,7 +35,6 @@ public class CutBox implements Attributable {
     private int index;
     private boolean selected;
     private ChangeAttributeListener listener;
-
     /**
      * Basic constructor of {@code CutBox}, initiates all of the UI values and get a reference to the CutList parent
      * @param cutDTO cut that CutBox will present
