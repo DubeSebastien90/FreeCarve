@@ -18,6 +18,11 @@ public class BitDTO {
         this.diameter = bit.getDiameter();
     }
 
+    public BitDTO(String name, float diameter) {
+        this.name = name;
+        this.diameter = diameter;
+    }
+
     public String getName() {
         return name;
     }

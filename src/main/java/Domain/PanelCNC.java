@@ -1,7 +1,6 @@
 package Domain;
 
-import Domain.DTO.RequestCutDTO;
-import Domain.DTO.VertexDTO;
+import Domain.DTO.*;
 import Domain.ThirdDimension.Vertex;
 
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import java.util.UUID;
  */
 public class PanelCNC {
     private List<Cut> cutList;
+    private List<Bit> bitList;
     private List<ClampZone> clamps;
     private final Vertex[] board = new Vertex[2];
     private float depth;
@@ -130,5 +130,15 @@ public class PanelCNC {
     Optional<UUID> getElementAtmm(VertexDTO coordinates) {
         //todo
         return null;
+    }
+
+    BitDTO updateBit(int pos, String name, float diameter) {
+        //todo
+        return null;
+    }
+
+    public PanelDTO getPanelDTO() {
+        //todo
+        return new PanelDTO(new ArrayList<CutDTO>());
     }
 }

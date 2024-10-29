@@ -1,5 +1,6 @@
 package UI;
 
+import Domain.Controller;
 import UI.SubWindows.Rendering2DWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 
@@ -32,6 +33,7 @@ public enum MainWindow {
     private TopBar topBar;
     private LeftBar leftBar;
     private MiddleContent middleContent;
+    private Controller controller;
 
 
     /**
@@ -70,6 +72,7 @@ public enum MainWindow {
      * Initiates all of the {@code MainWindow} components
      */
     private void init() {
+        this.controller = new Controller();
         ToolTipManager.sharedInstance().setInitialDelay(1000);
         frame = new JFrame();
         uiConfig = UIConfig.INSTANCE;
@@ -77,7 +80,7 @@ public enum MainWindow {
         downBar = new DownBar(this);
         topBar = new TopBar();
         leftBar = new LeftBar();
-        middleContent = new MiddleContent();
+        middleContent = new MiddleContent(this);
 
         frame.setTitle(uiConfig.getWindowTitle());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -112,5 +115,9 @@ public enum MainWindow {
 
             }
         });
+    }
+
+    public Controller getController(){
+        return controller;
     }
 }

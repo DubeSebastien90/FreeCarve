@@ -64,16 +64,16 @@ public class ProjectState {
      * @param name     The name of the bit
      * @param diameter The diameter of the bit
      */
-    void updateBit(int position, String name, float diameter) {
+    void updateBit(int position, BitDTO bitDTO) {
         if (position < 0 || position > bitList.length)
             throw new IllegalArgumentException("L'index doit être entre 0 et 11");
 
         if(bitList[position] == null){
-            bitList[position] = new Bit(name, diameter);
+            bitList[position] = new Bit(bitDTO.getName(), bitDTO.getDiameter());
         }
         else {
-            bitList[position].setName(name);
-            bitList[position].setDiameter(diameter);
+            bitList[position].setName(bitDTO.getName());
+            bitList[position].setDiameter(bitDTO.getDiameter());
         }
     }
 

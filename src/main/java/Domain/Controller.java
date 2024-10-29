@@ -75,10 +75,6 @@ public class Controller {
         return getProjectState().getBitList();
     }
 
-    public void updateBit(int position, String name, float diameter) {
-        undoRedo.getCurrentState().updateBit(position, name, diameter);
-    }
-
     /**
      * Removes a {@code Bit} from the bit list of the project.
      *
@@ -95,7 +91,7 @@ public class Controller {
      * @param bit   A DTO representing the new {@code Bit}
      */
     public void modifyBit(int index, BitDTO bit) {
-        //todo
+        undoRedo.getCurrentState().updateBit(index, bit);
     }
 
     /**

@@ -1,9 +1,11 @@
 package UI;
 
+import Domain.DTO.BitDTO;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.BitSelectionPanel;
 import UI.SubWindows.Rendering2DWindow;
 import UI.Widgets.BigButton;
+import UI.Widgets.BitInfoDisplay;
 import UI.Widgets.ChooseDimension;
 
 import javax.swing.*;
@@ -15,6 +17,7 @@ public class ConfigChoiceWindow extends JPanel {
     private final BigButton nextButton = new BigButton("Suivant");
     private BitSelectionPanel bitWindow;
     private BasicWindow attributeWindow;
+    private int selectedBit;
 
     public ConfigChoiceWindow() {
         this.setLayout(new GridBagLayout());
@@ -25,6 +28,7 @@ public class ConfigChoiceWindow extends JPanel {
         requestFocusInWindow();
         init();
         setButtonEventHandler();
+        this.selectedBit = 0;
     }
 
     public void init() {
@@ -77,6 +81,7 @@ public class ConfigChoiceWindow extends JPanel {
                 MainWindow.INSTANCE.getMiddleContent().nextWindow();
             }
         });
+
         for (int i = 0; i < bitWindow.getBitList().length; i++) {
             JToggleButton bit = bitWindow.getBitList()[i];
             int finalI = i;
@@ -89,10 +94,11 @@ public class ConfigChoiceWindow extends JPanel {
                     for (int j = 0; j < bitWindow.getBitList().length; j++) {
                         bitWindow.getBitList()[j].setSelected(finalI ==j);
                     }
-                    if (attributeWindow.getComponents().length > 1) {
-                        attributeWindow.remove(attributeWindow.getComponents().length - 1);
-                    }
-
+                    attributeWindow.removeAll();
+                    attributeWindow.repaint();
+                    BitInfoDisplay bitInfo = new BitInfoDisplay(MainWindow.INSTANCE.getController().getBits()[finalI], true, ConfigChoiceWindow.this);
+                    attributeWindow.add(bitInfo, gbc);
+                    selectedBit = finalI;
                 }
             });
         }
@@ -102,5 +108,13 @@ public class ConfigChoiceWindow extends JPanel {
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         nextButton.revalidate();
+    }
+
+    public int getSelectedBit() {
+        return selectedBit;
+    }
+
+    public BitSelectionPanel getBitWindow() {
+        return bitWindow;
     }
 }

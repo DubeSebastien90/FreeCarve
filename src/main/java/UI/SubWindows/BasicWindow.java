@@ -51,5 +51,4 @@ public class BasicWindow extends JPanel {
         UiUtil.makeJPanelRoundCorner(this, graphics2D);
         super.paintComponent(graphics2D);
     }
-
 }
