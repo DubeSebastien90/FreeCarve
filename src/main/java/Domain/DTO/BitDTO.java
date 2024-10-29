@@ -1,5 +1,7 @@
 package Domain.DTO;
 
+import Domain.Bit;
+
 /**
  * This class is a DTO wrapper of the {@code Bit} class in order to transfer READ-ONLY informations
  *
@@ -11,9 +13,9 @@ public class BitDTO {
     private String name;
     private float diameter;
 
-    public BitDTO(String name, float diameter) {
-        this.name = name;
-        this.diameter = diameter;
+    public BitDTO(Bit bit){
+        this.name = bit.getName();
+        this.diameter = bit.getDiameter();
     }
 
     public String getName() {

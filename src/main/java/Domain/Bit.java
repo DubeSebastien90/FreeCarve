@@ -1,5 +1,7 @@
 package Domain;
 
+import Domain.DTO.BitDTO;
+
 /**
  * The {@code Tool} class encapsulates a tool (bit) object and all of it's attributes
  *
@@ -28,6 +30,11 @@ public class Bit {
         setDiameter(diameter);
     }
 
+    public Bit(){
+        this.name = "Aucun outil assigné";
+        this.diameter = 0.0f;
+    }
+
     public String getName() {
         return name;
     }
@@ -48,5 +55,9 @@ public class Bit {
             throw new IllegalArgumentException("Le diametre doit être plus grand que 0");
         }
         this.diameter = diameter;
+    }
+
+    public BitDTO getBitDTO(){
+        return new BitDTO(this);
     }
 }
