@@ -1,7 +1,7 @@
 package Domain;
 
-import Domain.DTO.BitDTO;
-import Domain.DTO.ProjectStateDTO;
+import Domain.BitDTO;
+import Domain.ProjectStateDTO;
 import Domain.ThirdDimension.Vertex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

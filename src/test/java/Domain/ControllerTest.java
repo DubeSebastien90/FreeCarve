@@ -1,7 +1,7 @@
 package Domain;
 
-import Domain.DTO.BitDTO;
-import Domain.DTO.ProjectStateDTO;
+import Domain.BitDTO;
+import Domain.ProjectStateDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
