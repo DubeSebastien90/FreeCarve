@@ -14,6 +14,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
@@ -79,7 +81,6 @@ public class CutBox implements Attributable {
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding()/3, 0);
         container.add(pointsBox1, gc);
-
         gc.gridx = 0; gc.gridy = 1;
         gc.insets = new Insets(0, 0, 0,  0);
         container.add(pointsBox2, gc);

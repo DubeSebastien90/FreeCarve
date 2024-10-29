@@ -1,21 +1,11 @@
 package UI.SubWindows;
 
-import Domain.CutDTO;
-import UI.CutWindow;
-import UI.Events.ChangeAttributeEvent;
-import UI.Events.ChangeAttributeListener;
-import UI.Events.ControllerChangeCutEvent;
-import UI.Events.ControllerChangeCutListener;
 import UI.UIConfig;
 import UI.Widgets.Attributable;
-import org.w3c.dom.Attr;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.EventListener;
-import java.util.EventObject;
 
 /**
  * The {@code CutList} class is a UI class that encapsulates the

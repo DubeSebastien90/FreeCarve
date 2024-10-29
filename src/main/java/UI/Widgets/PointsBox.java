@@ -22,10 +22,10 @@ public class PointsBox extends BasicWindow {
     private CustomNumericInputField xInput;
     private CustomNumericInputField yInput;
 
+
     public PointsBox(boolean hasBackground, String name, VertexDTO vertexDTO){
         super(hasBackground);
         this.init(name, vertexDTO);
-        this.updatePoints();
     }
 
     private void init(String name, VertexDTO vertexDTO){
@@ -53,7 +53,6 @@ public class PointsBox extends BasicWindow {
         this.add(yInput, gc);
     }
 
-    public void updatePoints(){
-
-    }
+    public CustomNumericInputField getxInput(){return this.xInput;}
+    public CustomNumericInputField getyInput(){return this.yInput;}
 }

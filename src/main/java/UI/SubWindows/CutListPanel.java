@@ -1,18 +1,14 @@
 package UI.SubWindows;
 
 import Domain.CutDTO;
-import Domain.CutType;
-import Domain.ThirdDimension.VertexDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
-import UI.Events.ControllerChangeCutEvent;
-import UI.Events.ControllerChangeCutListener;
+import UI.MainWindow;
 import UI.UIConfig;
 import UI.Widgets.CutBox;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * The {@code CutList} class is a UI class that encapsulates the list of the cuts sub-window
@@ -57,7 +53,6 @@ public class CutListPanel extends BasicWindow implements  ChangeAttributeListene
             CutBox temp = new CutBox(cut, i, this);
             this.cutBoxes.add(temp);
         }
-
         panel.removeAll();
         for (CutBox cutBox : this.cutBoxes){
             this.panel.add(cutBox.getPanel());
@@ -93,51 +88,6 @@ public class CutListPanel extends BasicWindow implements  ChangeAttributeListene
         this.setupHeader("Coupes", scrollPane);
         panel.setAlignmentX(0);
         scrollPane.setAlignmentX(0);
-
-        ArrayList<VertexDTO> tempList = new ArrayList<VertexDTO>();
-        tempList.add(new VertexDTO(0, 0, 0));
-        tempList.add(new VertexDTO(5.0f/3.14f, 4.00006f, 34.34f));
-
-        ArrayList<VertexDTO> tempList2 = new ArrayList<VertexDTO>();
-        tempList2.add(new VertexDTO(45.0f, 12.0f, 0));
-        tempList2.add(new VertexDTO(3.3333f, 4.00006f, 34.34f));
-
-        //TEST FOR DRAWING
-        cuts.add(new CutDTO(new UUID(100000, 100000),
-                0.5f, 5,
-                CutType.LINE_HORIZONTAL,
-                tempList));
-
-        cuts.add(new CutDTO(new UUID(100000, 100000),
-                0.8f, 7,
-                CutType.LINE_VERTICAL,
-                tempList));
-
-        cuts.add(new CutDTO(new UUID(100000, 100000),
-                0.8f, 7,
-                CutType.BORDER,
-                tempList2));
-
-        cuts.add(new CutDTO(new UUID(100000, 100000),
-                0.8f, 7,
-                CutType.RECTANGULAR,
-                tempList));
-
-        cuts.add(new CutDTO(new UUID(100000, 100000),
-                0.8f, 7,
-                CutType.L_SHAPE,
-                tempList2));
-
-        cuts.add(new CutDTO(new UUID(100000, 100000),
-                0.8f, 7,
-                CutType.L_SHAPE,
-                tempList2));
-
-        cuts.add(new CutDTO(new UUID(100000, 100000),
-                0.8f, 7,
-                CutType.L_SHAPE,
-                tempList));
-
         updateCutBoxes();
     }
     /**

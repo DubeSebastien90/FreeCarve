@@ -18,9 +18,9 @@ import java.text.NumberFormat;
  * @since 2024-10-27
  */
 public class CustomNumericInputField extends BasicWindow {
-    JLabel nameOfInput;
-    JFormattedTextField numericInput;
-    BoxLayout layout;
+    private JLabel nameOfInput;
+    private JFormattedTextField numericInput;
+    private BoxLayout layout;
 
     CustomNumericInputField(String nameOfInput, double value){
         super(false);
@@ -48,4 +48,6 @@ public class CustomNumericInputField extends BasicWindow {
         this.add(this.numericInput);
         this.setLayout(layout);
     }
+
+    public JFormattedTextField getNumericInput(){return this.numericInput;}
 }

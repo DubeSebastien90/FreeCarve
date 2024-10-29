@@ -47,6 +47,7 @@ public enum MainWindow {
      */
     public void start() {
         this.activateFlatLaf();
+        controller = new Controller();
         this.init();
         this.setupEventListener();
         frame.setVisible(true);
