@@ -18,6 +18,12 @@ public class Bit {
      * @param diameter The diameter of the {@code Bit}
      */
     public Bit(String name, float diameter) {
+        if (diameter <= 0) {
+            throw new IllegalArgumentException("Le diametre doit être plus grand que 0");
+        }
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Le nom ne peut pas être vide");
+        }
         setName(name);
         setDiameter(diameter);
     }
@@ -27,6 +33,9 @@ public class Bit {
     }
 
     public void setName(String name) {
+        if(name == null || name.isEmpty()){
+            throw new IllegalArgumentException("Le nom ne peut pas être vide");
+        }
         this.name = name;
     }
 
@@ -35,6 +44,9 @@ public class Bit {
     }
 
     public void setDiameter(float diameter) {
+        if (diameter <= 0) {
+            throw new IllegalArgumentException("Le diametre doit être plus grand que 0");
+        }
         this.diameter = diameter;
     }
 }
