@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class CutListPanel extends BasicWindow implements  ChangeAttributeListener{
     private ArrayList<CutBox> cutBoxes;
     private ArrayList<CutDTO> cuts;
-    private BasicWindow panel;
+    private JPanel panel;
     private BoxLayout layout;
     private JScrollPane scrollPane;
     private ChangeAttributeListener listener;
@@ -74,11 +74,11 @@ public class CutListPanel extends BasicWindow implements  ChangeAttributeListene
     private void init() {
         this.cuts = new ArrayList<CutDTO>();
         cutBoxes = new ArrayList<CutBox>();
-        panel = new BasicWindow(false);
+        panel = new JPanel();
         layout = new BoxLayout(panel, BoxLayout.PAGE_AXIS);
         scrollPane = new JScrollPane(panel);
-        panel.setOpaque(false);
-        panel.setBackground(null);
+        scrollPane.setOpaque(false);
+        panel.setBackground(UIManager.getColor("SubWindow.background"));
         panel.setLayout(layout);
         panel.setBorder(null);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
