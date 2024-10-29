@@ -20,7 +20,7 @@ public class UndoRedo {
      * Construct a new {@code UndoRedo} object with two empty {@code ProjectState Stack}
      */
     UndoRedo() {
-        undoList.add(new ProjectState(new Bit[12], new PanelCNC(new Vertex(0, 0, 0), new Vertex(15.0, 15.0, 0.0), 5)));
+        undoList.add(new ProjectState(new Bit[12],  new PanelCNC(new Vertex(15.0, 15.0, 0.0), 5)));
     }
 
     /**

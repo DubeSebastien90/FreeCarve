@@ -1,6 +1,6 @@
 package UI.SubWindows;
 
-import Domain.DTO.BitDTO;
+import Domain.BitDTO;
 import UI.MainWindow;
 import UI.MiddleContent;
 

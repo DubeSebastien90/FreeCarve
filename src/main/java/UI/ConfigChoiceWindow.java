@@ -1,6 +1,6 @@
 package UI;
 
-import Domain.DTO.BitDTO;
+import Domain.BitDTO;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.BitSelectionPanel;
 import UI.SubWindows.Rendering2DWindow;

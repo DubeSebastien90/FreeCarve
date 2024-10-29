@@ -17,7 +17,7 @@ public class ProjectStateTest {
     @BeforeEach
     void setUp() {
         Bit[] bitList = new Bit[12];
-        PanelCNC board = new PanelCNC(new Vertex(0,0,0), new Vertex(15.0, 15.0, 0.0), 5);
+        PanelCNC board = new PanelCNC(new Vertex(15.0, 15.0, 0.0), 5);
         stateTest = new ProjectState(bitList, board);
     }
 
