@@ -132,11 +132,6 @@ public class PanelCNC {
         return null;
     }
 
-    BitDTO updateBit(int pos, String name, float diameter) {
-        //todo
-        return null;
-    }
-
     public PanelDTO getPanelDTO() {
         //todo
         return new PanelDTO(new ArrayList<CutDTO>());

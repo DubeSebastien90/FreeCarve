@@ -24,9 +24,6 @@ public class ProjectState {
         try {
             for (int i = 0; i < bitList.length; i++) {
                 setBit(bitList[i], i);
-                if (i == 11) {
-                    break;
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
