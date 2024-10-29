@@ -1,5 +1,6 @@
 package Domain;
 
+import Domain.DTO.ProjectStateDTO;
 import Domain.ThirdDimension.Vertex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,11 +22,10 @@ public class ProjectStateTest {
 
     @Test
     void testConstructor() {
-        Bit[] bitList = new Bit[12];
-        PanelCNC board = new PanelCNC(new Vertex(0,0,0), new Vertex(15.0, 15.0, 0.0), 5);
-        ProjectState projectState = new ProjectState(bitList, board);
-
-        Assertions.assertEquals(12, projectState.getBitList().length);
+        // Arrange
+        // Act
+        // Assert
+        Assertions.assertEquals(12, stateTest.getBitList().length);
     }
 
     @Test
@@ -44,8 +44,20 @@ public class ProjectStateTest {
 
     @Test
     void updateBit_WhenBitCorrect_BitUpdated() {
+        // Arrange
+        // Act
         stateTest.updateBit(0, "test", 1.0f);
+        // Assert
         Assertions.assertEquals("test", stateTest.getBitList()[0].getName());
         Assertions.assertEquals(1.0f, stateTest.getBitList()[0].getDiameter());
+    }
+
+    @Test
+    void getCurrentStateDTO_WhenCalled_ReturnDTO() {
+        // Arrange
+        // Act
+        ProjectStateDTO dto = stateTest.getCurrentStateDTO();
+        // Assert
+        Assertions.assertEquals(ProjectStateDTO.class, dto.getClass());
     }
 }

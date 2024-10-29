@@ -1,5 +1,7 @@
 package Domain.DTO;
 
+import Domain.Bit;
+
 /**
  * The {@code ProjectStateDTO} class is a read-only {@code ProjectState}
  *

@@ -17,6 +17,9 @@ public class Controller {
     private final FileManager fileManager = new FileManager();
     private final UndoRedo undoRedo;
 
+    public Controller() {
+        undoRedo = new UndoRedo();
+    }
     public Controller(UndoRedo undoRedo) {
         this.undoRedo = undoRedo;
     }
@@ -37,7 +40,7 @@ public class Controller {
      */
     public ProjectStateDTO getProjectState() {
         //todo
-        return null;
+        return undoRedo.getCurrentState().getCurrentStateDTO();
     }
 
     /**
@@ -68,8 +71,12 @@ public class Controller {
     /**
      * @return The list of Bit of the CNC
      */
-    public BitDTO[] getBit() {
+    public BitDTO[] getBits() {
         return getProjectState().getBitList();
+    }
+
+    public void updateBit(int position, String name, float diameter) {
+        undoRedo.getCurrentState().updateBit(position, name, diameter);
     }
 
     /**

@@ -1,5 +1,8 @@
 package Domain;
 
+import Domain.DTO.BitDTO;
+import Domain.DTO.ProjectStateDTO;
+
 /**
  * The {@code ProjectState} class represent the current state of the project.
  *
@@ -72,5 +75,17 @@ public class ProjectState {
             bitList[position].setName(name);
             bitList[position].setDiameter(diameter);
         }
+    }
+
+    public ProjectStateDTO getCurrentStateDTO(){
+        BitDTO[] bitDTOList = new BitDTO[12];
+        for(int i = 0; i < bitList.length; i++){
+            if(bitList[i] == null){
+                bitDTOList[i] = new BitDTO(new Bit());
+                continue;
+            }
+            bitDTOList[i] = bitList[i].getBitDTO();
+        }
+        return new ProjectStateDTO(bitDTOList, board.getPanelDTO());
     }
 }

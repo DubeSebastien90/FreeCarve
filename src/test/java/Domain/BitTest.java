@@ -1,5 +1,6 @@
 package Domain;
 
+import Domain.DTO.BitDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,6 +47,13 @@ public class BitTest {
     }
 
     @Test
+    void defaultConstructor_WhenCalled_CreatesBit() {
+        Bit bit = new Bit();
+        Assertions.assertEquals("Aucun outil assigné", bit.getName());
+        Assertions.assertEquals(0.0f, bit.getDiameter());
+    }
+
+    @Test
     void setName_WhenNameEmpty_ThrowsArgumentException() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             bit.setName("");
@@ -86,5 +94,24 @@ public class BitTest {
     @Test
     void getDiameter_WhenDiameterSet_ReturnsDiameter() {
         Assertions.assertEquals(1.0f, bit.getDiameter());
+    }
+
+    @Test
+    void getBitDTO_WhenCalled_ReturnsDTO() {
+        // Arrange
+        // Act
+        BitDTO dto = bit.getBitDTO();
+        // Assert
+        Assertions.assertEquals(BitDTO.class, dto.getClass());
+    }
+
+    @Test
+    void getBitDTO_WhenCalled_ReturnsDTOWithCorrectValues() {
+        // Arrange
+        // Act
+        BitDTO dto = bit.getBitDTO();
+        // Assert
+        Assertions.assertEquals("test", dto.getName());
+        Assertions.assertEquals(1.0f, dto.getDiameter());
     }
 }
