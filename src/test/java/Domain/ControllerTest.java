@@ -1,5 +1,6 @@
 package Domain;
 
+import Domain.DTO.BitDTO;
 import Domain.DTO.ProjectStateDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,9 +29,9 @@ public class ControllerTest {
     @Test
     void updateBitTest_WhenUpdateName_BitNameChange(){
         // Arrange
-
+        BitDTO newBit = new BitDTO("test", 1.0f);
         // Act
-        controllerTest.updateBit(0, "test", 1.0f);
+        controllerTest.modifyBit(0, newBit);
         ProjectStateDTO state = controllerTest.getProjectState();
 
         // Assert
