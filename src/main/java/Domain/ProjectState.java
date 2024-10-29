@@ -18,11 +18,15 @@ public class ProjectState {
      * @param board   The {@code PanelCNC} of the project.
      */
     ProjectState(Bit[] bitList, PanelCNC board) {
-        for (int i = 0; i < bitList.length; i++) {
-            setBit(bitList[i], i);
-            if (i == 11) {
-                break;
+        try {
+            for (int i = 0; i < bitList.length; i++) {
+                setBit(bitList[i], i);
+                if (i == 11) {
+                    break;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         setBoard(board);
     }
@@ -35,10 +39,10 @@ public class ProjectState {
      * @param bit   The {@code Bit} that needs to be added to the bitList
      * @param index the index of this {@code Bit}.
      */
-    void setBit(Bit bit, int index) {
-        if (index < 12 && index > 0) {
-            this.bitList[index] = bit;
-        }
+    void setBit(Bit bit, int index) throws Exception {
+        if (index < 0 || index > bitList.length)
+            throw new Exception("L'index doit être entre 0 et 11");
+        this.bitList[index] = bit;
     }
 
     PanelCNC getBoard() {
@@ -47,5 +51,26 @@ public class ProjectState {
 
     void setBoard(PanelCNC board) {
         this.board = board;
+    }
+
+    /**
+     * Updates the bit at the specified position. Called when the user wants to
+     * change the name or diameter of a bit.
+     *
+     * @param position The position of the bit in the bitList
+     * @param name     The name of the bit
+     * @param diameter The diameter of the bit
+     */
+    void updateBit(int position, String name, float diameter) {
+        if (position < 0 || position > bitList.length)
+            throw new IllegalArgumentException("L'index doit être entre 0 et 11");
+
+        if(bitList[position] == null){
+            bitList[position] = new Bit(name, diameter);
+        }
+        else {
+            bitList[position].setName(name);
+            bitList[position].setDiameter(diameter);
+        }
     }
 }
