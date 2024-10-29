@@ -41,7 +41,6 @@ public enum MainWindow {
     private MiddleContent middleContent;
     private Controller controller;
 
-
     /**
      * Starts the {@code MainWindow} by making it's {@code JFrame} visible
      */
