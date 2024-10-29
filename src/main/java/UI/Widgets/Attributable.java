@@ -15,7 +15,7 @@ import javax.swing.*;
 public interface Attributable {
 
     /**
-     * virtual function that need to be override by every child of Attributable
+     * virtual function that need to be overriden by every child of Attributable
      * @return {@JLabel} of the name wanted to appear on the attributeWindow
      */
     public JLabel showName();

@@ -4,6 +4,7 @@ import Domain.ThirdDimension.VertexDTO;
 import Domain.ThirdDimension.Vertex;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,7 +17,7 @@ import java.util.UUID;
 class Cut {
     private Vertex startPoint;
     private CutType type;
-    private ArrayList<Vertex> points;
+    private List<Vertex> points;
     private int bitIndex;
     private double depth;
     private UUID id;
@@ -42,7 +43,7 @@ class Cut {
      * @param bitIndex   the index of the bit that is used for the cut
      * @param depth      the depth of the cut
      */
-    public Cut(Vertex startPoint, CutType type, ArrayList<Vertex> points, int bitIndex, double depth) {
+    public Cut(Vertex startPoint, CutType type, List<Vertex> points, int bitIndex, double depth) {
         this.startPoint = startPoint;
         this.type = type;
         this.points = points;
@@ -63,11 +64,11 @@ class Cut {
         this.startPoint = startPoint;
     }
 
-    public ArrayList<Vertex> getPoints() {
+    public List<Vertex> getPoints() {
         return points;
     }
 
-    public void setPoints(ArrayList<Vertex> points) {
+    public void setPoints(List<Vertex> points) {
         this.points = points;
     }
 
