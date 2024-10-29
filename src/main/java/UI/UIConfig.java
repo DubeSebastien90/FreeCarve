@@ -1,8 +1,5 @@
 package UI;
 
-import javax.swing.*;
-import java.awt.*;
-
 /**
  * The {@code UIConfig} enum encapsulates a singleton instance of the configurations
  * and parameters of the UI
@@ -64,12 +61,16 @@ public enum UIConfig {
     /**
      * @return The size which the icons of the cutBoxes in the CutList should be
      */
-    public int getCutBoxIconSize() {return cutBoxIconSize;}
+    public int getCutBoxIconSize() {
+        return cutBoxIconSize;
+    }
 
     /**
      * @return The speed of what the scrollbar should be
      */
-    public int getScrollbarSpeed() {return scrollbarSpeed;}
+    public int getScrollbarSpeed() {
+        return scrollbarSpeed;
+    }
 
     /**
      * @return the default padding of the element of this application

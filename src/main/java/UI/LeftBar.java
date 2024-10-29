@@ -2,9 +2,6 @@ package UI;
 
 import javax.swing.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import static Util.UiUtil.createSVGButton;
 
 /**
@@ -167,17 +164,15 @@ public class LeftBar extends JScrollPane {
         saveActionListener();
         zoomActionListener();
         scaleActionListener();
+        settingActionListener();
     }
 
     /**
      * Sets the save button in the toolBar to save the project at the default place on the machine.
      */
     private void saveActionListener() {
-        toolBar.getTool(ToolBar.Tool.SAVE).addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //todo
-            }
+        toolBar.getTool(ToolBar.Tool.SAVE).addActionListener(e -> {
+            //todo
         });
     }
 
@@ -185,33 +180,27 @@ public class LeftBar extends JScrollPane {
      * Sets the two zoom button to zoom or de zoom the 2dRenderer if one is displayed on screen.
      */
     private void zoomActionListener() {
-        toolBar.getTool(ToolBar.Tool.ZOOMIN).addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainWindow.INSTANCE.getMiddleContent().zoom(-5);
-            }
-        });
+        toolBar.getTool(ToolBar.Tool.ZOOMIN).addActionListener(e -> MainWindow.INSTANCE.getMiddleContent().zoom(-5));
 
-        toolBar.getTool(ToolBar.Tool.ZOOMOUT).addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainWindow.INSTANCE.getMiddleContent().zoom(5);
-            }
-        });
+        toolBar.getTool(ToolBar.Tool.ZOOMOUT).addActionListener(e -> MainWindow.INSTANCE.getMiddleContent().zoom(5));
     }
 
     /**
      * Sets the scale tool to initiate the scaling procedure.
      */
     private void scaleActionListener() {
-        toolBar.getTool(ToolBar.Tool.SCALE).addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MiddleContent middle = MainWindow.INSTANCE.getMiddleContent();
-                if (middle.getCurrent() == MiddleContent.MiddleWindowType.CONFIG) {
-                    middle.getConfigChoiceWindow().getRendering2DWindow().scale();
-                }
+        toolBar.getTool(ToolBar.Tool.SCALE).addActionListener(e -> {
+            MiddleContent middle = MainWindow.INSTANCE.getMiddleContent();
+            if (middle.getCurrent() == MiddleContent.MiddleWindowType.CONFIG) {
+                middle.getConfigChoiceWindow().getRendering2DWindow().scale();
             }
         });
+    }
+
+    /**
+     * Sets the Setting tool to change to the option window when clicked.
+     */
+    private void settingActionListener() {
+        toolBar.getTool(ToolBar.Tool.SETTING).addActionListener(e -> MainWindow.INSTANCE.showOptionWindow());
     }
 }

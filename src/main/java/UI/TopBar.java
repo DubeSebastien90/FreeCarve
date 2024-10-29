@@ -1,6 +1,7 @@
 package UI;
 
 import javax.swing.*;
+import java.awt.event.WindowEvent;
 
 /**
  * The {@code TopBar} class creates a menu at the top of the application which contains various functionality and support to the user
@@ -43,6 +44,9 @@ public class TopBar extends JMenuBar {
         JMenuItem undo = new JMenuItem("Undo");
         JMenuItem redo = new JMenuItem("redo");
         JMenuItem attributionLink = new JMenuItem("Icon Source");
+
+        settings.addActionListener(e -> MainWindow.INSTANCE.showOptionWindow());
+        exit.addActionListener(e -> MainWindow.INSTANCE.getFrame().dispatchEvent(new WindowEvent(MainWindow.INSTANCE.getFrame(), WindowEvent.WINDOW_CLOSING)));
 
         fichier.add(nouveau);
         fichier.add(enregistrer);
