@@ -2,6 +2,7 @@ package Domain;
 
 import Domain.ThirdDimension.VertexDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,12 +17,15 @@ import java.util.UUID;
 public class Controller {
     private final FileManager fileManager = new FileManager();
     private final UndoRedo undoRedo;
+    private final ProjectState currentProjectState;
 
     public Controller() {
         undoRedo = new UndoRedo();
+        currentProjectState = new ProjectState();
     }
-    public Controller(UndoRedo undoRedo) {
+    public Controller(UndoRedo undoRedo, ProjectState projectState) {
         this.undoRedo = undoRedo;
+        this.currentProjectState = projectState;
     }
 
     /**
@@ -31,23 +35,35 @@ public class Controller {
      * @return The UUID of the Cut if the RequestCutDTO was valid.
      */
     public Optional<UUID> requestCut(RequestCutDTO cut) {
-        //todo
-        return null;
+        return this.currentProjectState.getBoard().newCut(cut);
     }
 
     /**
      * @return The current {@code ProjectState}
      */
-    public ProjectStateDTO getProjectState() {
-        //todo
-        return undoRedo.getCurrentState().getCurrentStateDTO();
+    public ProjectStateDTO getProjectStateDTO() {
+        return this.currentProjectState.getCurrentStateDTO();
     }
 
     /**
      * @return The board of the current {@code ProjectState}
      */
-    public PanelDTO getPanelCNC() {
-        return getProjectState().getBoard();
+    public PanelDTO getPanelDTO() {
+        return getProjectStateDTO().getBoardDTO();
+    }
+
+    public Optional<CutDTO> findSpecificCut(UUID id){
+        ArrayList<CutDTO> cutsDTO = getProjectStateDTO().getBoardDTO().getCutsDTO();
+        for (CutDTO c : cutsDTO){
+            if (c.getId() == id){
+                return Optional.of(c);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public ArrayList<CutDTO> getCutListDTO(){
+        return getProjectStateDTO().getBoardDTO().getCutsDTO();
     }
 
     /**
@@ -57,7 +73,7 @@ public class Controller {
      * @param height The new height of the board.
      */
     public void resizePanel(float width, float height) {
-        this.undoRedo.getCurrentState().getBoard().resize(width, height);
+        this.currentProjectState.getBoard().resize(width, height);
     }
 
     /**
@@ -75,14 +91,14 @@ public class Controller {
      * @param cut The modified Cut.
      */
     public void modifyCut(CutDTO cut) {
-        //todo
+        this.currentProjectState.getBoard().modifyCut(cut);
     }
 
     /**
      * @return The list of Bit of the CNC
      */
-    public BitDTO[] getBits() {
-        return getProjectState().getBitList();
+    public BitDTO[] getBitsDTO() {
+        return getProjectStateDTO().getBitList();
     }
 
     /**
@@ -101,7 +117,7 @@ public class Controller {
      * @param bit   A DTO representing the new {@code Bit}
      */
     public void modifyBit(int index, BitDTO bit) {
-        undoRedo.getCurrentState().updateBit(index, bit);
+        this.currentProjectState.updateBit(index, bit);
     }
 
     /**
@@ -109,7 +125,7 @@ public class Controller {
      */
     public ProjectStateDTO redo() {
         this.undoRedo.redo();
-        return getProjectState();
+        return getProjectStateDTO();
     }
 
     /**
@@ -117,7 +133,7 @@ public class Controller {
      */
     public ProjectStateDTO undo() {
         this.undoRedo.undo();
-        return getProjectState();
+        return getProjectStateDTO();
     }
 
     /**

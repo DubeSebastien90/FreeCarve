@@ -51,9 +51,8 @@ class PanelCNC {
      *
      * @param cut The RequestCut that needs to be valid.
      */
-    Optional<UUID> newCut(RequestCutDTO cut) {
+    public Optional<UUID> newCut(RequestCutDTO cut) {
         //todo tester si la coupe est bonne ou non!!
-
         UUID newUUID = new UUID(1000000, 1000000);
         CutDTO cutDTO = new CutDTO(
                 newUUID,
@@ -104,16 +103,14 @@ class PanelCNC {
      * @return The width of the board.
      */
     double getWidth() {
-        //todo
-        return 0;
+        return boardDimension.getX();
     }
 
     /**
      * @return The height of the board.
      */
     double getHeight() {
-        //todo
-        return 0;
+        return boardDimension.getY();
     }
 
     /**
@@ -158,7 +155,6 @@ class PanelCNC {
     }
 
     public PanelDTO getPanelDTO() {
-        //todo
-        return new PanelDTO(new ArrayList<CutDTO>());
+        return new PanelDTO(this);
     }
 }

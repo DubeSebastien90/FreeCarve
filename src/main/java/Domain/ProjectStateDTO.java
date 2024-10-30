@@ -29,7 +29,7 @@ public class ProjectStateDTO {
         return bitList;
     }
 
-    public PanelDTO getBoard() {
+    public PanelDTO getBoardDTO() {
         return board;
     }
 }

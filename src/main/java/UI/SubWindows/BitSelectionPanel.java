@@ -2,7 +2,6 @@ package UI.SubWindows;
 
 import Domain.BitDTO;
 import UI.MainWindow;
-import UI.MiddleContent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +13,7 @@ public class BitSelectionPanel extends BasicWindow {
 
     public BitSelectionPanel() {
         super(true);
-        bitDTOList = MainWindow.INSTANCE.getController().getBits();
+        bitDTOList = MainWindow.INSTANCE.getController().getBitsDTO();
         for (int i = 0; i < bitList.length; i++) {
             bitList[i] = new JToggleButton(bitDTOList[i].getName());
         }
@@ -41,7 +40,7 @@ public class BitSelectionPanel extends BasicWindow {
     }
 
     public void refresh() {
-        bitDTOList = MainWindow.INSTANCE.getController().getBits();
+        bitDTOList = MainWindow.INSTANCE.getController().getBitsDTO();
         for (int i = 0; i < bitList.length; i++) {
             bitList[i].setText(bitDTOList[i].getName());
         }

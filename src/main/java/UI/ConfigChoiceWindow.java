@@ -1,6 +1,5 @@
 package UI;
 
-import Domain.BitDTO;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.BitSelectionPanel;
 import UI.SubWindows.Rendering2DWindow;
@@ -126,7 +125,7 @@ public class ConfigChoiceWindow extends JPanel {
                     }
                     attributeWindow.removeAll();
                     attributeWindow.repaint();
-                    BitInfoDisplay bitInfo = new BitInfoDisplay(MainWindow.INSTANCE.getController().getBits()[finalI], true, ConfigChoiceWindow.this);
+                    BitInfoDisplay bitInfo = new BitInfoDisplay(MainWindow.INSTANCE.getController().getBitsDTO()[finalI], true, ConfigChoiceWindow.this);
                     attributeWindow.add(bitInfo, gbc);
                     selectedBit = finalI;
                 }

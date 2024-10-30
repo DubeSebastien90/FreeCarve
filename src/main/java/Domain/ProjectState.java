@@ -24,7 +24,7 @@ class ProjectState {
      */
     ProjectState(){
         for (int i =0; i < bitList.length; i++){
-            bitList[i] = new Bit("Null", -1);
+            bitList[i] = new Bit("Null", 5);
         }
         board = new PanelCNC(defaultBoardDimension, defaultBoardDepth);
     }
@@ -47,6 +47,10 @@ class ProjectState {
 
     public Bit[] getBitList() {
         return bitList;
+    }
+
+    public ProjectStateDTO getProjectStateDTO(){
+        return new ProjectStateDTO(this);
     }
 
     /**

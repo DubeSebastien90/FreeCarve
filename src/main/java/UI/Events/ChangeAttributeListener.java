@@ -10,4 +10,5 @@ import java.util.EventListener;
  */
 public interface ChangeAttributeListener extends EventListener {
     void changeAttributeEventOccurred(ChangeAttributeEvent event);
+    void modifiedAttributeEventOccured(ChangeAttributeEvent event);
 }

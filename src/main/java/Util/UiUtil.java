@@ -1,5 +1,6 @@
 package Util;
 
+import Domain.CutType;
 import UI.UIConfig;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatButtonBorder;
@@ -101,5 +102,39 @@ public class UiUtil {
         graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics2D.setColor(panel.getBackground());
         graphics2D.fillRoundRect(0, 0, panel.getWidth(), panel.getHeight() + 30, 20, 20);
+    }
+
+    /**
+     * Get the name of the icon file of the CutType based on the enum value
+     * @param type type of the Cut
+     * @return the filename of the icon
+     */
+    public static String getIconFileName(CutType type){
+            return switch (type) {
+                case BORDER -> "forbidden";
+                case L_SHAPE -> "coupeL";
+                case RECTANGULAR -> "rectangle";
+                case LINE_HORIZONTAL -> "parallel";
+                case LINE_VERTICAL -> "parallel";
+                default -> "forbidden"; // default in case of bad name of icon
+            };
+    }
+
+    /**
+     * Get the french name of the CutType based on the enum value
+     * @param type type of the Cut
+     * @return the name of the Cut
+     */
+    public static  String getIconName(CutType type){
+        String iconName = "";
+        switch(type){
+            case BORDER -> iconName = "Interdit";
+            case L_SHAPE -> iconName = "Coupe en L";
+            case RECTANGULAR -> iconName = "Rectangle";
+            case LINE_HORIZONTAL -> iconName = "Ligne Horizontale";
+            case LINE_VERTICAL -> iconName = "Ligne Verticale";
+            default -> iconName = "Interdit"; // default in case of bad name of icon
+        }
+        return iconName;
     }
 }

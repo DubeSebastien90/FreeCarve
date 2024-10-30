@@ -17,7 +17,7 @@ public class VertexDTO {
         this.y = vDomain.getY();
         this.z = vDomain.getZ();
     }
-    public VertexDTO(float x, float y, float z) {
+    public VertexDTO(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -34,6 +34,7 @@ public class VertexDTO {
     public double getZ() {
         return z;
     }
+
 
     /**
      * @return a formatted string of the 2D components of the vertex

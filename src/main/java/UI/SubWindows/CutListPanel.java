@@ -5,10 +5,13 @@ import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.MainWindow;
 import UI.UIConfig;
+import UI.Widgets.Attributable;
 import UI.Widgets.CutBox;
+import org.w3c.dom.Attr;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * The {@code CutList} class is a UI class that encapsulates the list of the cuts sub-window
@@ -32,6 +35,7 @@ public class CutListPanel extends BasicWindow implements  ChangeAttributeListene
         super(haveBackground);
         this.listener = listener;
         this.init();
+        setCutList(MainWindow.INSTANCE.getController().getCutListDTO());
     }
 
     /**
@@ -98,5 +102,20 @@ public class CutListPanel extends BasicWindow implements  ChangeAttributeListene
         refreshSelectedCutBox();
         ChangeAttributeEvent event = new ChangeAttributeEvent(this, e.getAttribute());
         listener.changeAttributeEventOccurred(event);
+    }
+
+    /**
+     * Modify the CutBoxes in the CutList after one of them had a successful modification accepted by the DOMAIN
+     */
+    @Override
+    public void modifiedAttributeEventOccured(ChangeAttributeEvent event) {
+        Attributable att = event.getAttribute();
+        CutBox c = (CutBox) att;
+
+        Optional<CutDTO> cut = MainWindow.INSTANCE.getController().findSpecificCut(c.getCutUUID());
+        if (cut.isPresent()){
+            c.updatePanel(cut.get());
+        }
+
     }
 }

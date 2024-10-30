@@ -38,7 +38,7 @@ public class CutDTO {
      * @param bitIndex index of the bit used to make the cut
      * @param type type of the cut {@code CutType}
      */
-    public CutDTO(UUID idCut, float depth, int bitIndex, CutType type, List<VertexDTO> points){
+    public CutDTO(UUID idCut, double depth, int bitIndex, CutType type, List<VertexDTO> points){
         this.idCut = idCut;
         this.depth = depth;
         this.bitIndex = bitIndex;

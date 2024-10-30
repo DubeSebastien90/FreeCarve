@@ -66,6 +66,11 @@ public class CutWindow implements ChangeAttributeListener {
         this.attributePanel.updateAttribute(this.selectedAttributable);
     }
 
+    @Override
+    public void modifiedAttributeEventOccured(ChangeAttributeEvent event){
+        
+    }
+
     /**
      * Initiates all of the {@code CutWindow} components
      */

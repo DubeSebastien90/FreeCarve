@@ -9,6 +9,7 @@ import com.formdev.flatlaf.ui.FlatRoundBorder;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
@@ -37,7 +38,7 @@ public class CustomNumericInputField extends BasicWindow {
         this.nameOfInput.setHorizontalAlignment(SwingConstants.RIGHT);
         this.nameOfInput.setBorder(new EmptyBorder(0, 0 ,0 , UIConfig.INSTANCE.getDefaultPadding()));
         layout = new BoxLayout(this, BoxLayout.X_AXIS);
-        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        NumberFormat numberFormat = DecimalFormat.getNumberInstance();
         this.numericInput = new JFormattedTextField(numberFormat);
         this.numericInput.setColumns(10);
         this.numericInput.setBorder(new FlatRoundBorder());

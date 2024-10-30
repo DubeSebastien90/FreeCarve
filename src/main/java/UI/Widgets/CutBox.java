@@ -5,6 +5,7 @@ import Domain.CutType;
 import Domain.ThirdDimension.VertexDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
+import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import UI.UIConfig;
 import Util.UiUtil;
@@ -12,11 +13,15 @@ import Util.UiUtil;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The {@code CutBox} class is a UI class that encapsulates a box containing all the informations
@@ -37,6 +42,14 @@ public class CutBox implements Attributable {
     private int index;
     private boolean selected;
     private ChangeAttributeListener listener;
+
+    // Attributes variables
+    BasicWindow attributeContainer;
+    PointsBox pointsBox1;
+    PointsBox pointsBox2;
+    SingleValueBox depthBox;
+    ChoiceBox cuttypeBox;
+
     /**
      * Basic constructor of {@code CutBox}, initiates all of the UI values and get a reference to the CutList parent
      * @param cutDTO cut that CutBox will present
@@ -48,11 +61,17 @@ public class CutBox implements Attributable {
         this.index = index;
         this.listener = listener;
         this.init();
+        this.init_attribute();
         this.setBackgroundToIndex();
         this.updatePanel(this.cut);
         this.setupMouseEvents();
+        this.setupAttributeChangeEvents();
     }
 
+    /**
+     * Function override of the Attributable interface
+     * @return
+     */
     @Override
     public JLabel showName(){
         JLabel label = new JLabel(this.imageLabel.getIcon());
@@ -68,24 +87,32 @@ public class CutBox implements Attributable {
      */
     @Override
     public JPanel showAttribute() {
-        BasicWindow container = new BasicWindow(true);
-        container.setBackground(null);
-        container.setOpaque(false);
+        attributeContainer = new BasicWindow(true);
+        attributeContainer.setBackground(null);
+        attributeContainer.setOpaque(false);
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gc = new GridBagConstraints();
-        container.setLayout(layout);
-        PointsBox pointsBox1 = new PointsBox(true, "Point1", this.cut.getPoints().get(0));
-        PointsBox pointsBox2 = new PointsBox(true, "Point2", this.cut.getPoints().get(1));
+        attributeContainer.setLayout(layout);
+//        pointsBox1 = new PointsBox(true, "Point1", this.cut.getPoints().get(0));
+//        pointsBox2 = new PointsBox(true, "Point2", this.cut.getPoints().get(1));
         gc.gridx = 0; gc.gridy = 0;
         gc.weightx = 1; gc.weighty = 1;
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding()/3, 0);
-        container.add(pointsBox1, gc);
+        attributeContainer.add(pointsBox1, gc);
         gc.gridx = 0; gc.gridy = 1;
-        gc.insets = new Insets(0, 0, 0,  0);
-        container.add(pointsBox2, gc);
+        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding()/3,  0);
+        attributeContainer.add(pointsBox2, gc);
 
-        return container;
+        gc.gridx = 0; gc.gridy = 2;
+        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding()/3,  0);
+        attributeContainer.add(depthBox, gc);
+
+        gc.gridx = 0; gc.gridy = 3;
+        gc.insets = new Insets(0, 0, 0,  0);
+        attributeContainer.add(cuttypeBox, gc);
+
+        return attributeContainer;
     }
 
     /**
@@ -103,15 +130,7 @@ public class CutBox implements Attributable {
 
         // Setting the image of the cutbox
         CutType type = this.cut.getCutType();
-        String iconName = "";
-        switch(type){
-            case BORDER -> iconName = "forbidden";
-            case L_SHAPE -> iconName = "coupeL";
-            case RECTANGULAR -> iconName = "rectangle";
-            case LINE_HORIZONTAL -> iconName = "parallel";
-            case LINE_VERTICAL -> iconName = "parallel";
-            default -> iconName = "forbidden"; // default in case of bad name of icon
-        }
+        String iconName = UiUtil.getIconFileName(type);
         imageLabel.setIcon(UiUtil.getIcon(iconName, UIConfig.INSTANCE.getCutBoxIconSize(),
                 UIManager.getColor("button.Foreground")));
 
@@ -135,6 +154,14 @@ public class CutBox implements Attributable {
         this.selected = false;
         setBackgroundToIndex();
 
+    }
+
+    /**
+     * Get the CutBox UUID
+     * @return the id of the CutBox
+     */
+    public UUID getCutUUID(){
+        return this.cut.getId();
     }
 
     /**
@@ -185,6 +212,15 @@ public class CutBox implements Attributable {
         });
     }
 
+    /**
+     * Initialize the events of the Attributable properties that can be changed
+     */
+    private void setupAttributeChangeEvents(){
+        addEventListenerToPointBox(pointsBox1, 0);
+        addEventListenerToPointBox(pointsBox2, 1);
+        addEventListenerToSingleValue(depthBox);
+        addEventListenerToChoiceBox(cuttypeBox);
+    }
 
     /**
      * Initialize the UI components
@@ -238,6 +274,98 @@ public class CutBox implements Attributable {
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.weightx = 1.0;
         panel.add(coordinateLabel, gc);
+    }
+
+    /**
+     * Adding the custom event listeners to PointBox objects. The goal is to make
+     * the Point attribute react to change events
+     * @param pb {@code PointBox object}
+     * @param index index of the PointBox
+     */
+    private void addEventListenerToPointBox(PointsBox pb, int index){
+
+        // Listen for changes in the X field
+        pb.getxInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                CutDTO c = CutBox.this.cut;
+                VertexDTO oldVertex = c.getPoints().get(index);
+                Number n = (Number) evt.getNewValue();
+                VertexDTO newVertex = new VertexDTO(n.doubleValue(), oldVertex.getY(), oldVertex.getZ());
+                c.getPoints().set(index, newVertex);
+                MainWindow.INSTANCE.getController().modifyCut(c);
+                listener.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
+            }
+        });
+        // Listen for changes in the Y field
+        pb.getyInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                CutDTO c = CutBox.this.cut;
+                VertexDTO oldVertex = c.getPoints().get(index);
+                Number n = (Number) evt.getNewValue();
+                VertexDTO newVertex = new VertexDTO(oldVertex.getX(), n.doubleValue(), oldVertex.getZ());
+                c.getPoints().set(index, newVertex);
+                MainWindow.INSTANCE.getController().modifyCut(c);
+                listener.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
+            }
+        });
+    }
+
+    /**
+     * Adding the custom event listeners to SingleValueBox objects. The goal is to make
+     * the Value attribute react to change events
+     * @param sb {@code SingleValueBox object}
+     */
+    private void addEventListenerToSingleValue(SingleValueBox sb){
+        sb.getInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                CutDTO c = CutBox.this.cut;
+                Number n = (Number) evt.getNewValue();
+                c = new CutDTO(c.getId(), n.doubleValue(), c.getBitIndex(), c.getCutType(), c.getPoints());
+                MainWindow.INSTANCE.getController().modifyCut(c);
+                listener.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
+            }
+        });
+    }
+
+    /**
+     * Adding the custom event listeners to ChoiceBox objects. The goal is to make
+     * the ComboBox attribute react to change events
+     * @param cb {@code ChoiceBox object}
+     */
+    private void addEventListenerToChoiceBox(ChoiceBox cb){
+        cb.getComboBox().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox comboBox = (JComboBox) e.getSource();
+                CutType chosenCutType = CutType.values()[comboBox.getSelectedIndex()];
+                CutDTO c = CutBox.this.cut;
+                c = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), chosenCutType, c.getPoints());
+                MainWindow.INSTANCE.getController().modifyCut(c);
+                listener.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
+            }
+        });
+    }
+
+    /**
+     * Initialize variables relevant to the Attribute Panel
+     */
+    private void init_attribute(){
+        pointsBox1 = new PointsBox(true, "Point1", this.cut.getPoints().get(0));
+        pointsBox2 = new PointsBox(true, "Point2", this.cut.getPoints().get(1));
+        depthBox = new SingleValueBox(true, "Profondeur", this.cut.getDepth());
+
+
+        ArrayList<JLabel> labelList = new ArrayList<>();
+        for (CutType t : CutType.values()){
+            JLabel l = new JLabel(UiUtil.getIcon(UiUtil.getIconFileName(t), UIConfig.INSTANCE.getCutBoxIconSize(),
+                    UIManager.getColor("button.Foreground")));
+            l.setText(UiUtil.getIconName(t));
+            labelList.add(l);
+        }
+        cuttypeBox = new ChoiceBox(true, "Type de coupe", labelList, this.cut.getCutType().ordinal());
     }
 
 

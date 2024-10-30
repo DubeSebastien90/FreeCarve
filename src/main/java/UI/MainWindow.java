@@ -6,6 +6,7 @@ import Domain.ProjectStateDTO;
 import Domain.RequestCutDTO;
 import Domain.ThirdDimension.VertexDTO;
 import UI.SubWindows.Rendering2DWindow;
+import UI.Widgets.CutBox;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 
@@ -46,19 +47,11 @@ public enum MainWindow {
      */
     public void start() {
         this.activateFlatLaf();
-        controller = new Controller();
         this.init();
         this.setupEventListener();
         frame.setVisible(true);
 
-        // TEST DU CONTROLLEUR - A ENLEVER
-        ArrayList<VertexDTO> tempPoints = new ArrayList<VertexDTO>();
-        tempPoints.add(new VertexDTO(0, 0, 0));
-        tempPoints.add(new VertexDTO(400, 300, 0));
-        controller.requestCut(new RequestCutDTO(tempPoints, CutType.RECTANGULAR,
-                0, 1.0f));
     }
-
 
     /**
      * Activates the Look and Feel (LaF) for the application.
@@ -82,6 +75,33 @@ public enum MainWindow {
      */
     private void init() {
         this.controller = new Controller();
+
+        // TEST DU CONTROLLEUR - A ENLEVER
+        ArrayList<VertexDTO> tempPoints = new ArrayList<VertexDTO>();
+        tempPoints.add(new VertexDTO(0, 0, 0));
+        tempPoints.add(new VertexDTO(400, 300, 0));
+
+        ArrayList<VertexDTO> tempPoints2 = new ArrayList<VertexDTO>();
+        tempPoints2.add(new VertexDTO(78, 89, 0));
+        tempPoints2.add(new VertexDTO(899, 50, 90));
+
+        ArrayList<VertexDTO> tempPoints3 = new ArrayList<VertexDTO>();
+        tempPoints3.add(new VertexDTO(-1, -1, -1));
+        tempPoints3.add(new VertexDTO(-1, -8, -5));
+        controller.requestCut(new RequestCutDTO(tempPoints, CutType.L_SHAPE,
+                0, 1.0f));
+        controller.requestCut(new RequestCutDTO(tempPoints2, CutType.RECTANGULAR,
+                11, 34.0f));
+        controller.requestCut(new RequestCutDTO(tempPoints3, CutType.LINE_HORIZONTAL,
+                11, 39.0f));
+        controller.requestCut(new RequestCutDTO(tempPoints3, CutType.LINE_HORIZONTAL,
+                11, 39.0f));
+        controller.requestCut(new RequestCutDTO(tempPoints3, CutType.LINE_VERTICAL,
+                11, 39.0f));
+        //FIN TEST DU CONTROLLEUR - A ENLEVER
+
+
+
         ToolTipManager.sharedInstance().setInitialDelay(1000);
         frame = new JFrame();
         uiConfig = UIConfig.INSTANCE;
