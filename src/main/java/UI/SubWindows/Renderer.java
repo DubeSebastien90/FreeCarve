@@ -22,9 +22,9 @@ import java.util.List;
  * @since 2024-09-08
  */
 public class Renderer extends JPanel {
-    private static final Vertex worldX = new Vertex(1, 0, 0);
-    private static final Vertex worldY = new Vertex(0, 1, 0);
-    private static final Vertex worldZ = new Vertex(0, 0, 1);
+    private static Vertex worldX = new Vertex(1, 0, 0);
+    private static Vertex worldY = new Vertex(0, 1, 0);
+    private static Vertex worldZ = new Vertex(0, 0, 1);
     private List<Mesh> meshes;
     private Vertex mousePos;
     private final BoutonRotation boutonRotation;
@@ -105,8 +105,8 @@ public class Renderer extends JPanel {
         Mesh mesh = null;
         BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (Mesh m : meshes) {
-            for (Triangle t : m.getTrianglesList()) {
-                if (printTriangle(img, t)) {
+            for (Triangle t : m.getLocalTriangles()) {
+                if (printTriangle(img, t, m)) {
                     mesh = m;
                 }
             }
@@ -128,13 +128,13 @@ public class Renderer extends JPanel {
      *
      * @param img the {@code Image} object associated with the panel
      */
-    private boolean printTriangle(BufferedImage img, Triangle triangle) {
+    private boolean printTriangle(BufferedImage img, Triangle triangle, Mesh parent) {
         boolean isSelected = false;
 
         Triangle newTriangle = new Triangle(
-                Vertex.add(new Vertex(panelHalfWidth, panelHalfHeight, 0), triangle.getVertex(1)),
-                Vertex.add(new Vertex(panelHalfWidth, panelHalfHeight, 0), triangle.getVertex(2)),
-                Vertex.add(new Vertex(panelHalfWidth, panelHalfHeight, 0), triangle.getVertex(3)),
+                Vertex.add(parent.getPosition(), triangle.getVertex(0)),
+                Vertex.add(parent.getPosition(), triangle.getVertex(1)),
+                Vertex.add(parent.getPosition(), triangle.getVertex(2)),
                 triangle.getNormal(), triangle.getColor());
         newTriangle.calculateNormal();
 
@@ -144,7 +144,7 @@ public class Renderer extends JPanel {
             for (int x = area[0]; x <= area[1]; x++) {
                 Vertex bary = newTriangle.findBarycentric(x, y);
                 if (isInBarycentric(bary)) {
-                    double depth = bary.getX() * newTriangle.getVertex(1).getZ() + bary.getY() * newTriangle.getVertex(2).getZ() + bary.getZ() * newTriangle.getVertex(3).getZ();
+                    double depth = bary.getX() * newTriangle.getVertex(0).getZ() + bary.getY() * newTriangle.getVertex(1).getZ() + bary.getZ() * newTriangle.getVertex(2).getZ();
                     if (x < getWidth() && y < getHeight()) {
                         if ((pixelsDepthMap[x][y] == null || pixelsDepthMap[x][y] < depth)) {
                             pixelsDepthMap[x][y] = depth;
@@ -168,7 +168,7 @@ public class Renderer extends JPanel {
      */
     public void rotateWorld(Matrix rotationMatrix) {
         for (Mesh m : meshes) {
-            for (Triangle t : m.getTrianglesList()) {
+            for (Triangle t : m.getLocalTriangles()) {
                 Vertex[] vertices = t.getVertices();
                 for(int i = 0; i < vertices.length; i++) {
                     t.setVertex(rotationMatrix.matrixXVertex3X3(vertices[i]),i);
@@ -240,6 +240,12 @@ public class Renderer extends JPanel {
      */
     public static Vertex getWorldZ() {
         return worldZ;
+    }
+
+    public static void resetWorldRotation(){
+        worldX = new Vertex(1, 0, 0);
+        worldY = new Vertex(0, 1, 0);
+        worldZ = new Vertex(0, 0, 1);
     }
 
 }

@@ -10,7 +10,7 @@ import Parser.STLParser;
  * @version 0.1
  * @since 2024-09-07
  */
-public class Vertex implements Cloneable {
+public class Vertex {
     private double x;
     private double y;
     private double z;
@@ -61,6 +61,15 @@ public class Vertex implements Cloneable {
      */
     public Vertex(Vertex vertex) {
         this(vertex.getX(), vertex.getY(), vertex.getZ());
+    }
+
+    /**
+     * Creates a zero vertex for concise syntax
+     *
+     * @return a vertex with 0 in all coordinates
+     */
+    public static Vertex zero() {
+        return new Vertex(0,0,0);
     }
 
     /**
@@ -189,7 +198,7 @@ public class Vertex implements Cloneable {
     @Override
     public boolean equals(Object o) {
         Vertex vertex = (Vertex) o;
-        return (this.x == vertex.getX() && this.y == vertex.getY() && this.z == vertex.getZ());
+        return (isClose(this.x, vertex.getX(), 0.001) && isClose(this.y, vertex.getY(), 0.001) && isClose(this.z, vertex.getZ(), 0.001));
     }
 
     public static Vertex rotated(Vertex vertex, Vertex axis, double radians) {

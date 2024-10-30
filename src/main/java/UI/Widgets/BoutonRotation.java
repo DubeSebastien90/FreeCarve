@@ -16,7 +16,7 @@ public class BoutonRotation implements KeyListener, MouseListener {
 
     private final Renderer renderer;
     private Mesh selectedMesh;
-    private int movementType = 0; //0-translation, 1-rotation
+    private int movementType = 2; //0-translation, 1-rotation
 
     public BoutonRotation(Renderer renderer) {
         this.renderer = renderer;
@@ -46,28 +46,28 @@ public class BoutonRotation implements KeyListener, MouseListener {
             case KeyEvent.VK_W:
                 if (movementType == 0) {
                     selectedMesh.setPosition(Vertex.add(selectedMesh.getPosition(), new Vertex(0, -3, 0)));
-                } else {
+                } else if (movementType == 1) {
                     selectedMesh.setRotation(Vertex.add(selectedMesh.getRotation(), new Vertex(0.1,0,0)));
                 }
                 break;
             case KeyEvent.VK_A:
                 if (movementType == 0) {
                     selectedMesh.setPosition(Vertex.add(selectedMesh.getPosition(), new Vertex(-3, 0, 0)));
-                } else {
+                } else if (movementType == 1) {
                     selectedMesh.setRotation(Vertex.add(selectedMesh.getRotation(), new Vertex(0,-0.1,0)));
                 }
                 break;
             case KeyEvent.VK_S:
                 if (movementType == 0) {
                     selectedMesh.setPosition(Vertex.add(selectedMesh.getPosition(), new Vertex(0, 3, 0)));
-                } else {
+                } else if (movementType == 1) {
                     selectedMesh.setRotation(Vertex.add(selectedMesh.getRotation(), new Vertex(-0.1,0,0)));
                 }
                 break;
             case KeyEvent.VK_D:
                 if (movementType == 0) {
                     selectedMesh.setPosition(Vertex.add(selectedMesh.getPosition(), new Vertex(3, 0, 0)));
-                } else {
+                } else if (movementType == 1) {
                     selectedMesh.setRotation(Vertex.add(selectedMesh.getRotation(), new Vertex(0,0.1,0)));
                 }
                 break;
@@ -82,10 +82,12 @@ public class BoutonRotation implements KeyListener, MouseListener {
                 }
                 break;
             case KeyEvent.VK_1:
-                if (movementType == 0) {
-                    movementType = 1;
-                } else {
-                    movementType = 0;
+                if(selectedMesh != null) {
+                    if (movementType == 0) {
+                        movementType = 1;
+                    } else {
+                        movementType = 0;
+                    }
                 }
                 break;
             case KeyEvent.VK_Q:
@@ -109,8 +111,6 @@ public class BoutonRotation implements KeyListener, MouseListener {
 
     public void setSelectedMesh(Mesh selectedMesh) {
         this.selectedMesh = selectedMesh;
-        if(selectedMesh != null) {}
-        System.out.println(selectedMesh.getPosition());
     }
 
     @Override

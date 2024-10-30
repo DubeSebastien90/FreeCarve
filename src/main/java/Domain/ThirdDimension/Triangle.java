@@ -52,7 +52,7 @@ public class Triangle {
      * @param triangle the other triangle.
      */
     public Triangle(Triangle triangle) {
-        this(triangle.getVertex(1), triangle.getVertex(2), triangle.getVertex(3), triangle.getNormal(), triangle.getColor());
+        this(triangle.getVertex(0), triangle.getVertex(1), triangle.getVertex(2), triangle.getNormal(), triangle.getColor());
     }
 
     /**
@@ -136,10 +136,10 @@ public class Triangle {
      * @return a list with the minimum x, maximum x, minimum y, maximum y
      */
     public int[] findBoundingRectangle(int maxWidth, int maxHeight) {
-        int minX = (int) Math.max(0, Math.min(getVertex(1).getX(), Math.min(getVertex(2).getX(), getVertex(3).getX())));
-        int maxX = (int) Math.min(maxWidth, Math.max(getVertex(1).getX(), Math.max(getVertex(2).getX(), getVertex(3).getX())));
-        int minY = (int) Math.max(0, Math.min(getVertex(1).getY(), Math.min(getVertex(2).getY(), getVertex(3).getY())));
-        int maxY = (int) Math.min(maxHeight, Math.max(getVertex(1).getY(), Math.max(getVertex(2).getY(), getVertex(3).getY())));
+        int minX = (int) Math.max(0, Math.min(getVertex(0).getX(), Math.min(getVertex(1).getX(), getVertex(2).getX())));
+        int maxX = (int) Math.min(maxWidth, Math.max(getVertex(0).getX(), Math.max(getVertex(1).getX(), getVertex(2).getX())));
+        int minY = (int) Math.max(0, Math.min(getVertex(0).getY(), Math.min(getVertex(1).getY(), getVertex(2).getY())));
+        int maxY = (int) Math.min(maxHeight, Math.max(getVertex(0).getY(), Math.max(getVertex(1).getY(), getVertex(2).getY())));
 
         return new int[]{minX, maxX, minY, maxY};
     }
@@ -198,9 +198,9 @@ public class Triangle {
      */
     public Vertex findBarycentric(double pointX, double pointY) {
 
-        Vertex v1 = getVertex(1);
-        Vertex v2 = getVertex(2);
-        Vertex v3 = getVertex(3);
+        Vertex v1 = getVertex(0);
+        Vertex v2 = getVertex(1);
+        Vertex v3 = getVertex(2);
 
         double denominateur = (v2.getY() - v3.getY()) * (v1.getX() - v3.getX()) + (v3.getX() - v2.getX()) * (v1.getY() - v3.getY());
         double firstBary = ((v2.getY() - v3.getY()) * (pointX - v3.getX()) + (v3.getX() - v2.getX()) * (pointY - v3.getY())) / denominateur;
@@ -217,10 +217,10 @@ public class Triangle {
      * The resulting vertex is normalized.
      */
     public void calculateNormal() {
-        Vertex u = new Vertex(getVertex(2));
-        u.subtract(getVertex(1));
-        Vertex v = new Vertex(getVertex(3));
-        v.subtract(getVertex(1));
+        Vertex u = new Vertex(getVertex(1));
+        u.subtract(getVertex(0));
+        Vertex v = new Vertex(getVertex(2));
+        v.subtract(getVertex(0));
         double normalX = u.getY() * v.getZ() - u.getZ() * v.getY();
         double normalY = u.getZ() * v.getX() - u.getX() * v.getZ();
         double normalZ = u.getX() * v.getY() - u.getY() * v.getX();
