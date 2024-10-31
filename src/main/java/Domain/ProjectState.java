@@ -88,6 +88,7 @@ class ProjectState {
         }
     }
 
+
     public ProjectStateDTO getCurrentStateDTO(){
         BitDTO[] bitDTOList = new BitDTO[12];
         for(int i = 0; i < bitList.length; i++){
