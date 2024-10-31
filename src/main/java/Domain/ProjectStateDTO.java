@@ -9,27 +9,27 @@ package Domain;
  */
 public class ProjectStateDTO {
     private final BitDTO[] bitList = new BitDTO[12];
-    private final PanelDTO board;
+    private final PanelDTO panel;
 
     public ProjectStateDTO(ProjectState projectState){
         for(int i =0; i < bitList.length; i++){
             bitList[i] = new BitDTO(projectState.getBitList()[i]);
         }
-        board = new PanelDTO(projectState.getBoard());
+        panel = new PanelDTO(projectState.getPanel());
     }
 
-    public ProjectStateDTO(BitDTO[] bitList, PanelDTO board) {
+    public ProjectStateDTO(BitDTO[] bitList, PanelDTO panel) {
         for (int i = 0; i < bitList.length; i++) {
             this.bitList[i] = bitList[i];
         }
-        this.board = board;
+        this.panel = panel;
     }
 
     public BitDTO[] getBitList() {
         return bitList;
     }
 
-    public PanelDTO getBoardDTO() {
-        return board;
+    public PanelDTO getPanelDTO() {
+        return panel;
     }
 }

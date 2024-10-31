@@ -1,8 +1,5 @@
 package Domain;
 
-import Domain.BitDTO;
-import Domain.ProjectStateDTO;
-
 import Domain.ThirdDimension.Vertex;
 
 /**
@@ -14,9 +11,9 @@ import Domain.ThirdDimension.Vertex;
  */
 class ProjectState {
     private final Bit[] bitList = new Bit[12];
-    private PanelCNC board;
-    private final Vertex defaultBoardDimension = new Vertex(0.9144, 1.2192, 0);
-    private final float defaultBoardDepth = 1.0f;
+    private PanelCNC panel;
+    private final Vertex defaultPanelDimension = new Vertex(0.9144, 1.2192, 0);
+    private final float defaultPanelDepth = 1.0f;
 
     /**
      * Constructs a default new {@code ProjectState}.
@@ -24,17 +21,17 @@ class ProjectState {
      */
     ProjectState(){
         for (int i =0; i < bitList.length; i++){
-            bitList[i] = new Bit("Null", 5);
+            bitList[i] = new Bit();
         }
-        board = new PanelCNC(defaultBoardDimension, defaultBoardDepth);
+        panel = new PanelCNC(defaultPanelDimension, defaultPanelDepth);
     }
     /**
      * Constructs a new {@code ProjectState}.
      *
      * @param bitList The list of {@code Bit} of the CNC.
-     * @param board   The {@code PanelCNC} of the project.
+     * @param panel   The {@code PanelCNC} of the project.
      */
-    ProjectState(Bit[] bitList, PanelCNC board) {
+    ProjectState(Bit[] bitList, PanelCNC panel) {
         try {
             for (int i = 0; i < bitList.length; i++) {
                 setBit(bitList[i], i);
@@ -42,7 +39,7 @@ class ProjectState {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        setBoard(board);
+        setPanel(panel);
     }
 
     public Bit[] getBitList() {
@@ -63,12 +60,12 @@ class ProjectState {
         this.bitList[index] = bit;
     }
 
-    public PanelCNC getBoard() {
-        return board;
+    public PanelCNC getPanel() {
+        return panel;
     }
 
-    void setBoard(PanelCNC board) {
-        this.board = board;
+    void setPanel(PanelCNC panel) {
+        this.panel = panel;
     }
 
     /**
@@ -100,6 +97,6 @@ class ProjectState {
             }
             bitDTOList[i] = bitList[i].getBitDTO();
         }
-        return new ProjectStateDTO(bitDTOList, board.getPanelDTO());
+        return new ProjectStateDTO(bitDTOList, panel.getPanelDTO());
     }
 }

@@ -68,7 +68,8 @@ public class CutWindow implements ChangeAttributeListener {
 
     @Override
     public void modifiedAttributeEventOccured(ChangeAttributeEvent event){
-        
+        //todo this function is called upon by the subwindows when an attribute is changed, it is currently empty because nothing to implement
+        // but could be useful when sharing informations between the CutList and the 2D Afficheur
     }
 
     /**

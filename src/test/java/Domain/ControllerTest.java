@@ -43,11 +43,15 @@ public class ControllerTest {
 
     @Test
     void get_cuts_dto(){
+        // Arrange
         ArrayList<VertexDTO> points = new ArrayList<>();
         points.add(new VertexDTO(12, 13, 14));
         points.add(new VertexDTO(17, 18, 19));
+
+        // Act
         controllerTest.requestCut(new RequestCutDTO(points, CutType.LINE_VERTICAL, 3, 7.0f));
 
+        // Assert
         Assertions.assertEquals(controllerTest.getCutListDTO().size(), 1);
         Assertions.assertEquals(controllerTest.getCutListDTO().getFirst().getPoints().getFirst().getX(), 12);
         Assertions.assertEquals(controllerTest.getCutListDTO().getFirst().getPoints().getFirst().getY(), 13);

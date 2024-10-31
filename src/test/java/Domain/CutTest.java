@@ -40,6 +40,11 @@ public class CutTest {
 
     @Test
     void constructor_with_arguments_postconditions(){
+        // Arrange - BeforeEach
+
+        // Act
+
+        // Assert
         Assertions.assertEquals(cut.getDepth(), 5.0f);
         Assertions.assertEquals(cut.getPoints(), pointsList);
         Assertions.assertEquals(cut.getBitIndex(), 0);
@@ -50,6 +55,11 @@ public class CutTest {
 
     @Test
     void constructor_with_DTO_postconditions(){
+        // Arrange - BeforeEach
+
+        // Act
+
+        // Assert
         Assertions.assertEquals(cutWithDTO.getDepth(), 1.0f);
         Assertions.assertEquals(cutWithDTO.getPoints().size(), pointsListDTO.size());
         Assertions.assertEquals(cutWithDTO.getBitIndex(), 0);

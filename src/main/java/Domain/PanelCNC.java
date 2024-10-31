@@ -16,21 +16,21 @@ import java.util.UUID;
  * @since 2024-10-20
  */
 class PanelCNC {
-    private ArrayList<Cut> cutList;
-    private ArrayList<ClampZone> clamps;
-    private final Vertex boardDimension;
+    private List<Cut> cutList;
+    private List<ClampZone> clamps;
+    private final Vertex panelDimension;
     private float depth;
 
     /**
      * Constructs a new {@code PanelCNC} with no {@code Cut} or {@code ClampZone} on it. The dimensions of the board are determined by the {@code Vertex} passed as parameter.
      *
-     * @param boardDimension dimensions of the board
+     * @param panelDimension dimensions of the board
      * @param depth depth of the board
      */
-    PanelCNC(Vertex boardDimension, float depth) {
+    PanelCNC(Vertex panelDimension, float depth) {
         this.cutList = new ArrayList<>();
         this.clamps = new ArrayList<>();
-        this.boardDimension =  boardDimension;
+        this.panelDimension = panelDimension;
         this.depth = depth;
     }
 
@@ -42,7 +42,7 @@ class PanelCNC {
         this.depth = depth;
     }
 
-    public ArrayList<Cut> getCutList() {
+    public List<Cut> getCutList() {
         return cutList;
     }
 
@@ -51,7 +51,7 @@ class PanelCNC {
      *
      * @param cut The RequestCut that needs to be valid.
      */
-    public Optional<UUID> newCut(RequestCutDTO cut) {
+    public Optional<UUID> requestCut(RequestCutDTO cut) {
         //todo tester si la coupe est bonne ou non!!
         UUID newUUID = new UUID(1000000, 1000000);
         CutDTO cutDTO = new CutDTO(
@@ -82,7 +82,7 @@ class PanelCNC {
         return Optional.empty();
     }
 
-    ArrayList<ClampZone> getClamps() {
+    List<ClampZone> getClamps() {
         return clamps;
     }
 
@@ -95,22 +95,22 @@ class PanelCNC {
         this.clamps.add(clamp);
     }
 
-    Vertex getBoardDimension() {
-        return boardDimension;
+    Vertex getPanelDimension() {
+        return panelDimension;
     }
 
     /**
      * @return The width of the board.
      */
     double getWidth() {
-        return boardDimension.getX();
+        return panelDimension.getX();
     }
 
     /**
      * @return The height of the board.
      */
     double getHeight() {
-        return boardDimension.getY();
+        return panelDimension.getY();
     }
 
     /**

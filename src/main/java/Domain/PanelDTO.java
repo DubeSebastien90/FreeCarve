@@ -1,6 +1,7 @@
 package Domain;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is a DTO wrapper of the {@code Panel} class in order to transfer READ-ONLY informations
@@ -10,7 +11,7 @@ import java.util.ArrayList;
  * @since 2024-10-12
  */
 public class PanelDTO {
-    private final ArrayList<CutDTO> cutsDTO;
+    private final List<CutDTO> cutsDTO;
 
     public PanelDTO(PanelCNC domainPanel){
         cutsDTO = new ArrayList<>();
@@ -18,11 +19,11 @@ public class PanelDTO {
             cutsDTO.add(new CutDTO(cDomain));
         }
     }
-    public PanelDTO(ArrayList<CutDTO> cutsDTO) {
+    public PanelDTO(List<CutDTO> cutsDTO) {
         this.cutsDTO = cutsDTO;
     }
 
-    public ArrayList<CutDTO> getCutsDTO() {
+    public List<CutDTO> getCutsDTO() {
         return cutsDTO;
     }
 }

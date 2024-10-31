@@ -2,7 +2,6 @@ package Domain;
 
 import Domain.ThirdDimension.VertexDTO;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,7 +34,7 @@ public class Controller {
      * @return The UUID of the Cut if the RequestCutDTO was valid.
      */
     public Optional<UUID> requestCut(RequestCutDTO cut) {
-        return this.currentProjectState.getBoard().newCut(cut);
+        return this.currentProjectState.getPanel().requestCut(cut);
     }
 
     /**
@@ -49,11 +48,11 @@ public class Controller {
      * @return The board of the current {@code ProjectState}
      */
     public PanelDTO getPanelDTO() {
-        return getProjectStateDTO().getBoardDTO();
+        return getProjectStateDTO().getPanelDTO();
     }
 
     public Optional<CutDTO> findSpecificCut(UUID id){
-        ArrayList<CutDTO> cutsDTO = getProjectStateDTO().getBoardDTO().getCutsDTO();
+        List<CutDTO> cutsDTO = getProjectStateDTO().getPanelDTO().getCutsDTO();
         for (CutDTO c : cutsDTO){
             if (c.getId() == id){
                 return Optional.of(c);
@@ -62,8 +61,8 @@ public class Controller {
         return Optional.empty();
     }
 
-    public ArrayList<CutDTO> getCutListDTO(){
-        return getProjectStateDTO().getBoardDTO().getCutsDTO();
+    public List<CutDTO> getCutListDTO(){
+        return getProjectStateDTO().getPanelDTO().getCutsDTO();
     }
 
     /**
@@ -73,7 +72,7 @@ public class Controller {
      * @param height The new height of the board.
      */
     public void resizePanel(float width, float height) {
-        this.currentProjectState.getBoard().resize(width, height);
+        this.currentProjectState.getPanel().resize(width, height);
     }
 
     /**
@@ -91,7 +90,7 @@ public class Controller {
      * @param cut The modified Cut.
      */
     public void modifyCut(CutDTO cut) {
-        this.currentProjectState.getBoard().modifyCut(cut);
+        this.currentProjectState.getPanel().modifyCut(cut);
     }
 
     /**

@@ -11,6 +11,7 @@ import org.w3c.dom.Attr;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -21,8 +22,8 @@ import java.util.Optional;
  * @since 2024-09-21
  */
 public class CutListPanel extends BasicWindow implements  ChangeAttributeListener{
-    private ArrayList<CutBox> cutBoxes;
-    private ArrayList<CutDTO> cuts;
+    private List<CutBox> cutBoxes;
+    private List<CutDTO> cuts;
     private JPanel panel;
     private BoxLayout layout;
     private JScrollPane scrollPane;
@@ -42,7 +43,7 @@ public class CutListPanel extends BasicWindow implements  ChangeAttributeListene
      * Change the cutList, with a new list of CutDTO, and updates the UI
      * @param newCuts list of new CutDTO
      */
-    public void setCutList(ArrayList<CutDTO> newCuts){
+    public void setCutList(List<CutDTO> newCuts){
         this.cuts = newCuts;
         updateCutBoxes();
     }
