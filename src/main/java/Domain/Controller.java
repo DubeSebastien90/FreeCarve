@@ -155,8 +155,8 @@ public class Controller {
      *
      * @return the grid
      */
-    public Grid getGrid() {
-        return this.grid;
+    public GridDTO getGrid() {
+        return new GridDTO(this.grid.getSize(),this.grid.getMagnetPrecision());
     }
 
     /**
