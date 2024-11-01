@@ -8,39 +8,34 @@ import java.awt.*;
 public class MeshTest {
 
     @Test
-    void translateLocalTriangles_HappyPath_TranslatesCorrectly() {
+    void getTransformedTriangle_TranslationOnly_TranslatesCorrectly() {
         // Arrange
-        Renderer.resetWorldRotation();
+        Triangle triangle = new Triangle(new Vertex(0, 0, 0), new Vertex(15, 15, 0), new Vertex(15, 0, 0));
         Vertex translationVertex = new Vertex(1, 1, 1);
         Mesh mesh = TestHelper.createMesh();
-        mesh.localTriangles.getFirst().setVertices(new Vertex[]{new Vertex(0, 0, 0), new Vertex(15, 15, 0), new Vertex(15, 0, 0)});
-        mesh.localTriangles.getLast().setVertex(new Vertex(100, 100, 100), 0);
+        mesh.setPosition(translationVertex);
 
         // Act
-        mesh.translateLocalTriangles(translationVertex);
+        Triangle result = mesh.getTransformedTriangle(triangle);
 
         // Assert
-        Assertions.assertEquals(translationVertex, mesh.getLocalTriangles().getFirst().getVertex(0));
-        Assertions.assertEquals(new Vertex(16, 16, 1), mesh.getLocalTriangles().getFirst().getVertex(1));
-        Assertions.assertEquals(new Vertex(16, 1, 1), mesh.getLocalTriangles().getFirst().getVertex(2));
+        Assertions.assertEquals(translationVertex, result.getVertex(0));
+        Assertions.assertEquals(new Vertex(16, 16, 1), result.getVertex(1));
+        Assertions.assertEquals(new Vertex(16, 1, 1), result.getVertex(2));
 
-        Assertions.assertEquals(new Vertex(101, 101, 101), mesh.getLocalTriangles().getLast().getVertex(0));
     }
 
     @Test
-    void rotateLocalTriangles_HappyPath_RotatesCorrectly() {
+    void getTransformedTriangle_RotationOnly_RotatesCorrectly() {
         // Arrange
         Mesh mesh = Mesh.createBox(new Vertex(0, 0, 0), 100, 100, 100, Color.BLUE);
+        mesh.setRotationEuler(new Vertex(0, Math.PI, 0));
+        Triangle triangle = mesh.getLocalTriangles().getFirst();
 
         // Act
-        mesh.rotateLocalTriangles(new Vertex(1, 0, 0), Math.PI);
+        Triangle result = mesh.getTransformedTriangle(triangle);
 
         // Assert
-        Triangle firstTriangle = mesh.getLocalTriangles().getFirst();
-        Triangle secondTriangle = mesh.getLocalTriangles().get(1);
-
-        Assertions.assertEquals(firstTriangle.getVertex(1), new Vertex(0, -100, -100));
-        Assertions.assertEquals(secondTriangle.getVertex(2), new Vertex(0, -100, -100));
-
+        Assertions.assertEquals(new Vertex(50, 50, -50), result.getVertex(1));
     }
 }

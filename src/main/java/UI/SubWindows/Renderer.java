@@ -11,6 +11,7 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,9 +23,6 @@ import java.util.List;
  * @since 2024-09-08
  */
 public class Renderer extends JPanel {
-    private static Vertex worldX = new Vertex(1, 0, 0);
-    private static Vertex worldY = new Vertex(0, 1, 0);
-    private static Vertex worldZ = new Vertex(0, 0, 1);
     private List<Mesh> meshes;
     private Vertex mousePos;
     private final BoutonRotation boutonRotation;
@@ -99,6 +97,8 @@ public class Renderer extends JPanel {
         this.setBackground(Color.GRAY);
         UiUtil.makeJPanelRoundCorner(this, graphics2D);
         super.paintComponent(graphics2D);
+        panelHalfWidth = getWidth() / 2f;
+        panelHalfHeight = getHeight() / 2f;
         pixelsDepthMap = new Double[this.getWidth()][this.getHeight()];
         Mesh mesh = null;
         BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -130,6 +130,7 @@ public class Renderer extends JPanel {
         boolean isSelected = false;
 
         Triangle t = parent.getTransformedTriangle(triangle);
+        Arrays.stream(t.getVertices()).forEach(vertex -> vertex.add(new Vertex(panelHalfWidth, panelHalfHeight, 0)));
 
         Color printedColor = calculateLighting(t);
         int[] area = t.findBoundingRectangle(img.getWidth(null), img.getHeight(null));
@@ -169,9 +170,6 @@ public class Renderer extends JPanel {
             }
             m.setPosition(rotationMatrix.matrixXVertex3X3(m.getPosition()));
         }
-        worldX.setVertex(rotationMatrix.matrixXVertex3X3(worldX));
-        worldY.setVertex(rotationMatrix.matrixXVertex3X3(worldY));
-        worldZ.setVertex(rotationMatrix.matrixXVertex3X3(worldZ));
     }
 
     /**
@@ -206,39 +204,6 @@ public class Renderer extends JPanel {
     private static boolean isInBarycentric(Vertex coordinates) {
         double sum = coordinates.getY() + coordinates.getX() + coordinates.getZ();
         return (sum < 1.05) && (sum > .95) && coordinates.getX() >= 0 && coordinates.getY() >= 0 && coordinates.getZ() >= 0;
-    }
-
-    /**
-     * Getter of the vertexX attribute
-     *
-     * @return the vertexX attribute
-     */
-    public static Vertex getWorldX() {
-        return worldX;
-    }
-
-    /**
-     * Getter of the vertexY attribute
-     *
-     * @return the vertexY attribute
-     */
-    public static Vertex getWorldY() {
-        return worldY;
-    }
-
-    /**
-     * Getter of the vertexZ attribute
-     *
-     * @return the vertexZ attribute
-     */
-    public static Vertex getWorldZ() {
-        return worldZ;
-    }
-
-    public static void resetWorldRotation(){
-        worldX = new Vertex(1, 0, 0);
-        worldY = new Vertex(0, 1, 0);
-        worldZ = new Vertex(0, 0, 1);
     }
 
 }

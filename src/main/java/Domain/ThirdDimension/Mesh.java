@@ -16,13 +16,9 @@ import java.util.List;
  * @version 1.0
  * @since 2024-09-08
  */
-public class Mesh {
+public class Mesh extends Transform {
     protected List<Triangle> localTriangles;
-    protected Vertex position;
-    private Vertex rotationEuler;
-    private Quaternion rotationQuaternion;
     private Color color;
-    private float scale;
 
     /**
      * Base constructor for a Mesh object
@@ -33,13 +29,9 @@ public class Mesh {
      * @param triangles - The initial triangles of the mesh
      */
     protected Mesh(Vertex position, float scale, Color color, List<Triangle> triangles) {
-        this.position = position;
+        super(position, scale, Vertex.zero());
         this.color = color;
-        this.scale = scale;
-        this.rotationEuler = Vertex.zero();
-        this.rotationQuaternion = Quaternion.fromEulerAngles(this.rotationEuler);
         setLocalTriangles(triangles);
-        translateLocalTriangles(Vertex.multiply(calculateCenter(), -1));
     }
 
     /**
@@ -58,7 +50,7 @@ public class Mesh {
      * @param mesh Mesh to be copied
      */
     public Mesh(Mesh mesh) {
-        this(new Vertex(mesh.position), mesh.scale, new Color(mesh.color.getRGB()), cloneTriangles(mesh.localTriangles));
+        this(new Vertex(mesh.getPosition()), mesh.getScale(), new Color(mesh.color.getRGB()), cloneTriangles(mesh.localTriangles));
     }
 
     /**
@@ -250,89 +242,22 @@ public class Mesh {
         return newEdgesList;
     }
 
-    public void setPosition(Vertex v) {
-        position = v;
-    }
-
-    public Vertex getPosition() {
-        return position;
-    }
-
     public Color getColor() {
         return color;
     }
 
     public void setColor(Color color) {
-        color = color;
+        this.color = color;
     }
 
-    public Vertex getRotationEuler() {
-        return rotationEuler;
-    }
-
-    public void setRotationEuler(Vertex rotationEuler) {
-        if(rotationEuler.getX() >= 2*Math.PI)
-            rotationEuler.setX(Math.asin(Math.sin(rotationEuler.getX())));
-        if(rotationEuler.getY() >= 2*Math.PI)
-            rotationEuler.setY(Math.asin(Math.sin(rotationEuler.getY())));
-        if(rotationEuler.getZ() >= 2*Math.PI)
-            rotationEuler.setZ(Math.asin(Math.sin(rotationEuler.getZ())));
-        this.rotationEuler = rotationEuler;
-        this.rotationQuaternion = Quaternion.fromEulerAngles(this.rotationEuler);
-    }
-
-    /**
-     * Translates the local triangles of the mesh
-     *
-     * @param translation - the movement vector
-     */
-    public void translateLocalTriangles(Vertex translation) {
+    private void setLocalTriangles(List<Triangle> list){
+        localTriangles = list;
+        Vertex translation = Vertex.multiply(calculateCenter(), -1);
         for (Triangle t : getLocalTriangles()) {
             for(Vertex v : t.getVertices()){
                 v.add(translation);
             }
         }
-    }
-
-    /**
-     * Rotate local triangles around the mesh's center
-     *
-     * @param axis the axis to turn around
-     * @param radians the angle of the rotation
-     */
-    public void rotateLocalTriangles(Vertex axis, double radians) {
-        Matrix rotationMatrix = Matrix.getRotationMatrixAroundVector(axis, radians);
-        Vertex center = getPosition();
-        for (Triangle t : getLocalTriangles()) {
-            Vertex[] vertices = t.getVertices();
-            for (int i = 0; i < vertices.length; i++) {
-                vertices[i].subtract(center);
-                t.setVertex(rotationMatrix.matrixXVertex3X3(vertices[i]), i);
-                vertices[i].add(center);
-            }
-        }
-    }
-
-    /**
-     * Returns a new rotated translated and scaled version of the triangle
-     * @param triangle original triangle
-     * @return new rotated translated and scaled triangle
-     */
-    public Triangle getTransformedTriangle(Triangle triangle) {
-        Vertex[] vertices = new Vertex[triangle.getVertices().length];
-        for(int i = 0; i < vertices.length; i++){
-            Vertex v = new Vertex(triangle.getVertices()[i]);
-            v.rotate(rotationQuaternion);
-            v.add(position);
-            v.multiply(scale);
-            vertices[i] = v;
-        }
-        Vertex normal = new Vertex(triangle.getNormal()).rotate(rotationQuaternion);
-        return new Triangle(vertices[0], vertices[1], vertices[2], normal, triangle.getColor());
-    }
-
-    private void setLocalTriangles(List<Triangle> list){
-        localTriangles = list;
     }
 
 
