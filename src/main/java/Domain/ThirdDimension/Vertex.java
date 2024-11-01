@@ -14,7 +14,6 @@ public class Vertex {
     private double x;
     private double y;
     private double z;
-    public enum Axis{X,Y,Z}
 
     /**
      * Create a domain vertex based on a VertexDTO
@@ -61,6 +60,15 @@ public class Vertex {
      */
     public Vertex(Vertex vertex) {
         this(vertex.getX(), vertex.getY(), vertex.getZ());
+    }
+
+    /**
+     * Constructs a new {@code Vertex} with a {@code Quaternion} by using its imaginary part
+     *
+     * @param quaternion the {@code Vertex} that get cloned.
+     */
+    public Vertex(Quaternion quaternion) {
+        this(quaternion.getX(), quaternion.getY(), quaternion.getZ());
     }
 
     /**
@@ -174,10 +182,11 @@ public class Vertex {
      *
      * @param number the number that get multiplied to the current {@code Vertex}
      */
-    public void multiply(double number) {
+    public Vertex multiply(double number) {
         setX(x * number);
         setY(y * number);
         setZ(z * number);
+        return this;
     }
 
     /**
@@ -241,5 +250,22 @@ public class Vertex {
      */
     private static boolean isClose(double val1, double val2, double margin) {
         return (Math.abs(val1 - val2) < margin);
+    }
+
+    /**
+     * Rotates the vector according to the quaternion
+     * @param quaternion quaternion representing a rotation
+     * @return self to enable method chaining
+     */
+    public Vertex rotate(Quaternion quaternion) {
+        Quaternion rotation = new Quaternion(quaternion);
+        Quaternion position = new Quaternion(this);
+        Quaternion inverse = new Quaternion(quaternion).congugate();
+
+        rotation.multiply(position).multiply(inverse);
+        setX(rotation.getX());
+        setY(rotation.getY());
+        setZ(rotation.getZ());
+        return this;
     }
 }

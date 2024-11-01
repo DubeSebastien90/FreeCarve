@@ -8,7 +8,7 @@ import java.awt.*;
 public class MeshTest {
 
     @Test
-    void translateTriangles_HappyPath_TranslatesCorrectly() {
+    void translateLocalTriangles_HappyPath_TranslatesCorrectly() {
         // Arrange
         Renderer.resetWorldRotation();
         Vertex translationVertex = new Vertex(1, 1, 1);
@@ -17,7 +17,7 @@ public class MeshTest {
         mesh.localTriangles.getLast().setVertex(new Vertex(100, 100, 100), 0);
 
         // Act
-        mesh.translateTriangles(translationVertex);
+        mesh.translateLocalTriangles(translationVertex);
 
         // Assert
         Assertions.assertEquals(translationVertex, mesh.getLocalTriangles().getFirst().getVertex(0));
@@ -28,12 +28,12 @@ public class MeshTest {
     }
 
     @Test
-    void rotateTriangles_HappyPath_RotatesCorrectly() {
+    void rotateLocalTriangles_HappyPath_RotatesCorrectly() {
         // Arrange
         Mesh mesh = Mesh.createBox(new Vertex(0, 0, 0), 100, 100, 100, Color.BLUE);
 
         // Act
-        mesh.rotateTriangles(new Vertex(1, 0, 0), Math.PI);
+        mesh.rotateLocalTriangles(new Vertex(1, 0, 0), Math.PI);
 
         // Assert
         Triangle firstTriangle = mesh.getLocalTriangles().getFirst();

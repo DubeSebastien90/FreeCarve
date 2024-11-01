@@ -18,35 +18,47 @@ import java.util.List;
  */
 public class Mesh {
     protected List<Triangle> localTriangles;
-    protected List<Triangle> worldTriangles;
     protected Vertex position;
-    private Vertex rotation;
-    protected Color color;
-    protected float scale;
+    private Vertex rotationEuler;
+    private Quaternion rotationQuaternion;
+    private Color color;
+    private float scale;
 
     /**
-     * Abstract constructor for a Mesh object
+     * Base constructor for a Mesh object
      *
      * @param position - the position of the mesh in the scene
      * @param color    - the color of the mesh
+     * @param scale - The scaling factor to apply to the triangles
+     * @param triangles - The initial triangles of the mesh
      */
-    protected Mesh(Vertex position, float scale, Color color, List<Triangle> localTriangles) {
+    protected Mesh(Vertex position, float scale, Color color, List<Triangle> triangles) {
         this.position = position;
         this.color = color;
         this.scale = scale;
-        this.rotation = Vertex.zero();
-        this.worldTriangles = localTriangles;
-        setLocalTriangles(localTriangles);
-        //translateTriangles(Vertex.multiply(calculateCenter(), -1));
+        this.rotationEuler = Vertex.zero();
+        this.rotationQuaternion = Quaternion.fromEulerAngles(this.rotationEuler);
+        setLocalTriangles(triangles);
+        translateLocalTriangles(Vertex.multiply(calculateCenter(), -1));
     }
 
     /**
-     * Abstract constructor for a Mesh object
+     * Constructor for a Mesh object with a file
      * @param position - the position of the mesh in the scene
      * @param color - the color of the mesh
+     * @param stlFilePath - Absolute path of the file containing the triangles
+     * @param scale - The scaling factor to apply to the read triangles
      */
     public Mesh(Vertex position, Color color, String stlFilePath, float scale) throws IOException {
         this(position, scale, color, Arrays.asList(Triangle.fromParsedSTL(parseStlFile(stlFilePath), color)));
+    }
+
+    /**
+     * Copy constructor of mesh (deep copy)
+     * @param mesh Mesh to be copied
+     */
+    public Mesh(Mesh mesh) {
+        this(new Vertex(mesh.position), mesh.scale, new Color(mesh.color.getRGB()), cloneTriangles(mesh.localTriangles));
     }
 
     /**
@@ -80,21 +92,33 @@ public class Mesh {
     }
 
     /**
+     * This method exists because the existing clone method of List makes a deep copy using the cloneable interface
+     * and we use copy constructors instead as they are more concise when used and no casting is involved.
+     *
+     * @param triangles Original triangles
+     * @return Deep copy of the triangles
+     */
+    private static List<Triangle> cloneTriangles(List<Triangle> triangles) {
+        List<Triangle> newTriangles = new ArrayList<>(triangles.size());
+        for(Triangle t : triangles){
+            newTriangles.add(new Triangle(t));
+        }
+        return newTriangles;
+    }
+
+    /**
      * Calculates the center of the mesh depending on the shape
      *
      * @return the 3D coordinates of the center of the mesh
      */
     public Vertex calculateCenter() {
-        double centerX = 0.0, centerY = 0.0, centerZ = 0.0;
+        Vertex center = Vertex.zero();
         for(Triangle triangle : localTriangles) {
             for (Vertex v : triangle.getVertices()) {
-                centerX += v.getX();
-                centerY += v.getY();
-                centerZ += v.getZ();
+                center.add(v);
             }
         }
-        Vertex center = new Vertex(centerX, centerY, centerZ);
-        center.multiply(localTriangles.size());
+        center.multiply(1.0/(localTriangles.size()*3));
         return center;
     }
     
@@ -242,81 +266,75 @@ public class Mesh {
         color = color;
     }
 
-    public Vertex getRotation() {
-        return rotation;
+    public Vertex getRotationEuler() {
+        return rotationEuler;
     }
 
-    public void setRotation(Vertex rotation) {
-        if(rotation.getX() >= 2*Math.PI)
-            rotation.setX(Math.asin(Math.sin(rotation.getX())));
-        if(rotation.getY() >= 2*Math.PI)
-            rotation.setY(Math.asin(Math.sin(rotation.getY())));
-        if(rotation.getZ() >= 2*Math.PI)
-            rotation.setZ(Math.asin(Math.sin(rotation.getZ())));
-        this.rotation = rotation;
+    public void setRotationEuler(Vertex rotationEuler) {
+        if(rotationEuler.getX() >= 2*Math.PI)
+            rotationEuler.setX(Math.asin(Math.sin(rotationEuler.getX())));
+        if(rotationEuler.getY() >= 2*Math.PI)
+            rotationEuler.setY(Math.asin(Math.sin(rotationEuler.getY())));
+        if(rotationEuler.getZ() >= 2*Math.PI)
+            rotationEuler.setZ(Math.asin(Math.sin(rotationEuler.getZ())));
+        this.rotationEuler = rotationEuler;
+        this.rotationQuaternion = Quaternion.fromEulerAngles(this.rotationEuler);
     }
 
     /**
-     * Move a specific mesh in the scene
+     * Translates the local triangles of the mesh
      *
      * @param translation - the movement vector
      */
-    public void translateTriangles(Vertex translation) {
-        Vertex translationModif = Vertex.zero();
-        Vertex tempVertexX = new Vertex(Renderer.getWorldX());
-        tempVertexX.multiply(translation.getX());
-        translationModif.add(tempVertexX);
-
-        Vertex tempVertexY = new Vertex(Renderer.getWorldY());
-        tempVertexY.multiply(translation.getY());
-        translationModif.add(tempVertexY);
-
-        Vertex tempVertexZ = new Vertex(Renderer.getWorldZ());
-        tempVertexZ.multiply(translation.getZ());
-        translationModif.add(tempVertexZ);
+    public void translateLocalTriangles(Vertex translation) {
         for (Triangle t : getLocalTriangles()) {
             for(Vertex v : t.getVertices()){
-                v.add(translationModif);
+                v.add(translation);
             }
         }
-        getPosition().add(translation);
     }
 
     /**
-     * Rotate a specific mesh around it's center
+     * Rotate local triangles around the mesh's center
      *
      * @param axis the axis to turn around
      * @param radians the angle of the rotation
      */
-    public void rotateTriangles(Vertex axis, double radians) {
-        Matrix rotationMatrice = Matrix.getRotationMatrixAroundVector(axis, radians);
+    public void rotateLocalTriangles(Vertex axis, double radians) {
+        Matrix rotationMatrix = Matrix.getRotationMatrixAroundVector(axis, radians);
         Vertex center = getPosition();
         for (Triangle t : getLocalTriangles()) {
             Vertex[] vertices = t.getVertices();
             for (int i = 0; i < vertices.length; i++) {
                 vertices[i].subtract(center);
-                t.setVertex(rotationMatrice.matrixXVertex3X3(vertices[i]), i);
+                t.setVertex(rotationMatrix.matrixXVertex3X3(vertices[i]), i);
                 vertices[i].add(center);
             }
         }
     }
 
-    public List<Triangle> getWorldTriangles(){
-        return worldTriangles;
+    /**
+     * Returns a new rotated translated and scaled version of the triangle
+     * @param triangle original triangle
+     * @return new rotated translated and scaled triangle
+     */
+    public Triangle getTransformedTriangle(Triangle triangle) {
+        Vertex[] vertices = new Vertex[triangle.getVertices().length];
+        for(int i = 0; i < vertices.length; i++){
+            Vertex v = new Vertex(triangle.getVertices()[i]);
+            v.rotate(rotationQuaternion);
+            v.add(position);
+            v.multiply(scale);
+            vertices[i] = v;
+        }
+        Vertex normal = new Vertex(triangle.getNormal()).rotate(rotationQuaternion);
+        return new Triangle(vertices[0], vertices[1], vertices[2], normal, triangle.getColor());
     }
 
-    /**
-     * Creates the triangles of the mesh
-     */
     private void setLocalTriangles(List<Triangle> list){
         localTriangles = list;
-        for (Triangle t : list) {
-            t.getVertex(0).multiply(scale);
-            t.getVertex(1).multiply(scale);
-            t.getVertex(2).multiply(scale);
-        }
-        calculateCenter();
     }
+
 
     private static ParsedSTL parseStlFile(String path) throws IOException {
         DataInputStream dis = null;

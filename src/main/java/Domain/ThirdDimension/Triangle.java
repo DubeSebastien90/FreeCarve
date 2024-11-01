@@ -47,12 +47,12 @@ public class Triangle {
     }
 
     /**
-     * Construct a new {@code Triangle} with the value of another one. Similar to a clone function.
+     * Construct a new {@code Triangle} that is a deep copy of another one. Similar to a clone function.
      *
      * @param triangle the other triangle.
      */
     public Triangle(Triangle triangle) {
-        this(triangle.getVertex(0), triangle.getVertex(1), triangle.getVertex(2), triangle.getNormal(), triangle.getColor());
+        this(new Vertex(triangle.getVertex(0)), new Vertex(triangle.getVertex(1)), new Vertex(triangle.getVertex(2)), new Vertex(triangle.getNormal()), new Color(triangle.getColor().getRed(), triangle.getColor().getGreen(), triangle.getColor().getBlue()));
     }
 
     /**
@@ -202,9 +202,9 @@ public class Triangle {
         Vertex v2 = getVertex(1);
         Vertex v3 = getVertex(2);
 
-        double denominateur = (v2.getY() - v3.getY()) * (v1.getX() - v3.getX()) + (v3.getX() - v2.getX()) * (v1.getY() - v3.getY());
-        double firstBary = ((v2.getY() - v3.getY()) * (pointX - v3.getX()) + (v3.getX() - v2.getX()) * (pointY - v3.getY())) / denominateur;
-        double secondBary = ((v3.getY() - v1.getY()) * (pointX - v3.getX()) + (v1.getX() - v3.getX()) * (pointY - v3.getY())) / denominateur;
+        double denominator = (v2.getY() - v3.getY()) * (v1.getX() - v3.getX()) + (v3.getX() - v2.getX()) * (v1.getY() - v3.getY());
+        double firstBary = ((v2.getY() - v3.getY()) * (pointX - v3.getX()) + (v3.getX() - v2.getX()) * (pointY - v3.getY())) / denominator;
+        double secondBary = ((v3.getY() - v1.getY()) * (pointX - v3.getX()) + (v1.getX() - v3.getX()) * (pointY - v3.getY())) / denominator;
         double thirdBary = (1 - firstBary - secondBary);
 
         return new Vertex(firstBary, secondBary, thirdBary);

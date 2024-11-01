@@ -100,8 +100,6 @@ public class Renderer extends JPanel {
         UiUtil.makeJPanelRoundCorner(this, graphics2D);
         super.paintComponent(graphics2D);
         pixelsDepthMap = new Double[this.getWidth()][this.getHeight()];
-        panelHalfWidth = getWidth() / 2f;
-        panelHalfHeight = getHeight() / 2f;
         Mesh mesh = null;
         BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (Mesh m : meshes) {
@@ -131,20 +129,15 @@ public class Renderer extends JPanel {
     private boolean printTriangle(BufferedImage img, Triangle triangle, Mesh parent) {
         boolean isSelected = false;
 
-        Triangle newTriangle = new Triangle(
-                Vertex.add(parent.getPosition(), triangle.getVertex(0)),
-                Vertex.add(parent.getPosition(), triangle.getVertex(1)),
-                Vertex.add(parent.getPosition(), triangle.getVertex(2)),
-                triangle.getNormal(), triangle.getColor());
-        newTriangle.calculateNormal();
+        Triangle t = parent.getTransformedTriangle(triangle);
 
-        Color printedColor = calculateLighting(newTriangle);
-        int[] area = newTriangle.findBoundingRectangle(img.getWidth(null), img.getHeight(null));
+        Color printedColor = calculateLighting(t);
+        int[] area = t.findBoundingRectangle(img.getWidth(null), img.getHeight(null));
         for (int y = area[2]; y <= area[3]; y++) {
             for (int x = area[0]; x <= area[1]; x++) {
-                Vertex bary = newTriangle.findBarycentric(x, y);
+                Vertex bary = t.findBarycentric(x, y);
                 if (isInBarycentric(bary)) {
-                    double depth = bary.getX() * newTriangle.getVertex(0).getZ() + bary.getY() * newTriangle.getVertex(1).getZ() + bary.getZ() * newTriangle.getVertex(2).getZ();
+                    double depth = bary.getX() * t.getVertex(0).getZ() + bary.getY() * t.getVertex(1).getZ() + bary.getZ() * t.getVertex(2).getZ();
                     if (x < getWidth() && y < getHeight()) {
                         if ((pixelsDepthMap[x][y] == null || pixelsDepthMap[x][y] < depth)) {
                             pixelsDepthMap[x][y] = depth;
