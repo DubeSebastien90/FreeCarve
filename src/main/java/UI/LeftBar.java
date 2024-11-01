@@ -203,4 +203,9 @@ public class LeftBar extends JScrollPane {
     private void settingActionListener() {
         toolBar.getTool(ToolBar.Tool.SETTING).addActionListener(e -> MainWindow.INSTANCE.showOptionWindow());
     }
+
+    private void gridActionListener() {
+        toolBar.getTool(ToolBar.Tool.GRID).addActionListener(e -> System.out.println("Will activate the grid, or deactivate the grid and the magnet"));
+        toolBar.getTool(ToolBar.Tool.MAGNET).addActionListener(e -> System.out.println("if grid is activate, toggle the magnet"));
+    }
 }

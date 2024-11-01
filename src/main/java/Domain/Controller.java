@@ -81,7 +81,7 @@ public class Controller {
      * @param width  The new width of the board.
      * @param height The new height of the board.
      */
-    public void resizePanel(float width, float height) {
+    public void resizePanel(double width, double height) {
         this.currentProjectState.getPanel().resize(width, height);
     }
 

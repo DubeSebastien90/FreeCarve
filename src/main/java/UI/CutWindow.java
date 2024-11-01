@@ -5,7 +5,7 @@ import UI.Events.ChangeAttributeListener;
 import UI.SubWindows.AttributePanel;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.CutListPanel;
-import UI.SubWindows.Rendering2DWindow;
+import UI.Display2D.Rendering2DWindow;
 import UI.Widgets.Attributable;
 import UI.Widgets.ChooseDimension;
 

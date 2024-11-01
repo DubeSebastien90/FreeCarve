@@ -1,4 +1,4 @@
-package UI.SubWindows;
+package UI.Display2D;
 
 import Domain.Grid;
 import Domain.GridDTO;
@@ -10,17 +10,20 @@ import Util.UiUtil;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
+
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 public class Rendering2DWindow extends JPanel {
-    private Rectangle board = new Rectangle(0, 0, 200, 100);
-    private Point mousePt;
-    private Point mmMousePt;
-    private double offsetX;
-    private double offsetY;
-    private double zoom;
+
+    private final Rectangle2D board = new Rectangle2D.Double(0, 0, 1219.2, 914.4);
+    private Point2D mousePt = new Point2D.Double(0, 0);
+    private final Point2D fakeMousePt = new Point2D.Double(0, 0);
+    private double offsetX = 100;
+    private double offsetY = 100;
+    private double zoom = 1;
+    private Point2D mmMousePt;
     private double prevZoom;
     private int wW;
     private int wH;
@@ -28,7 +31,8 @@ public class Rendering2DWindow extends JPanel {
     ArrayList<Double> areammBoard = new ArrayList<>();
     private boolean draggingAPoint = false;
     private final ArrayList<PersoPoint> points = new ArrayList<>();
-    private MouseMotionListener scaleListener;
+    private final Afficheur afficheur;
+    private final Scaling scaling;
 
     /**
      * Constructor for Renderinf2DWIndow
@@ -48,7 +52,52 @@ public class Rendering2DWindow extends JPanel {
         addMouseMotionListener();
         addMouseWheelListener();
         addComponentListener();
-        initScalePointMouseListener();
+        afficheur = new Afficheur(this);
+        scaling = new Scaling(this);
+    }
+
+    public Rectangle2D getBoard() {
+        return this.board;
+    }
+
+    public Point2D getFakeMousePt() {
+        return this.fakeMousePt;
+    }
+
+    public Point2D getMousePt() {
+        return mousePt;
+    }
+
+    public double getOffsetX() {
+        return offsetX;
+    }
+
+    public double getOffsetY() {
+        return offsetY;
+    }
+
+    public double getZoom() {
+        return zoom;
+    }
+
+    public double getPrevZoom() {
+        return prevZoom;
+    }
+
+    public int getwW() {
+        return wW;
+    }
+
+    public int getwH() {
+        return wH;
+    }
+
+    public boolean isDraggingAPoint() {
+        return draggingAPoint;
+    }
+
+    public Afficheur getAfficheur() {
+        return afficheur;
     }
 
     /**
@@ -116,8 +165,8 @@ public class Rendering2DWindow extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (!draggingAPoint) {
-                    offsetX -= ((mousePt.x - e.getPoint().x) / zoom);
-                    offsetY += ((mousePt.y - e.getPoint().y) / zoom);
+                    offsetX -= ((mousePt.getX() - e.getPoint().x) / zoom);
+                    offsetY += ((mousePt.getY() - e.getPoint().y) / zoom);
                     mousePt = e.getPoint();
                     points.clear();
                     repaint();
@@ -134,7 +183,7 @@ public class Rendering2DWindow extends JPanel {
             public void mouseMoved(MouseEvent e) {
                 if (!draggingAPoint) {
                     mousePt = e.getPoint();
-                    mmMousePt.setLocation((mousePt.x - (offsetX * zoom)) / zoom, ((-1 * (mousePt.y - wH)) - (offsetY * zoom)) / zoom);
+                    mmMousePt.setLocation((mousePt.getX() - (offsetX * zoom)) / zoom, ((-1 * (mousePt.getY() - wH)) - (offsetY * zoom)) / zoom);
                     repaint();
                 }
             }
@@ -149,8 +198,8 @@ public class Rendering2DWindow extends JPanel {
         addMouseWheelListener(e -> {
             double zoomFactor = ((double) 25 / Math.signum(e.getWheelRotation()));
             zoom -= zoom / zoomFactor;
-            offsetX = (mousePt.x - (mmMousePt.x * zoom)) / zoom;
-            offsetY = ((-1 * (mousePt.y - wH)) - (mmMousePt.y * zoom)) / zoom;
+            offsetX = (mousePt.getX() - (mmMousePt.getX() * zoom)) / zoom;
+            offsetY = ((-1 * (mousePt.getY() - wH)) - (mmMousePt.getY() * zoom)) / zoom;
             points.clear();
             repaint();
         });
@@ -184,47 +233,16 @@ public class Rendering2DWindow extends JPanel {
         this.setBackground(UIManager.getColor("SubWindow.background"));
         UiUtil.makeJPanelRoundCorner(this, graphics2D);
         super.paintComponent(graphics2D);
-        drawRectangle(graphics2D);
-        drawGrid(graphics2D);
-        drawPoints(graphics2D);
-        drawMousePos(graphics2D);
+        afficheur.drawRectangle(graphics2D);
+        afficheur.drawMousePos(graphics2D);
+        afficheur.drawPoints(graphics2D);
     }
-
-    /**
-     * Draws the points on this JPanel.
-     *
-     * @param graphics2D A graphics object which is painted on the JPanel.
-     */
-    private void drawPoints(Graphics2D graphics2D) {
-        graphics2D.setColor(Color.BLACK);
-        for (PersoPoint point : points) {
-            if (point.getFilled()) {
-                graphics2D.fillOval(((int) point.getLocationX()), ((int) point.getLocationY()), ((int) point.getRadius()), ((int) point.getRadius()));
-            } else {
-                graphics2D.drawOval(((int) point.getLocationX()), ((int) point.getLocationY()), ((int) point.getRadius()), ((int) point.getRadius()));
-
-            }
-        }
-    }
-
-    /**
-     * Draws the mouse coordinates in the top left corner of the screen.
-     *
-     * @param graphics2D A graphics object which is painted on this JPanel
-     */
-    private void drawMousePos(Graphics2D graphics2D) {
-        if (isPointonPanel()) {
-            graphics2D.setColor(Color.BLACK);
-            graphics2D.drawString(mmMousePt.x + ", " + mmMousePt.y, 20, 20);
-        }
-    }
-
 
     /**
      * @return True if the mouse is on the board.
      */
-    private boolean isPointonPanel() {
-        return mmMousePt.x >= 0 && mmMousePt.y >= 0 && mmMousePt.x <= board.width && mmMousePt.y <= board.height;
+    boolean isPointonPanel() {
+        return fakeMousePt.getX() >= 0 && fakeMousePt.getY() >= 0 && fakeMousePt.getX() <= board.getWidth() && fakeMousePt.getY() <= board.getHeight();
     }
 
     /**
@@ -233,9 +251,9 @@ public class Rendering2DWindow extends JPanel {
      * @param newWidth  The new width.
      * @param newHeight The new height.
      */
-    private void resizePanneau(int newWidth, int newHeight) {
-        board.setSize(newWidth, newHeight);
-        mainWindow.getController().resizePanel(board.width, board.height);
+    void resizePanneau(double newWidth, double newHeight) {
+        board.setRect(board.getX(), board.getY(), newWidth, newHeight);
+        MainWindow.INSTANCE.getController().resizePanel(board.getWidth(), board.getHeight());
     }
 
     /**
@@ -244,23 +262,9 @@ public class Rendering2DWindow extends JPanel {
      * @param deltaWidth  The width difference.
      * @param deltaHeight The height difference.
      */
-    private void deltaResizePanneau(int deltaWidth, int deltaHeight) {
-        board.setSize(((int) board.getWidth()) - deltaWidth, ((int) board.getHeight()) - deltaHeight);
-        MainWindow.INSTANCE.getController().resizePanel(board.width, board.height);
-    }
-
-
-    /**
-     * Draws the board on the screen
-     *
-     * @param graphics2D the <code>Graphics</code> object to protect
-     */
-    private void drawRectangle(Graphics2D graphics2D) {
-        Color color = new Color(222, 184, 135);
-        graphics2D.setColor(color);
-        Rectangle panneauOffset = convertBoardTomm(board);
-        graphics2D.draw(panneauOffset);
-        graphics2D.fill(panneauOffset);
+    private void deltaResizePanneau(double deltaWidth, double deltaHeight) {
+        board.setRect(board.getX(), board.getY(), board.getWidth() - deltaWidth, board.getHeight() - deltaHeight);
+        MainWindow.INSTANCE.getController().resizePanel(board.getWidth(), board.getHeight());
     }
 
     /**
@@ -286,12 +290,12 @@ public class Rendering2DWindow extends JPanel {
      * @param mousePt The mouse coordinates point in pixel
      * @return the mouse coordinates if it's not close enough to an intersection, the intersection coordinates in pixels if the mouse is close enough
      */
-    public Point getMagnetisedPos(Point mousePt) {
+    public Point2D getMagnetisedPos(Point2D mousePt) {
         GridDTO grid = mainWindow.getController().getGrid();
         for (double i = areammBoard.get(0); i < areammBoard.get(1); i += grid.getSize() * zoom) {
-            if (Math.abs((mousePt.x - i)) <= grid.getMagnetPrecision()) {
+            if (Math.abs((mousePt.getX() - i)) <= grid.getMagnetPrecision()) {
                 for (double j = areammBoard.get(3); j > areammBoard.get(2); j -= grid.getSize() * zoom) {
-                    if (Point.distance(mousePt.x, mousePt.y, i, j) <= grid.getMagnetPrecision()) {
+                    if (Point.distance(mousePt.getX(), mousePt.getY(), i, j) <= grid.getMagnetPrecision()) {
                         return new Point((int) i, (int) j);
                     }
                 }
@@ -307,8 +311,8 @@ public class Rendering2DWindow extends JPanel {
      * @param mmPt The point in mm
      * @return The point in pixel
      */
-    public Point mmTopixel(Point mmPt) {
-        return new Point((int) ((mmPt.x * zoom) + (offsetX * zoom)), (int) ((-1 * ((mmPt.y * zoom) + (offsetY * zoom))) + wH));
+    public Point2D mmTopixel(Point2D mmPt) {
+        return new Point2D.Double(((mmPt.getX() * zoom) + (offsetX * zoom)), ((-1 * ((mmPt.getY() * zoom) + (offsetY * zoom))) + wH));
     }
 
     /**
@@ -317,8 +321,8 @@ public class Rendering2DWindow extends JPanel {
      * @param pixelPt The point in pixel
      * @return The point in mm
      */
-    public Point pixelTomm(Point pixelPt) {
-        return new Point((int) ((pixelPt.x - (offsetX * zoom)) / zoom), (int) (((-1 * (pixelPt.y - wH)) - (offsetY * zoom)) / zoom));
+    public Point2D pixelTomm(Point2D pixelPt) {
+        return new Point2D.Double(((pixelPt.getX() - (offsetX * zoom)) / zoom), (((-1 * (pixelPt.getY() - wH)) - (offsetY * zoom)) / zoom));
     }
 
     /**
@@ -327,13 +331,13 @@ public class Rendering2DWindow extends JPanel {
      * @param rectangle the board
      * @return A rectangle object shaped with the zoom
      */
-    private Rectangle convertBoardTomm(Rectangle rectangle) {
+    Rectangle2D convertBoardTomm(Rectangle2D rectangle) {
         areammBoard.clear();
-        areammBoard.add((rectangle.x + offsetX) * zoom);
-        areammBoard.add((rectangle.x + offsetX) * zoom + (rectangle.width * zoom));
-        areammBoard.add((((-1 * (rectangle.y - wH)) - ((offsetY + rectangle.height) * zoom))));
-        areammBoard.add((((-1 * (rectangle.y - wH)) - ((offsetY + rectangle.height) * zoom))) + (rectangle.height * zoom));
-        return new Rectangle(areammBoard.get(0).intValue(), areammBoard.get(2).intValue(), (int) (rectangle.width * zoom), (int) (rectangle.height * zoom));
+        areammBoard.add((rectangle.getX() + offsetX) * zoom);
+        areammBoard.add((rectangle.getX() + offsetX) * zoom + (rectangle.getWidth() * zoom));
+        areammBoard.add((((-1 * (rectangle.getY() - wH)) - ((offsetY + rectangle.getHeight()) * zoom))));
+        areammBoard.add((((-1 * (rectangle.getY() - wH)) - ((offsetY + rectangle.getHeight()) * zoom))) + (rectangle.getHeight() * zoom));
+        return new Rectangle2D.Double(areammBoard.get(0).intValue(), areammBoard.get(2).intValue(), (rectangle.getWidth() * zoom), (rectangle.getHeight() * zoom));
     }
 
     /**
@@ -348,25 +352,6 @@ public class Rendering2DWindow extends JPanel {
     }
 
     /**
-     * Initializes the points and behavior for resizing the board.
-     * This includes setting up the necessary components and defining how
-     * the board responds to resize events.
-     */
-    public void scale() {
-        double radius = 5;
-        double locationX = (offsetX + board.x + board.width) * zoom - radius / 2;
-        double locationY = getHeight() - (board.y + offsetY + board.height) * zoom - radius / 2;
-        PersoPoint p = new PersoPoint(locationX, locationY, radius, false);
-        PersoPoint p1 = new PersoPoint(locationX - board.width * zoom, locationY, radius, true);
-        PersoPoint p2 = new PersoPoint(locationX, locationY + board.height * zoom, radius, true);
-        points.add(p1);
-        points.add(p);
-        points.add(p2);
-        activateScaleListener();
-        repaint();
-    }
-
-    /**
      * Determines whether the mouse cursor is currently positioned over
      * the board or a any other component.
      *
@@ -374,7 +359,7 @@ public class Rendering2DWindow extends JPanel {
      *          about the current mouse position and state.
      * @return {@code true} if the mouse is over the board or another component; {@code false} otherwise.
      */
-    public boolean mouseOnSomething(MouseEvent e) {
+    boolean mouseOnSomething(MouseEvent e) {
         if (isPointonPanel()) {
             return true;
         }
@@ -394,40 +379,28 @@ public class Rendering2DWindow extends JPanel {
      * @return {@code true} if the mouse event's position is within a threshold
      * distance of the point; {@code false} otherwise.
      */
-    private boolean isPointClose(MouseEvent e, PersoPoint point) {
+    boolean isPointClose(MouseEvent e, PersoPoint point) {
         double dx = e.getX() - point.getLocationX();
         double dy = e.getY() - point.getLocationY();
         return Math.sqrt(dx * dx + dy * dy) < 10;
     }
 
     /**
-     * Sets up a mouse motion listener to handle resizing the board when a
-     * point is being dragged.
+     * Initializes the points and behavior for resizing the board.
+     * This includes setting up the necessary components and defining how
+     * the board responds to resize events.
      */
-    private void initScalePointMouseListener() {
-        scaleListener = new MouseAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if (draggingAPoint) {
-                    super.mouseDragged(e);
-                    PersoPoint p = points.get(1);
-                    double ratio = 1 / zoom;
-                    double newWidth = Math.max((e.getX() - offsetX * zoom) * ratio + p.getRadius() / 2, 0);
-                    double newHeight = Math.max((getHeight() - e.getY() - offsetY * zoom) * ratio - p.getRadius() / 2, 0);
-                    points.get(0).movePoint(offsetX * zoom - p.getRadius() / 2, p.getLocationY());
-                    points.get(2).movePoint(p.getLocationX(), getHeight() - offsetY * zoom - p.getRadius() / 2);
-                    resizePanneau((int) newWidth, (int) newHeight);
-                    repaint();
-                }
-            }
-        };
+    public void scale() {
+        scaling.initiateScaling();
+        activateScaleListener();
+        repaint();
     }
 
     /**
      * Activates the scaleListener so the board will change size when the points are dragged
      */
     private void activateScaleListener() {
-        addMouseMotionListener(scaleListener);
+        addMouseMotionListener(scaling.getScaleListener());
     }
 
     /**
@@ -435,7 +408,7 @@ public class Rendering2DWindow extends JPanel {
      */
     private void clearPoints() {
         points.clear();
-        removeMouseMotionListener(scaleListener);
+        removeMouseMotionListener(scaling.getScaleListener());
     }
 
 }

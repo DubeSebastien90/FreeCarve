@@ -2,7 +2,7 @@ package UI;
 
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.BitSelectionPanel;
-import UI.SubWindows.Rendering2DWindow;
+import UI.Display2D.Rendering2DWindow;
 import UI.Widgets.BigButton;
 import UI.Widgets.BitInfoDisplay;
 import UI.Widgets.ChooseDimension;

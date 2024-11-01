@@ -8,7 +8,7 @@ import java.awt.*;
 //TODO Right now its really nothing, but it is supposed to be a little jpanel with fields for the inputs of the new dimensions of the board.
 // Activates only when clicked on the board or the clampzones
 // feel free to completely changes this class
-public class ChooseDimension extends BasicWindow {
+public class ChooseDimension extends BasicWindow implements Attributable{
 
     public ChooseDimension() {
         super(false);
@@ -62,5 +62,15 @@ public class ChooseDimension extends BasicWindow {
         gbc.gridy = 2;
         add(yTextArea, gbc);
 
+    }
+
+    @Override
+    public JLabel showName() {
+        return new JLabel("Choose the dimensions");
+    }
+
+    @Override
+    public JPanel showAttribute() {
+        return this;
     }
 }

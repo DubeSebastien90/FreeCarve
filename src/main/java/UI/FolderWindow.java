@@ -41,6 +41,7 @@ public class FolderWindow extends JPanel {
 
         this.setVisible(true);
         init();
+        setButtonActionListener();
     }
 
     /**
@@ -137,4 +138,11 @@ public class FolderWindow extends JPanel {
         return button;
     }
 
+    /**
+     * Sets the event handler for the new project button. When the button is clicked,
+     * it triggers the action to proceed to the next window in the main interface.
+     */
+    private void setButtonActionListener(){
+        newButton.addActionListener(e -> MainWindow.INSTANCE.getMiddleContent().nextWindow());
+    }
 }

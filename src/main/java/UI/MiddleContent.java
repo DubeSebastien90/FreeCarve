@@ -3,8 +3,8 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 
+import UI.Display2D.Rendering2DWindow;
 import UI.LeftBar.ToolBar.Tool;
-import UI.SubWindows.Rendering2DWindow;
 
 /**
  * The {@code MiddleContent} class encapsulates the UI container of the middle
