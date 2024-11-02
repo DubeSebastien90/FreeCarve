@@ -84,7 +84,7 @@ class TransformTest {
         Triangle result = mesh.getTransformedTriangle(triangle);
 
         // Assert
-        Assertions.assertEquals(new Vertex(-50, 50, 50), result.getVertex(1));
+        Assertions.assertEquals(new Vertex(50, 50, -50), result.getVertex(1));
     }
 
     @Test

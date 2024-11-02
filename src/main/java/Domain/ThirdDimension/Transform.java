@@ -25,7 +25,7 @@ public abstract class Transform {
      * Vector representing the rotation of the object.
      * The value of X is the rotation around the X axis in radians, the same goes for Y and Z
      */
-    private final Vertex rotationEuler = Vertex.zero();
+    private Vertex rotationEuler;
     /**
      * The less human-readable value used for the rotation calculations.
      */
@@ -43,9 +43,14 @@ public abstract class Transform {
     }
 
     public void setRotationEuler(Vertex rotationEuler) {
-        this.rotationEuler.setX(Math.asin(Math.sin(rotationEuler.getX())));
-        this.rotationEuler.setY(Math.asin(Math.sin(rotationEuler.getY())));
-        this.rotationEuler.setZ(Math.asin(Math.sin(rotationEuler.getZ())));
+        Vertex newRotation = new Vertex(rotationEuler);
+        if(rotationEuler.getX() >= 2*Math.PI)
+            newRotation.setX(Math.asin(Math.sin(rotationEuler.getX())));
+        if(rotationEuler.getY() >= 2*Math.PI)
+            newRotation.setY(Math.asin(Math.sin(rotationEuler.getY())));
+        if(rotationEuler.getZ() >= 2*Math.PI)
+            newRotation.setZ(Math.asin(Math.sin(rotationEuler.getZ())));
+        this.rotationEuler = newRotation;
         this.rotationQuaternion = Quaternion.fromEulerAngles(this.rotationEuler);
     }
 
