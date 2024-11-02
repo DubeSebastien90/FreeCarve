@@ -32,6 +32,7 @@ public class Rendering2DWindow extends JPanel {
 
     /**
      * Constructor for Renderinf2DWIndow
+     *
      * @param mainWindow The main window to get the controller
      */
     public Rendering2DWindow(MainWindow mainWindow) {
@@ -174,6 +175,7 @@ public class Rendering2DWindow extends JPanel {
 
     /**
      * Function executed when rendering the screen
+     *
      * @param graphics the <code>Graphics</code> object to protect
      */
     @Override
@@ -248,9 +250,9 @@ public class Rendering2DWindow extends JPanel {
     }
 
 
-
     /**
      * Draws the board on the screen
+     *
      * @param graphics2D the <code>Graphics</code> object to protect
      */
     private void drawRectangle(Graphics2D graphics2D) {
@@ -263,6 +265,7 @@ public class Rendering2DWindow extends JPanel {
 
     /**
      * Draws the grid on the board
+     *
      * @param graphics2D the <code>Graphics</code> object to protect
      */
     private void drawGrid(Graphics2D graphics2D) {
@@ -279,14 +282,15 @@ public class Rendering2DWindow extends JPanel {
 
     /**
      * Function that returns the magnetised position of the mouse based on the grid
+     *
      * @param mousePt The mouse coordinates point in pixel
      * @return the mouse coordinates if it's not close enough to an intersection, the intersection coordinates in pixels if the mouse is close enough
      */
     public Point getMagnetisedPos(Point mousePt) {
         GridDTO grid = mainWindow.getController().getGrid();
-        for (double i = areammBoard.get(0); i < areammBoard.get(1); i += grid.getSize()*zoom) {
+        for (double i = areammBoard.get(0); i < areammBoard.get(1); i += grid.getSize() * zoom) {
             if (Math.abs((mousePt.x - i)) <= grid.getMagnetPrecision()) {
-                for (double j = areammBoard.get(3); j > areammBoard.get(2); j -= grid.getSize()*zoom) {
+                for (double j = areammBoard.get(3); j > areammBoard.get(2); j -= grid.getSize() * zoom) {
                     if (Point.distance(mousePt.x, mousePt.y, i, j) <= grid.getMagnetPrecision()) {
                         return new Point((int) i, (int) j);
                     }
@@ -299,6 +303,7 @@ public class Rendering2DWindow extends JPanel {
 
     /**
      * Converts a point in mm into pixels
+     *
      * @param mmPt The point in mm
      * @return The point in pixel
      */
@@ -308,6 +313,7 @@ public class Rendering2DWindow extends JPanel {
 
     /**
      * Converts a point in pixels into milimeters
+     *
      * @param pixelPt The point in pixel
      * @return The point in mm
      */
@@ -317,6 +323,7 @@ public class Rendering2DWindow extends JPanel {
 
     /**
      * Converts a board to be displayed with the zoom and offset
+     *
      * @param rectangle the board
      * @return A rectangle object shaped with the zoom
      */
@@ -327,6 +334,108 @@ public class Rendering2DWindow extends JPanel {
         areammBoard.add((((-1 * (rectangle.y - wH)) - ((offsetY + rectangle.height) * zoom))));
         areammBoard.add((((-1 * (rectangle.y - wH)) - ((offsetY + rectangle.height) * zoom))) + (rectangle.height * zoom));
         return new Rectangle(areammBoard.get(0).intValue(), areammBoard.get(2).intValue(), (int) (rectangle.width * zoom), (int) (rectangle.height * zoom));
+    }
+
+    /**
+     * Zooms to the center of this panel.
+     *
+     * @param zoomFactor The zooming delta. A negative one will make the board seems bigger.
+     */
+    public void zoomOrigin(double zoomFactor) {
+        points.clear();
+        zoom -= zoom / zoomFactor;
+        repaint();
+    }
+
+    /**
+     * Initializes the points and behavior for resizing the board.
+     * This includes setting up the necessary components and defining how
+     * the board responds to resize events.
+     */
+    public void scale() {
+        double radius = 5;
+        double locationX = (offsetX + board.x + board.width) * zoom - radius / 2;
+        double locationY = getHeight() - (board.y + offsetY + board.height) * zoom - radius / 2;
+        PersoPoint p = new PersoPoint(locationX, locationY, radius, false);
+        PersoPoint p1 = new PersoPoint(locationX - board.width * zoom, locationY, radius, true);
+        PersoPoint p2 = new PersoPoint(locationX, locationY + board.height * zoom, radius, true);
+        points.add(p1);
+        points.add(p);
+        points.add(p2);
+        activateScaleListener();
+        repaint();
+    }
+
+    /**
+     * Determines whether the mouse cursor is currently positioned over
+     * the board or a any other component.
+     *
+     * @param e The mouse event that triggered this check, providing details
+     *          about the current mouse position and state.
+     * @return {@code true} if the mouse is over the board or another component; {@code false} otherwise.
+     */
+    public boolean mouseOnSomething(MouseEvent e) {
+        if (isPointonPanel()) {
+            return true;
+        }
+        for (PersoPoint point : points) {
+            if (isPointClose(e, point)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a given mouse event is close to a specified point.
+     *
+     * @param e     The mouse event that contains the current mouse position.
+     * @param point The point to check against.
+     * @return {@code true} if the mouse event's position is within a threshold
+     * distance of the point; {@code false} otherwise.
+     */
+    private boolean isPointClose(MouseEvent e, PersoPoint point) {
+        double dx = e.getX() - point.getLocationX();
+        double dy = e.getY() - point.getLocationY();
+        return Math.sqrt(dx * dx + dy * dy) < 10;
+    }
+
+    /**
+     * Sets up a mouse motion listener to handle resizing the board when a
+     * point is being dragged.
+     */
+    private void initScalePointMouseListener() {
+        scaleListener = new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (draggingAPoint) {
+                    super.mouseDragged(e);
+                    PersoPoint p = points.get(1);
+                    double ratio = 1 / zoom;
+                    double newWidth = Math.max((e.getX() - offsetX * zoom) * ratio + p.getRadius() / 2, 0);
+                    double newHeight = Math.max((getHeight() - e.getY() - offsetY * zoom) * ratio - p.getRadius() / 2, 0);
+                    points.get(0).movePoint(offsetX * zoom - p.getRadius() / 2, p.getLocationY());
+                    points.get(2).movePoint(p.getLocationX(), getHeight() - offsetY * zoom - p.getRadius() / 2);
+                    resizePanneau((int) newWidth, (int) newHeight);
+                    repaint();
+                }
+            }
+        };
+    }
+
+    /**
+     * Activates the scaleListener so the board will change size when the points are dragged
+     */
+    private void activateScaleListener() {
+        addMouseMotionListener(scaleListener);
+    }
+
+    /**
+     * Deactivate the scaleListener so the board won't resize when points are dragged.
+     */
+    private void clearPoints() {
+        points.clear();
+        removeMouseMotionListener(scaleListener);
     }
 
 }
