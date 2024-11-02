@@ -189,6 +189,67 @@ public class Rendering2DWindow extends JPanel {
     }
 
     /**
+     * Draws the points on this JPanel.
+     *
+     * @param graphics2D A graphics object which is painted on the JPanel.
+     */
+    private void drawPoints(Graphics2D graphics2D) {
+        graphics2D.setColor(Color.BLACK);
+        for (PersoPoint point : points) {
+            if (point.getFilled()) {
+                graphics2D.fillOval(((int) point.getLocationX()), ((int) point.getLocationY()), ((int) point.getRadius()), ((int) point.getRadius()));
+            } else {
+                graphics2D.drawOval(((int) point.getLocationX()), ((int) point.getLocationY()), ((int) point.getRadius()), ((int) point.getRadius()));
+
+            }
+        }
+    }
+
+    /**
+     * Draws the mouse coordinates in the top left corner of the screen.
+     *
+     * @param graphics2D A graphics object which is painted on this JPanel
+     */
+    private void drawMousePos(Graphics2D graphics2D) {
+        if (isPointonPanel()) {
+            graphics2D.setColor(Color.BLACK);
+            graphics2D.drawString(mmMousePt.x + ", " + mmMousePt.y, 20, 20);
+        }
+    }
+
+
+    /**
+     * @return True if the mouse is on the board.
+     */
+    private boolean isPointonPanel() {
+        return mmMousePt.x >= 0 && mmMousePt.y >= 0 && mmMousePt.x <= board.width && mmMousePt.y <= board.height;
+    }
+
+    /**
+     * Changes the width and the height of the board
+     *
+     * @param newWidth  The new width.
+     * @param newHeight The new height.
+     */
+    private void resizePanneau(int newWidth, int newHeight) {
+        board.setSize(newWidth, newHeight);
+        mainWindow.getController().resizePanel(board.width, board.height);
+    }
+
+    /**
+     * Changes the size of the board using a delta to subtract.
+     *
+     * @param deltaWidth  The width difference.
+     * @param deltaHeight The height difference.
+     */
+    private void deltaResizePanneau(int deltaWidth, int deltaHeight) {
+        board.setSize(((int) board.getWidth()) - deltaWidth, ((int) board.getHeight()) - deltaHeight);
+        MainWindow.INSTANCE.getController().resizePanel(board.width, board.height);
+    }
+
+
+
+    /**
      * Draws the board on the screen
      * @param graphics2D the <code>Graphics</code> object to protect
      */
@@ -198,17 +259,6 @@ public class Rendering2DWindow extends JPanel {
         Rectangle panneauOffset = convertBoardTomm(board);
         graphics2D.draw(panneauOffset);
         graphics2D.fill(panneauOffset);
-    }
-
-    /**
-     * Draws the mouse coordinates next to it
-     * @param graphics2D the <code>Graphics</code> object to protect
-     */
-    private void drawMousePos(Graphics2D graphics2D) {
-        graphics2D.setColor(Color.BLACK);
-        graphics2D.drawString(mmMousePt.x + ", " + mmMousePt.y, mousePt.x, mousePt.y);
-        Point magnetisedPt = getMagnetisedPos(mousePt);
-        graphics2D.drawString(magnetisedPt.x + ", " + magnetisedPt.y, mousePt.x, mousePt.y - 20);
     }
 
     /**
@@ -225,15 +275,6 @@ public class Rendering2DWindow extends JPanel {
         for (double i = areammBoard.get(3); i > areammBoard.get(2); i -= size) {
             graphics2D.drawLine(areammBoard.get(0).intValue(), (int) i, areammBoard.get(1).intValue(), (int) i);
         }
-    }
-
-
-    private void resizePanneau(int newWidth, int newHeight) {
-        board.setSize(newWidth, newHeight);
-    }
-
-    private void deltaResizePanneau(int deltaWidth, int deltaHeight) {
-        board.setSize(((int) board.getWidth()) - deltaWidth, ((int) board.getHeight()) - deltaHeight);
     }
 
     /**
