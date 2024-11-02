@@ -68,8 +68,8 @@ public class Camera extends Transform {
                     if (x < img.getWidth() && y < img.getHeight()) {
                         if ((pixelsDepthMap[x][y] == null || pixelsDepthMap[x][y] < depth)) {
                             pixelsDepthMap[x][y] = depth;
-                            img.setRGB(x, y, printedColor.getRGB());
-                            if (mousePosition.getX() == x && mousePosition.getY() == y) {
+                            img.setRGB(x, img.getHeight()-y-1, printedColor.getRGB());
+                            if (mousePosition.getX() == x && mousePosition.getY() == img.getHeight()-y-1) {
                                 isSelected = true;
                             }
                         }
