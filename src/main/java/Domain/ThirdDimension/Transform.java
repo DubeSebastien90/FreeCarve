@@ -19,6 +19,7 @@ public abstract class Transform {
     Transform(Vertex position, float scale, Vertex rotationEuler) {
         this.position = position;
         this.scale = scale;
+        this.rotationEuler = Vertex.zero();
        setRotationEuler(rotationEuler);
        id = UUID.randomUUID();
     }
@@ -28,13 +29,9 @@ public abstract class Transform {
     }
 
     public void setRotationEuler(Vertex rotationEuler) {
-        if(rotationEuler.getX() >= 2*Math.PI)
-            rotationEuler.setX(Math.asin(Math.sin(rotationEuler.getX())));
-        if(rotationEuler.getY() >= 2*Math.PI)
-            rotationEuler.setY(Math.asin(Math.sin(rotationEuler.getY())));
-        if(rotationEuler.getZ() >= 2*Math.PI)
-            rotationEuler.setZ(Math.asin(Math.sin(rotationEuler.getZ())));
-        this.rotationEuler = rotationEuler;
+        this.rotationEuler.setX(Math.asin(Math.sin(rotationEuler.getX())));
+        this.rotationEuler.setY(Math.asin(Math.sin(rotationEuler.getY())));
+        this.rotationEuler.setZ(Math.asin(Math.sin(rotationEuler.getZ())));
         this.rotationQuaternion = Quaternion.fromEulerAngles(this.rotationEuler);
     }
 
@@ -64,8 +61,8 @@ public abstract class Transform {
         for(int i = 0; i < vertices.length; i++){
             Vertex v = new Vertex(triangle.getVertices()[i]);
             v.rotate(rotationQuaternion);
-            v.add(position);
             v.multiply(scale);
+            v.add(position);
             vertices[i] = v;
         }
         Vertex normal = new Vertex(triangle.getNormal()).rotate(rotationQuaternion);

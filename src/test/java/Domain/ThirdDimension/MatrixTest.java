@@ -1,4 +1,4 @@
-package UI;
+package Domain.ThirdDimension;
 
 import Annotations.VariableSource;
 import Domain.ThirdDimension.Vertex;
@@ -8,8 +8,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MatrixTest {
 
@@ -38,6 +36,6 @@ public class MatrixTest {
         // Arrange
         Vertex vertex = new Vertex(1,1,1);
         // Act and Assert
-        Assert.assertThrows(ArithmeticException.class, ()->matrix.matrixXVertex3X3(vertex));
+        Assertions.assertThrows(ArithmeticException.class, ()->matrix.matrixXVertex3X3(vertex));
     }
 }

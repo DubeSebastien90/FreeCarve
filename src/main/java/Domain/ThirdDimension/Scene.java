@@ -1,8 +1,9 @@
 package Domain.ThirdDimension;
 
+import java.awt.*;
 import java.security.InvalidKeyException;
-import java.security.KeyException;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Scene {
@@ -13,15 +14,18 @@ public class Scene {
     }
 
     public Scene(){
-        meshes = new HashMap<>();
+        // Sets the default scene, the car for now
+        try {
+            Mesh car = new Mesh(Vertex.zero(), Color.GRAY, "car.stl", 100);
+            car.setRotationEuler(new Vertex(Math.PI, Math.PI/4, 0));
+            setMeshes(List.of(car));
+        } catch (Exception e){
+            System.out.println("File not found");
+        }
     }
 
     public Collection<Mesh> getMeshes(){
         return meshes.values();
-    }
-
-    public boolean hasMesh(UUID uuid){
-        return meshes.containsKey(uuid);
     }
 
     public Mesh getMesh(UUID uuid) throws InvalidKeyException {
@@ -36,7 +40,7 @@ public class Scene {
     public void applyTransform(UUID transformId, VertexDTO positionChange, VertexDTO rotationChange, float scaleChange) throws InvalidKeyException {
         Mesh mesh = getMesh(transformId);
         mesh.getPosition().add(new Vertex(positionChange));
-        mesh.getRotationEuler().add(new Vertex(rotationChange));
+        mesh.setRotationEuler(Vertex.add(mesh.getRotationEuler(), new Vertex(rotationChange)));
         mesh.setScale(mesh.getScale() + scaleChange);
     }
 }

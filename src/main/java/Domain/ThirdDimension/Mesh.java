@@ -71,18 +71,18 @@ public class Mesh extends Transform {
     
     private static List<Triangle> generateRectangularPrism(double width, double length, double height, Color color) {
         return new ArrayList<>(List.of(
-                new Triangle(new Vertex(0, 0, 0), new Vertex(0, length, height), new Vertex(0, length, 0), new Vertex(-100, 0, 0), color),
-                new Triangle(new Vertex(0, 0, 0), new Vertex(0, 0, height), new Vertex(0, length, height), new Vertex(-100, 0, 0), color),
-                new Triangle(new Vertex(0, 0, 0), new Vertex(width, 0, 0), new Vertex(width, 0, height), new Vertex(0, -100, 0), color),
-                new Triangle(new Vertex(0, 0, 0), new Vertex(width, 0, height), new Vertex(0, 0, height), new Vertex(0, -100, 0), color),
-                new Triangle(new Vertex(0, 0, 0), new Vertex(width, length, 0), new Vertex(0, length, 0), new Vertex(0, 0, -100), color),
-                new Triangle(new Vertex(0, 0, 0), new Vertex(width, 0, 0), new Vertex(width, length, 0), new Vertex(0, 0, -100), color),
-                new Triangle(new Vertex(width, length, height), new Vertex(width, 0, 0), new Vertex(width, 0, height), new Vertex(100, 0, 0), color),
-                new Triangle(new Vertex(width, length, height), new Vertex(width, length, 0), new Vertex(width, 0, 0), new Vertex(100, 0, 0), color),
-                new Triangle(new Vertex(width, length, height), new Vertex(0, 0, height), new Vertex(width, 0, height), new Vertex(0, 0, 100), color),
-                new Triangle(new Vertex(width, length, height), new Vertex(0, length, height), new Vertex(0, 0, height), new Vertex(0, 0, 100), color),
-                new Triangle(new Vertex(width, length, height), new Vertex(width, length, 0), new Vertex(0, length, 0), new Vertex(0, 100, 0), color),
-                new Triangle(new Vertex(width, length, height), new Vertex(0, length, 0), new Vertex(0, length, height), new Vertex(0, 100, 0), color)
+                new Triangle(new Vertex(0, 0, 0), new Vertex(0, length, height), new Vertex(0, length, 0), new Vertex(-1, 0, 0), color),
+                new Triangle(new Vertex(0, 0, 0), new Vertex(0, 0, height), new Vertex(0, length, height), new Vertex(-1, 0, 0), color),
+                new Triangle(new Vertex(0, 0, 0), new Vertex(width, 0, 0), new Vertex(width, 0, height), new Vertex(0, -1, 0), color),
+                new Triangle(new Vertex(0, 0, 0), new Vertex(width, 0, height), new Vertex(0, 0, height), new Vertex(0, -1, 0), color),
+                new Triangle(new Vertex(0, 0, 0), new Vertex(width, length, 0), new Vertex(0, length, 0), new Vertex(0, 0, -1), color),
+                new Triangle(new Vertex(0, 0, 0), new Vertex(width, 0, 0), new Vertex(width, length, 0), new Vertex(0, 0, -1), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(width, 0, 0), new Vertex(width, 0, height), new Vertex(1, 0, 0), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(width, length, 0), new Vertex(width, 0, 0), new Vertex(1, 0, 0), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(0, 0, height), new Vertex(width, 0, height), new Vertex(0, 0, 1), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(0, length, height), new Vertex(0, 0, height), new Vertex(0, 0, 1), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(width, length, 0), new Vertex(0, length, 0), new Vertex(0, 1, 0), color),
+                new Triangle(new Vertex(width, length, height), new Vertex(0, length, 0), new Vertex(0, length, height), new Vertex(0, 1, 0), color)
         ));
     }
 
@@ -116,134 +116,6 @@ public class Mesh extends Transform {
         center.multiply(1.0/(localTriangles.size()*3));
         return center;
     }
-    
-    /**
-     * Function that sets reference points of the vertices of the mesh in verticesList
-     */
-    protected List<Vertex> calculateVerticesList() {
-        List<Vertex> newVerticesList = new ArrayList<>();
-        newVerticesList.add(localTriangles.get(0).getVertex(0));
-        for (Triangle t : localTriangles) {
-            boolean add1 = true;
-            boolean add2 = true;
-            boolean add3 = true;
-            for (Vertex v : newVerticesList) {
-                if (t.getVertex(0).equals(v)) {
-                    add1 = false;
-                }
-                if (t.getVertex(1).equals(v)) {
-                    add2 = false;
-                }
-                if (t.getVertex(2).equals(v)) {
-                    add3 = false;
-                }
-            }
-            if (add1) {
-                newVerticesList.add(t.getVertex(0));
-            }
-            if (add2) {
-                newVerticesList.add(t.getVertex(1));
-            }
-            if (add3) {
-                newVerticesList.add(t.getVertex(2));
-            }
-        }
-        return newVerticesList;
-    }
-
-    /**
-     * Function that calculates the edgesList at the creation of the mesh
-     */
-    protected List<List<Integer>> findEdges(List<Vertex> verticesList) {
-        List<List<Integer>> newEdgesList = new ArrayList<>();
-        for (Triangle t : localTriangles) {
-            boolean add1 = true, add2 = true, add3 = true;
-            for (List<Integer> edge : newEdgesList) {
-                if ((t.getVertex(0).equals(verticesList.get(edge.get(0))) && t.getVertex(1).equals(verticesList.get(edge.get(1)))) || (t.getVertex(0).equals(verticesList.get(edge.get(1))) && t.getVertex(1).equals(verticesList.get(edge.get(0))))) {
-                    add1 = false;
-                }
-                if ((t.getVertex(0).equals(verticesList.get(edge.get(0))) && t.getVertex(2).equals(verticesList.get(edge.get(1)))) || (t.getVertex(0).equals(verticesList.get(edge.get(1))) && t.getVertex(2).equals(verticesList.get(edge.get(0))))) {
-                    add2 = false;
-                }
-                if ((t.getVertex(1).equals(verticesList.get(edge.get(0))) && t.getVertex(2).equals(verticesList.get(edge.get(1)))) || (t.getVertex(1).equals(verticesList.get(edge.get(1))) && t.getVertex(2).equals(verticesList.get(edge.get(0))))) {
-                    add3 = false;
-                }
-            }
-            if (add1) {
-                int num1 = 0;
-                int num2 = 0;
-                for (int i = 0; i < verticesList.size(); i++) {
-                    if (verticesList.get(i).equals(t.getVertex(0))) {
-                        num1 = i;
-                    } else if (verticesList.get(i).equals(t.getVertex(1))) {
-                        num2 = i;
-                    }
-                }
-                boolean add = true;
-                for (Triangle t2 : localTriangles) {
-                    if (t != t2) {
-                        if ((t2.getVertex(0).equals(t.getVertex(0)) || t2.getVertex(1).equals(t.getVertex(0)) || t2.getVertex(2).equals(t.getVertex(0))) && (t2.getVertex(0).equals(t.getVertex(1)) || t2.getVertex(1).equals(t.getVertex(1)) || t2.getVertex(2).equals(t.getVertex(1)))) {
-                            if (t.getNormal().isParallel(t2.getNormal())) {
-                                add = false;
-                            }
-                        }
-                    }
-                }
-                if (add) {
-                    newEdgesList.add(new ArrayList<>(List.of(num1, num2))); //ajouter les index des sommets dans verticesList à la liste d'arrêtes
-                }
-            }
-            if (add2) {
-                int num1 = 0;
-                int num2 = 0;
-                for (int i = 0; i < verticesList.size(); i++) {
-                    if (verticesList.get(i).equals(t.getVertex(0))) {
-                        num1 = i;
-                    } else if (verticesList.get(i).equals(t.getVertex(2))) {
-                        num2 = i;
-                    }
-                }
-                boolean add = true;
-                for (Triangle t2 : localTriangles) {
-                    if (t != t2) {
-                        if ((t2.getVertex(0).equals(t.getVertex(0)) || t2.getVertex(1).equals(t.getVertex(0)) || t2.getVertex(2).equals(t.getVertex(0))) && (t2.getVertex(0).equals(t.getVertex(2)) || t2.getVertex(1).equals(t.getVertex(2)) || t2.getVertex(2).equals(t.getVertex(2)))) {
-                            if (t.getNormal().isParallel(t2.getNormal())) {
-                                add = false;
-                            }
-                        }
-                    }
-                }
-                if (add) {
-                    newEdgesList.add(new ArrayList<>(List.of(num1, num2))); //ajouter les index des sommets dans verticesList à la liste d'arrêtes
-                }
-            }
-            if (add3) {
-                int num1 = 0;
-                int num2 = 0;
-                for (int i = 0; i < verticesList.size(); i++) {
-                    if (verticesList.get(i).equals(t.getVertex(1))) {
-                        num1 = i;
-                    } else if (verticesList.get(i).equals(t.getVertex(2))) {
-                        num2 = i;
-                    }
-                }
-                boolean add = true;
-                for (Triangle t2 : localTriangles) {
-                    if (t != t2) {
-                        if ((t2.getVertex(0).equals(t.getVertex(2)) || t2.getVertex(1).equals(t.getVertex(2)) || t2.getVertex(2).equals(t.getVertex(2))) && (t2.getVertex(0).equals(t.getVertex(1)) || t2.getVertex(1).equals(t.getVertex(1)) || t2.getVertex(2).equals(t.getVertex(1)))) {
-                            if (t.getNormal().isParallel(t2.getNormal())) {
-                                add = false;
-                            }
-                        }
-                    }
-                }
-                if (add) {
-                    newEdgesList.add(new ArrayList<>(List.of(num1, num2))); //ajouter les index des sommets dans verticesList à la liste d'arrêtes
-                }
-            }
-        }
-        return newEdgesList;
-    }
 
     public Color getColor() {
         return color;
@@ -263,7 +135,6 @@ public class Mesh extends Transform {
         }
     }
 
-
     private static ParsedSTL parseStlFile(String path) throws IOException {
         DataInputStream dis = null;
         try{
@@ -273,7 +144,6 @@ public class Mesh extends Transform {
             dis.close();
         }
     }
-
 
     /**
      * Returns the triangles of the mesh

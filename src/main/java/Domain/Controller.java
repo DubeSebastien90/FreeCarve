@@ -27,8 +27,6 @@ public class Controller {
 
     public Controller() {
         this(new UndoRedo(), new ProjectState(), new Scene());
-        Mesh cube = Mesh.createBox(Vertex.zero(), 400, 400, 400, Color.RED);
-        scene.setMeshes(List.of(cube));
     }
 
     public Controller(UndoRedo undoRedo, ProjectState projectState, Scene scene) {

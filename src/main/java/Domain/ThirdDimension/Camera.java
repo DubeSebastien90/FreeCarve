@@ -17,6 +17,7 @@ import java.util.UUID;
 public class Camera extends Transform {
     private Scene scene;;
     Double[][] pixelsDepthMap;
+    public static final float MIN_LIGHTING = 0.2f;
 
     /**
      * Constructs a new {@code Camera} object with a {@code List} of {@code Mesh} and initialize {@code Renderer}
@@ -100,9 +101,11 @@ public class Camera extends Transform {
     private static Color calculateLighting(Triangle triangle) {
         Vertex normal = triangle.getNormal();
         Color color = triangle.getColor();
-        Vertex lightDirection = new Vertex(1, 1, 1);
-        double ligthMagnitude = Math.sqrt(Math.pow(lightDirection.getX(), 2) + Math.pow(lightDirection.getY(), 2) + Math.pow(lightDirection.getZ(), 2));
-        float darker = (float) ((lightDirection.getX() * Math.abs(normal.getX()) + lightDirection.getY() * Math.abs(normal.getY()) + lightDirection.getZ() * Math.abs(normal.getZ())) / ligthMagnitude);
+        Vertex lightDirection = new Vertex(0, 0, 1);
+        float darker = (float) ((lightDirection.getX() * normal.getX() + lightDirection.getY() * normal.getY() + lightDirection.getZ() * normal.getZ()) / lightDirection.length());
+        if (darker < MIN_LIGHTING){
+            darker = MIN_LIGHTING;
+        }
         float[] component = color.getRGBColorComponents(null);
         try {
             return new Color(component[0] * darker, component[1] * darker, component[2] * darker);

@@ -17,11 +17,10 @@ public class MeshManipulator implements KeyListener, MouseListener {
     private final Renderer renderer;
     private final Controller controller;
 
-    private static final float GIMBAL_ROTATION = 1;
+    private static final float GIMBAL_ROTATION = 0.1f;
     private static final float MESH_TRANSLATION = 3;
     private static final float MESH_ROTATION = 0.1f;
     private enum MovementType{TRANSLATION, ROTATION, NO_MESH}
-
     private UUID selectedMesh;
     private MovementType movementType = MovementType.NO_MESH;
 
@@ -59,7 +58,7 @@ public class MeshManipulator implements KeyListener, MouseListener {
                     if (movementType == MovementType.TRANSLATION) {
                         controller.applyTransform(selectedMesh, new VertexDTO(-MESH_TRANSLATION, 0, 0), VertexDTO.zero(), 0);
                     } else if (movementType == MovementType.ROTATION) {
-                        controller.applyTransform(selectedMesh, VertexDTO.zero(), new VertexDTO(0, -MESH_TRANSLATION, 0), 0);
+                        controller.applyTransform(selectedMesh, VertexDTO.zero(), new VertexDTO(0, -MESH_ROTATION, 0), 0);
                     }
                     break;
                 case KeyEvent.VK_S:
