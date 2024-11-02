@@ -34,8 +34,8 @@ public class CameraTest {
         Assertions.assertEquals(0, image.getRGB(1, 3));
 
         Assertions.assertEquals(0, image.getRGB(2, 0));
-        Assertions.assertEquals(0, image.getRGB(2, 1));
-        Assertions.assertEquals(Color.RED.getRGB(), image.getRGB(2, 2));
+        Assertions.assertEquals(Color.RED.getRGB(), image.getRGB(2, 1));
+        Assertions.assertEquals(0, image.getRGB(2, 2));
         Assertions.assertEquals(0, image.getRGB(2, 3));
 
         Assertions.assertEquals(0, image.getRGB(3, 0));
@@ -59,7 +59,7 @@ public class CameraTest {
         camera.renderImage(image, VertexDTO.zero());
 
         // Assert
-        Assertions.assertEquals(new Color(Camera.MIN_LIGHTING, 0, 0).getRGB(), image.getRGB(2, 2));
+        Assertions.assertEquals(new Color(Camera.MIN_LIGHTING, 0, 0).getRGB(), image.getRGB(2, 1));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class CameraTest {
         Camera camera = new Camera(scene);
         BufferedImage image = new BufferedImage(4, 4, BufferedImage.TYPE_INT_ARGB);
 
-        VertexDTO mousePos = new VertexDTO(2, 2, 0);
+        VertexDTO mousePos = new VertexDTO(2, 1, 0);
 
         // Act
         Optional<UUID> result = camera.renderImage(image, mousePos);
