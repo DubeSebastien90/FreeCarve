@@ -42,50 +42,11 @@ public class Rendering2DWindow extends JPanel {
         offsetY = 100;
         offsetX = 100;
         mainWindow.getController().putGrid(7, 10);
-
-        //add listeners
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                mousePt = e.getPoint();
-            }
-        });
-        addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                offsetX -= ((mousePt.x - e.getPoint().x) / zoom);
-                offsetY += ((mousePt.y - e.getPoint().y) / zoom);
-                mousePt = e.getPoint();
-                repaint();
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                mousePt = e.getPoint();
-                mmMousePt.setLocation(pixelTomm(mousePt));
-                repaint();
-            }
-        });
-        addMouseWheelListener(new MouseWheelListener() {
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                double zoomFactor = ((double) 25 / Math.signum(e.getWheelRotation()));
-                zoom -= zoom / zoomFactor;
-                offsetX = (mousePt.x - (mmMousePt.x * zoom)) / zoom;
-                offsetY = ((-1 * (mousePt.y - wH)) - (mmMousePt.y * zoom)) / zoom;
-                repaint();
-            }
-        });
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                wW = getWidth();
-                wH = getHeight();
-                offsetX = 100;
-                offsetY = 100;
-                zoom = 1;
-                repaint();
-            }
-        });
+        addMouseListener();
+        addMouseMotionListener();
+        addMouseWheelListener();
+        addComponentListener();
+        initScalePointMouseListener();
     }
 
     /**
