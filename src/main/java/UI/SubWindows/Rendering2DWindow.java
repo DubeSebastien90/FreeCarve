@@ -184,6 +184,8 @@ public class Rendering2DWindow extends JPanel {
         super.paintComponent(graphics2D);
         drawRectangle(graphics2D);
         drawGrid(graphics2D);
+        drawPoints(graphics2D);
+        drawMousePos(graphics2D);
     }
 
     /**
