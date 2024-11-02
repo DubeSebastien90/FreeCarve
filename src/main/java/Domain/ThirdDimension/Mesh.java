@@ -14,7 +14,7 @@ import java.util.UUID;
  * The Mesh class allows complex solids made out of triangles to be rendered and modified in the scene.
  *
  * @author Sébastien Dubé
- * @version 1.0
+ * @author Kamran Charles Nayebi
  * @since 2024-09-08
  */
 public class Mesh extends Transform {
@@ -87,8 +87,8 @@ public class Mesh extends Transform {
     }
 
     /**
-     * This method exists because the existing clone method of List makes a deep copy using the cloneable interface
-     * and we use copy constructors instead as they are more concise when used and no casting is involved.
+     * This method exists because the existing clone method of List makes a deep copy using the cloneable interface.
+     * We use copy constructors instead as they are more concise when used and no casting is involved.
      *
      * @param triangles Original triangles
      * @return Deep copy of the triangles
@@ -146,14 +146,15 @@ public class Mesh extends Transform {
     }
 
     /**
-     * Returns the triangles of the mesh
-     *
      * @return the triangles of the mesh in a list
      */
     List<Triangle> getLocalTriangles() {
         return localTriangles;
     }
 
+    /**
+     * @return the random id of the mesh
+     */
     public UUID getId() {
         return id;
     }

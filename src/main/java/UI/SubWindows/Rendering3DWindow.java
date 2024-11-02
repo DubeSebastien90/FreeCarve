@@ -13,14 +13,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * The {@code Renderer} class provides function to render meshes on it, it extends {@code JPanel}.
+ * The {@code Rendering3DWindow} class deals with displaying and the interaction with the 3d view, it extends {@code JPanel}.
  *
  * @author Adam Côté
  * @author Sébastien Dubé
  * @author Kamran Charles Nayebi
  * @since 2024-09-08
  */
-public class Renderer extends JPanel {
+public class Rendering3DWindow extends JPanel {
     private VertexDTO mousePos;
     private final MeshManipulator meshManipulator;
     private UUID cameraId;
@@ -33,11 +33,11 @@ public class Renderer extends JPanel {
     }
 
     /**
-     * Constructs a new {@code Renderer} object with a {@code List} of {@code Mesh} and initialize {@code Renderer}
+     * Constructs a new {@code Rendering3DWindow} object with a {@code UUID} of a {@code Camera} and sets up the interaction
      *
      * @param cameraID the id of the {@code Camera} which it will show
      */
-    public Renderer(UUID cameraID) {
+    public Rendering3DWindow(UUID cameraID) {
         setDoubleBuffered(true);
         setFocusable(true);
         requestFocusInWindow();
@@ -52,11 +52,6 @@ public class Renderer extends JPanel {
 
     }
 
-    @Override
-    public void setSize(int width, int height) {
-        super.setSize(width, height);
-    }
-
     /**
      * Sets the mouse position in pixels of the last click on the viewport
      *
@@ -67,7 +62,7 @@ public class Renderer extends JPanel {
     }
 
     /**
-     * PaUUIDs the rendered image of the scene from the camera
+     * Paints the rendered image of the scene from the camera
      *
      * @param graphics a {@code Graphics} object on which the image will be drawn
      */
@@ -87,10 +82,16 @@ public class Renderer extends JPanel {
         setMousePos(new VertexDTO(0, 0, 0));
     }
 
+    /**
+     * @return the id of the camera whose view it's displaying
+     */
     public UUID getCameraId() {
         return cameraId;
     }
 
+    /**
+     * @param cameraId the id of the camera whose view it's displaying
+     */
     public void setCameraId(UUID cameraId) {
         this.cameraId = cameraId;
     }

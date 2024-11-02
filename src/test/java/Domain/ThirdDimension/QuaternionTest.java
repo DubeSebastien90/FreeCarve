@@ -56,7 +56,7 @@ class QuaternionTest {
         Quaternion quaternion = new Quaternion(1, 2, 3, 4);
 
         // Act
-        Quaternion result = quaternion.congugate();
+        Quaternion result = quaternion.conjugate();
 
         // Assert
         assertEquals(1, result.getW());

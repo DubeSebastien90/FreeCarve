@@ -3,7 +3,7 @@ package UI.Widgets;
 import Domain.Controller;
 import Domain.ThirdDimension.VertexDTO;
 import UI.MainWindow;
-import UI.SubWindows.Renderer;
+import UI.SubWindows.Rendering3DWindow;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class MeshManipulator implements KeyListener, MouseListener {
 
-    private final Renderer renderer;
+    private final Rendering3DWindow rendering3DWindow;
     private final Controller controller;
 
     private static final float GIMBAL_ROTATION = 0.1f;
@@ -24,8 +24,8 @@ public class MeshManipulator implements KeyListener, MouseListener {
     private UUID selectedMesh;
     private MovementType movementType = MovementType.NO_MESH;
 
-    public MeshManipulator(Renderer renderer) {
-        this.renderer = renderer;
+    public MeshManipulator(Rendering3DWindow rendering3DWindow) {
+        this.rendering3DWindow = rendering3DWindow;
         this.selectedMesh = null;
         controller = MainWindow.INSTANCE.getController();
     }
@@ -36,16 +36,16 @@ public class MeshManipulator implements KeyListener, MouseListener {
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_RIGHT:
-                    controller.panTransform(renderer.getCameraId(), 0, GIMBAL_ROTATION);
+                    controller.panTransform(rendering3DWindow.getCameraId(), 0, GIMBAL_ROTATION);
                     break;
                 case KeyEvent.VK_LEFT:
-                    controller.panTransform(renderer.getCameraId(), 0, -GIMBAL_ROTATION);
+                    controller.panTransform(rendering3DWindow.getCameraId(), 0, -GIMBAL_ROTATION);
                     break;
                 case KeyEvent.VK_UP:
-                    controller.panTransform(renderer.getCameraId(), GIMBAL_ROTATION, 0);
+                    controller.panTransform(rendering3DWindow.getCameraId(), GIMBAL_ROTATION, 0);
                     break;
                 case KeyEvent.VK_DOWN:
-                    controller.panTransform(renderer.getCameraId(), -GIMBAL_ROTATION, 0);
+                    controller.panTransform(rendering3DWindow.getCameraId(), -GIMBAL_ROTATION, 0);
                     break;
                 case KeyEvent.VK_W:
                     if (movementType == MovementType.TRANSLATION) {
@@ -88,7 +88,7 @@ public class MeshManipulator implements KeyListener, MouseListener {
         } catch (KeyException keyException) {
             keyException.printStackTrace();
         }
-        renderer.repaint();
+        rendering3DWindow.repaint();
     }
 
     public void setSelectedMesh(UUID selectedMesh) {
@@ -100,8 +100,8 @@ public class MeshManipulator implements KeyListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        renderer.setMousePos(new VertexDTO(e.getX(), e.getY(), 1));
-        renderer.repaint();
+        rendering3DWindow.setMousePos(new VertexDTO(e.getX(), e.getY(), 1));
+        rendering3DWindow.repaint();
     }
 
     // Empty classes to fulfill the listener contract

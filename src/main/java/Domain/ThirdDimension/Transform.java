@@ -1,6 +1,5 @@
 package Domain.ThirdDimension;
 
-import java.security.InvalidKeyException;
 import java.util.UUID;
 
 /**
@@ -10,16 +9,31 @@ import java.util.UUID;
  * @since 2024-10-31
  */
 public abstract class Transform {
+    /**
+     * Random id generated at creation
+     */
+    private final UUID id;
+    /**
+     * Position relative to the scene's 0,0,0
+     */
     private Vertex position;
+    /**
+     * Scale of the object
+     */
     private float scale;
-    private Vertex rotationEuler;
+    /**
+     * Vector representing the rotation of the object.
+     * The value of X is the rotation around the X axis in radians, the same goes for Y and Z
+     */
+    private final Vertex rotationEuler = Vertex.zero();
+    /**
+     * The less human-readable value used for the rotation calculations.
+     */
     private Quaternion rotationQuaternion;
-    private UUID id;
 
     Transform(Vertex position, float scale, Vertex rotationEuler) {
         this.position = position;
         this.scale = scale;
-        this.rotationEuler = Vertex.zero();
        setRotationEuler(rotationEuler);
        id = UUID.randomUUID();
     }

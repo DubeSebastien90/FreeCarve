@@ -4,6 +4,7 @@ package Domain.ThirdDimension;
  * The {@code VertexDTO} class is a read-only {@code Vertex}
  *
  * @author Adam Côté
+ * @author Kamran Charles Nayebi
  * @version 1.0
  * @since 2024-10-20
  */

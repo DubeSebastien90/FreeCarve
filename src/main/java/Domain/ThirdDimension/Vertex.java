@@ -264,7 +264,7 @@ public class Vertex {
     public Vertex rotate(Quaternion quaternion) {
         Quaternion rotation = new Quaternion(quaternion);
         Quaternion position = new Quaternion(this);
-        Quaternion inverse = new Quaternion(quaternion).congugate();
+        Quaternion inverse = new Quaternion(quaternion).conjugate();
 
         rotation.multiply(position).multiply(inverse);
         setX(rotation.getX());

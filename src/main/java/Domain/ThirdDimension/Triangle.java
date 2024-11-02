@@ -11,7 +11,7 @@ import java.util.Objects;
  * Each triangle is composed of 3 vertices, a color, and a normal, which can be calculated later if not known before creation.
  *
  * @author Adam Côté
- * @version 1.0
+ * @author Kamran Charles Nayebi
  * @since 2024-09-07
  */
 public class Triangle {
@@ -65,8 +65,9 @@ public class Triangle {
     }
 
     /**
-     * Returns the vertices of the triangle.
+     * Returns the vertex of the triangle.
      *
+     * @param index of the vertex to get
      * @return the vertex at the index of the triangle
      */
     public Vertex getVertex(int index) {
@@ -74,7 +75,7 @@ public class Triangle {
     }
 
     /**
-     * Sets the first vertex of the triangle.
+     * Sets all vertices of the triangle
      *
      * @param vertices the new first vertex of the triangle
      */

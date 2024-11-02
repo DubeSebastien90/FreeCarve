@@ -1,22 +1,18 @@
 package UI;
 
-import Domain.ThirdDimension.Mesh;
-import Domain.ThirdDimension.Vertex;
 import UI.SubWindows.BasicWindow;
 import UI.Widgets.BigButton;
-import UI.SubWindows.Renderer;
+import UI.SubWindows.Rendering3DWindow;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SimulationWindow extends JPanel {
 
     private final BigButton nextButton = new BigButton("Suivant");
-    private Renderer renderer;
+    private Rendering3DWindow rendering3DWindow;
 
     public SimulationWindow() {
         this.setLayout(new GridBagLayout());
@@ -24,14 +20,14 @@ public class SimulationWindow extends JPanel {
         setButtonEventHandler();
     }
 
-    public Renderer getRenderer() {
-        return renderer;
+    public Rendering3DWindow getRenderer() {
+        return rendering3DWindow;
     }
 
     public void init() {
         GridBagConstraints gbc = new GridBagConstraints();
 
-        renderer = (new Renderer(MainWindow.INSTANCE.getController().getCameraId()));
+        rendering3DWindow = (new Rendering3DWindow(MainWindow.INSTANCE.getController().getCameraId()));
         gbc.insets = new Insets(0, 0, 0, 10);
 
         gbc.gridx = 0;
@@ -40,7 +36,7 @@ public class SimulationWindow extends JPanel {
         gbc.weightx = 5;
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        add(renderer, gbc);
+        add(rendering3DWindow, gbc);
         gbc.insets = new Insets(0, 0, 0, 5);
 
         gbc.gridx = 1;

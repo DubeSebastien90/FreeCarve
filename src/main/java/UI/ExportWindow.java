@@ -1,15 +1,11 @@
 package UI;
 
-import Domain.ThirdDimension.Mesh;
-import Domain.ThirdDimension.Vertex;
 import UI.SubWindows.BasicWindow;
 import UI.Widgets.BigButton;
-import UI.SubWindows.Renderer;
+import UI.SubWindows.Rendering3DWindow;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents an export window that displays a 3D renderer for visualizing
@@ -22,7 +18,7 @@ import java.util.List;
 public class ExportWindow extends JPanel {
 
     private BigButton nextButton = new BigButton("Export");
-    private Renderer renderer;
+    private Rendering3DWindow rendering3DWindow;
     private MainWindow mainWindow;
 
     /**
@@ -38,8 +34,8 @@ public class ExportWindow extends JPanel {
      *
      * @return The Renderer instance responsible for displaying 3D shapes.
      */
-    public Renderer getRenderer() {
-        return renderer;
+    public Rendering3DWindow getRenderer() {
+        return rendering3DWindow;
     }
 
     /**
@@ -52,7 +48,7 @@ public class ExportWindow extends JPanel {
 
         mainWindow = MainWindow.INSTANCE;
 
-        renderer = new Renderer(mainWindow.getController().getCameraId());
+        rendering3DWindow = new Rendering3DWindow(mainWindow.getController().getCameraId());
         gbc.insets = new Insets(0, 0, 0, 10);
 
         gbc.gridx = 0;
@@ -70,7 +66,7 @@ public class ExportWindow extends JPanel {
         gbc.weightx = 3;
         gbc.weighty = 0.40;
         gbc.fill = GridBagConstraints.BOTH;
-        add(renderer, gbc);
+        add(rendering3DWindow, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
