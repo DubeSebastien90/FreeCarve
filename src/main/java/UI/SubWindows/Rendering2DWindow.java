@@ -2,6 +2,7 @@ package UI.SubWindows;
 
 import Domain.Grid;
 import Domain.GridDTO;
+import UI.LeftBar;
 import UI.MainWindow;
 import UI.Widgets.PersoPoint;
 import Util.UiUtil;
@@ -47,6 +48,128 @@ public class Rendering2DWindow extends JPanel {
         addMouseWheelListener();
         addComponentListener();
         initScalePointMouseListener();
+    }
+
+    /**
+     * @return The points displayed on the board.
+     */
+    public ArrayList<PersoPoint> getPoints() {
+        return points;
+    }
+
+    /**
+     * Sets the dragging a point attribute to a new value.
+     *
+     * @param draggingAPoint The new boolean value.
+     */
+    public void setDraggingAPoint(boolean draggingAPoint) {
+        this.draggingAPoint = draggingAPoint;
+    }
+
+    /**
+     * Initiates the basic mouse listener for when the mouse is pressed.
+     */
+    private void addMouseListener() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mousePt = e.getPoint();
+                super.mousePressed(e);
+                if (!mouseOnSomething(e)) {
+                    clearPoints();
+                    repaint();
+                } else {
+                    for (PersoPoint point : points) {
+                        if (isPointClose(e, point) && !point.getFilled()) {
+                            draggingAPoint = true;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (isPointonPanel() && MainWindow.INSTANCE.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.SCALE).isEnabled()) {
+                    scale();
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (draggingAPoint) {
+                    super.mouseReleased(e);
+                    draggingAPoint = false;
+                    clearPoints();
+                    repaint();
+                }
+            }
+        });
+    }
+
+    /**
+     * Instantiate and manage the mouse movement related action.
+     * When the mouse is dragged or simply moved different listener defined in this function are called.
+     */
+    private void addMouseMotionListener() {
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (!draggingAPoint) {
+                    offsetX -= ((mousePt.x - e.getPoint().x) / zoom);
+                    offsetY += ((mousePt.y - e.getPoint().y) / zoom);
+                    mousePt = e.getPoint();
+                    points.clear();
+                    repaint();
+                } else {
+                    super.mouseDragged(e);
+                    for (PersoPoint point : points) {
+                        point.movePoint(Math.max(offsetX * zoom, e.getX()), Math.min(getHeight() - offsetY * zoom, e.getY()));
+                        repaint();
+                    }
+                }
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if (!draggingAPoint) {
+                    mousePt = e.getPoint();
+                    mmMousePt.setLocation((mousePt.x - (offsetX * zoom)) / zoom, ((-1 * (mousePt.y - wH)) - (offsetY * zoom)) / zoom);
+                    repaint();
+                }
+            }
+
+        });
+    }
+
+    /**
+     * Instantiates a listener for the mouse wheel. This is used to manage the zoom property of the board.
+     */
+    private void addMouseWheelListener() {
+        addMouseWheelListener(e -> {
+            double zoomFactor = ((double) 25 / Math.signum(e.getWheelRotation()));
+            zoom -= zoom / zoomFactor;
+            offsetX = (mousePt.x - (mmMousePt.x * zoom)) / zoom;
+            offsetY = ((-1 * (mousePt.y - wH)) - (mmMousePt.y * zoom)) / zoom;
+            points.clear();
+            repaint();
+        });
+    }
+
+    /**
+     * Instantiate a global listener for all component in the {@code Rendering2DWindow}. It reinitialises the view of the board when a component is resized.
+     */
+    private void addComponentListener() {
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                wW = getWidth();
+                wH = getHeight();
+                offsetX = 100;
+                offsetY = 100;
+                zoom = 1;
+                repaint();
+            }
+        });
     }
 
     /**
