@@ -199,6 +199,14 @@ public class Vertex {
     }
 
     /**
+     * Returns the length of the vector
+     * @return the length of the vector
+     */
+    public float length() {
+        return (float) Math.sqrt(x*x + y*y + z*z);
+    }
+
+    /**
      * Checks if this instance of {@code Vertex} is equal to another one
      *
      * @param o the other {@code Vertex}
@@ -208,10 +216,6 @@ public class Vertex {
     public boolean equals(Object o) {
         Vertex vertex = (Vertex) o;
         return (isClose(this.x, vertex.getX(), 0.001) && isClose(this.y, vertex.getY(), 0.001) && isClose(this.z, vertex.getZ(), 0.001));
-    }
-
-    public static Vertex rotated(Vertex vertex, Vertex axis, double radians) {
-        return Matrix.getRotationMatrixAroundVector(axis, radians).matrixXVertex3X3(vertex);
     }
 
     /**

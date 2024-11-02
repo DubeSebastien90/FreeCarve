@@ -1,7 +1,11 @@
 package Domain;
 
-import Domain.ThirdDimension.VertexDTO;
+import Domain.ThirdDimension.*;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.security.InvalidKeyException;
+import java.security.KeyException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,15 +22,20 @@ public class Controller {
     private final UndoRedo undoRedo;
     private final ProjectState currentProjectState;
     private Grid grid;
+    private Scene scene;
+    private Camera camera;
 
     public Controller() {
-        undoRedo = new UndoRedo();
-        currentProjectState = new ProjectState();
+        this(new UndoRedo(), new ProjectState(), new Scene());
+        Mesh cube = Mesh.createBox(Vertex.zero(), 400, 400, 400, Color.RED);
+        scene.setMeshes(List.of(cube));
     }
 
-    public Controller(UndoRedo undoRedo, ProjectState projectState) {
+    public Controller(UndoRedo undoRedo, ProjectState projectState, Scene scene) {
         this.undoRedo = undoRedo;
         this.currentProjectState = projectState;
+        this.scene = scene;
+        this.camera = new Camera(scene);
     }
 
 
@@ -234,4 +243,43 @@ public class Controller {
         return null;
     }
 
+    public Optional<UUID> renderImage(BufferedImage image, VertexDTO position) {
+        return camera.renderImage(image, position);
+    }
+
+    public UUID getCameraId(){
+        return camera.getId();
+    }
+
+    /**
+     * Rotates the {@code Transform} around the transform's origin as if it were on a gimbal.
+     * Mostly meant to be used with the camera, but it is generic to any transform
+     *
+     * @param transformId The id of the {@code Transform} to move
+     * @param XAxisRotation The amount of rotation in rad to apply around the X axis
+     * @param YAxisRotation The amount of rotation in rad to apply around the Y axis
+     *
+     * @throws InvalidKeyException if the given id does not correspond to a transform
+     */
+    public void panTransform(UUID transformId, float XAxisRotation, float YAxisRotation) throws InvalidKeyException {
+        if (camera.getId() == transformId){
+            camera.pan(XAxisRotation, YAxisRotation);
+        }
+        else {
+            scene.getMesh(transformId).pan(XAxisRotation, YAxisRotation);
+        }
+    }
+
+    /**
+     * Applies a position, rotation, and scale change to the {@code Transform}
+     * @param transformId The id of the {@code Transform} to transform
+     * @param positionChange The delta to apply to the position
+     * @param rotationChange The euler angle vector in radians to apply to the rotation
+     * @param scaleChange The scale delta to apply to the scale
+     *
+     * @throws InvalidKeyException if the given id does not correspond to a transform
+     */
+    public void applyTransform(UUID transformId, VertexDTO positionChange, VertexDTO rotationChange, float scaleChange) throws InvalidKeyException {
+        scene.applyTransform(transformId, positionChange, rotationChange, scaleChange);
+    }
 }

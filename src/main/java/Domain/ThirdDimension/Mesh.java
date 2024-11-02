@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The Mesh class allows complex solids made out of triangles to be rendered and modified in the scene.
@@ -19,6 +20,7 @@ import java.util.List;
 public class Mesh extends Transform {
     protected List<Triangle> localTriangles;
     private Color color;
+    private UUID id;
 
     /**
      * Base constructor for a Mesh object
@@ -32,6 +34,7 @@ public class Mesh extends Transform {
         super(position, scale, Vertex.zero());
         this.color = color;
         setLocalTriangles(triangles);
+        this.id = UUID.randomUUID();
     }
 
     /**
@@ -281,5 +284,8 @@ public class Mesh extends Transform {
         return localTriangles;
     }
 
+    public UUID getId() {
+        return id;
+    }
 
 }

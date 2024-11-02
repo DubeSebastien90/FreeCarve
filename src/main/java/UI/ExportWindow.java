@@ -23,6 +23,7 @@ public class ExportWindow extends JPanel {
 
     private BigButton nextButton = new BigButton("Export");
     private Renderer renderer;
+    private MainWindow mainWindow;
 
     /**
      * Constructs an ExportWindow and initializes its layout and components.
@@ -49,11 +50,9 @@ public class ExportWindow extends JPanel {
     public void init() {
         GridBagConstraints gbc = new GridBagConstraints();
 
-        Mesh cubeBleu = new Domain.ThirdDimension.Box(new Vertex(200, 200, 200), 100, 100, 30, Color.BLUE);
-        Mesh cubeRouge = new Domain.ThirdDimension.Box(new Vertex(0, 0, 0), 75, 75, 75, Color.RED);
-        Mesh pyramidVerte = new Pyramid(new Vertex(-110, 110, 110), Color.GREEN);
-        Mesh ground = new Plane(new Vertex(0, 0, 0), 1000, Color.white);
-        renderer = (new Renderer(new ArrayList<Mesh>(List.of(cubeRouge, cubeBleu, pyramidVerte, ground))));
+        mainWindow = MainWindow.INSTANCE;
+
+        renderer = new Renderer(mainWindow.getController().getCameraId());
         gbc.insets = new Insets(0, 0, 0, 10);
 
         gbc.gridx = 0;

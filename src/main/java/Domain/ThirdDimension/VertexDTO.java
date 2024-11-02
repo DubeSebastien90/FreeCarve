@@ -35,6 +35,10 @@ public class VertexDTO {
         return z;
     }
 
+    public static VertexDTO zero(){
+        return new VertexDTO(0,0,0);
+    }
+
 
     /**
      * @return a formatted string of the 2D components of the vertex

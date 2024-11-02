@@ -1,14 +1,10 @@
 package Domain.ThirdDimension;
 
-import Domain.ThirdDimension.Mesh;
-import Domain.ThirdDimension.Triangle;
-import Domain.ThirdDimension.Vertex;
-import Domain.ThirdDimension.Matrix;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * The {@code Renderer} class provides function to render meshes on it, it extends {@code JPanel}.
@@ -19,112 +15,60 @@ import java.util.List;
  * @since 2024-09-08
  */
 public class Camera extends Transform {
-    private List<Mesh> meshes;
-    private Vertex mousePos;
+    private Scene scene;;
+    Double[][] pixelsDepthMap;
 
     /**
-     * @return the mousePos of this instance of {@code Renderer}
-     */
-    public Vertex getMousePos() {
-        return mousePos;
-    }
-
-    /**
-     * Sets the {@code List} of {@code Mesh} that needs to be rendered to a new one
+     * Constructs a new {@code Camera} object with a {@code List} of {@code Mesh} and initialize {@code Renderer}
      *
-     * @param meshes the new {@code List} of {@code Mesh}
+     * @param scene the {@code Scene} that the camera is observing
      */
-    public void setMeshes(List<Mesh> meshes) {
-        this.meshes = meshes;
+    public Camera(Scene scene) {
+        super(Vertex.zero(), 1, Vertex.zero());
+        setScene(scene);
     }
 
-    /**
-     * Constructs a new {@code Renderer} object with a {@code List} of {@code Mesh} and initialize {@code Renderer}
-     *
-     * @param meshes the {@code List} of {@code Mesh}
-     */
-    public Camera(Vertex position, double scale, List<Mesh> meshes) {
-        setMeshes(meshes);
-        boutonRotation = new BoutonRotation(this);
-        addKeyListener(boutonRotation);
-        addMouseListener(boutonRotation);
-        this.mousePos = new Vertex(0, 0, 0);
-    }
-
-    @Override
-    public void setSize(int width, int height) {
-        super.setSize(width, height);
-        panelHalfWidth = width / 2f;
-        panelHalfHeight = height / 2f;
-    }
-
-    /**
-     * Sets the mouse position variable at a specific {@code Vertex}
-     *
-     * @param mousePos the position of the mouse
-     */
-    public void setMousePos(Vertex mousePos) {
-        this.mousePos = mousePos;
-    }
-
-    /**
-     * Paint the {@code List} of {@code Mesh} on a {@code Graphics2D} and then draw it on the {@code Renderer}
-     *
-     * @param graphics a {@code Graphics} object on which the meshes will be drawn
-     */
-    @Override
-    public void paintComponent(Graphics graphics) {
-        Graphics2D graphics2D = ((Graphics2D) graphics);
-        this.setBackground(Color.GRAY);
-        UiUtil.makeJPanelRoundCorner(this, graphics2D);
-        super.paintComponent(graphics2D);
-        panelHalfWidth = getWidth() / 2f;
-        panelHalfHeight = getHeight() / 2f;
-        pixelsDepthMap = new Double[this.getWidth()][this.getHeight()];
-        Mesh mesh = null;
-        BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for (Mesh m : meshes) {
+    public Optional<UUID> renderImage(BufferedImage img, VertexDTO mousePosition) {
+        pixelsDepthMap = new Double[img.getWidth()][img.getHeight()];
+        Optional<UUID> cutId = Optional.empty();
+        for (Mesh m : scene.getMeshes()) {
             for (Triangle t : m.getLocalTriangles()) {
-                if (printTriangle(img, t, m)) {
-                    mesh = m;
+                Triangle transformed = getTransformedTriangle(m.getTransformedTriangle(t));
+                Arrays.stream(transformed.getVertices()).forEach(vertex -> vertex.add(new Vertex(img.getWidth()/2.0, img.getHeight()/2.0, 0)));
+                if (renderTriangle(img, transformed, mousePosition)) {
+                    cutId = Optional.of(m.getId());
                 }
             }
         }
-        graphics2D.drawImage(img, 0, 0, null);
-        if (mousePos.getZ() == 1) {
-            boutonRotation.setSelectedMesh(mesh);
-        }
-        setMousePos(new Vertex(0, 0, 0));
+        return cutId;
     }
 
     /**
-     * Paints all the {@code Triangle} objects in a {@code List} in 3D on a {@code JPanel}.
-     * To be painted on the JPanel, the triangles must be drawn using a {@code Graphics2D} object.
-     * The {@code Graphics2D} object must already be associated with the JPanel.<br/><br/>
+     * Renders a {@code Triangle} object onto a {@code BufferedImage}.
      * The function uses a depth map for to be sure the triangles are displayed correctly,
      * barycentric coordinates to paint the pixels of the triangle and normal vectors to implement base shading.
      * <br/><br/>
      *
      * @param img the {@code Image} object associated with the panel
+     * @param t the {@code Triangle} to paint
+     * @param mousePosition the position of a mouse click to select a mesh
+     * @return true if the triangle has been clicked on
      */
-    private boolean printTriangle(BufferedImage img, Triangle triangle, Mesh parent) {
+    private boolean renderTriangle(BufferedImage img, Triangle t, VertexDTO mousePosition) {
         boolean isSelected = false;
 
-        Triangle t = parent.getTransformedTriangle(triangle);
-        Arrays.stream(t.getVertices()).forEach(vertex -> vertex.add(new Vertex(panelHalfWidth, panelHalfHeight, 0)));
-
         Color printedColor = calculateLighting(t);
-        int[] area = t.findBoundingRectangle(img.getWidth(null), img.getHeight(null));
+        int[] area = t.findBoundingRectangle(img.getWidth(), img.getHeight());
         for (int y = area[2]; y <= area[3]; y++) {
             for (int x = area[0]; x <= area[1]; x++) {
                 Vertex bary = t.findBarycentric(x, y);
                 if (isInBarycentric(bary)) {
                     double depth = bary.getX() * t.getVertex(0).getZ() + bary.getY() * t.getVertex(1).getZ() + bary.getZ() * t.getVertex(2).getZ();
-                    if (x < getWidth() && y < getHeight()) {
+                    if (x < img.getWidth() && y < img.getHeight()) {
                         if ((pixelsDepthMap[x][y] == null || pixelsDepthMap[x][y] < depth)) {
                             pixelsDepthMap[x][y] = depth;
                             img.setRGB(x, y, printedColor.getRGB());
-                            if (getMousePos().getX() == x && getMousePos().getY() == y) {
+                            if (mousePosition.getX() == x && mousePosition.getY() == y) {
                                 isSelected = true;
                             }
                         }
@@ -136,21 +80,12 @@ public class Camera extends Transform {
         return isSelected;
     }
 
-    /**
-     * Rotate all of the meshes around the (0,0,0) point
-     *
-     * @param rotationMatrix - the rotation matrix
-     */
-    public void rotateWorld(Matrix rotationMatrix) {
-        for (Mesh m : meshes) {
-            for (Triangle t : m.getLocalTriangles()) {
-                Vertex[] vertices = t.getVertices();
-                for(int i = 0; i < vertices.length; i++) {
-                    t.setVertex(rotationMatrix.matrixXVertex3X3(vertices[i]),i);
-                }
-            }
-            m.setPosition(rotationMatrix.matrixXVertex3X3(m.getPosition()));
-        }
+    public Scene getScene() {
+        return scene;
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
     }
 
     /**

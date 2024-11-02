@@ -1,4 +1,4 @@
-package Screen;
+package Domain.ThirdDimension;
 
 import Parser.STLParser;
 

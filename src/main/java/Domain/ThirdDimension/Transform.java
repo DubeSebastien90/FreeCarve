@@ -1,15 +1,26 @@
 package Domain.ThirdDimension;
 
+import java.security.InvalidKeyException;
+import java.util.UUID;
+
+/**
+ * Parent of all classes that have a transform, which is a position, rotation and scale
+ *
+ * @author Kamran Charles Nayebi
+ * @since 2024-10-31
+ */
 public abstract class Transform {
     private Vertex position;
     private float scale;
     private Vertex rotationEuler;
     private Quaternion rotationQuaternion;
+    private UUID id;
 
     Transform(Vertex position, float scale, Vertex rotationEuler) {
         this.position = position;
         this.scale = scale;
        setRotationEuler(rotationEuler);
+       id = UUID.randomUUID();
     }
 
     public Vertex getRotationEuler() {
@@ -59,5 +70,21 @@ public abstract class Transform {
         }
         Vertex normal = new Vertex(triangle.getNormal()).rotate(rotationQuaternion);
         return new Triangle(vertices[0], vertices[1], vertices[2], normal, triangle.getColor());
+    }
+
+    /**
+     * Rotates the {@code Transform} around the origin as if it were on a gimbal.
+     *
+     * @param xAxisRotation The amount of rotation in rad to apply around the X axis
+     * @param yAxisRotation The amount of rotation in rad to apply around the Y axis
+     */
+    public void pan(float xAxisRotation, float yAxisRotation){
+        position.rotate(Quaternion.fromEulerAngles(new Vertex(xAxisRotation, yAxisRotation, 0)));
+        rotationEuler.add(new Vertex(xAxisRotation, yAxisRotation, 0));
+        rotationQuaternion = Quaternion.fromEulerAngles(rotationEuler);
+    }
+
+    public UUID getId() {
+        return id;
     }
 }

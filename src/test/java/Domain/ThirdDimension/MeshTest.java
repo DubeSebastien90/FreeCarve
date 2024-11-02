@@ -1,4 +1,4 @@
-package Screen;
+package Domain.ThirdDimension;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
