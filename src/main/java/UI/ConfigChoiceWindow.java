@@ -1,12 +1,17 @@
 package UI;
 
-import UI.SubWindows.BasicWindow;
+import UI.Events.ChangeAttributeEvent;
+import UI.Events.ChangeAttributeListener;
+import UI.SubWindows.AttributePanel;
 import UI.SubWindows.BitSelectionPanel;
 import UI.Display2D.Rendering2DWindow;
+
 import UI.Widgets.BigButton;
 import UI.Widgets.BitInfoDisplay;
 import UI.Widgets.ChooseDimension;
 import com.sun.tools.javac.Main;
+
+import UI.Widgets.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,27 +27,25 @@ import java.awt.event.*;
  * @version 1.0
  * @since 2024-10-25
  */
-public class ConfigChoiceWindow extends JPanel {
+public class ConfigChoiceWindow extends JPanel implements ChangeAttributeListener {
     private final Rendering2DWindow rend;
     private final BigButton nextButton = new BigButton("Suivant");
-    private BitSelectionPanel bitWindow;
-    private BasicWindow attributeWindow;
-    private int selectedBit;
     private MainWindow mainWindow;
+    private final BitSelectionPanel bitWindow;
+    private final AttributePanel attributePanel;
 
     /**
      * Constructs a ConfigChoiceWindow and initializes its components and layout.
      */
     public ConfigChoiceWindow(MainWindow mainWindow) {
         this.setLayout(new GridBagLayout());
-        rend = new Rendering2DWindow(mainWindow);
-        bitWindow = new BitSelectionPanel();
-        attributeWindow = new BasicWindow(true);
+        rend = new Rendering2DWindow(mainWindow, this);
+        bitWindow = new BitSelectionPanel(this);
+        attributePanel = new AttributePanel(true);
         setFocusable(true);
         requestFocusInWindow();
         init();
         setButtonEventHandler();
-        this.selectedBit = 0;
         this.mainWindow = mainWindow;
     }
 
@@ -62,9 +65,7 @@ public class ConfigChoiceWindow extends JPanel {
     public void init() {
         GridBagConstraints gbc = new GridBagConstraints();
 
-        ChooseDimension dimensions = new ChooseDimension();
-        attributeWindow.setPreferredSize(new Dimension(0, 0));
-        attributeWindow.add(dimensions);
+        attributePanel.setPreferredSize(new Dimension(0, 0));
 
         gbc.insets = new Insets(0, 0, 0, 10);
         gbc.gridx = 0;
@@ -91,7 +92,7 @@ public class ConfigChoiceWindow extends JPanel {
         gbc.weightx = 1;
         gbc.weighty = 0.75;
         gbc.fill = GridBagConstraints.BOTH;
-        add(attributeWindow, gbc);
+        add(attributePanel, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -113,27 +114,6 @@ public class ConfigChoiceWindow extends JPanel {
                 MainWindow.INSTANCE.getMiddleContent().nextWindow();
             }
         });
-
-        for (int i = 0; i < bitWindow.getBitList().length; i++) {
-            JToggleButton bit = bitWindow.getBitList()[i];
-            int finalI = i;
-            bit.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    GridBagConstraints gbc = new GridBagConstraints();
-                    gbc.gridy = 1;
-                    attributeWindow.add(new JLabel(bit.getText()), gbc);
-                    for (int j = 0; j < bitWindow.getBitList().length; j++) {
-                        bitWindow.getBitList()[j].setSelected(finalI == j);
-                    }
-                    attributeWindow.removeAll();
-                    attributeWindow.repaint();
-                    BitInfoDisplay bitInfo = new BitInfoDisplay(mainWindow.getController().getBitsDTO()[finalI], true, ConfigChoiceWindow.this);
-                    attributeWindow.add(bitInfo, gbc);
-                    selectedBit = finalI;
-                }
-            });
-        }
     }
 
     /**
@@ -149,10 +129,28 @@ public class ConfigChoiceWindow extends JPanel {
     }
 
     public int getSelectedBit() {
-        return selectedBit;
+        return bitWindow.getSelectedBit();
     }
 
     public BitSelectionPanel getBitWindow() {
         return bitWindow;
+    }
+
+
+    /**
+     * Set the selected element of the CutWindow and changed the AttributePanel accordingly
+     *
+     * @param event ChangeAttributeEvent being called by a child class
+     */
+    @Override
+    public void changeAttributeEventOccurred(ChangeAttributeEvent event) {
+        Attributable selectedAttributable = event.getAttribute();
+        this.attributePanel.updateAttribute(selectedAttributable);
+    }
+
+    @Override
+    public void modifiedAttributeEventOccured(ChangeAttributeEvent event) {
+        //todo this function is called upon by the subwindows when an attribute is changed, it is currently empty because nothing to implement
+        // but could be useful when sharing informations between the CutList and the 2D Afficheur
     }
 }

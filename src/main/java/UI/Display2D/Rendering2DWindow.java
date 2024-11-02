@@ -1,7 +1,8 @@
 package UI.Display2D;
 
-import Domain.Grid;
+
 import Domain.GridDTO;
+import UI.Events.ChangeAttributeListener;
 import UI.LeftBar;
 import UI.MainWindow;
 import UI.Widgets.PersoPoint;
@@ -15,6 +16,14 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
+/**
+ * The {@code Rendering2DWindow} class is used to construct and display a board which represent the panel on the CNC. This
+ * class also manage how the board is perceived. This includes the zoom, and the display of the mouse position relative to the board.
+ *
+ * @author Sébastien Dubé & Adam Côté
+ * @version 1.2
+ * @since 2024-10-22
+ */
 public class Rendering2DWindow extends JPanel {
 
     private final Rectangle2D board = new Rectangle2D.Double(0, 0, 1219.2, 914.4);
@@ -33,13 +42,15 @@ public class Rendering2DWindow extends JPanel {
     private final ArrayList<PersoPoint> points = new ArrayList<>();
     private final Afficheur afficheur;
     private final Scaling scaling;
+    private final ChangeAttributeListener listener;
 
     /**
      * Constructor for Renderinf2DWIndow
      *
      * @param mainWindow The main window to get the controller
      */
-    public Rendering2DWindow(MainWindow mainWindow) {
+
+    public Rendering2DWindow(MainWindow mainWindow, ChangeAttributeListener listener) {
         super();
         this.mainWindow = mainWindow;
         zoom = 1;
@@ -54,51 +65,117 @@ public class Rendering2DWindow extends JPanel {
         addComponentListener();
         afficheur = new Afficheur(this);
         scaling = new Scaling(this);
+        this.listener = listener;
     }
 
+    /**
+     * Returns the listener responsible for handling attribute changes.
+     *
+     * @return the ChangeAttributeListener instance.
+     */
+    public ChangeAttributeListener getListener() {
+        return listener;
+    }
+
+    /**
+     * Returns the board area as a 2D rectangle.
+     *
+     * @return the Rectangle2D representing the board area.
+     */
     public Rectangle2D getBoard() {
         return this.board;
     }
 
+    /**
+     * Returns the coordinates of the simulated mouse point.
+     *
+     * @return the Point2D representing the fake mouse point.
+     */
     public Point2D getFakeMousePt() {
         return this.fakeMousePt;
     }
 
+    /**
+     * Returns the coordinates of the actual mouse point.
+     *
+     * @return the Point2D representing the mouse point.
+     */
     public Point2D getMousePt() {
         return mousePt;
     }
 
+    /**
+     * Returns the X-axis offset for positioning.
+     *
+     * @return the X-axis offset as a double.
+     */
     public double getOffsetX() {
         return offsetX;
     }
 
+    /**
+     * Returns the Y-axis offset for positioning.
+     *
+     * @return the Y-axis offset as a double.
+     */
     public double getOffsetY() {
         return offsetY;
     }
 
+    /**
+     * Returns the current zoom level.
+     *
+     * @return the current zoom level as a double.
+     */
     public double getZoom() {
         return zoom;
     }
 
+    /**
+     * Returns the previous zoom level before the last change.
+     *
+     * @return the previous zoom level as a double.
+     */
     public double getPrevZoom() {
         return prevZoom;
     }
 
+    /**
+     * Returns the width of the window or canvas in pixels.
+     *
+     * @return the window width as an integer.
+     */
     public int getwW() {
         return wW;
     }
 
+    /**
+     * Returns the height of the window or canvas in pixels.
+     *
+     * @return the window height as an integer.
+     */
     public int getwH() {
         return wH;
     }
 
+    /**
+     * Indicates whether a point is currently being dragged.
+     *
+     * @return true if a point is being dragged, false otherwise.
+     */
     public boolean isDraggingAPoint() {
         return draggingAPoint;
     }
 
+    /**
+     * Returns the display object responsible for visual rendering.
+     *
+     * @return the Afficheur instance.
+     */
     public Afficheur getAfficheur() {
         return afficheur;
     }
+
 
     /**
      * @return The points displayed on the board.
@@ -251,9 +328,10 @@ public class Rendering2DWindow extends JPanel {
      * @param newWidth  The new width.
      * @param newHeight The new height.
      */
-    void resizePanneau(double newWidth, double newHeight) {
+    public void resizePanneau(double newWidth, double newHeight) {
         board.setRect(board.getX(), board.getY(), newWidth, newHeight);
         MainWindow.INSTANCE.getController().resizePanel(board.getWidth(), board.getHeight());
+        repaint();
     }
 
     /**
@@ -265,6 +343,7 @@ public class Rendering2DWindow extends JPanel {
     private void deltaResizePanneau(double deltaWidth, double deltaHeight) {
         board.setRect(board.getX(), board.getY(), board.getWidth() - deltaWidth, board.getHeight() - deltaHeight);
         MainWindow.INSTANCE.getController().resizePanel(board.getWidth(), board.getHeight());
+        repaint();
     }
 
     /**

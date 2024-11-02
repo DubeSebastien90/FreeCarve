@@ -1,24 +1,26 @@
 package UI.Display2D;
 
+import UI.Events.ChangeAttributeEvent;
+import UI.Widgets.ChooseDimension;
 import UI.Widgets.PersoPoint;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 
 public class Scaling {
     private MouseMotionListener scaleListener;
     private final Rendering2DWindow rend;
+    private ChooseDimension chooseDimension;
 
     /**
-     * Initializes the points and behavior for resizing the board.
-     * This includes setting up the necessary components and defining how
-     * the board responds to resize events.
+     * Construcs a new Scaling object
+     *
+     * @param rend The {@code Rendering2DWindow} on which the scaling is happening
      */
     public Scaling(Rendering2DWindow rend) {
         this.rend = rend;
+        chooseDimension = new ChooseDimension(rend);
         initScalePointMouseListener();
     }
 
@@ -26,6 +28,11 @@ public class Scaling {
         return scaleListener;
     }
 
+    /**
+     * Initializes the points and behavior for resizing the board.
+     * This includes setting up the necessary components and defining how
+     * the board responds to resize events.
+     */
     void initiateScaling() {
         double radius = 5;
         double locationX = (rend.getOffsetX() + rend.getBoard().getX() + rend.getBoard().getWidth()) * rend.getZoom() - radius / 2;
@@ -36,6 +43,7 @@ public class Scaling {
         rend.getPoints().add(p1);
         rend.getPoints().add(p);
         rend.getPoints().add(p2);
+        rend.getListener().changeAttributeEventOccurred(new ChangeAttributeEvent(rend, chooseDimension));
     }
 
     /**
@@ -57,7 +65,13 @@ public class Scaling {
                     double newHeight = Math.max((rend.getHeight() - e.getY() - offsetY * zoom) * ratio - p.getRadius() / 2, 0);
                     rend.getPoints().get(0).movePoint(offsetX * zoom - p.getRadius() / 2, p.getLocationY());
                     rend.getPoints().get(2).movePoint(p.getLocationX(), rend.getHeight() - offsetY * zoom - p.getRadius() / 2);
-                    rend.resizePanneau((int) newWidth, (int) newHeight);
+                    rend.resizePanneau(newWidth, newHeight);
+                    double displayWidth = Math.round(newWidth * 100);
+                    displayWidth = displayWidth / 100;
+                    double displayHeight = Math.round(newHeight * 100);
+                    displayHeight = displayHeight / 100;
+                    chooseDimension.getxTextField().setText("" + displayWidth);
+                    chooseDimension.getyTextField().setText("" + displayHeight);
                     rend.repaint();
                 }
             }

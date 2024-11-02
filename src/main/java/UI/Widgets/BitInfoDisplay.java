@@ -1,36 +1,54 @@
 package UI.Widgets;
 
-import UI.ConfigChoiceWindow;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import Domain.BitDTO;
-
+import UI.SubWindows.BitSelectionPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
-//TODO, Supposed to be a small jpanel linked with a bit and when the attributes in the JPanel changes the bit changes
-public class BitInfoDisplay extends BasicWindow {
-    private BitDTO bit;
-    private Boolean editable;
+/**
+ * Represents a display panel that shows and allows editing of bit information.
+ * The display can be set to editable or read-only mode.
+ *
+ * @author Antoine Morin & Adam Côté
+ * @version 1.1
+ * @since 2024-11-01
+ */
+public class BitInfoDisplay extends BasicWindow implements Attributable {
+    private final BitDTO bit;
+    private final Boolean editable;
     private JButton modifyButton;
-    private ConfigChoiceWindow configChoiceWindow;
-    private JTextArea widthTextArea;
+    private final BitSelectionPanel bitSelectionPanel;
+    private NumberTextField widthTextArea;
     private JTextArea nameTextArea;
 
-    public BitInfoDisplay(BitDTO bit, boolean editable, ConfigChoiceWindow configChoiceWindow) {
+    /**
+     * Constructs a BitInfoDisplay with the specified bit data, editability, and selection panel.
+     *
+     * @param bit               the BitDTO object containing information about the bit.
+     * @param editable          a boolean indicating if the bit information can be edited.
+     * @param bitSelectionPanel the panel that displays the list of selectable bits.
+     */
+    public BitInfoDisplay(BitDTO bit, boolean editable, BitSelectionPanel bitSelectionPanel) {
         super(false);
         this.bit = bit;
         this.editable = editable;
-        this.configChoiceWindow = configChoiceWindow;
+        this.bitSelectionPanel = bitSelectionPanel;
         init();
         setEventHandlers();
     }
 
+    /**
+     * Initializes the layout and components of the BitInfoDisplay, such as labels, text areas,
+     * and the modify button. Sets up layout constraints and adds components to the panel.
+     */
     private void init() {
         JLabel dimension = new JLabel("Outil");
         dimension.setFont(dimension.getFont().deriveFont(20f));
-        widthTextArea = new JTextArea(String.valueOf(bit.getDiameter()));
+        widthTextArea = new NumberTextField(String.valueOf(bit.getDiameter()), diameter -> modifyBit(diameter.floatValue()));
+
         JLabel widthinfo = new JLabel("bitWidth");
         JLabel widthLabel = new JLabel("Diamètre");
         nameTextArea = new JTextArea(bit.getName());
@@ -77,13 +95,56 @@ public class BitInfoDisplay extends BasicWindow {
         add(modifyButton, gbc);
     }
 
-    public void setEventHandlers(){
+    /**
+     * Sets up event handlers for the modify button. When clicked, it updates the bit's information
+     * in the controller if the display is editable, then refreshes the bit selection panel.
+     */
+    public void setEventHandlers() {
         modifyButton.addActionListener(e -> {
             if (editable) {
-                MainWindow.INSTANCE.getController().modifyBit(configChoiceWindow.getSelectedBit(), new BitDTO(nameTextArea.getText(), Float.parseFloat(widthTextArea.getText())));
+                MainWindow.INSTANCE.getController().modifyBit(
+                        bitSelectionPanel.getSelectedBit(),
+                        new BitDTO(nameTextArea.getText(), Float.parseFloat(widthTextArea.getText()))
+                );
             }
-            configChoiceWindow.getBitWindow().refresh();
-            System.out.println("Devrais repeindre");
+            bitSelectionPanel.refresh();
         });
+    }
+
+    /**
+     * Updates the bit information using the Text in the text area for the name and a float value for the bit size
+     *
+     * @param diameter The diameter of the bit
+     */
+    private void modifyBit(float diameter) {
+        if (editable) {
+            MainWindow.INSTANCE.getController().modifyBit(
+                    bitSelectionPanel.getSelectedBit(),
+                    new BitDTO(nameTextArea.getText(), diameter)
+            );
+        }
+        bitSelectionPanel.refresh();
+
+    }
+
+    /**
+     * Shows the name of this attribute, primarily used for display purposes.
+     *
+     * @return a JLabel containing the text "Bit modification".
+     */
+    @Override
+    public JLabel showName() {
+        return new JLabel("Bit modification");
+    }
+
+    /**
+     * Displays the attributes panel with editable or non-editable components based on
+     * the editability setting.
+     *
+     * @return the JPanel containing the attributes display.
+     */
+    @Override
+    public JPanel showAttribute() {
+        return this;
     }
 }

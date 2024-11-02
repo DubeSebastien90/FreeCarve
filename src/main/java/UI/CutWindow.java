@@ -57,6 +57,7 @@ public class CutWindow implements ChangeAttributeListener {
 
     /**
      * Set the selected element of the CutWindow and changed the AttributePanel accordingly
+     *
      * @param event ChangeAttributeEvent being called by a child class
      */
     @Override
@@ -66,7 +67,7 @@ public class CutWindow implements ChangeAttributeListener {
     }
 
     @Override
-    public void modifiedAttributeEventOccured(ChangeAttributeEvent event){
+    public void modifiedAttributeEventOccured(ChangeAttributeEvent event) {
         //todo this function is called upon by the subwindows when an attribute is changed, it is currently empty because nothing to implement
         // but could be useful when sharing informations between the CutList and the 2D Afficheur
     }
@@ -75,7 +76,7 @@ public class CutWindow implements ChangeAttributeListener {
      * Initiates all of the {@code CutWindow} components
      */
     private void init(MainWindow mainWindow) {
-        panel1 = new Rendering2DWindow(mainWindow);
+        panel1 = new Rendering2DWindow(mainWindow, this);
 
         attributePanel = new AttributePanel(true);
         panel2 = attributePanel;

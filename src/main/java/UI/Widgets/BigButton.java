@@ -5,6 +5,13 @@ import Util.UiUtil;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * This class is used to create a button which respect certain conditions, so it is the same throughout the project
+ *
+ * @author Adam côté
+ * @version 1.0
+ * @since 2024-11-02
+ */
 public class BigButton extends JPanel {
     private final JButton button;
 
