@@ -3,6 +3,7 @@ package UI.SubWindows;
 import Domain.Grid;
 import Domain.GridDTO;
 import UI.MainWindow;
+import UI.Widgets.PersoPoint;
 import Util.UiUtil;
 
 import javax.swing.*;
@@ -24,6 +25,9 @@ public class Rendering2DWindow extends JPanel {
     private int wH;
     private MainWindow mainWindow;
     ArrayList<Double> areammBoard = new ArrayList<>();
+    private boolean draggingAPoint = false;
+    private final ArrayList<PersoPoint> points = new ArrayList<>();
+    private MouseMotionListener scaleListener;
 
     /**
      * Constructor for Renderinf2DWIndow
