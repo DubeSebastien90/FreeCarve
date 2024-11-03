@@ -81,7 +81,7 @@ public class CutWindow implements ChangeAttributeListener {
         attributePanel = new AttributePanel(true);
         panel2 = attributePanel;
 
-        cutListPanel = new CutListPanel(true, this);
+        cutListPanel = new CutListPanel(true, this, mainWindow);
         panel3 = cutListPanel;
 
         splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panel2, panel3);

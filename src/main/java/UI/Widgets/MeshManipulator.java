@@ -20,14 +20,18 @@ public class MeshManipulator implements KeyListener, MouseListener {
     private static final float GIMBAL_ROTATION = 0.1f;
     private static final float MESH_TRANSLATION = 3;
     private static final float MESH_ROTATION = 0.1f;
-    private enum MovementType{TRANSLATION, ROTATION, NO_MESH}
+
+    private enum MovementType {TRANSLATION, ROTATION, NO_MESH}
+
     private UUID selectedMesh;
     private MovementType movementType = MovementType.NO_MESH;
+    private final MainWindow mainWindow;
 
-    public MeshManipulator(Rendering3DWindow rendering3DWindow) {
+    public MeshManipulator(Rendering3DWindow rendering3DWindow, MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
         this.rendering3DWindow = rendering3DWindow;
         this.selectedMesh = null;
-        controller = MainWindow.INSTANCE.getController();
+        controller = mainWindow.getController();
     }
 
     @Override

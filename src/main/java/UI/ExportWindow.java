@@ -3,6 +3,7 @@ package UI;
 import UI.SubWindows.BasicWindow;
 import UI.Widgets.BigButton;
 import UI.SubWindows.Rendering3DWindow;
+import com.sun.tools.javac.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,13 +20,14 @@ public class ExportWindow extends JPanel {
 
     private BigButton nextButton = new BigButton("Export");
     private Rendering3DWindow rendering3DWindow;
-    private MainWindow mainWindow;
+    private final MainWindow mainWindow;
 
     /**
      * Constructs an ExportWindow and initializes its layout and components.
      */
-    public ExportWindow() {
+    public ExportWindow(MainWindow mainWindow) {
         this.setLayout(new GridBagLayout());
+        this.mainWindow = mainWindow;
         init();
     }
 
@@ -46,9 +48,7 @@ public class ExportWindow extends JPanel {
     public void init() {
         GridBagConstraints gbc = new GridBagConstraints();
 
-        mainWindow = MainWindow.INSTANCE;
-
-        rendering3DWindow = new Rendering3DWindow(mainWindow.getController().getCameraId());
+        rendering3DWindow = new Rendering3DWindow(mainWindow.getController().getCameraId(), mainWindow);
         gbc.insets = new Insets(0, 0, 0, 10);
 
         gbc.gridx = 0;

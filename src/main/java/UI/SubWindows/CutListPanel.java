@@ -7,7 +7,6 @@ import UI.MainWindow;
 import UI.UIConfig;
 import UI.Widgets.Attributable;
 import UI.Widgets.CutBox;
-import org.w3c.dom.Attr;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -21,29 +20,32 @@ import java.util.Optional;
  * @version 0.1
  * @since 2024-09-21
  */
-public class CutListPanel extends BasicWindow implements  ChangeAttributeListener{
+public class CutListPanel extends BasicWindow implements ChangeAttributeListener {
     private List<CutBox> cutBoxes;
     private List<CutDTO> cuts;
     private JPanel panel;
     private BoxLayout layout;
     private JScrollPane scrollPane;
     private ChangeAttributeListener listener;
+    private final MainWindow mainWindow;
 
     /**
      * Constructs a {@code CutList} by initializing all of it's attributes
      */
-    public CutListPanel(boolean haveBackground, ChangeAttributeListener listener) {
+    public CutListPanel(boolean haveBackground, ChangeAttributeListener listener, MainWindow mainWindow) {
         super(haveBackground);
+        this.mainWindow = mainWindow;
         this.listener = listener;
         this.init();
-        setCutList(MainWindow.INSTANCE.getController().getCutListDTO());
+        setCutList(this.mainWindow.getController().getCutListDTO());
     }
 
     /**
      * Change the cutList, with a new list of CutDTO, and updates the UI
+     *
      * @param newCuts list of new CutDTO
      */
-    public void setCutList(List<CutDTO> newCuts){
+    public void setCutList(List<CutDTO> newCuts) {
         this.cuts = newCuts;
         updateCutBoxes();
     }
@@ -51,15 +53,15 @@ public class CutListPanel extends BasicWindow implements  ChangeAttributeListene
     /**
      * Updates the UI of the CutList based on the stored CutDTO
      */
-    private void updateCutBoxes(){
+    private void updateCutBoxes() {
         this.cutBoxes = new ArrayList<CutBox>();
-        for (int i =0; i < cuts.size(); i++){
+        for (int i = 0; i < cuts.size(); i++) {
             CutDTO cut = cuts.get(i);
-            CutBox temp = new CutBox(cut, i, this);
+            CutBox temp = new CutBox(cut, i, this, mainWindow);
             this.cutBoxes.add(temp);
         }
         panel.removeAll();
-        for (CutBox cutBox : this.cutBoxes){
+        for (CutBox cutBox : this.cutBoxes) {
             this.panel.add(cutBox.getPanel());
         }
     }
@@ -67,8 +69,8 @@ public class CutListPanel extends BasicWindow implements  ChangeAttributeListene
     /**
      * Deselect all CutBox(es)
      */
-    public void refreshSelectedCutBox(){
-        for (CutBox cb : cutBoxes){
+    public void refreshSelectedCutBox() {
+        for (CutBox cb : cutBoxes) {
             cb.deselect();
         }
     }
@@ -95,6 +97,7 @@ public class CutListPanel extends BasicWindow implements  ChangeAttributeListene
         scrollPane.setAlignmentX(0);
         updateCutBoxes();
     }
+
     /**
      * Set the selectedAttributable of the parent window. The point is to simply pass down that information to the parent
      */
@@ -113,10 +116,8 @@ public class CutListPanel extends BasicWindow implements  ChangeAttributeListene
         Attributable att = event.getAttribute();
         CutBox c = (CutBox) att;
 
-        Optional<CutDTO> cut = MainWindow.INSTANCE.getController().findSpecificCut(c.getCutUUID());
-        if (cut.isPresent()){
-            c.updatePanel(cut.get());
-        }
+        Optional<CutDTO> cut = mainWindow.getController().findSpecificCut(c.getCutUUID());
+        cut.ifPresent(c::updatePanel);
 
     }
 }

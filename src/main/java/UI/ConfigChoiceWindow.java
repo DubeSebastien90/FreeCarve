@@ -30,7 +30,7 @@ import java.awt.event.*;
 public class ConfigChoiceWindow extends JPanel implements ChangeAttributeListener {
     private final Rendering2DWindow rend;
     private final BigButton nextButton = new BigButton("Suivant");
-    private MainWindow mainWindow;
+    private final MainWindow mainWindow;
     private final BitSelectionPanel bitWindow;
     private final AttributePanel attributePanel;
 
@@ -40,7 +40,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeAttributeListene
     public ConfigChoiceWindow(MainWindow mainWindow) {
         this.setLayout(new GridBagLayout());
         rend = new Rendering2DWindow(mainWindow, this);
-        bitWindow = new BitSelectionPanel(this);
+        bitWindow = new BitSelectionPanel(this, mainWindow);
         attributePanel = new AttributePanel(true);
         setFocusable(true);
         requestFocusInWindow();
@@ -111,7 +111,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeAttributeListene
         nextButton.getButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainWindow.INSTANCE.getMiddleContent().nextWindow();
+                mainWindow.getMiddleContent().nextWindow();
             }
         });
     }

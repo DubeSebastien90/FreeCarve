@@ -4,11 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class OptionWindow extends JPanel {
-    public OptionWindow() {
+    public OptionWindow(MainWindow mainWindow) {
         setLayout(new FlowLayout());
         add(new JLabel("This is the options window"));
         JButton gobck = new JButton("GOBACK PLEASE");
-        gobck.addActionListener(e -> MainWindow.INSTANCE.showTrueMode());
+        gobck.addActionListener(e -> mainWindow.showTrueMode());
         add(gobck);
         add(new JButton("Option 2"));
     }

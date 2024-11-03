@@ -13,11 +13,13 @@ import java.awt.event.WindowEvent;
 public class TopBar extends JMenuBar {
 
     private final UIConfig uiConfig = UIConfig.INSTANCE;
+    private final MainWindow mainWindow;
 
     /**
      * Creates a new menu for the top of the application. The items of the menu can be modified in the initiateMenu function
      */
-    public TopBar() {
+    public TopBar(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
         initiateMenu();
         this.setVisible(true);
     }
@@ -45,8 +47,8 @@ public class TopBar extends JMenuBar {
         JMenuItem redo = new JMenuItem("redo");
         JMenuItem attributionLink = new JMenuItem("Icon Source");
 
-        settings.addActionListener(e -> MainWindow.INSTANCE.showOptionWindow());
-        exit.addActionListener(e -> MainWindow.INSTANCE.getFrame().dispatchEvent(new WindowEvent(MainWindow.INSTANCE.getFrame(), WindowEvent.WINDOW_CLOSING)));
+        settings.addActionListener(e -> mainWindow.showOptionWindow());
+        exit.addActionListener(e -> mainWindow.getFrame().dispatchEvent(new WindowEvent(mainWindow.getFrame(), WindowEvent.WINDOW_CLOSING)));
 
         fichier.add(nouveau);
         fichier.add(enregistrer);

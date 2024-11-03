@@ -27,16 +27,18 @@ public class BitSelectionPanel extends BasicWindow {
     private BitDTO[] bitDTOList;
     private final ChangeAttributeListener listener;
     private int selectedBit = 0;
+    private final MainWindow mainWindow;
 
     /**
      * Constructs a BitSelectionPanel with a specified attribute change listener.
      *
      * @param listener the listener for attribute changes triggered by bit selection.
      */
-    public BitSelectionPanel(ChangeAttributeListener listener) {
+    public BitSelectionPanel(ChangeAttributeListener listener, MainWindow mainWindow) {
         super(true);
+        this.mainWindow = mainWindow;
         this.listener = listener;
-        bitDTOList = MainWindow.INSTANCE.getController().getBitsDTO();
+        bitDTOList = mainWindow.getController().getBitsDTO();
         for (int i = 0; i < bitList.length; i++) {
             bitList[i] = new JToggleButton(bitDTOList[i].getName());
         }
@@ -85,7 +87,7 @@ public class BitSelectionPanel extends BasicWindow {
      * Refreshes the labels of the bit toggle buttons to reflect the latest bit names.
      */
     public void refresh() {
-        bitDTOList = MainWindow.INSTANCE.getController().getBitsDTO();
+        bitDTOList = mainWindow.getController().getBitsDTO();
         for (int i = 0; i < bitList.length; i++) {
             bitList[i].setText(bitDTOList[i].getName());
         }
@@ -106,9 +108,9 @@ public class BitSelectionPanel extends BasicWindow {
                     ChangeAttributeEvent event = new ChangeAttributeEvent(
                             this,
                             new BitInfoDisplay(
-                                    MainWindow.INSTANCE.getController().getBitsDTO()[finalI],
+                                    mainWindow.getController().getBitsDTO()[finalI],
                                     true,
-                                    BitSelectionPanel.this
+                                    BitSelectionPanel.this, mainWindow
                             )
                     );
                     listener.changeAttributeEventOccurred(event);

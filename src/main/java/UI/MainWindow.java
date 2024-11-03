@@ -23,8 +23,7 @@ import javax.swing.*;
  * @version 1.1
  * @since 2024-09-21
  */
-public enum MainWindow {
-    INSTANCE;
+public class MainWindow {
 
     private JFrame frame;
     private final JPanel mainInsidePanel = new JPanel();
@@ -74,9 +73,9 @@ public enum MainWindow {
         uiConfig = UIConfig.INSTANCE;
         BorderLayout borderLayout = new BorderLayout();
         mainInsidePanel.setLayout(borderLayout);
-        downBar = new DownBar();
-        topBar = new TopBar();
-        leftBar = new LeftBar();
+        downBar = new DownBar(this);
+        topBar = new TopBar(this);
+        leftBar = new LeftBar(this);
         middleContent = new MiddleContent(this);
 
         frame.setTitle(uiConfig.getWindowTitle());
@@ -136,7 +135,7 @@ public enum MainWindow {
      * with an instance of {@link OptionWindow}.
      */
     public void showOptionWindow() {
-        frame.setContentPane(new OptionWindow());
+        frame.setContentPane(new OptionWindow(this));
         frame.revalidate();
     }
 

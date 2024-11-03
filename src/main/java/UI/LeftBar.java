@@ -16,12 +16,14 @@ public class LeftBar extends JScrollPane {
 
     private final UIConfig uiConfig = UIConfig.INSTANCE;
     private final ToolBar toolBar;
+    private final MainWindow mainWindow;
 
     /**
      * Constructs a new {@code LeftBar} object and initialize it with a new {@code ToolBar}
      */
-    public LeftBar() {
+    public LeftBar(MainWindow mainWindow) {
         this.toolBar = new ToolBar();
+        this.mainWindow = mainWindow;
         setViewportView(toolBar);
         setBorder(null);
         setVisible(true);
@@ -165,6 +167,7 @@ public class LeftBar extends JScrollPane {
         zoomActionListener();
         scaleActionListener();
         settingActionListener();
+        gridActionListener();
     }
 
     /**
@@ -180,9 +183,9 @@ public class LeftBar extends JScrollPane {
      * Sets the two zoom button to zoom or de zoom the 2dRenderer if one is displayed on screen.
      */
     private void zoomActionListener() {
-        toolBar.getTool(ToolBar.Tool.ZOOMIN).addActionListener(e -> MainWindow.INSTANCE.getMiddleContent().zoom(-5));
+        toolBar.getTool(ToolBar.Tool.ZOOMIN).addActionListener(e -> mainWindow.getMiddleContent().zoom(-5));
 
-        toolBar.getTool(ToolBar.Tool.ZOOMOUT).addActionListener(e -> MainWindow.INSTANCE.getMiddleContent().zoom(5));
+        toolBar.getTool(ToolBar.Tool.ZOOMOUT).addActionListener(e -> mainWindow.getMiddleContent().zoom(5));
     }
 
     /**
@@ -190,7 +193,7 @@ public class LeftBar extends JScrollPane {
      */
     private void scaleActionListener() {
         toolBar.getTool(ToolBar.Tool.SCALE).addActionListener(e -> {
-            MiddleContent middle = MainWindow.INSTANCE.getMiddleContent();
+            MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CONFIG) {
                 middle.getConfigChoiceWindow().getRendering2DWindow().scale();
             }
@@ -201,7 +204,7 @@ public class LeftBar extends JScrollPane {
      * Sets the Setting tool to change to the option window when clicked.
      */
     private void settingActionListener() {
-        toolBar.getTool(ToolBar.Tool.SETTING).addActionListener(e -> MainWindow.INSTANCE.showOptionWindow());
+        toolBar.getTool(ToolBar.Tool.SETTING).addActionListener(e -> mainWindow.showOptionWindow());
     }
 
     private void gridActionListener() {

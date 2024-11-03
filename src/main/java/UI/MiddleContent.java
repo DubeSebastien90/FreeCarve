@@ -29,7 +29,7 @@ public class MiddleContent {
     private ConfigChoiceWindow configChoiceWindow;
     private SimulationWindow simulationWindow;
     private ExportWindow exportWindow;
-    private MainWindow mainWindow;
+    private final MainWindow mainWindow;
     private MiddleWindowType current;
 
     public MiddleContent(MainWindow mainWindow) {
@@ -65,10 +65,10 @@ public class MiddleContent {
      */
     private void init(MainWindow mainWindow) {
         cutWindow = new CutWindow(mainWindow);
-        projectWindow = new FolderWindow();
-        simulationWindow = new SimulationWindow();
+        projectWindow = new FolderWindow(mainWindow);
+        simulationWindow = new SimulationWindow(mainWindow);
         configChoiceWindow = new ConfigChoiceWindow(mainWindow);
-        exportWindow = new ExportWindow();
+        exportWindow = new ExportWindow(mainWindow);
 
 
         this.panel.setLayout(new CardLayout());
@@ -107,8 +107,8 @@ public class MiddleContent {
      * @param type The window that need to be displayed.
      */
     public void changePanel(MiddleWindowType type) {
-        DownBar db = MainWindow.INSTANCE.getDownBar();
-        LeftBar lb = MainWindow.INSTANCE.getLeftBar();
+        DownBar db = mainWindow.getDownBar();
+        LeftBar lb = mainWindow.getLeftBar();
         switch (type) {
             case FOLDER -> {
                 ((CardLayout) panel.getLayout()).show(panel, "folder");

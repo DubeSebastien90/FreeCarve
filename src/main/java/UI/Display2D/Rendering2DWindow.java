@@ -36,7 +36,7 @@ public class Rendering2DWindow extends JPanel {
     private double prevZoom;
     private int wW;
     private int wH;
-    private MainWindow mainWindow;
+    private final MainWindow mainWindow;
     ArrayList<Double> areammBoard = new ArrayList<>();
     private boolean draggingAPoint = false;
     private final ArrayList<PersoPoint> points = new ArrayList<>();
@@ -216,7 +216,7 @@ public class Rendering2DWindow extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (isPointonPanel() && MainWindow.INSTANCE.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.SCALE).isEnabled()) {
+                if (isPointonPanel() && mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.SCALE).isEnabled()) {
                     scale();
                 }
             }
@@ -330,7 +330,7 @@ public class Rendering2DWindow extends JPanel {
      */
     public void resizePanneau(double newWidth, double newHeight) {
         board.setRect(board.getX(), board.getY(), newWidth, newHeight);
-        MainWindow.INSTANCE.getController().resizePanel(board.getWidth(), board.getHeight());
+        mainWindow.getController().resizePanel(board.getWidth(), board.getHeight());
         repaint();
     }
 
@@ -342,7 +342,7 @@ public class Rendering2DWindow extends JPanel {
      */
     private void deltaResizePanneau(double deltaWidth, double deltaHeight) {
         board.setRect(board.getX(), board.getY(), board.getWidth() - deltaWidth, board.getHeight() - deltaHeight);
-        MainWindow.INSTANCE.getController().resizePanel(board.getWidth(), board.getHeight());
+        mainWindow.getController().resizePanel(board.getWidth(), board.getHeight());
         repaint();
     }
 

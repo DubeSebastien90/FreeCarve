@@ -33,14 +33,15 @@ public class DownBar {
     ArrayList<JButton> buttons;
     ArrayList<JComponent> components;
 
-    private final MainWindow mainWindow = MainWindow.INSTANCE;
+    private final MainWindow mainWindow;
 
     /**
      * Constructs a {@code DownBar} instance initializing all of it's sub-component,
      * setting up all of the actions of the buttons and setting the {@code folderButton} as the
      * initial state
      */
-    public DownBar() {
+    public DownBar(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
         init();
         this.setupButtonAction();
         setButtonBlueToIndex(0);

@@ -24,6 +24,7 @@ public class Rendering3DWindow extends JPanel {
     private VertexDTO mousePos;
     private final MeshManipulator meshManipulator;
     private UUID cameraId;
+    private final MainWindow mainWindow;
 
     /**
      * @return the mouse position in pixels of the last click on the viewport
@@ -37,7 +38,8 @@ public class Rendering3DWindow extends JPanel {
      *
      * @param cameraID the id of the {@code Camera} which it will show
      */
-    public Rendering3DWindow(UUID cameraID) {
+    public Rendering3DWindow(UUID cameraID, MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
         setDoubleBuffered(true);
         setFocusable(true);
         requestFocusInWindow();
@@ -46,7 +48,7 @@ public class Rendering3DWindow extends JPanel {
         setCameraId(cameraID);
         setMousePos(new VertexDTO(0, 0, 0));
 
-        meshManipulator = new MeshManipulator(this);
+        meshManipulator = new MeshManipulator(this, mainWindow);
         addKeyListener(meshManipulator);
         addMouseListener(meshManipulator);
 
@@ -75,7 +77,7 @@ public class Rendering3DWindow extends JPanel {
 
         BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 
-        Optional<UUID> selectedMesh = MainWindow.INSTANCE.getController().renderImage(img, mousePos);
+        Optional<UUID> selectedMesh = mainWindow.getController().renderImage(img, mousePos);
         selectedMesh.ifPresent(meshManipulator::setSelectedMesh);
 
         graphics2D.drawImage(img, 0, 0, null);

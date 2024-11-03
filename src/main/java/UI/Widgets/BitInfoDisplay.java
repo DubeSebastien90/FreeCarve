@@ -23,6 +23,7 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     private final BitSelectionPanel bitSelectionPanel;
     private NumberTextField widthTextArea;
     private JTextArea nameTextArea;
+    private final MainWindow mainWindow;
 
     /**
      * Constructs a BitInfoDisplay with the specified bit data, editability, and selection panel.
@@ -31,8 +32,9 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
      * @param editable          a boolean indicating if the bit information can be edited.
      * @param bitSelectionPanel the panel that displays the list of selectable bits.
      */
-    public BitInfoDisplay(BitDTO bit, boolean editable, BitSelectionPanel bitSelectionPanel) {
+    public BitInfoDisplay(BitDTO bit, boolean editable, BitSelectionPanel bitSelectionPanel, MainWindow mainWindow) {
         super(false);
+        this.mainWindow = mainWindow;
         this.bit = bit;
         this.editable = editable;
         this.bitSelectionPanel = bitSelectionPanel;
@@ -102,7 +104,7 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     public void setEventHandlers() {
         modifyButton.addActionListener(e -> {
             if (editable) {
-                MainWindow.INSTANCE.getController().modifyBit(
+                mainWindow.getController().modifyBit(
                         bitSelectionPanel.getSelectedBit(),
                         new BitDTO(nameTextArea.getText(), Float.parseFloat(widthTextArea.getText()))
                 );
@@ -118,7 +120,7 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
      */
     private void modifyBit(float diameter) {
         if (editable) {
-            MainWindow.INSTANCE.getController().modifyBit(
+            mainWindow.getController().modifyBit(
                     bitSelectionPanel.getSelectedBit(),
                     new BitDTO(nameTextArea.getText(), diameter)
             );

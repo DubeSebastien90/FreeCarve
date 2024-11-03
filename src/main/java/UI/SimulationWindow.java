@@ -3,7 +3,9 @@ package UI;
 import UI.SubWindows.BasicWindow;
 import UI.Widgets.BigButton;
 import UI.SubWindows.Rendering3DWindow;
+import com.sun.tools.javac.Main;
 
+import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,9 +15,11 @@ public class SimulationWindow extends JPanel {
 
     private final BigButton nextButton = new BigButton("Suivant");
     private Rendering3DWindow rendering3DWindow;
+    private final MainWindow mainWindow;
 
-    public SimulationWindow() {
+    public SimulationWindow(MainWindow mainWindow) {
         this.setLayout(new GridBagLayout());
+        this.mainWindow = mainWindow;
         init();
         setButtonEventHandler();
     }
@@ -27,7 +31,7 @@ public class SimulationWindow extends JPanel {
     public void init() {
         GridBagConstraints gbc = new GridBagConstraints();
 
-        rendering3DWindow = (new Rendering3DWindow(MainWindow.INSTANCE.getController().getCameraId()));
+        rendering3DWindow = (new Rendering3DWindow(mainWindow.getController().getCameraId(), mainWindow));
         gbc.insets = new Insets(0, 0, 0, 10);
 
         gbc.gridx = 0;
@@ -66,7 +70,7 @@ public class SimulationWindow extends JPanel {
         nextButton.getButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainWindow.INSTANCE.getMiddleContent().nextWindow();
+                mainWindow.getMiddleContent().nextWindow();
             }
         });
     }

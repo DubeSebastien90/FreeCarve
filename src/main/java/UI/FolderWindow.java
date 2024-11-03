@@ -1,5 +1,7 @@
 package UI;
 
+import com.sun.tools.javac.Main;
+
 import static Util.UiUtil.createSVGButton;
 
 import javax.swing.*;
@@ -21,14 +23,15 @@ public class FolderWindow extends JPanel {
     private final JPanel eastPanel = new JPanel(new GridBagLayout());
     private final JScrollPane scrollRecentProject = new JScrollPane();
     private final Box recentProject = Box.createVerticalBox();
+    private final MainWindow mainWindow;
 
     /**
      * Constructs the window with two panel, west and east. The west panel contains the open and new project button.
      * The east panel contains the recent project list.
      */
-    public FolderWindow() {
+    public FolderWindow(MainWindow mainWindow) {
         super(new GridBagLayout());
-
+        this.mainWindow = mainWindow;
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = 5;
@@ -142,7 +145,7 @@ public class FolderWindow extends JPanel {
      * Sets the event handler for the new project button. When the button is clicked,
      * it triggers the action to proceed to the next window in the main interface.
      */
-    private void setButtonActionListener(){
-        newButton.addActionListener(e -> MainWindow.INSTANCE.getMiddleContent().nextWindow());
+    private void setButtonActionListener() {
+        newButton.addActionListener(e -> mainWindow.getMiddleContent().nextWindow());
     }
 }
