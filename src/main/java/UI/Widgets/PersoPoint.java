@@ -1,6 +1,9 @@
 package UI.Widgets;
 
+import UI.SubWindows.Rendering2DWindow;
+
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 /**
  * Represents a point in a 2D space with a specified location, radius, and color.
@@ -14,9 +17,16 @@ public class PersoPoint {
     private double locationX;
     private double locationY;
     private double radius;
-    private final Color color = Color.BLACK;
-    private final boolean filled;
+    private Valid valid;
 
+
+    private Color color = Color.BLACK;
+    private boolean filled;
+
+    public enum Valid{
+        VALID,
+        NOT_VALID,
+    }
     /**
      * Constructs a PersoPoint with the specified location and radius.
      *
@@ -29,6 +39,82 @@ public class PersoPoint {
         this.locationY = locationY;
         this.radius = radius;
         this.filled = filled;
+        this.valid = Valid.NOT_VALID;
+    }
+
+    /**
+     * Constructs a PersoPoint with the specified location and radius.
+     *
+     * @param locationX The x-coordinate of the point.
+     * @param locationY The y-coordinate of the point.
+     * @param radius    The radius of the point.
+     * @param color     The color of the point.
+     */
+    public PersoPoint(double locationX, double locationY, double radius, boolean filled, Color color) {
+        this.locationX = locationX;
+        this.locationY = locationY;
+        this.radius = radius;
+        this.filled = filled;
+        this.color = color;
+        this.valid = Valid.NOT_VALID;
+    }
+
+    public PersoPoint(Point point, double radius, boolean filled, Color color){
+        this.locationX = point.getX();
+        this.locationY = point.getY();
+        this.radius = radius;
+        this.filled = filled;
+        this.color = color;
+        this.valid = Valid.NOT_VALID;
+
+    }
+
+    public PersoPoint(Point point){
+        this.locationX = point.getX();
+        this.locationY = point.getY();
+        this.radius = 10.0;
+        this.filled = true;
+        this.color = Color.BLACK;
+        this.valid = Valid.NOT_VALID;
+
+    }
+
+    public PersoPoint(PersoPoint persoPoint){
+        this.locationX = persoPoint.locationX;
+        this.locationY = persoPoint.locationY;
+        this.radius = persoPoint.radius;
+        this.filled = persoPoint.filled;
+        this.color = persoPoint.color;
+        this.valid = persoPoint.valid;
+    }
+
+    public PersoPoint(double x, double y, PersoPoint persoPoint){
+        this.locationX = x;
+        this.locationY = y;
+        this.radius = persoPoint.radius;
+        this.filled = persoPoint.filled;
+        this.color = persoPoint.color;
+        this.valid = persoPoint.valid;
+    }
+
+    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer){
+        graphics2D.setColor(this.color);
+        graphics2D.fillOval((int) (this.getLocationX()  - this.getRadius()/2.0), ((int) (this.getLocationY() - this.getRadius()/2.0)),
+                ((int) this.getRadius()), ((int) this.getRadius()));
+    }
+
+    public void drawMM(Graphics2D graphics2D, Rendering2DWindow renderer){
+        Point temp = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
+        double radiusPixel = renderer.scaleMMToPixel(this.radius);
+        graphics2D.setColor(this.color);
+        graphics2D.fillOval((int) (temp.getX()  - this.getRadius()/2.0), ((int) (temp.getY() - this.getRadius()/2.0)),
+                ((int) this.getRadius()), ((int) this.getRadius()));
+    }
+
+    public void drawLineMM(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint to){
+        Point temp1 = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
+        Point temp2 = renderer.mmTopixel(new Point2D.Double(to.locationX, to.locationY));
+        graphics2D.drawLine(temp1.x, temp1.y, temp2.x, temp2.y);
     }
 
     /**
@@ -94,6 +180,14 @@ public class PersoPoint {
     }
 
     /**
+     * Set the color of the point
+     * @param color new color of the point
+     */
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    /**
      * Moves the point to a new location specified by the given coordinates.
      *
      * @param locationX The new x-coordinate of the point.
@@ -102,5 +196,25 @@ public class PersoPoint {
     public void movePoint(double locationX, double locationY) {
         setLocationY(locationY);
         setLocationX(locationX);
+    }
+
+    /**
+     * Get state of the PersoPoint
+     * @return State
+     */
+    public Valid getValid() {
+        return valid;
+    }
+
+    /**
+     * Set state of the PersoPoint
+     * @param valid new State
+     */
+    public void setValid(Valid valid) {
+        this.valid = valid;
+    }
+
+    public double getDistance(){
+        return Math.sqrt(locationX * locationX + locationY * locationY);
     }
 }

@@ -47,6 +47,11 @@ public class MiddleContent {
     }
 
     /**
+     * @return The cutWindow of the project.
+     */
+    public CutWindow getCutWindow() {return this.cutWindow;}
+
+    /**
      * @return The currently displayed window
      */
     public MiddleWindowType getCurrent() {

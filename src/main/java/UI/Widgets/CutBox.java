@@ -5,6 +5,8 @@ import Domain.CutType;
 import Domain.ThirdDimension.VertexDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
+import UI.Events.ChangeCutEvent;
+import UI.Events.ChangeCutListener;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import UI.UIConfig;
@@ -38,12 +40,17 @@ public class CutBox implements Attributable {
     private GridBagLayout layout;
     private RoundedJLabel bitnameLabel;
     private JLabel numberLabel;
-    private RoundedJLabel coordinateLabel;
+    private RoundedJLabel coordinateLabel1;
+    private RoundedJLabel coordinateLabel2;
     private JLabel imageLabel;
     private int index;
     private boolean selected;
     private ChangeAttributeListener listener;
     private final MainWindow mainWindow;
+    private ChangeCutListener cutListener;
+    private JButton deleteButton;
+    private JButton moveUpButton;
+    private JButton moveDownButton;
 
     // Attributes variables
     BasicWindow attributeContainer;
@@ -59,11 +66,12 @@ public class CutBox implements Attributable {
      * @param index    index of the cut
      * @param listener reference to the parent listener
      */
-    public CutBox(CutDTO cutDTO, int index, ChangeAttributeListener listener, MainWindow mainWindow) {
+    public CutBox(CutDTO cutDTO, int index, ChangeAttributeListener listener, MainWindow mainWindow, ChangeCutListener cutListener) {
         this.mainWindow = mainWindow;
         this.cut = cutDTO;
         this.index = index;
         this.listener = listener;
+        this.cutListener = cutListener;
         this.init();
         this.init_attribute();
         this.setBackgroundToIndex();
@@ -99,8 +107,7 @@ public class CutBox implements Attributable {
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gc = new GridBagConstraints();
         attributeContainer.setLayout(layout);
-//        pointsBox1 = new PointsBox(true, "Point1", this.cut.getPoints().get(0));
-//        pointsBox2 = new PointsBox(true, "Point2", this.cut.getPoints().get(1));
+        gc.gridx = 0; gc.gridy = 0;
         gc.gridx = 0;
         gc.gridy = 0;
         gc.weightx = 1;
@@ -135,7 +142,7 @@ public class CutBox implements Attributable {
         this.cut = newCutDTO;
 
         // Setting the bit info
-        bitnameLabel.setText((String.valueOf(newCutDTO.getBitIndex())));
+        bitnameLabel.setText("Outil :" + (String.valueOf(newCutDTO.getBitIndex())));
 
         // Setting the index of the cut
         numberLabel.setText(String.valueOf(this.index));
@@ -146,10 +153,12 @@ public class CutBox implements Attributable {
         imageLabel.setIcon(UiUtil.getIcon(iconName, UIConfig.INSTANCE.getCutBoxIconSize(),
                 UIManager.getColor("button.Foreground")));
 
-        // Setting the coordiante value of the Cut
+        // Setting the coordinate value of the Cut
         List<VertexDTO> points = newCutDTO.getPoints();
-        String coordinateText = points.getFirst().format2D() + " - " + points.getLast().format2D();
-        coordinateLabel.setText(coordinateText);
+        String coordinateText1 = points.getFirst().format2D();
+        String coordinateText2 = points.getLast().format2D();
+        coordinateLabel1.setText(coordinateText1);
+        coordinateLabel2.setText(coordinateText2);
     }
 
     /**
@@ -247,17 +256,29 @@ public class CutBox implements Attributable {
         GridBagConstraints gc = new GridBagConstraints();
         bitnameLabel = new RoundedJLabel("Bitname placeholder", 15);
         numberLabel = new JLabel("Number placeholder");
-        coordinateLabel = new RoundedJLabel("(Coordinates label) - (Placeholder)", 15);
+        coordinateLabel1 = new RoundedJLabel("(Coordinates label)", 15);
+        coordinateLabel2 = new RoundedJLabel("", 15);
         imageLabel = new JLabel(UiUtil.getIcon("coupeL", UIConfig.INSTANCE.getCutBoxIconSize(),
                 UIManager.getColor("button.Foreground")));
         numberLabel.setBackground(Color.RED);
         bitnameLabel.setBackground(UIManager.getColor("SubWindow.background"));
         bitnameLabel.setHorizontalAlignment(JLabel.CENTER);
-        coordinateLabel.setHorizontalAlignment(JLabel.CENTER);
-        coordinateLabel.setBackground(UIManager.getColor("SubWindow.background"));
+        coordinateLabel1.setHorizontalAlignment(JLabel.CENTER);
+        coordinateLabel1.setBackground(UIManager.getColor("SubWindow.background"));
+        coordinateLabel2.setHorizontalAlignment(JLabel.CENTER);
+        coordinateLabel2.setBackground(UIManager.getColor("SubWindow.background"));
         numberLabel.putClientProperty("FlatLaf.style", "font: bold $h3.regular.font");
-        coordinateLabel.setMinimumSize(new Dimension(100, 100));
-
+        coordinateLabel1.setMinimumSize(new Dimension(100, 100));
+        coordinateLabel2.setMinimumSize(new Dimension(100, 100));
+        deleteButton = UiUtil.createSVGButton("trash", true, UIConfig.INSTANCE.getToolIconSize(), Color.RED);
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cutListener.deleteCutEventOccured(new ChangeCutEvent(CutBox.this, cut.getId()));
+            }
+        });
+        moveUpButton = UiUtil.createSVGButton("leftArrow", true, UIConfig.INSTANCE.getToolIconSize());
+        moveDownButton = UiUtil.createSVGButton("leftArrow", true, UIConfig.INSTANCE.getToolIconSize());
 
         gc.gridx = 0;
         gc.gridy = 0;
@@ -266,6 +287,7 @@ public class CutBox implements Attributable {
         gc.weightx = 0.0;
         gc.anchor = GridBagConstraints.CENTER;
         gc.insets = new Insets(0, 0, 0, 5);
+        gc.insets = new Insets(0,0,0,0);
         panel.add(numberLabel, gc);
 
         gc.gridx = 0;
@@ -274,6 +296,7 @@ public class CutBox implements Attributable {
         gc.gridheight = 1;
         gc.anchor = GridBagConstraints.FIRST_LINE_START;
         gc.weightx = 0.0;
+        gc.insets = new Insets(0,0,0,0);
         panel.add(imageLabel, gc);
 
         gc.gridx = 1;
@@ -285,6 +308,8 @@ public class CutBox implements Attributable {
         gc.weightx = 1.0;
         gc.insets = new Insets(5, 0, 5, 0);
         panel.add(bitnameLabel, gc);
+        gc.insets = new Insets(0,UIConfig.INSTANCE.getDefaultPadding()* 3,0,UIConfig.INSTANCE.getDefaultPadding()* 3);
+        panel.add(coordinateLabel1, gc);
 
         gc.gridx = 1;
         gc.gridy = 1;
@@ -293,7 +318,26 @@ public class CutBox implements Attributable {
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.weightx = 1.0;
-        panel.add(coordinateLabel, gc);
+        gc.insets = new Insets(0,UIConfig.INSTANCE.getDefaultPadding()* 3,0,UIConfig.INSTANCE.getDefaultPadding()* 3);
+        panel.add(coordinateLabel2, gc);
+
+        gc.gridx = 2; gc.gridy = 0;
+        gc.gridwidth =1; gc.gridheight=1;
+        gc.anchor = GridBagConstraints.CENTER;
+        gc.fill = GridBagConstraints.NONE;
+        gc.weightx = 0.0;
+        gc.insets = new Insets(0,0,0,0);
+        panel.add(bitnameLabel, gc);
+
+        gc.gridx = 2; gc.gridy = 1;
+        gc.gridwidth = 1; gc.gridheight=1;
+        gc.anchor = GridBagConstraints.CENTER;
+        gc.fill = GridBagConstraints.NONE;
+        gc.weightx = 0.0;
+        gc.insets = new Insets(0,0,0,0);
+        panel.add(deleteButton);
+
+
     }
 
     /**

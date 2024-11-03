@@ -38,24 +38,26 @@ public class AttributePanel extends BasicWindow{
         this.panel.removeAll();
         GridBagConstraints gc = new GridBagConstraints();
 
-        gc.anchor = GridBagConstraints.NORTH;
-        gc.gridx = 0; gc.gridy = 0;
-        gc.fill = GridBagConstraints.HORIZONTAL;
-        gc.weightx = 1;
-        this.panel.add(newAttributable.showName(), gc);
+        if(newAttributable != null){
+            gc.anchor = GridBagConstraints.NORTH;
+            gc.gridx = 0; gc.gridy = 0;
+            gc.fill = GridBagConstraints.HORIZONTAL;
+            gc.weightx = 1;
+            this.panel.add(newAttributable.showName(), gc);
 
-        gc.gridx = 0; gc.gridy = 1;
-        gc.fill = GridBagConstraints.HORIZONTAL;
-        gc.weightx = 1;
-        this.panel.add(newAttributable.showAttribute(), gc);
+            gc.gridx = 0; gc.gridy = 1;
+            gc.fill = GridBagConstraints.HORIZONTAL;
+            gc.weightx = 1;
+            this.panel.add(newAttributable.showAttribute(), gc);
 
-        gc.gridx = 0; gc.gridy = 2;
-        gc.insets = new Insets(0, 0, 0,  0);
-        gc.weighty = 1;
-        gc.fill = GridBagConstraints.VERTICAL;
-        JPanel dummy = new JPanel();
-        dummy.setBackground(null); dummy.setOpaque(false);
-        this.panel.add(dummy, gc); // dummy container to fill out vertical space
+            gc.gridx = 0; gc.gridy = 2;
+            gc.insets = new Insets(0, 0, 0,  0);
+            gc.weighty = 1;
+            gc.fill = GridBagConstraints.VERTICAL;
+            JPanel dummy = new JPanel();
+            dummy.setBackground(null); dummy.setOpaque(false);
+            this.panel.add(dummy, gc); // dummy container to fill out vertical space
+        }
 
         this.panel.revalidate();
         this.panel.repaint();
@@ -79,6 +81,8 @@ public class AttributePanel extends BasicWindow{
         scrollPane.getVerticalScrollBar().setUnitIncrement(UIConfig.INSTANCE.getScrollbarSpeed());
         panel.setAlignmentX(0);
         scrollPane.setAlignmentX(0);
+        revalidate();
+        repaint();
     }
 
 }

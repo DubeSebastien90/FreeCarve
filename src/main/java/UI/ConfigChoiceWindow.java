@@ -1,5 +1,8 @@
 package UI;
 
+import UI.Events.ChangeCutEvent;
+import UI.Events.ChangeCutListener;
+import UI.SubWindows.BasicWindow;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.SubWindows.AttributePanel;
@@ -27,7 +30,7 @@ import java.awt.event.*;
  * @version 1.0
  * @since 2024-10-25
  */
-public class ConfigChoiceWindow extends JPanel implements ChangeAttributeListener {
+public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, ChangeAttributeListener {
     private final Rendering2DWindow rend;
     private final BigButton nextButton = new BigButton("Suivant");
     private final MainWindow mainWindow;
@@ -114,6 +117,27 @@ public class ConfigChoiceWindow extends JPanel implements ChangeAttributeListene
                 mainWindow.getMiddleContent().nextWindow();
             }
         });
+
+//        for (int i = 0; i < bitWindow.getBitList().length; i++) {
+//            JToggleButton bit = bitWindow.getBitList()[i];
+//            int finalI = i;
+//            bit.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    GridBagConstraints gbc = new GridBagConstraints();
+//                    gbc.gridy = 1;
+//                    attributeWindow.add(new JLabel(bit.getText()), gbc);
+//                    for (int j = 0; j < bitWindow.getBitList().length; j++) {
+//                        bitWindow.getBitList()[j].setSelected(finalI == j);
+//                    }
+//                    attributeWindow.removeAll();
+//                    attributeWindow.repaint();
+//                    BitInfoDisplay bitInfo = new BitInfoDisplay(mainWindow.getController().getBitsDTO()[finalI], true, ConfigChoiceWindow.this);
+//                    attributeWindow.add(bitInfo, gbc);
+//                    selectedBit = finalI;
+//                }
+//            });
+//        }
     }
 
     /**
@@ -134,6 +158,17 @@ public class ConfigChoiceWindow extends JPanel implements ChangeAttributeListene
 
     public BitSelectionPanel getBitWindow() {
         return bitWindow;
+    }
+
+    @Override
+    public void addCutEventOccured(ChangeCutEvent event) {
+        //todo a parent of the RendererWindow2D should always implement the addCutEventOccured, add all
+        // interesting functionalities when an cut event happens in the RendererWindow2D
+    }
+
+    @Override
+    public void deleteCutEventOccured(ChangeCutEvent event) {
+        //todo if usefull to remove a cut in the ConfigChoiceWindow
     }
 
 

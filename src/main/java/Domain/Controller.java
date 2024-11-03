@@ -91,7 +91,14 @@ public class Controller {
      * @param id The id of the {@code Cut} the needs to be removed
      */
     public void removeCut(UUID id) {
-        //todo
+        List<Cut> list = this.currentProjectState.getPanel().getCutList();
+        for(int i=0; i<list.size(); i++){
+            if(list.get(i).getId() == id){
+                list.remove(i);
+                //todo look for potential non removable cut
+                return;
+            }
+        }
     }
 
     /**

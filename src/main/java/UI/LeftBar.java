@@ -1,5 +1,8 @@
 package UI;
 
+import Domain.CutType;
+import com.sun.tools.javac.Main;
+
 import javax.swing.*;
 
 import static Util.UiUtil.createSVGButton;
@@ -167,6 +170,7 @@ public class LeftBar extends JScrollPane {
         zoomActionListener();
         scaleActionListener();
         settingActionListener();
+        parrallelActionListener();
         gridActionListener();
     }
 
@@ -210,5 +214,17 @@ public class LeftBar extends JScrollPane {
     private void gridActionListener() {
         toolBar.getTool(ToolBar.Tool.GRID).addActionListener(e -> System.out.println("Will activate the grid, or deactivate the grid and the magnet"));
         toolBar.getTool(ToolBar.Tool.MAGNET).addActionListener(e -> System.out.println("if grid is activate, toggle the magnet"));
+    }
+
+    /**
+     * Sets the parralel cut tool to initiate the straight line cutting procedure
+     */
+    private void parrallelActionListener() {
+        toolBar.getTool(ToolBar.Tool.PARALLEL).addActionListener(e->{
+            MiddleContent middle = mainWindow.getMiddleContent();
+            if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT){
+                middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_VERTICAL);
+            }
+        });
     }
 }

@@ -3,15 +3,19 @@ package UI.SubWindows;
 import Domain.CutDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
+import UI.Events.ChangeCutListener;
 import UI.MainWindow;
 import UI.UIConfig;
 import UI.Widgets.Attributable;
 import UI.Widgets.CutBox;
+import org.w3c.dom.Attr;
 
 import javax.swing.*;
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * The {@code CutList} class is a UI class that encapsulates the list of the cuts sub-window
@@ -28,42 +32,38 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
     private JScrollPane scrollPane;
     private ChangeAttributeListener listener;
     private final MainWindow mainWindow;
+    private ChangeCutListener cutListener;
 
     /**
      * Constructs a {@code CutList} by initializing all of it's attributes
      */
-    public CutListPanel(boolean haveBackground, ChangeAttributeListener listener, MainWindow mainWindow) {
+    public CutListPanel(boolean haveBackground, ChangeAttributeListener listener, ChangeCutListener changeCutListener, MainWindow mainWindow) {
         super(haveBackground);
         this.mainWindow = mainWindow;
         this.listener = listener;
+        this.cutListener = changeCutListener;
         this.init();
-        setCutList(this.mainWindow.getController().getCutListDTO());
-    }
-
-    /**
-     * Change the cutList, with a new list of CutDTO, and updates the UI
-     *
-     * @param newCuts list of new CutDTO
-     */
-    public void setCutList(List<CutDTO> newCuts) {
-        this.cuts = newCuts;
-        updateCutBoxes();
+        update();
     }
 
     /**
      * Updates the UI of the CutList based on the stored CutDTO
      */
-    private void updateCutBoxes() {
+    public void update(){
+        this.cuts = mainWindow.getController().getCutListDTO();
         this.cutBoxes = new ArrayList<CutBox>();
         for (int i = 0; i < cuts.size(); i++) {
             CutDTO cut = cuts.get(i);
-            CutBox temp = new CutBox(cut, i, this, mainWindow);
+            CutBox temp = new CutBox(cut, i, this, this.cutListener, mainWindow);
             this.cutBoxes.add(temp);
         }
         panel.removeAll();
         for (CutBox cutBox : this.cutBoxes) {
             this.panel.add(cutBox.getPanel());
         }
+
+        this.revalidate();
+        this.repaint();
     }
 
     /**
@@ -95,7 +95,7 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
         this.setupHeader("Coupes", scrollPane);
         panel.setAlignmentX(0);
         scrollPane.setAlignmentX(0);
-        updateCutBoxes();
+        update();
     }
 
     /**
@@ -119,5 +119,21 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
         Optional<CutDTO> cut = mainWindow.getController().findSpecificCut(c.getCutUUID());
         cut.ifPresent(c::updatePanel);
 
+        listener.modifiedAttributeEventOccured(event);
+
+    }
+
+    /**
+     * Find a cutbox with a specific ID
+     * @param id id to search with
+     * @return Optional<CutBox> : CutBox if found, null if not found
+     */
+    public Optional<CutBox> getCutBoxWithId(UUID id){
+        for (CutBox c : this.cutBoxes){
+            if(c.getCutUUID() == id){
+                return Optional.of(c);
+            }
+        }
+        return Optional.empty();
     }
 }

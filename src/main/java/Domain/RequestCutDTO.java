@@ -16,9 +16,9 @@ public class RequestCutDTO {
     private final List<VertexDTO> points;
     private final CutType type;
     private final int bitLocation;
-    private final float depth;
+    private final double depth;
 
-    public RequestCutDTO(List<VertexDTO> points, CutType type, int bitLocation, float depth) {
+    public RequestCutDTO(List<VertexDTO> points, CutType type, int bitLocation, double depth) {
         this.points = points;
         this.type = type;
         this.bitLocation = bitLocation;
@@ -37,7 +37,7 @@ public class RequestCutDTO {
         return bitLocation;
     }
 
-    public float getDepth() {
+    public double getDepth() {
         return depth;
     }
 }
