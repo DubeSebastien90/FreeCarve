@@ -5,8 +5,9 @@ import Domain.CutType;
 import Domain.RequestCutDTO;
 import Domain.ThirdDimension.VertexDTO;
 import UI.MainWindow;
-import UI.SubWindows.Rendering2DWindow;
+import UI.Display2D.Rendering2DWindow;
 import UI.Widgets.PersoPoint;
+import com.sun.tools.javac.Main;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -24,16 +25,19 @@ public class DrawParrallelCut extends DrawCutWrapper {
     private Color strokeColor = Color.RED;
     private float strokeWidth = 3.0f;
     private Stroke stroke;
+    private MainWindow mainWindow;
 
-    public DrawParrallelCut(CutType type, Rendering2DWindow renderer){
+    public DrawParrallelCut(CutType type, Rendering2DWindow renderer, MainWindow mainWindow){
         this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>());
         this.stroke = new BasicStroke(strokeWidth);
+        this.mainWindow = mainWindow;
         this.update(renderer);
     }
 
-    public DrawParrallelCut(CutDTO cut, Rendering2DWindow renderer){
+    public DrawParrallelCut(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow){
         this.cut = cut;
         this.stroke = new BasicStroke(strokeWidth);
+        this.mainWindow =mainWindow;
         this.update(renderer);
     }
 
@@ -73,7 +77,7 @@ public class DrawParrallelCut extends DrawCutWrapper {
 
     private Optional<UUID> createCut() {
         RequestCutDTO rq = new RequestCutDTO(this.cut.getPoints(), this.cut.getCutType(), this.cut.getBitIndex(), this.cut.getDepth());
-        return MainWindow.INSTANCE.getController().requestCut(rq);
+        return mainWindow.getController().requestCut(rq);
     }
 
     @Override

@@ -71,7 +71,7 @@ public class Rendering2DWindow extends JPanel {
      * @param mainWindow The main window to get the controller
      */
 
-    public Rendering2DWindow(MainWindow mainWindow, ChangeAttributeListener listener, ChangeCutListener cutListener) {
+    public Rendering2DWindow(MainWindow mainWindow, ChangeAttributeListener listener, ChangeCutListener changeCutListener) {
         super();
         this.mainWindow = mainWindow;
         this.changeCutListener = changeCutListener;
@@ -93,7 +93,7 @@ public class Rendering2DWindow extends JPanel {
     }
 
     public void updateCuts(){
-        this.cutWrappers = DrawCutWrapper.createListDrawCutWrapper(mainWindow.getController().getCutListDTO(), this);
+        this.cutWrappers = DrawCutWrapper.createListDrawCutWrapper(mainWindow.getController().getCutListDTO(), this, mainWindow);
         this.repaint();
 
     }
@@ -472,7 +472,7 @@ public class Rendering2DWindow extends JPanel {
         double radius = 25;
         PersoPoint p = new PersoPoint(mmMousePt.getX(), mmMousePt.getY(), radius, true, Color.GREEN);
         cutPoints.add(p);
-        currentDrawingCut = DrawCutWrapper.createEmptyWrapper(type, this);
+        currentDrawingCut = DrawCutWrapper.createEmptyWrapper(type, this, mainWindow);
         activateCutListener();
     }
 

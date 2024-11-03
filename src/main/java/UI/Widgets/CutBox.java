@@ -66,7 +66,7 @@ public class CutBox implements Attributable {
      * @param index    index of the cut
      * @param listener reference to the parent listener
      */
-    public CutBox(CutDTO cutDTO, int index, ChangeAttributeListener listener, MainWindow mainWindow, ChangeCutListener cutListener) {
+    public CutBox(CutDTO cutDTO, int index, ChangeAttributeListener listener,  ChangeCutListener cutListener, MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         this.cut = cutDTO;
         this.index = index;

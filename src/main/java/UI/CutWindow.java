@@ -109,8 +109,8 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
      * Initiates all of the {@code CutWindow} components
      */
     private void init(MainWindow mainWindow) {
-        panel1 = new Rendering2DWindow(mainWindow, this);
-        rendering2DWindow = new Rendering2DWindow(mainWindow, this);
+        panel1 = new Rendering2DWindow(mainWindow, this, this);
+        rendering2DWindow = new Rendering2DWindow(mainWindow, this, this);
         panel1 = rendering2DWindow;
 
         attributePanel = new AttributePanel(true);

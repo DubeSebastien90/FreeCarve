@@ -42,7 +42,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
      */
     public ConfigChoiceWindow(MainWindow mainWindow) {
         this.setLayout(new GridBagLayout());
-        rend = new Rendering2DWindow(mainWindow, this);
+        rend = new Rendering2DWindow(mainWindow, this, this);
         bitWindow = new BitSelectionPanel(this, mainWindow);
         attributePanel = new AttributePanel(true);
         setFocusable(true);

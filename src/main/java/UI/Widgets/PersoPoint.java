@@ -1,6 +1,6 @@
 package UI.Widgets;
 
-import UI.SubWindows.Rendering2DWindow;
+import UI.Display2D.Rendering2DWindow;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -104,7 +104,7 @@ public class PersoPoint {
     }
 
     public void drawMM(Graphics2D graphics2D, Rendering2DWindow renderer){
-        Point temp = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
+        Point2D temp = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
         double radiusPixel = renderer.scaleMMToPixel(this.radius);
         graphics2D.setColor(this.color);
         graphics2D.fillOval((int) (temp.getX()  - this.getRadius()/2.0), ((int) (temp.getY() - this.getRadius()/2.0)),
@@ -112,9 +112,9 @@ public class PersoPoint {
     }
 
     public void drawLineMM(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint to){
-        Point temp1 = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
-        Point temp2 = renderer.mmTopixel(new Point2D.Double(to.locationX, to.locationY));
-        graphics2D.drawLine(temp1.x, temp1.y, temp2.x, temp2.y);
+        Point2D temp1 = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
+        Point2D temp2 = renderer.mmTopixel(new Point2D.Double(to.locationX, to.locationY));
+        graphics2D.drawLine((int) temp1.getX(), (int) temp1.getY(), (int) temp2.getX(), (int) temp2.getY());
     }
 
     /**
