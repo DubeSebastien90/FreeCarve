@@ -334,6 +334,7 @@ public class Rendering2DWindow extends JPanel {
         afficheur.drawPoints(graphics2D);
         afficheur.drawGrid(graphics2D);
         afficheur.drawCuts(graphics2D, this, drawing);
+        afficheur.drawGrid(graphics2D);
     }
 
     /**
