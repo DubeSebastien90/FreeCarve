@@ -58,7 +58,7 @@ public class Rendering2DWindow extends JPanel {
         mmMousePt = new Point(0, 0);
         offsetY = 100;
         offsetX = 100;
-        mainWindow.getController().putGrid(7, 10);
+        mainWindow.getController().putGrid(100, 10);
         addMouseListener();
         addMouseMotionListener();
         addMouseWheelListener();
@@ -291,9 +291,6 @@ public class Rendering2DWindow extends JPanel {
             public void componentResized(ComponentEvent e) {
                 wW = getWidth();
                 wH = getHeight();
-                offsetX = 100;
-                offsetY = 100;
-                zoom = 1;
                 repaint();
             }
         });
@@ -313,6 +310,7 @@ public class Rendering2DWindow extends JPanel {
         afficheur.drawRectangle(graphics2D);
         afficheur.drawMousePos(graphics2D);
         afficheur.drawPoints(graphics2D);
+        afficheur.drawGrid(graphics2D);
     }
 
     /**
@@ -344,23 +342,6 @@ public class Rendering2DWindow extends JPanel {
         board.setRect(board.getX(), board.getY(), board.getWidth() - deltaWidth, board.getHeight() - deltaHeight);
         mainWindow.getController().resizePanel(board.getWidth(), board.getHeight());
         repaint();
-    }
-
-    /**
-     * Draws the grid on the board
-     *
-     * @param graphics2D the <code>Graphics</code> object to protect
-     */
-    private void drawGrid(Graphics2D graphics2D) {
-        graphics2D.setColor(new Color(0, 0, 0, (int) (Math.min(255, 127 * zoom))));
-        double size = mainWindow.getController().getGrid().getSize();
-        size = size * (zoom);
-        for (double i = areammBoard.get(0); i < areammBoard.get(1); i += size) {
-            graphics2D.drawLine((int) i, areammBoard.get(3).intValue(), (int) i, areammBoard.get(2).intValue());
-        }
-        for (double i = areammBoard.get(3); i > areammBoard.get(2); i -= size) {
-            graphics2D.drawLine(areammBoard.get(0).intValue(), (int) i, areammBoard.get(1).intValue(), (int) i);
-        }
     }
 
     /**
@@ -488,6 +469,22 @@ public class Rendering2DWindow extends JPanel {
     private void clearPoints() {
         points.clear();
         removeMouseMotionListener(scaling.getScaleListener());
+    }
+
+    /**
+     * Getter for main window
+     * @return mainWindow
+     */
+    public MainWindow getMainWindow(){
+        return mainWindow;
+    }
+
+    /**
+     * Getter for areammBoard
+     * @return areammBoard
+     */
+    public ArrayList<Double> getAreammBoard(){
+        return areammBoard;
     }
 
 }
