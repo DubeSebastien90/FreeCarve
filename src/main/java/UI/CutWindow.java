@@ -46,6 +46,10 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         this.init(mainWindow);
     }
 
+    public Rendering2DWindow getRenderer() {
+        return ((Rendering2DWindow) this.panel1);
+    }
+
     /**
      * @return the {@code JSplitPane} container of the {@code CutWindow}
      */

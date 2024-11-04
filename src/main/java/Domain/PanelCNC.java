@@ -16,8 +16,8 @@ import java.util.UUID;
  * @since 2024-10-20
  */
 class PanelCNC {
-    private List<Cut> cutList;
-    private List<ClampZone> clamps;
+    private final List<Cut> cutList;
+    private final List<ClampZone> clamps;
     private final Vertex panelDimension;
     private float depth;
 

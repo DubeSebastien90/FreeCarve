@@ -10,9 +10,6 @@ import UI.SubWindows.BitSelectionPanel;
 import UI.Display2D.Rendering2DWindow;
 
 import UI.Widgets.BigButton;
-import UI.Widgets.BitInfoDisplay;
-import UI.Widgets.ChooseDimension;
-import com.sun.tools.javac.Main;
 
 import UI.Widgets.*;
 
@@ -74,7 +71,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridheight = 1;
-        gbc.weightx = 2;
+        gbc.weightx = 1;
         gbc.weighty = 0.75;
         gbc.fill = GridBagConstraints.BOTH;
         add(rend, gbc);
@@ -83,7 +80,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridheight = 1;
-        gbc.weightx = 2;
+        gbc.weightx = 1;
         gbc.weighty = 0.25;
         gbc.fill = GridBagConstraints.BOTH;
         add(bitWindow, gbc);
@@ -92,7 +89,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridheight = 1;
-        gbc.weightx = 1;
+        gbc.weightx = 2;
         gbc.weighty = 0.75;
         gbc.fill = GridBagConstraints.BOTH;
         add(attributePanel, gbc);
@@ -100,7 +97,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridheight = 1;
-        gbc.weightx = 1;
+        gbc.weightx = 2;
         gbc.weighty = 0.25;
         gbc.fill = GridBagConstraints.BOTH;
         add(nextButton, gbc);
@@ -150,8 +147,6 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
     public void deleteCutEventOccured(ChangeCutEvent event) {
         //todo if usefull to remove a cut in the ConfigChoiceWindow
     }
-
-
     /**
      * Set the selected element of the CutWindow and changed the AttributePanel accordingly
      *

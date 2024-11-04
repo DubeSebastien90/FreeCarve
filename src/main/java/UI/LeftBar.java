@@ -1,5 +1,4 @@
 package UI;
-
 import Domain.CutType;
 
 import javax.swing.*;
@@ -204,7 +203,7 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.SCALE).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CONFIG) {
-                middle.getConfigChoiceWindow().getRendering2DWindow().scale();
+                mainWindow.getMiddleContent().getConfigChoiceWindow().getRendering2DWindow().scale();
             }
         });
     }
@@ -216,9 +215,17 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.SETTING).addActionListener(e -> mainWindow.showOptionWindow());
     }
 
+    /**
+     * Sets the grid related tools to make the grid appear and disappear and make it magnetic.
+     */
     private void gridActionListener() {
-        toolBar.getTool(ToolBar.Tool.GRID).addActionListener(e -> System.out.println("Will activate the grid, or deactivate the grid and the magnet"));
-        toolBar.getTool(ToolBar.Tool.MAGNET).addActionListener(e -> System.out.println("if grid is activate, toggle the magnet"));
+        toolBar.getTool(ToolBar.Tool.GRID).addActionListener(e -> {
+            mainWindow.getController().setGridAvtive(!mainWindow.getController().getGrid().isActive());
+            mainWindow.getMiddleContent().getPanel().repaint();
+        });
+        toolBar.getTool(ToolBar.Tool.MAGNET).addActionListener(e -> {
+            mainWindow.getController().setGridMagnetism(!mainWindow.getController().getGrid().isMagnetic());
+        });
     }
 
     /**

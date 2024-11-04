@@ -22,8 +22,8 @@ public class Controller {
     private final UndoRedo undoRedo;
     private final ProjectState currentProjectState;
     private Grid grid;
-    private Scene scene;
-    private Camera camera;
+    private final Scene scene;
+    private final Camera camera;
 
     public Controller() {
         this(new UndoRedo(), new ProjectState(), new Scene());
@@ -169,7 +169,7 @@ public class Controller {
      * @return the grid
      */
     public GridDTO getGrid() {
-        return new GridDTO(this.grid.getSize(), this.grid.getMagnetPrecision());
+        return new GridDTO(this.grid.getSize(), this.grid.getMagnetPrecision(), grid.isMagnetic(), grid.isActive());
     }
 
     /**
@@ -309,7 +309,17 @@ public class Controller {
         return this.grid.getPointNearAllBorderAndCuts(point, this.currentProjectState.getPanel(), threshold);
     }
 
-    public boolean isPointOnBoard(VertexDTO point){
+    public boolean isPointOnBoard(VertexDTO point) {
         return this.grid.isPointInBoard(point, this.currentProjectState.getPanel());
     }
+
+    public void setGridMagnetism(boolean magnetism) {
+        grid.setMagnetic(magnetism);
+    }
+
+    public void setGridAvtive(boolean active) {
+        grid.setActive(active);
+
+    }
 }
+

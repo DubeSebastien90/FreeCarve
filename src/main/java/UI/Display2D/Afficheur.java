@@ -62,26 +62,27 @@ public class Afficheur {
     }
 
     /**
+     * <<<<<<< HEAD
      * Draws the cuts of on the board
-     *
      */
-    void drawCuts(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing){
-        for(DrawCutWrapper cutWrapper : drawing.getCutWrappers()){
+    void drawCuts(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing) {
+        for (DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
             cutWrapper.draw(graphics2D, renderer);
         }
 
-        if (drawing.getCursorPoint() != null){
+        if (drawing.getCursorPoint() != null) {
             drawing.getCursorPoint().drawMM(graphics2D, renderer);
         }
 
-        if (drawing.getCurrentDrawingCut() != null && drawing.getCursorPoint() != null){
+        if (drawing.getCurrentDrawingCut() != null && drawing.getCursorPoint() != null) {
             drawing.getCurrentDrawingCut().drawWhileChanging(graphics2D, renderer, drawing.getCursorPoint());
         }
     }
 
 
-
     /**
+     * =======
+     * >>>>>>> ff140ea (grid button and same rendering2dWindow)
      * Draws the grid on the board
      *
      * @param graphics2D the <code>Graphics</code> object to protect

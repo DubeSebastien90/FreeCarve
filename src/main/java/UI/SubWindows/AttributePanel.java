@@ -17,8 +17,6 @@ import java.awt.*;
 
 public class AttributePanel extends BasicWindow{
     private JPanel panel;
-    private JScrollPane scrollPane;
-    private GridBagLayout layout;
 
     /**
      * Constructor of the parent {@code BasicWindow}
@@ -68,8 +66,8 @@ public class AttributePanel extends BasicWindow{
      */
     private void init(){
         panel = new JPanel();
-        layout = new GridBagLayout();
-        scrollPane = new JScrollPane(panel);
+        GridBagLayout layout = new GridBagLayout();
+        JScrollPane scrollPane = new JScrollPane(panel);
         this.setupHeader("Attributs", scrollPane);
         panel.setLayout(layout);
         panel.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),

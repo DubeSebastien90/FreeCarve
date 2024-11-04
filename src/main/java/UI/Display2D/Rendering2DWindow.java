@@ -27,25 +27,28 @@ import java.util.ArrayList;
  * @since 2024-10-22
  */
 public class Rendering2DWindow extends JPanel {
-    private final Rectangle2D board = new Rectangle2D.Double(0, 0, 1219.2, 914.4);
+
+    private Rectangle2D board = new Rectangle2D.Double(0, 0, 1219.2, 914.4);
     private Point2D mousePt = new Point2D.Double(0, 0);
     private final Point2D fakeMousePt = new Point2D.Double(0, 0);
     private double offsetX = 100;
     private double offsetY = 100;
     private double zoom = 1;
-    private Point2D mmMousePt;
+    private final Point2D mmMousePt;
     private double prevZoom;
     private int wW;
     private int wH;
     private ChangeCutListener changeCutListener;
     private final ChangeAttributeListener changeAttributeListener;
     private final MainWindow mainWindow;
-    ArrayList<Double> areammBoard = new ArrayList<>();
+    private final ArrayList<Double> areammBoard = new ArrayList<>();
+
     private boolean draggingAPoint = false;
     private final ArrayList<PersoPoint> points = new ArrayList<>();
     private final Afficheur afficheur;
     private final Scaling scaling;
     private final Drawing drawing;
+
 
     /**
      * Constructor for Renderinf2DWIndow
@@ -63,7 +66,7 @@ public class Rendering2DWindow extends JPanel {
         mmMousePt = new Point2D.Double(0, 0);
         offsetY = 100;
         offsetX = 100;
-        mainWindow.getController().putGrid(100, 10);
+        mainWindow.getController().putGrid(70, 5);
         addMouseListener();
         addMouseMotionListener();
         addMouseWheelListener();
@@ -215,6 +218,21 @@ public class Rendering2DWindow extends JPanel {
         this.draggingAPoint = draggingAPoint;
     }
 
+    public MainWindow getMainWindow() {
+        return this.mainWindow;
+    }
+
+    public void setAll(Rendering2DWindow rendering2DWindow) {
+        this.board = rendering2DWindow.getBoard();
+        this.offsetX = rendering2DWindow.getOffsetX();
+        this.offsetY = rendering2DWindow.getOffsetY();
+        this.zoom = rendering2DWindow.getZoom();
+    }
+
+    public ArrayList<Double> getAreammBoard() {
+        return areammBoard;
+    }
+
     /**
      * Initiates the basic mouse listener for when the mouse is pressed.
      */
@@ -285,6 +303,16 @@ public class Rendering2DWindow extends JPanel {
                     mmMousePt.setLocation((mousePt.getX() - (offsetX * zoom)) / zoom, ((-1 * (mousePt.getY() - wH)) - (offsetY * zoom)) / zoom);
                     repaint();
                 }
+                GridDTO grid = mainWindow.getController().getGrid();
+                if (grid.isMagnetic() && grid.isActive()) {
+                    Point2D newPoint = getMagnetisedPos(e.getPoint());
+                    try {
+                        Robot robot = new Robot();
+                        robot.mouseMove(((int) (getLocationOnScreen().getX() + newPoint.getX())), ((int) (getLocationOnScreen().getY() + newPoint.getY())));
+                    } catch (AWTException r) {
+                        r.printStackTrace();
+                    }
+                }
             }
 
         });
@@ -332,8 +360,10 @@ public class Rendering2DWindow extends JPanel {
         afficheur.drawRectangle(graphics2D);
         afficheur.drawMousePos(graphics2D);
         afficheur.drawPoints(graphics2D);
-        afficheur.drawGrid(graphics2D);
         afficheur.drawCuts(graphics2D, this, drawing);
+        if (mainWindow.getController().getGrid().isActive()) {
+            afficheur.drawGrid(graphics2D);
+        }
     }
 
 
@@ -511,22 +541,6 @@ public class Rendering2DWindow extends JPanel {
     private void clearPoints() {
         points.clear();
         removeMouseMotionListener(scaling.getScaleListener());
-    }
-
-    /**
-     * Getter for main window
-     * @return mainWindow
-     */
-    public MainWindow getMainWindow(){
-        return mainWindow;
-    }
-
-    /**
-     * Getter for areammBoard
-     * @return areammBoard
-     */
-    public ArrayList<Double> getAreammBoard(){
-        return areammBoard;
     }
 
 

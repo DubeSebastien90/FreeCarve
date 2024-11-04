@@ -11,7 +11,7 @@ import java.awt.event.MouseMotionListener;
 public class Scaling {
     private MouseMotionListener scaleListener;
     private final Rendering2DWindow rend;
-    private ChooseDimension chooseDimension;
+    private final ChooseDimension chooseDimension;
 
     /**
      * Construcs a new Scaling object

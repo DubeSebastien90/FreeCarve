@@ -1,9 +1,6 @@
 package UI;
 
 import Domain.Controller;
-import Domain.CutType;
-import Domain.RequestCutDTO;
-import Domain.ThirdDimension.VertexDTO;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import java.awt.*;
@@ -37,7 +34,6 @@ public class MainWindow {
     private LeftBar leftBar;
     private MiddleContent middleContent;
     private Controller controller;
-
 
     /**
      * Starts the {@code MainWindow} by making it's {@code JFrame} visible

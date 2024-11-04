@@ -1,7 +1,6 @@
 package UI.SubWindows;
 
 import Domain.BitDTO;
-import UI.ConfigChoiceWindow;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.MainWindow;
