@@ -5,7 +5,6 @@ import UI.Widgets.PersoPoint;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 
 public class Afficheur {
 
@@ -76,24 +75,6 @@ public class Afficheur {
 
         if (drawing.getCurrentDrawingCut() != null && drawing.getCursorPoint() != null){
             drawing.getCurrentDrawingCut().beingDrawned(graphics2D, renderer, drawing.getCursorPoint());
-        }
-    }
-
-    /**
-     * Draws the grid on the board
-     *
-     * @param graphics2D the <code>Graphics</code> object to protect
-     */
-    void drawGrid(Graphics2D graphics2D) {
-        graphics2D.setColor(new Color(0, 0, 0, (int) (Math.min(255, 127 * rend.getZoom()))));
-        double size = rend.getMainWindow().getController().getGrid().getSize();
-        size = size * (rend.getZoom());
-        ArrayList<Double> areammBoard = rend.getAreammBoard();
-        for (double i = areammBoard.get(0); i < areammBoard.get(1); i += size) {
-            graphics2D.drawLine((int) i, areammBoard.get(3).intValue(), (int) i, areammBoard.get(2).intValue());
-        }
-        for (double i = areammBoard.get(3); i > areammBoard.get(2); i -= size) {
-            graphics2D.drawLine(areammBoard.get(0).intValue(), (int) i, areammBoard.get(1).intValue(), (int) i);
         }
     }
 
