@@ -337,7 +337,6 @@ public class Drawing {
                     {
                         boolean isOver = currentDrawingCut.addPoint(renderer, new PersoPoint(currentDrawingCut.getCursorPoint()));
                         if(isOver){
-                            System.out.println("Cut over");
                             Optional<UUID> id = currentDrawingCut.end();
                             if(id.isPresent()){
                                 renderer.getChangeCutListener().addCutEventOccured(new ChangeCutEvent(renderer, id.get()));
@@ -355,7 +354,6 @@ public class Drawing {
      * Activates the cutListener so that the board reacts when a cut is being made
      */
     private void activateCutListener(){
-        System.out.println("Cut activated");
         renderer.addMouseMotionListener(cutListener);
         renderer.addMouseListener(cutMouseClickListener);
         currentDrawingCut.createCursorPoint(this.renderer);
@@ -365,7 +363,6 @@ public class Drawing {
      * Deactivate the cutListener
      */
     private void deactivateCutListener(){
-        System.out.println("Cut deactivated");
         renderer.removeMouseMotionListener(cutListener);
         renderer.removeMouseListener(cutMouseClickListener);
         currentDrawingCut.destroyCursorPoint();

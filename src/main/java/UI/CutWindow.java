@@ -84,7 +84,6 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
 
     @Override
     public void addCutEventOccured(ChangeCutEvent event){
-        System.out.println("Added cut!");
         this.cutListPanel.update();
         Optional<CutBox> cutBox = this.cutListPanel.getCutBoxWithId(event.getCutId());
         if(cutBox.isPresent()){
@@ -96,7 +95,6 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
 
     @Override
     public void deleteCutEventOccured(ChangeCutEvent event) {
-        System.out.println("DELETED");
         mainWindow.getController().removeCut(event.getCutId());
         if (event.getSource() == this.selectedAttributable) {// this means it's the same object, so the attributable will be delete
             this.attributePanel.updateAttribute(null);

@@ -42,9 +42,6 @@ public class DrawCutHorizontal extends  DrawCutWrapper{
         this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
-        for (PersoPoint point : this.points){ // drawing the points
-            point.drawMM(graphics2D, renderer);
-        }
 
         for (int i =0; i < points.size()-1; i++){
             points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), this.strokeWidth);
@@ -53,6 +50,10 @@ public class DrawCutHorizontal extends  DrawCutWrapper{
         graphics2D.setColor(cursor.getColor());
         if (!points.isEmpty()){
             points.getLast().drawLineMM(graphics2D, renderer, cursor, this.strokeWidth);
+        }
+
+        for (PersoPoint point : this.points){ // drawing the points
+            point.drawMM(graphics2D, renderer);
         }
     }
 
