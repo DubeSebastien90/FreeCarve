@@ -118,26 +118,6 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
             }
         });
 
-//        for (int i = 0; i < bitWindow.getBitList().length; i++) {
-//            JToggleButton bit = bitWindow.getBitList()[i];
-//            int finalI = i;
-//            bit.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    GridBagConstraints gbc = new GridBagConstraints();
-//                    gbc.gridy = 1;
-//                    attributeWindow.add(new JLabel(bit.getText()), gbc);
-//                    for (int j = 0; j < bitWindow.getBitList().length; j++) {
-//                        bitWindow.getBitList()[j].setSelected(finalI == j);
-//                    }
-//                    attributeWindow.removeAll();
-//                    attributeWindow.repaint();
-//                    BitInfoDisplay bitInfo = new BitInfoDisplay(mainWindow.getController().getBitsDTO()[finalI], true, ConfigChoiceWindow.this);
-//                    attributeWindow.add(bitInfo, gbc);
-//                    selectedBit = finalI;
-//                }
-//            });
-//        }
     }
 
     /**
