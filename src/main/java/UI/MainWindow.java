@@ -73,23 +73,6 @@ public class MainWindow {
     private void init() {
         this.controller = new Controller();
 
-        // TEST DU CONTROLLEUR - A ENLEVER
-        ArrayList<VertexDTO> tempPoints = new ArrayList<VertexDTO>();
-        tempPoints.add(new VertexDTO(0, 0, 0));
-        tempPoints.add(new VertexDTO(100, 24, 0));
-
-        ArrayList<VertexDTO> tempPoints2 = new ArrayList<VertexDTO>();
-        tempPoints2.add(new VertexDTO(78, 89, 0));
-        tempPoints2.add(new VertexDTO(199, 50, 90));
-
-        controller.requestCut(new RequestCutDTO(tempPoints, CutType.L_SHAPE,
-                0, 1.0f));
-        controller.requestCut(new RequestCutDTO(tempPoints2, CutType.RECTANGULAR,
-                11, 34.0f));
-
-        //FIN TEST DU CONTROLLEUR - A ENLEVER
-
-
         ToolTipManager.sharedInstance().setInitialDelay(1000);
         frame = new JFrame();
         uiConfig = UIConfig.INSTANCE;
