@@ -1,5 +1,6 @@
 package UI.Display2D;
 
+import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
@@ -59,6 +60,26 @@ public class Afficheur {
             graphics2D.drawString(displayposX + "; " + displayposY, 20, 20);
         }
     }
+
+    /**
+     * Draws the cuts of on the board
+     *
+     */
+    void drawCuts(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing){
+        for(DrawCutWrapper cutWrapper : drawing.getCutWrappers()){
+            cutWrapper.draw(graphics2D, renderer);
+        }
+
+        if (drawing.getCursorPoint() != null){
+            drawing.getCursorPoint().drawMM(graphics2D, renderer);
+        }
+
+        if (drawing.getCurrentDrawingCut() != null && drawing.getCursorPoint() != null){
+            drawing.getCurrentDrawingCut().beingDrawned(graphics2D, renderer, drawing.getCursorPoint());
+        }
+    }
+
+
 
     /**
      * Draws the grid on the board

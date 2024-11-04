@@ -1,13 +1,13 @@
-package UI.Widgets.DrawCutWrapper;
+package UI.Display2D.DrawCutWrapper;
 
 import Domain.CutDTO;
 import Domain.CutType;
 import Domain.RequestCutDTO;
 import Domain.ThirdDimension.VertexDTO;
+import UI.Display2D.Drawing;
 import UI.MainWindow;
 import UI.Display2D.Rendering2DWindow;
 import UI.Widgets.PersoPoint;
-import com.sun.tools.javac.Main;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -19,59 +19,43 @@ import java.util.List;
  * Simple straight line drawing class that inherits from DrawCutWrapper
  * @author Louis-Etienne Messier
  */
-public class DrawParrallelCut extends DrawCutWrapper {
+public class DrawFreeCut extends DrawCutWrapper {
 
-    private CutDTO cut;
-    private Color strokeColor = Color.RED;
-    private float strokeWidth = 3.0f;
-    private Stroke stroke;
-    private MainWindow mainWindow;
 
-    public DrawParrallelCut(CutType type, Rendering2DWindow renderer, MainWindow mainWindow){
-        this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>());
-        this.stroke = new BasicStroke(strokeWidth);
-        this.mainWindow = mainWindow;
-        this.update(renderer);
+    public DrawFreeCut(CutType type, Rendering2DWindow renderer, MainWindow mainWindow){
+        super(type, renderer, mainWindow);
     }
 
-    public DrawParrallelCut(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow){
-        this.cut = cut;
-        this.stroke = new BasicStroke(strokeWidth);
-        this.mainWindow =mainWindow;
-        this.update(renderer);
+    public DrawFreeCut(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow){
+        super(cut, renderer, mainWindow);
     }
 
-    private void update(Rendering2DWindow renderer){
-        this.points = new ArrayList<>();
-        for (VertexDTO point : cut.getPoints()){
-            PersoPoint p1 = new PersoPoint(point.getX(), point.getY(), 10.0f, true, strokeColor);
-            points.add(p1);
-        }
-    }
 
     @Override
     public void draw(Graphics2D graphics2D, Rendering2DWindow renderer)  {
         this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
-        this.points.getFirst().drawLineMM(graphics2D, renderer, this.points.getLast());
+        this.points.getFirst().drawLineMM(graphics2D, renderer, this.points.getLast(), this.strokeWidth);
     }
 
     @Override
     public void beingDrawned(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
         this.update(renderer);
+        graphics2D.setStroke(stroke);
+        graphics2D.setColor(this.strokeColor);
         graphics2D.setColor(this.strokeColor);
         for (PersoPoint point : this.points){ // drawing the points
             point.drawMM(graphics2D, renderer);
         }
 
         for (int i =0; i < points.size()-1; i++){
-            points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1));
+            points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), this.strokeWidth);
         }
 
         graphics2D.setColor(cursor.getColor());
         if (!points.isEmpty()){
-            points.getLast().drawLineMM(graphics2D, renderer, cursor);
+            points.getLast().drawLineMM(graphics2D, renderer, cursor, this.strokeWidth);
         }
     }
 
@@ -95,17 +79,19 @@ public class DrawParrallelCut extends DrawCutWrapper {
     }
 
     @Override
-    public CutType getCutType() {
-        return this.cut.getCutType();
-    }
-
-
-    public Color getStrokeColor() {
-        return strokeColor;
-    }
-
-    public void setStrokeColor(Color strokeColor) {
-        this.strokeColor = strokeColor;
+    public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
+        PersoPoint p = this.cursorPoint;
+        p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
+        Optional<PersoPoint> closestPoint = drawing.getPointNearAllLine(p);
+        if(closestPoint.isPresent()){
+            p.movePoint(closestPoint.get().getLocationX(),closestPoint.get().getLocationY());
+            p.setColor(Color.GREEN);
+            p.setValid(PersoPoint.Valid.VALID);
+        }
+        else{
+            p.setColor(Color.RED);
+            p.setValid(PersoPoint.Valid.NOT_VALID);
+        }
     }
 
 

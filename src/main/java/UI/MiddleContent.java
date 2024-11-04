@@ -127,14 +127,14 @@ public class MiddleContent {
                 configChoiceWindow.requestFocusInWindow();
                 db.setButtonBlueToIndex(1);
                 lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.SCALE, Tool.FORBIDDEN});
-                lb.getToolBar().disableTools(new Tool[]{Tool.COUPEL, Tool.GRID, Tool.MAGNET, Tool.MODIFY, Tool.PARALLEL, Tool.RECTANGLE, Tool.TRASH, Tool.RETAILLER});
+                lb.getToolBar().disableTools(new Tool[]{Tool.COUPEL, Tool.GRID, Tool.MAGNET, Tool.FREE_LINE, Tool.VERTICAL, Tool.HORIZONTAL, Tool.RECTANGLE, Tool.TRASH, Tool.RETAILLER});
             }
             case CUT -> {
                 ((CardLayout) panel.getLayout()).show(panel, "cut");
                 current = MiddleWindowType.CUT;
                 cutWindow.getScreen(1).requestFocusInWindow();
                 db.setButtonBlueToIndex(2);
-                lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.COUPEL, Tool.GRID, Tool.MAGNET, Tool.MODIFY, Tool.PARALLEL, Tool.RECTANGLE, Tool.RETAILLER});
+                lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.COUPEL, Tool.GRID, Tool.MAGNET, Tool.FREE_LINE, Tool.VERTICAL, Tool.HORIZONTAL, Tool.RECTANGLE, Tool.RETAILLER});
                 lb.getToolBar().disableTools(new Tool[]{Tool.SCALE, Tool.FORBIDDEN, Tool.TRASH});
             }
             case SIMULATION -> {

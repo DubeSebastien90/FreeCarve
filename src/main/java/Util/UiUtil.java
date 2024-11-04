@@ -1,13 +1,11 @@
 package Util;
 
 import Domain.CutType;
-import UI.UIConfig;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.ui.FlatButtonBorder;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Path2D;
 
 /**
  * This class regroup useful function for the UI of the application
@@ -73,6 +71,14 @@ public class UiUtil {
         return button;
     }
 
+
+    /**
+     * Get an icon with an icon name
+     * @param iconName naem of the icon
+     * @param size size of the icon
+     * @param iconColor color of the icon
+     * @return FlatSVGIcon
+     */
     public static FlatSVGIcon getIcon(String iconName, int size, Color iconColor){
         FlatSVGIcon icon = new FlatSVGIcon("UI/" + iconName + ".svg", size, size);
         FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter(color -> iconColor);
@@ -114,8 +120,9 @@ public class UiUtil {
                 case BORDER -> "forbidden";
                 case L_SHAPE -> "coupeL";
                 case RECTANGULAR -> "rectangle";
-                case LINE_HORIZONTAL -> "parallel";
-                case LINE_VERTICAL -> "parallel";
+                case LINE_HORIZONTAL -> "horizontal";
+                case LINE_VERTICAL -> "vertical";
+                case LINE_FREE -> "modify";
                 default -> "forbidden"; // default in case of bad name of icon
             };
     }
@@ -131,8 +138,9 @@ public class UiUtil {
             case BORDER -> iconName = "Interdit";
             case L_SHAPE -> iconName = "Coupe en L";
             case RECTANGULAR -> iconName = "Rectangle";
-            case LINE_HORIZONTAL -> iconName = "Ligne Horizontale";
-            case LINE_VERTICAL -> iconName = "Ligne Verticale";
+            case LINE_HORIZONTAL -> iconName = "Ligne horizontale";
+            case LINE_VERTICAL -> iconName = "Ligne verticale";
+            case LINE_FREE -> iconName = "Coupe droite libre";
             default -> iconName = "Interdit"; // default in case of bad name of icon
         }
         return iconName;

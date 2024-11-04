@@ -5,5 +5,6 @@ public enum CutType {
     LINE_HORIZONTAL,
     BORDER,
     L_SHAPE,
-    LINE_VERTICAL
+    LINE_VERTICAL,
+    LINE_FREE,
 }

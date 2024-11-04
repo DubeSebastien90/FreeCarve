@@ -4,12 +4,9 @@ import Domain.CutType;
 
 import Domain.GridDTO;
 import UI.Events.ChangeAttributeListener;
-import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
-import UI.Events.ChangeAttributeListener;
 import UI.LeftBar;
 import UI.MainWindow;
-import UI.Widgets.DrawCutWrapper.DrawCutWrapper;
 import UI.Widgets.PersoPoint;
 import Util.UiUtil;
 
@@ -19,11 +16,7 @@ import java.awt.event.*;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * The {@code Rendering2DWindow} class is used to construct and display a board which represent the panel on the CNC. This
@@ -45,25 +38,14 @@ public class Rendering2DWindow extends JPanel {
     private int wW;
     private int wH;
     private ChangeCutListener changeCutListener;
+    private final ChangeAttributeListener changeAttributeListener;
     private final MainWindow mainWindow;
     ArrayList<Double> areammBoard = new ArrayList<>();
     private boolean draggingAPoint = false;
     private final ArrayList<PersoPoint> points = new ArrayList<>();
     private final Afficheur afficheur;
     private final Scaling scaling;
-    private final ChangeAttributeListener listener;
-
-    // Attributes for cut
-    private MouseMotionListener cutListener;
-    private MouseListener cutMouseClickListener;
-    private List<DrawCutWrapper> cutWrappers;
-    private ArrayList<PersoPoint> cutPoints;
-    private DrawCutWrapper currentDrawingCut;
-    private boolean isCutValid;
-
-    public Point2D.Double getMmMousePt() {
-        return (Point2D.Double) mmMousePt;
-    }
+    private final Drawing drawing;
 
     /**
      * Constructor for Renderinf2DWIndow
@@ -71,10 +53,11 @@ public class Rendering2DWindow extends JPanel {
      * @param mainWindow The main window to get the controller
      */
 
-    public Rendering2DWindow(MainWindow mainWindow, ChangeAttributeListener listener, ChangeCutListener changeCutListener) {
+    public Rendering2DWindow(MainWindow mainWindow, ChangeAttributeListener changeAttributeListener, ChangeCutListener changeCutListener) {
         super();
         this.mainWindow = mainWindow;
         this.changeCutListener = changeCutListener;
+        this.changeAttributeListener = changeAttributeListener;
         zoom = 1;
         mousePt = new Point(0, 0);
         mmMousePt = new Point2D.Double(0, 0);
@@ -85,17 +68,15 @@ public class Rendering2DWindow extends JPanel {
         addMouseMotionListener();
         addMouseWheelListener();
         addComponentListener();
-        initCutMouseListener();
-        updateCuts();
         afficheur = new Afficheur(this);
         scaling = new Scaling(this);
-        this.listener = listener;
+        drawing = new Drawing(this, mainWindow);
+        drawing.updateCuts();
     }
 
-    public void updateCuts(){
-        this.cutWrappers = DrawCutWrapper.createListDrawCutWrapper(mainWindow.getController().getCutListDTO(), this, mainWindow);
-        this.repaint();
 
+    public Point2D.Double getMmMousePt() {
+        return (Point2D.Double) mmMousePt;
     }
 
     /**
@@ -103,8 +84,12 @@ public class Rendering2DWindow extends JPanel {
      *
      * @return the ChangeAttributeListener instance.
      */
-    public ChangeAttributeListener getListener() {
-        return listener;
+    public ChangeAttributeListener getAttributeListener() {
+        return changeAttributeListener;
+    }
+
+    public ChangeCutListener getChangeCutListener(){
+        return this.changeCutListener;
     }
 
     /**
@@ -212,6 +197,13 @@ public class Rendering2DWindow extends JPanel {
      */
     public ArrayList<PersoPoint> getPoints() {
         return points;
+    }
+
+    /**
+     * Update the cuts of the Drawing class
+     */
+    public void updateCuts(){
+        this.drawing.updateCuts();
     }
 
     /**
@@ -341,26 +333,8 @@ public class Rendering2DWindow extends JPanel {
         afficheur.drawMousePos(graphics2D);
         afficheur.drawPoints(graphics2D);
         afficheur.drawGrid(graphics2D);
+        afficheur.drawCuts(graphics2D, this, drawing);
     }
-
-    /**
-     * Draws the cuts on this JPanel.
-     * @param graphics2D A graphics object which is painted on the JPanel.
-     */
-    private void drawCuts(Graphics2D graphics2D){
-        for(DrawCutWrapper cutWrapper : cutWrappers){
-            cutWrapper.draw(graphics2D, this);
-        }
-
-        for (PersoPoint point : cutPoints){
-            point.drawMM(graphics2D, this);
-        }
-
-        if (currentDrawingCut != null && !cutPoints.isEmpty()){
-            currentDrawingCut.beingDrawned(graphics2D, this, cutPoints.getLast());
-        }
-    }
-
 
     /**
      * @return True if the mouse is on the board.
@@ -424,6 +398,11 @@ public class Rendering2DWindow extends JPanel {
         return new Point2D.Double(((mmPt.getX() * zoom) + (offsetX * zoom)), ((-1 * ((mmPt.getY() * zoom) + (offsetY * zoom))) + wH));
     }
 
+    /**
+     * Scales a mm measure into pixel according to the zoom
+     * @param mm measure
+     * @return pixel measure with zoom
+     */
     public double scaleMMToPixel(double mm){
         return mm / zoom;
     }
@@ -444,7 +423,7 @@ public class Rendering2DWindow extends JPanel {
      * @param rectangle the board
      * @return A rectangle object shaped with the zoom
      */
-    Rectangle2D convertBoardTomm(Rectangle2D rectangle) {
+    public Rectangle2D convertBoardTomm(Rectangle2D rectangle) {
         areammBoard.clear();
         areammBoard.add((rectangle.getX() + offsetX) * zoom);
         areammBoard.add((rectangle.getX() + offsetX) * zoom + (rectangle.getWidth() * zoom));
@@ -462,18 +441,6 @@ public class Rendering2DWindow extends JPanel {
         points.clear();
         zoom -= zoom / zoomFactor;
         repaint();
-    }
-
-    /**
-     * Initializes the cut event
-     */
-    public void cut(CutType type){
-        deactivateCutListener();
-        double radius = 25;
-        PersoPoint p = new PersoPoint(mmMousePt.getX(), mmMousePt.getY(), radius, true, Color.GREEN);
-        cutPoints.add(p);
-        currentDrawingCut = DrawCutWrapper.createEmptyWrapper(type, this, mainWindow);
-        activateCutListener();
     }
 
     /**
@@ -511,116 +478,6 @@ public class Rendering2DWindow extends JPanel {
     }
 
     /**
-     * Check if a given point is nearby a line defined with two points, returns a the point on the line closest if exists
-     * @param point point to check
-     * @param linePoint1 first point of the line
-     * @param linePoint2 second point of the line
-     * @return Optional<Point> : null if not close to the threshold, a Point if close enough
-     */
-    private Optional<PersoPoint> isPointNearLine(PersoPoint point, PersoPoint linePoint1, PersoPoint linePoint2){
-        double projector_t_numerator = (point.getLocationX() - linePoint1.getLocationX()) * (linePoint2.getLocationX() - linePoint1.getLocationX()) +
-                (point.getLocationY() - linePoint1.getLocationY()) * (linePoint2.getLocationY() - linePoint1.getLocationY());
-        double projector_t_denominator = Math.pow(linePoint2.getLocationX() - linePoint1.getLocationX(), 2) +
-                Math.pow(linePoint2.getLocationY() - linePoint1.getLocationY(), 2);
-
-        double t = projector_t_numerator / projector_t_denominator;
-
-        PersoPoint closestPoint;
-
-        double distance = 0;
-        if (t >= 0 && t <= 1){
-            double numerator =  Math.abs((linePoint2.getLocationY() - linePoint1.getLocationY()) * point.getLocationX() -
-                    (linePoint2.getLocationX() - linePoint1.getLocationX()) * point.getLocationY() +
-                    linePoint2.getLocationX() * linePoint1.getLocationY() - linePoint2.getLocationY()*linePoint1.getLocationX());
-            double denominator = Math.sqrt(Math.pow(linePoint2.getLocationY() - linePoint1.getLocationY(), 2) +
-                    Math.pow(linePoint2.getLocationX() - linePoint1.getLocationX(), 2));
-
-            distance = numerator/denominator;
-
-            closestPoint = new PersoPoint( (linePoint1.getLocationX() + t * (linePoint2.getLocationX() - linePoint1.getLocationX())),
-                     (linePoint1.getLocationY() + t * (linePoint2.getLocationY() - linePoint1.getLocationY())), 10.0f, true);
-        }
-        else if (t < 0){ // outside of range of the line but closest to first point
-            distance = Math.sqrt(Math.pow(point.getLocationX() - linePoint1.getLocationX(), 2) +
-                    Math.pow(point.getLocationY() - linePoint1.getLocationY(), 2));
-            closestPoint = new PersoPoint(linePoint1.getLocationX(),  linePoint1.getLocationY(), 10.0f, true);
-        }
-        else{ // outside of range of the line but closest to second point
-            distance = Math.sqrt(Math.pow(point.getLocationX() - linePoint2.getLocationX(), 2) +
-                    Math.pow(point.getLocationY() - linePoint2.getLocationY(), 2));
-            closestPoint = new PersoPoint( linePoint2.getLocationX(),  linePoint2.getLocationY(), 10.0f, true);
-        }
-
-        double threshold = 10;
-        threshold = scaleMMToPixel(threshold);
-
-        if (distance < threshold){
-            return Optional.of(closestPoint);
-        }
-
-        return Optional.empty();
-    }
-
-
-    /**
-     * Returns an optionnal closest point to the lines based on a reference point
-     * @param point reference point
-     * @return Optional<Point> : null if no line nearby, the closest Point if point nearby
-     */
-    private Optional<PersoPoint> getPointNearAllLine(PersoPoint point){
-        PersoPoint closestPoint = null;
-
-        // Testing all of the cuts
-        for (DrawCutWrapper wrapper : this.cutWrappers){
-            List<PersoPoint> points = wrapper.getPersoPoints();
-            if (points.size() > 1){
-                for(int i=0; i < points.size()-1; i++){
-                    Optional<PersoPoint> checkPoint = isPointNearLine(point, points.get(i), points.get(i + 1));
-                    if(checkPoint.isPresent()) {
-                        if (closestPoint == null){
-                           closestPoint = checkPoint.get();
-                        }
-                        else if (checkPoint.get().getDistance() < closestPoint.getDistance()){
-                            closestPoint = checkPoint.get();
-                        }
-                    }
-                }
-            }
-        }
-
-        // Testing the border
-        List<PersoPoint> borderList = new ArrayList<>();
-        Rectangle2D resizedBoard = this.board;
-        PersoPoint borderP1 = new PersoPoint(resizedBoard.getX(), resizedBoard.getY(), 10.0f, true);
-        PersoPoint borderP2 = new PersoPoint(resizedBoard.getX() + resizedBoard.getWidth(), resizedBoard.getY(), 10.0f, true);
-        PersoPoint borderP3 = new PersoPoint(resizedBoard.getWidth() + resizedBoard.getX(), resizedBoard.getHeight() + resizedBoard.getY(), 10.0f, true);
-        PersoPoint borderP4 = new PersoPoint(resizedBoard.getX(), resizedBoard.getY()+ resizedBoard.getHeight(), 10.0f, true);
-        PersoPoint borderP5 = new PersoPoint(resizedBoard.getX(), resizedBoard.getY(), 10.0f, true);
-        borderList.add(borderP1); borderList.add(borderP2); borderList.add(borderP3); borderList.add(borderP4); borderList.add(borderP5);
-        for(int i=0; i < borderList.size()-1; i++){
-            if(i == 3){
-
-            }
-            Optional<PersoPoint> checkPoint = isPointNearLine(point, borderList.get(i), borderList.get(i + 1));
-
-            if(checkPoint.isPresent()) {
-                if (closestPoint == null){
-                    closestPoint = checkPoint.get();
-                }
-                else if (checkPoint.get().getDistance() < closestPoint.getDistance()){
-                    closestPoint = checkPoint.get();
-                }
-            }
-        }
-
-        if (closestPoint != null){
-            return Optional.of(closestPoint);
-        }
-        return Optional.empty();
-
-    }
-
-    /**
      * Initializes the points and behavior for resizing the board.
      * This includes setting up the necessary components and defining how
      * the board responds to resize events.
@@ -632,61 +489,12 @@ public class Rendering2DWindow extends JPanel {
     }
 
     /**
-     * Set up a mouse motion listener to handle cut events on the board
+     * Initialize the cut behaviours by setting up the Drawing class
+     * @param type type of the cut initialized
      */
-    private void initCutMouseListener(){
-        cutPoints = new ArrayList<>();
-        cutListener = new MouseAdapter() {
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                super.mouseMoved(e);
-                if(!cutPoints.isEmpty()){
-                    PersoPoint p = cutPoints.getLast();
-                    p.movePoint(mmMousePt.getX(), mmMousePt.getY());
-                    Optional<PersoPoint> closestPoint = getPointNearAllLine(p);
-                    if(closestPoint.isPresent()){
-                        p.movePoint(closestPoint.get().getLocationX(),closestPoint.get().getLocationY());
-                        p.setColor(Color.GREEN);
-                        p.setValid(PersoPoint.Valid.VALID);
-                    }
-                    else{
-                        p.setColor(Color.RED);
-                        p.setValid(PersoPoint.Valid.NOT_VALID);
-                    }
-                    repaint();
-                }
-            }
-
-            @Override
-            public void mouseDragged(MouseEvent e){
-            }
-        };
-
-        cutMouseClickListener = new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (!cutPoints.isEmpty()) {
-                    if (cutPoints.getLast().getValid() == PersoPoint.Valid.NOT_VALID)  // Cut invalid
-                    {
-                        deactivateCutListener();
-                    }
-                    else // Cut valid
-                    {
-                        boolean isOver = currentDrawingCut.addPoint(Rendering2DWindow.this, new PersoPoint(cutPoints.getLast()));
-                        if(isOver){
-                            System.out.println("Cut over");
-                            Optional<UUID> id = currentDrawingCut.end();
-                            if(id.isPresent()){
-                                changeCutListener.addCutEventOccured(new ChangeCutEvent(Rendering2DWindow.this, id.get()));
-                                updateCuts();
-                                cut(currentDrawingCut.getCutType());
-                            }
-                        }
-                    }
-                }
-            }
-        };
+    public void cut(CutType type){
+        drawing.initCut(type);
+        repaint();
     }
 
     /**
@@ -694,27 +502,6 @@ public class Rendering2DWindow extends JPanel {
      */
     private void activateScaleListener() {
         addMouseMotionListener(scaling.getScaleListener());
-    }
-
-    /**
-     * Activates the cutListener so that the board reacts when a cut is being made
-     */
-    private void activateCutListener(){
-        System.out.println("Cut activated");
-        addMouseMotionListener(cutListener);
-        addMouseListener(cutMouseClickListener);
-    }
-
-    /**
-     * Deactivate the CutListener
-     */
-    private void deactivateCutListener(){
-        System.out.println("Cut deactivated");
-        currentDrawingCut = null;
-        removeMouseMotionListener(cutListener);
-        removeMouseListener(cutMouseClickListener);
-        cutPoints.clear();
-        repaint();
     }
 
     /**

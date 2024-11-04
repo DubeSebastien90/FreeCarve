@@ -59,26 +59,10 @@ public class PersoPoint {
         this.valid = Valid.NOT_VALID;
     }
 
-    public PersoPoint(Point point, double radius, boolean filled, Color color){
-        this.locationX = point.getX();
-        this.locationY = point.getY();
-        this.radius = radius;
-        this.filled = filled;
-        this.color = color;
-        this.valid = Valid.NOT_VALID;
-
-    }
-
-    public PersoPoint(Point point){
-        this.locationX = point.getX();
-        this.locationY = point.getY();
-        this.radius = 10.0;
-        this.filled = true;
-        this.color = Color.BLACK;
-        this.valid = Valid.NOT_VALID;
-
-    }
-
+    /**
+     * Copy constructor
+     * @param persoPoint PersoPoint to be copied
+     */
     public PersoPoint(PersoPoint persoPoint){
         this.locationX = persoPoint.locationX;
         this.locationY = persoPoint.locationY;
@@ -88,21 +72,22 @@ public class PersoPoint {
         this.valid = persoPoint.valid;
     }
 
-    public PersoPoint(double x, double y, PersoPoint persoPoint){
-        this.locationX = x;
-        this.locationY = y;
-        this.radius = persoPoint.radius;
-        this.filled = persoPoint.filled;
-        this.color = persoPoint.color;
-        this.valid = persoPoint.valid;
-    }
-
+    /**
+     * Draws the PersoPoint, DOESN'T CONVERT it's coordinate
+     * @param graphics2D
+     * @param renderer
+     */
     public void draw(Graphics2D graphics2D, Rendering2DWindow renderer){
         graphics2D.setColor(this.color);
         graphics2D.fillOval((int) (this.getLocationX()  - this.getRadius()/2.0), ((int) (this.getLocationY() - this.getRadius()/2.0)),
                 ((int) this.getRadius()), ((int) this.getRadius()));
     }
 
+    /**
+     * Draws the PersoPoint, converts it's coordinate from MM to pixels
+     * @param graphics2D
+     * @param renderer
+     */
     public void drawMM(Graphics2D graphics2D, Rendering2DWindow renderer){
         Point2D temp = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
         double radiusPixel = renderer.scaleMMToPixel(this.radius);
@@ -111,10 +96,18 @@ public class PersoPoint {
                 ((int) this.getRadius()), ((int) this.getRadius()));
     }
 
-    public void drawLineMM(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint to){
+    /**
+     * Draws a line between this PersoPoint and another, converts MM to pixel first
+     * @param graphics2D
+     * @param renderer
+     * @param to PersoPoint to draw to
+     * @param lineWidth size of the line
+     */
+    public void drawLineMM(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint to, double lineWidth){
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(to.locationX, to.locationY));
-        graphics2D.drawLine((int) temp1.getX(), (int) temp1.getY(), (int) temp2.getX(), (int) temp2.getY());
+        graphics2D.drawLine((int) ( temp1.getX() - lineWidth/4), (int) (temp1.getY()),
+                (int) (temp2.getX() - lineWidth/4), (int) (temp2.getY()));
     }
 
     /**
@@ -214,7 +207,21 @@ public class PersoPoint {
         this.valid = valid;
     }
 
+    /**
+     * Get the distance from origin
+     * @return value of distance from origin
+     */
     public double getDistance(){
         return Math.sqrt(locationX * locationX + locationY * locationY);
+    }
+
+    /**
+     * Get distance from point
+     * @param other other point
+     * @return the distance this point and the other
+     */
+    public double getDistance(PersoPoint other){
+        return  Math.sqrt(Math.pow(locationX - other.getLocationX(), 2) +
+                Math.pow(locationY - other.getLocationY(), 2));
     }
 }

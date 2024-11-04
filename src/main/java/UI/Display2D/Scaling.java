@@ -43,7 +43,7 @@ public class Scaling {
         rend.getPoints().add(p1);
         rend.getPoints().add(p);
         rend.getPoints().add(p2);
-        rend.getListener().changeAttributeEventOccurred(new ChangeAttributeEvent(rend, chooseDimension));
+        rend.getAttributeListener().changeAttributeEventOccurred(new ChangeAttributeEvent(rend, chooseDimension));
     }
 
     /**

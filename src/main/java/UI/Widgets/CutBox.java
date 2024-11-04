@@ -277,8 +277,8 @@ public class CutBox implements Attributable {
                 cutListener.deleteCutEventOccured(new ChangeCutEvent(CutBox.this, cut.getId()));
             }
         });
-        moveUpButton = UiUtil.createSVGButton("leftArrow", true, UIConfig.INSTANCE.getToolIconSize());
-        moveDownButton = UiUtil.createSVGButton("leftArrow", true, UIConfig.INSTANCE.getToolIconSize());
+        moveUpButton = UiUtil.createSVGButton("upArrow", true, UIConfig.INSTANCE.getToolIconSize());
+        moveDownButton = UiUtil.createSVGButton("downArrow", true, UIConfig.INSTANCE.getToolIconSize());
 
         gc.gridx = 0;
         gc.gridy = 0;
@@ -286,7 +286,6 @@ public class CutBox implements Attributable {
         gc.gridheight = 1;
         gc.weightx = 0.0;
         gc.anchor = GridBagConstraints.CENTER;
-        gc.insets = new Insets(0, 0, 0, 5);
         gc.insets = new Insets(0,0,0,0);
         panel.add(numberLabel, gc);
 
@@ -301,7 +300,7 @@ public class CutBox implements Attributable {
 
         gc.gridx = 1;
         gc.gridy = 0;
-        gc.gridwidth = 3;
+        gc.gridwidth = 1;
         gc.gridheight = 1;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.HORIZONTAL;
@@ -313,7 +312,7 @@ public class CutBox implements Attributable {
 
         gc.gridx = 1;
         gc.gridy = 1;
-        gc.gridwidth = 3;
+        gc.gridwidth = 1;
         gc.gridheight = 1;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.HORIZONTAL;
@@ -322,20 +321,39 @@ public class CutBox implements Attributable {
         panel.add(coordinateLabel2, gc);
 
         gc.gridx = 2; gc.gridy = 0;
-        gc.gridwidth =1; gc.gridheight=1;
+        gc.gridwidth =1; gc.gridheight=2;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
-        gc.insets = new Insets(0,0,0,0);
+        gc.insets = new Insets(0,0,0,UIConfig.INSTANCE.getDefaultPadding());
         panel.add(bitnameLabel, gc);
 
-        gc.gridx = 2; gc.gridy = 1;
+        gc.gridx = 3; gc.gridy = 0;
         gc.gridwidth = 1; gc.gridheight=1;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
+        gc.weighty = 1.0f;
         gc.insets = new Insets(0,0,0,0);
         panel.add(deleteButton);
+
+        gc.gridx = 3; gc.gridy = 1;
+        gc.gridwidth = 1; gc.gridheight=1;
+        gc.anchor = GridBagConstraints.CENTER;
+        gc.fill = GridBagConstraints.NONE;
+        gc.weightx = 0.0;
+        gc.weighty = 1.0f;
+        gc.insets = new Insets(0,0,0,0);
+        panel.add(moveDownButton);
+
+        gc.gridx = 3; gc.gridy = 1;
+        gc.gridwidth = 1; gc.gridheight=1;
+        gc.anchor = GridBagConstraints.CENTER;
+        gc.fill = GridBagConstraints.NONE;
+        gc.weightx = 0.0;
+        gc.weighty = 1.0f;
+        gc.insets = new Insets(0,0,0,0);
+        panel.add(moveUpButton);
 
 
     }
