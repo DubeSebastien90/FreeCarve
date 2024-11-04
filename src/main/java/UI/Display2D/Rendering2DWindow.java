@@ -63,7 +63,7 @@ public class Rendering2DWindow extends JPanel {
         mmMousePt = new Point2D.Double(0, 0);
         offsetY = 100;
         offsetX = 100;
-        mainWindow.getController().putGrid(7, 10);
+        mainWindow.getController().putGrid(100, 10);
         addMouseListener();
         addMouseMotionListener();
         addMouseWheelListener();
@@ -313,9 +313,6 @@ public class Rendering2DWindow extends JPanel {
             public void componentResized(ComponentEvent e) {
                 wW = getWidth();
                 wH = getHeight();
-                offsetX = 100;
-                offsetY = 100;
-                zoom = 1;
                 repaint();
             }
         });
@@ -515,6 +512,23 @@ public class Rendering2DWindow extends JPanel {
         points.clear();
         removeMouseMotionListener(scaling.getScaleListener());
     }
+
+    /**
+     * Getter for main window
+     * @return mainWindow
+     */
+    public MainWindow getMainWindow(){
+        return mainWindow;
+    }
+
+    /**
+     * Getter for areammBoard
+     * @return areammBoard
+     */
+    public ArrayList<Double> getAreammBoard(){
+        return areammBoard;
+    }
+
 
 }
 

@@ -5,6 +5,7 @@ import UI.Widgets.PersoPoint;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 public class Afficheur {
 
@@ -89,7 +90,7 @@ public class Afficheur {
         graphics2D.setColor(new Color(0, 0, 0, (int) (Math.min(255, 127 * rend.getZoom()))));
         double size = rend.getMainWindow().getController().getGrid().getSize();
         size = size * (rend.getZoom());
-        ArrayList<Double>  areammBoard = rend.getAreammBoard();
+        ArrayList<Double> areammBoard = rend.getAreammBoard();
         for (double i = areammBoard.get(0); i < areammBoard.get(1); i += size) {
             graphics2D.drawLine((int) i, areammBoard.get(3).intValue(), (int) i, areammBoard.get(2).intValue());
         }
