@@ -20,7 +20,7 @@ projet, on peut cliquer sur le bouton "Nouveau projet". <br>
 On arrive alors dans le menu de configuration. Un panneau est créé par défaut et affiché. Pour
 vérifier les dimensions de ce panneau, il suffit de cliquer dessus. Les informations s'afficheront sur la
 droite dans le panneau des attributs. On pourra alors modifier la taille du panneau dans les champs prévus
-à cet effet.
+à cet effet. N'hésitez pas à zoomer ou dézoomer ou déplacer le panneau afin d'ajuster la visualisation comme souhaitée.
 
 ### Création d'une coupe
 Pour créer une coupe, il faut être dans la fenêtre de coupe. Pour passer à cette fenêtre, il suffit de cliquer sur le bouton
@@ -31,9 +31,10 @@ Pour créer une coupe verticale, on sélectionne l'icone avec la barre verticale
 <br>
 Le curseur devient alors un cercle rouge. Pour créer la coupe, on doit positionner son curseur au point de départ sur la planche.
 Si le curseur devient vert, cela signifie que la coupe est possible. On doit alors cliquer pour sélectionner le premier point.
-On peut alors glisser la souris verticalement pour définir la taille de la coupe. Si la ligne est verte, cela signifie que la coupe
+On peut alors déplacer la souris verticalement pour définir la taille de la coupe. Si la ligne est verte, cela signifie que la coupe
 est correcte. Si la ligne est jaune, cela signifie que le point final sera accroché à la ligne la plus près. Si le curseur
 est rouge, la coupe n'est pas possible.
+Pour confirmer l'ajout de la coupe, il suffit de cliquer une seconde fois. Il est à noter que si la coupe est invalide (rouge), elle ne sera pas ajoutée et il faudra resélectionner l'outil de coupe verticale.
 
 ### Modification de la coupe
 Pour modifier une coupe, il faut sélectionner la coupe dans la fenêtre situé en bas à droite nommé coupe. Après avoir sélectionné la coupe,
