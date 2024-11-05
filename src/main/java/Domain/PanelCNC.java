@@ -2,6 +2,7 @@ package Domain;
 
 import Domain.ThirdDimension.VertexDTO;
 import Domain.ThirdDimension.Vertex;
+import Domain.Util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,15 @@ class PanelCNC {
     private final List<ClampZone> clamps;
     private final Vertex panelDimension;
     private float depth;
+    private static final int MAX_FEET_WIDTH = 10;
+    private static final int MAX_FEET_HEIGHT = 5;
+
 
     /**
      * Constructs a new {@code PanelCNC} with no {@code Cut} or {@code ClampZone} on it. The dimensions of the board are determined by the {@code Vertex} passed as parameter.
      *
      * @param panelDimension dimensions of the board
-     * @param depth depth of the board
+     * @param depth          depth of the board
      */
     PanelCNC(Vertex panelDimension, float depth) {
         this.cutList = new ArrayList<>();
@@ -67,14 +71,15 @@ class PanelCNC {
 
     /**
      * Modify an existing cut, check if the new cut params are valid. If so the UUID is returned
+     *
      * @param cut The new CutDTO need to be valid
      * @return Optional<UUID>
      */
-    Optional<UUID> modifyCut(CutDTO cut){
+    Optional<UUID> modifyCut(CutDTO cut) {
         //todo tester si la  modification de la coupe est bonne ou non!!
-        for (int i =0; i < this.cutList.size(); i++){
+        for (int i = 0; i < this.cutList.size(); i++) {
 
-            if (cut.getId() == this.cutList.get(i).getId()){
+            if (cut.getId() == this.cutList.get(i).getId()) {
                 this.cutList.set(i, new Cut(cut));
                 return Optional.of(cut.getId());
             }
@@ -162,7 +167,8 @@ class PanelCNC {
      * @param height The new height of the board.
      */
     void resize(double width, double height) {
-        //todo
+        panelDimension.setX(Math.min(Math.max(0, width), Util.feet_to_mm(MAX_FEET_WIDTH)));
+        panelDimension.setY(Math.min(Math.max(0, height), Util.feet_to_mm(MAX_FEET_HEIGHT)));
     }
 
     /**

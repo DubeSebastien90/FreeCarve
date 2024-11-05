@@ -6,6 +6,7 @@ import UI.Widgets.PersoPoint;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 
 public class Scaling {
@@ -21,6 +22,7 @@ public class Scaling {
     public Scaling(Rendering2DWindow rend) {
         this.rend = rend;
         chooseDimension = new ChooseDimension(rend);
+        addMouseMotionListener();
         initScalePointMouseListener();
     }
 
@@ -66,9 +68,9 @@ public class Scaling {
                     rend.getPoints().get(0).movePoint(offsetX * zoom - p.getRadius() / 2, p.getLocationY());
                     rend.getPoints().get(2).movePoint(p.getLocationX(), rend.getHeight() - offsetY * zoom - p.getRadius() / 2);
                     rend.resizePanneau(newWidth, newHeight);
-                    double displayWidth = Math.round(newWidth * 100);
+                    double displayWidth = Math.round(rend.getBoard().getWidth() * 100);
                     displayWidth = displayWidth / 100;
-                    double displayHeight = Math.round(newHeight * 100);
+                    double displayHeight = Math.round(rend.getBoard().getHeight() * 100);
                     displayHeight = displayHeight / 100;
                     chooseDimension.getxTextField().setText("" + displayWidth);
                     chooseDimension.getyTextField().setText("" + displayHeight);
@@ -77,4 +79,20 @@ public class Scaling {
             }
         };
     }
+
+    private void addMouseMotionListener() {
+        rend.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (rend.isDraggingAPoint()) {
+                    super.mouseDragged(e);
+                    for (PersoPoint point : rend.getPoints()) {
+                        point.movePoint((rend.getOffsetX() + rend.getBoard().getWidth()) * rend.getZoom(), (rend.getHeight() - (rend.getOffsetY() + rend.getBoard().getHeight()) * rend.getZoom()));
+                        rend.repaint();
+                    }
+                }
+            }
+        });
+    }
+
 }

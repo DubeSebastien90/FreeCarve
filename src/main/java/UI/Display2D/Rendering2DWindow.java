@@ -3,6 +3,7 @@ package UI.Display2D;
 import Domain.CutType;
 
 import Domain.GridDTO;
+import Domain.ThirdDimension.VertexDTO;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
 import UI.LeftBar;
@@ -287,12 +288,6 @@ public class Rendering2DWindow extends JPanel {
                     mousePt = e.getPoint();
                     points.clear();
                     repaint();
-                } else {
-                    super.mouseDragged(e);
-                    for (PersoPoint point : points) {
-                        point.movePoint(Math.max(offsetX * zoom, e.getX()), Math.min(getHeight() - offsetY * zoom, e.getY()));
-                        repaint();
-                    }
                 }
             }
 
@@ -302,16 +297,6 @@ public class Rendering2DWindow extends JPanel {
                     mousePt = e.getPoint();
                     mmMousePt.setLocation((mousePt.getX() - (offsetX * zoom)) / zoom, ((-1 * (mousePt.getY() - wH)) - (offsetY * zoom)) / zoom);
                     repaint();
-                }
-                GridDTO grid = mainWindow.getController().getGrid();
-                if (grid.isMagnetic() && grid.isActive()) {
-                    Point2D newPoint = getMagnetisedPos(e.getPoint());
-                    try {
-                        Robot robot = new Robot();
-                        robot.mouseMove(((int) (getLocationOnScreen().getX() + newPoint.getX())), ((int) (getLocationOnScreen().getY() + newPoint.getY())));
-                    } catch (AWTException r) {
-                        r.printStackTrace();
-                    }
                 }
             }
 
@@ -381,8 +366,9 @@ public class Rendering2DWindow extends JPanel {
      * @param newHeight The new height.
      */
     public void resizePanneau(double newWidth, double newHeight) {
-        board.setRect(board.getX(), board.getY(), newWidth, newHeight);
-        mainWindow.getController().resizePanel(board.getWidth(), board.getHeight());
+        mainWindow.getController().resizePanel(newWidth, newHeight);
+        VertexDTO dim = mainWindow.getController().getPanelDTO().getPanelDimension();
+        board.setRect(board.getX(), board.getY(), dim.getX(), dim.getY());
         repaint();
     }
 

@@ -15,7 +15,7 @@ public class Util {
      * @param inch The value in inches
      * @return The value in millimeters
      */
-    public double inch_to_mm(double inch) {
+    public static double inch_to_mm(double inch) {
         return inch * 25.4;
     }
 
@@ -25,7 +25,18 @@ public class Util {
      * @param mm The value in millimeters
      * @return The value in inches
      */
-    public double mm_to_inch(double mm) {
+    public static double mm_to_inch(double mm) {
         return mm / 25.4;
+    }
+
+
+    /**
+     * Converts a value in feet to a value in millimeters
+     *
+     * @param feet The value in feet
+     * @return The value in millimeters
+     */
+    public static double feet_to_mm(double feet) {
+        return inch_to_mm(12 * feet);
     }
 }
