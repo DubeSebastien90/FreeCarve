@@ -527,6 +527,12 @@ public class Rendering2DWindow extends JPanel {
         return mainWindow.getController().isPointOnPanel(new VertexDTO(mmMousePt.getX(), mmMousePt.getY(), 0));
     }
 
+    /**
+     * @return the Drawing instance
+     */
+    public Drawing getDrawing(){
+        return this.drawing;
+    }
 
 }
 

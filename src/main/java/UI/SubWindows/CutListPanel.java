@@ -52,7 +52,7 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
         this.cutBoxes = new ArrayList<CutBox>();
         for (int i = 0; i < cuts.size(); i++) {
             CutDTO cut = cuts.get(i);
-            CutBox temp = new CutBox(cut, i, this, this.cutListener, mainWindow);
+            CutBox temp = new CutBox(cut, i, this.cutListener, mainWindow, this);
             this.cutBoxes.add(temp);
         }
         panel.removeAll();
@@ -69,7 +69,9 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
      */
     public void refreshSelectedCutBox() {
         for (CutBox cb : cutBoxes) {
-            cb.deselect();
+            if(cb.getState() == CutBox.CutBoxState.SELECTED){
+                cb.deselect();
+            }
         }
     }
 
@@ -100,10 +102,9 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
      * Set the selectedAttributable of the parent window. The point is to simply pass down that information to the parent
      */
     @Override
-    public void changeAttributeEventOccurred(ChangeAttributeEvent e) {
-        refreshSelectedCutBox();
-        ChangeAttributeEvent event = new ChangeAttributeEvent(this, e.getAttribute());
-        listener.changeAttributeEventOccurred(event);
+    public void changeAttributeEventOccurred(ChangeAttributeEvent event) {
+        ChangeAttributeEvent e = new ChangeAttributeEvent(this, event.getAttribute());
+        listener.changeAttributeEventOccurred(e);
     }
 
     /**

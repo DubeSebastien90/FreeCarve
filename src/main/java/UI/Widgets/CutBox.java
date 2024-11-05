@@ -10,6 +10,7 @@ import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
+import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
 import Common.UiUtil;
 import com.formdev.flatlaf.ui.FlatButtonBorder;
@@ -45,13 +46,19 @@ public class CutBox implements Attributable {
     private JLabel numberLabel;
     private JLabel imageLabel;
     private int index;
-    private boolean selected;
-    private ChangeAttributeListener listener;
     private final MainWindow mainWindow;
     private ChangeCutListener cutListener;
     private JButton deleteButton;
     private JButton moveUpButton;
     private JButton moveDownButton;
+    private CutBoxState cutBoxState = CutBoxState.NOT_SELECTED;
+    private CutListPanel cutListPanel;
+
+    public enum CutBoxState{
+        SELECTED,
+        NOT_SELECTED,
+        HOVER,
+    }
 
     // Attributes variables
     BasicWindow attributeContainer;
@@ -68,12 +75,22 @@ public class CutBox implements Attributable {
      * @param index    index of the cut
      * @param listener reference to the parent listener
      */
-    public CutBox(CutDTO cutDTO, int index, ChangeAttributeListener listener, ChangeCutListener cutListener, MainWindow mainWindow) {
+
+    /**
+     * Basic constructor of {@code CutBox}, initiates all of the UI values and get a reference to the CutList parent
+     *
+     * @param cutDTO   cut that CutBox will present
+     * @param index    index of the cut     *
+     * @param cutListener cutListener, parent of the CutBox
+     * @param mainWindow reference to the mainWindow
+     * @param cutListPanel refernce to the cutListPanel
+     */
+    public CutBox(CutDTO cutDTO, int index, ChangeCutListener cutListener, MainWindow mainWindow, CutListPanel cutListPanel) {
         this.mainWindow = mainWindow;
         this.cut = cutDTO;
         this.index = index;
-        this.listener = listener;
         this.cutListener = cutListener;
+        this.cutListPanel = cutListPanel;
         this.init();
         this.init_attribute();
         this.setBackgroundToIndex();
@@ -171,17 +188,49 @@ public class CutBox implements Attributable {
      * Select this CutBox
      */
     public void select(){
-        selected = true;
-        panel.setBackground(UIManager.getColor("Button.green"));
+        setState(CutBoxState.SELECTED);
+    }
+
+    /**
+     * Set the state of the CutBox and it's underlying parameters
+     * @param state
+     */
+    public void setState(CutBoxState state){
+
+        if(state == CutBoxState.NOT_SELECTED)
+        {
+            cutBoxState = state;
+            ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
+            this.cutListPanel.changeAttributeEventOccurred(event);
+            setBackgroundToIndex();
+        }
+        else if(state == CutBoxState.SELECTED){
+            this.cutListPanel.refreshSelectedCutBox();
+            cutBoxState = state;
+            ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
+            this.cutListPanel.changeAttributeEventOccurred(event);
+            panel.setBackground(UIManager.getColor("Button.green"));
+        }
+        else if(state == CutBoxState.HOVER){
+            cutBoxState = state;
+            ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
+            this.cutListPanel.changeAttributeEventOccurred(event);
+            panel.setBackground(UIManager.getColor("Button.blue"));
+        }
+    }
+
+    /**
+     * @return the current state of the CutBox
+     */
+    public CutBoxState getState(){
+        return this.cutBoxState;
     }
 
     /**
      * Set the CutBox as non-selected
      */
     public void deselect() {
-        this.selected = false;
-        setBackgroundToIndex();
-
+        setState(CutBoxState.NOT_SELECTED);
     }
 
     /**
@@ -212,9 +261,13 @@ public class CutBox implements Attributable {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
-                listener.changeAttributeEventOccurred(event);
-                select();
+                if(getState() != CutBoxState.SELECTED){
+                    select();
+                }
+                else{
+                    deselect();
+                }
+
             }
 
             @Override
@@ -229,12 +282,16 @@ public class CutBox implements Attributable {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (!selected) panel.setBackground(UIManager.getColor("Button.blue"));
+                if (getState() != CutBoxState.SELECTED) {
+                    setState(CutBoxState.HOVER);
+                }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (!selected) setBackgroundToIndex();
+                if (getState() != CutBoxState.SELECTED) {
+                    setState(CutBoxState.NOT_SELECTED);
+                }
             }
         });
     }
@@ -362,7 +419,7 @@ public class CutBox implements Attributable {
                 VertexDTO newVertex = new VertexDTO(n.doubleValue(), oldVertex.getY(), oldVertex.getZ());
                 c.getPoints().set(index, newVertex);
                 mainWindow.getController().modifyCut(c);
-                listener.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
             }
         });
         // Listen for changes in the Y field
@@ -375,7 +432,7 @@ public class CutBox implements Attributable {
                 VertexDTO newVertex = new VertexDTO(oldVertex.getX(), n.doubleValue(), oldVertex.getZ());
                 c.getPoints().set(index, newVertex);
                 mainWindow.getController().modifyCut(c);
-                listener.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
             }
         });
     }
@@ -394,7 +451,7 @@ public class CutBox implements Attributable {
                 Number n = (Number) evt.getNewValue();
                 c = new CutDTO(c.getId(), n.doubleValue(), c.getBitIndex(), c.getCutType(), c.getPoints());
                 mainWindow.getController().modifyCut(c);
-                listener.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
             }
         });
     }
@@ -414,7 +471,7 @@ public class CutBox implements Attributable {
                 CutType chosenCutType = CutType.values()[comboBox.getSelectedIndex()];
                 c = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), chosenCutType, c.getPoints());
                 mainWindow.getController().modifyCut(c);
-                listener.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
             }
         });
     }
@@ -436,7 +493,7 @@ public class CutBox implements Attributable {
                 ComboBitItem chosenBit = (ComboBitItem) comboBox.getModel().getSelectedItem();
                 c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints());
                 mainWindow.getController().modifyCut(c);
-                listener.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
             }
         });
     }

@@ -29,6 +29,12 @@ public abstract class DrawCutWrapper {
     protected float strokeWidth = 3.0f;
     protected Stroke stroke;
     protected MainWindow mainWindow;
+    protected DrawCutState state = DrawCutState.NOT_SELECTED;
+    public enum DrawCutState {
+        SELECTED,
+        NOT_SELECTED,
+        HOVER,
+    }
 
     /**
      * Draws the completed cut
@@ -128,6 +134,34 @@ public abstract class DrawCutWrapper {
     }
 
     /**
+     * @return the DrawCutState
+     */
+    public DrawCutState getState() {
+        return this.state;
+    }
+
+    /**
+     * Sets the state and changed the color accordingly
+     *
+     * @param newState the state
+     */
+    public void setState(DrawCutState newState, Rendering2DWindow renderer)
+    {
+        this.state = newState;
+        if(newState == DrawCutState.SELECTED){
+            this.strokeColor = Color.YELLOW;
+        }
+        else if(newState == DrawCutState.HOVER){
+            this.strokeColor = Color.BLUE;
+        }
+        else{
+            this.strokeColor = Color.RED;
+        }
+
+        renderer.repaint();
+    }
+
+    /**
      * @param strokeColor new stroke color
      */
     public void setStrokeColor(Color strokeColor) {
@@ -155,6 +189,13 @@ public abstract class DrawCutWrapper {
      */
     public void destroyCursorPoint(){
         this.cursorPoint = null;
+    }
+
+    /**
+     * @return the CutDTO contained in the wrapper
+     */
+    public CutDTO getCutDTO(){
+        return this.cut;
     }
 
     /**

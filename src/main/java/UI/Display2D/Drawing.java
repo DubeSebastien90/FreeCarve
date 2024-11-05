@@ -7,13 +7,10 @@ import UI.MainWindow;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.Widgets.PersoPoint;
 
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +22,7 @@ import java.util.UUID;
 public class Drawing {
     private MouseMotionListener cutListener;
     private MouseListener cutMouseClickListener;
-    private List<DrawCutWrapper> cutWrappers;
+    private List<DrawCutWrapper> cutWrappers; //todo change to map so that you can retrieve them with ID - for faster usage
     private DrawCutWrapper currentDrawingCut;
     private final Rendering2DWindow renderer;
     private final MainWindow mainWindow;
@@ -116,8 +113,8 @@ public class Drawing {
                         if(isOver){
                             Optional<UUID> id = currentDrawingCut.end();
                             if(id.isPresent()){
-                                renderer.getChangeCutListener().addCutEventOccured(new ChangeCutEvent(renderer, id.get()));
                                 updateCuts();
+                                renderer.getChangeCutListener().addCutEventOccured(new ChangeCutEvent(renderer, id.get()));
                                 initCut(currentDrawingCut.getCutType());
                             }
                         }
@@ -144,6 +141,46 @@ public class Drawing {
         renderer.removeMouseListener(cutMouseClickListener);
         currentDrawingCut.destroyCursorPoint();
         renderer.repaint();
+    }
+
+    public void changeSelectedWrapperById(UUID id){
+
+        for(DrawCutWrapper wrapper : cutWrappers){
+            if(wrapper.getState() == DrawCutWrapper.DrawCutState.SELECTED){
+                wrapper.setState(DrawCutWrapper.DrawCutState.NOT_SELECTED, renderer);
+            }
+        }
+
+        for(DrawCutWrapper wrapper : cutWrappers){
+            if(wrapper.getCutDTO().getId() == id){
+                wrapper.setState(DrawCutWrapper.DrawCutState.SELECTED, renderer);
+            }
+        }
+    }
+
+    public void changeHoverWrapperById(UUID id){
+        for(DrawCutWrapper wrapper : cutWrappers){
+            if(wrapper.getCutDTO().getId() == id){
+                wrapper.setState(DrawCutWrapper.DrawCutState.HOVER, renderer);
+            }
+        }
+    }
+
+    public void changeNotSelectedWrapperById(UUID id){
+        for(DrawCutWrapper wrapper : cutWrappers){
+            if(wrapper.getCutDTO().getId() == id){
+                wrapper.setState(DrawCutWrapper.DrawCutState.NOT_SELECTED, renderer);
+            }
+        }
+    }
+
+    public Optional<DrawCutWrapper> getWrapperById(UUID id){
+        for(DrawCutWrapper wrapper : cutWrappers){
+            if(wrapper.getCutDTO().getId() == id){
+                return Optional.of(wrapper);
+            }
+        }
+        return Optional.empty();
     }
 }
 
