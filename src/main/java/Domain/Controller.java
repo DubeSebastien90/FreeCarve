@@ -29,7 +29,7 @@ public class Controller {
         this(new UndoRedo(), new ProjectState(), new Scene());
     }
 
-    public Controller(UndoRedo undoRedo, ProjectState projectState, Scene scene) {
+    Controller(UndoRedo undoRedo, ProjectState projectState, Scene scene) {
         this.undoRedo = undoRedo;
         this.currentProjectState = projectState;
         this.scene = scene;

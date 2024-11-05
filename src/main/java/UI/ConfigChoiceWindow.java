@@ -2,7 +2,6 @@ package UI;
 
 import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
-import UI.SubWindows.BasicWindow;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.SubWindows.AttributePanel;
@@ -64,6 +63,8 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
      */
     public void init() {
         GridBagConstraints gbc = new GridBagConstraints();
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rend, attributePanel);
+        splitPane.setResizeWeight(.8);
 
         attributePanel.setPreferredSize(new Dimension(0, 0));
 
@@ -71,28 +72,21 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridheight = 1;
-        gbc.weightx = 1;
+        gbc.gridwidth = 2;
+        gbc.weightx = 2;
         gbc.weighty = 0.75;
         gbc.fill = GridBagConstraints.BOTH;
-        add(rend, gbc);
+        add(splitPane, gbc);
 
         gbc.insets = new Insets(5, 0, 0, 10);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridheight = 1;
-        gbc.weightx = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 2;
         gbc.weighty = 0.25;
         gbc.fill = GridBagConstraints.BOTH;
         add(bitWindow, gbc);
-
-        gbc.insets = new Insets(0, 0, 0, 5);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.weightx = 2;
-        gbc.weighty = 0.75;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(attributePanel, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;

@@ -15,7 +15,7 @@ import java.awt.*;
  * @since 2024-10-23
  */
 
-public class AttributePanel extends BasicWindow{
+public class AttributePanel extends BasicWindow {
     private JPanel panel;
 
     /**

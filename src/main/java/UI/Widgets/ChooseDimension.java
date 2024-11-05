@@ -88,7 +88,7 @@ public class ChooseDimension extends BasicWindow implements Attributable {
      */
     @Override
     public JLabel showName() {
-        return new JLabel("Dimensions of the panel");
+        return new JLabel("Dimensions du panneau en mm");
     }
 
     /**
