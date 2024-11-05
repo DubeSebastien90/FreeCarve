@@ -32,7 +32,7 @@ public class Scene {
     public Scene(){
         // Sets the default scene, the car for now
         try {
-            Mesh car = new Mesh(Vertex.zero(), Color.GRAY, "car.stl", 100);
+            Mesh car = new Mesh(Vertex.zero(), Color.GRAY, getClass().getResource("car.stl").getPath(), 100);
             car.setRotationEuler(new Vertex(0, Math.PI/4, 0));
             setMeshes(List.of(car));
         } catch (Exception e){
