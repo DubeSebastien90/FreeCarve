@@ -34,7 +34,7 @@ Si le curseur devient vert, cela signifie que la coupe est possible. On doit alo
 On peut alors déplacer la souris verticalement pour définir la taille de la coupe. Si la ligne est verte, cela signifie que la coupe
 est correcte. Si la ligne est jaune, cela signifie que le point final sera accroché à la ligne la plus près. Si le curseur
 est rouge, la coupe n'est pas possible.
-Pour confirmer l'ajout de la coupe, il suffit de cliquer une seconde fois. Il est à noter que si la coupe est invalide (rouge), elle ne sera pas ajoutée et il faudra resélectionner l'outil de coupe verticale.
+Pour confirmer l'ajout de la coupe, il suffit de cliquer une seconde fois. Il est à noter que si la coupe est invalide, elle ne sera pas ajoutée et il faudra resélectionner l'outil de coupe verticale.
 
 ### Modification de la coupe
 Pour modifier une coupe, il faut sélectionner la coupe dans la fenêtre situé en bas à droite nommé coupe. Après avoir sélectionné la coupe,
