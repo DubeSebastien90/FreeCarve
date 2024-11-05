@@ -16,8 +16,8 @@ de lancer ce fichier pour lancer l'application.
 Une fois l'application lancée, on arrive sur un menu des fichiers. Pour créer un nouveau
 projet, on peut cliquer sur le bouton "Nouveau projet". <br>
 
-### Viualisation du panneau
-On arrive alors dans le menu de configuration. Un panneau est créer par défaut et affiché. Pour
+### Visualisation du panneau
+On arrive alors dans le menu de configuration. Un panneau est créé par défaut et affiché. Pour
 vérifier les dimensions de ce panneau, il suffit de cliquer dessus. Les informations s'afficheront sur la
 droite dans le panneau des attributs. On pourra alors modifier la taille du panneau dans les champs prévus
 à cet effet.
@@ -25,14 +25,14 @@ droite dans le panneau des attributs. On pourra alors modifier la taille du pann
 ### Création d'une coupe
 Pour créer une coupe, il faut être dans la fenêtre de coupe. Pour passer à cette fenêtre, il suffit de cliquer sur le bouton
 suivant situé au bas de l'écran à droite. <br>
-Une fois dans la fenêtre, on doit sélectionner le type de coupe dans la bar d'icon située à droite. <br>
+Une fois dans la fenêtre, on doit sélectionner le type de coupe dans la barre d'icone située à droite. <br>
 Pour créer une coupe verticale, on sélectionne l'icone avec la barre verticale. <br>
 ![img.png](icone_coupe_verticale.png)
 <br>
 Le curseur devient alors un cercle rouge. Pour créer la coupe, on doit positionner son curseur au point de départ sur la planche.
 Si le curseur devient vert, cela signifie que la coupe est possible. On doit alors cliquer pour sélectionner le premier point.
 On peut alors glisser la souris verticalement pour définir la taille de la coupe. Si la ligne est verte, cela signifie que la coupe
-est correcte. Si la ligne est jaune, cela signifie que le point final sera accrocher à la ligne la plus près. Si le curseur
+est correcte. Si la ligne est jaune, cela signifie que le point final sera accroché à la ligne la plus près. Si le curseur
 est rouge, la coupe n'est pas possible.
 
 ### Modification de la coupe
