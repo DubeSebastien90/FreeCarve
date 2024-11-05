@@ -75,7 +75,7 @@ public class Afficheur {
         }
 
         if (drawing.getCurrentDrawingCut() != null && drawing.getCursorPoint() != null){
-            drawing.getCurrentDrawingCut().beingDrawned(graphics2D, renderer, drawing.getCursorPoint());
+            drawing.getCurrentDrawingCut().drawWhileChanging(graphics2D, renderer, drawing.getCursorPoint());
         }
     }
 

@@ -12,8 +12,8 @@ import Domain.ThirdDimension.Vertex;
 class ProjectState {
     private final Bit[] bitList = new Bit[12];
     private PanelCNC panel;
-    private final Vertex defaultPanelDimension = new Vertex(0.9144, 1.2192, 0);
-    private final float defaultPanelDepth = 1.0f;
+    private final Vertex defaultPanelDimension = new Vertex(1219.2,914.4,  0); // dimension in mm
+    private final float defaultPanelDepth = 1.0f; // depth in mm
 
     /**
      * Constructs a default new {@code ProjectState}.

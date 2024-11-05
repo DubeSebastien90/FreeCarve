@@ -21,7 +21,6 @@ import java.util.List;
  */
 public class DrawFreeCut extends DrawCutWrapper {
 
-
     public DrawFreeCut(CutType type, Rendering2DWindow renderer, MainWindow mainWindow){
         super(type, renderer, mainWindow);
     }
@@ -29,7 +28,6 @@ public class DrawFreeCut extends DrawCutWrapper {
     public DrawFreeCut(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow){
         super(cut, renderer, mainWindow);
     }
-
 
     @Override
     public void draw(Graphics2D graphics2D, Rendering2DWindow renderer)  {
@@ -40,7 +38,7 @@ public class DrawFreeCut extends DrawCutWrapper {
     }
 
     @Override
-    public void beingDrawned(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
+    public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
         this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
@@ -84,9 +82,17 @@ public class DrawFreeCut extends DrawCutWrapper {
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
         p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-        Optional<PersoPoint> closestPoint = drawing.getPointNearAllLine(p);
+
+        // For the snap area
+        double threshold = 10;
+        threshold = renderer.scaleMMToPixel(threshold);
+
+        // Get the possible closest point
+        VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+        Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(pointDTO, threshold);
+
         if(closestPoint.isPresent()){
-            p.movePoint(closestPoint.get().getLocationX(),closestPoint.get().getLocationY());
+            p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
             p.setColor(Color.GREEN);
             p.setValid(PersoPoint.Valid.VALID);
         }

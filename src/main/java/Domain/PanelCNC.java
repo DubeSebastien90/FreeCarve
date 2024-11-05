@@ -82,6 +82,39 @@ class PanelCNC {
         return Optional.empty();
     }
 
+    /**
+     * Removes a cut from the current {@code ProjectState} board
+     *
+     * @param id The id of the {@code Cut} the needs to be removed
+     * @return Boolean : true if cut is removed, false if it can't be removed
+     */
+    boolean removeCut(UUID id) {
+        List<Cut> list = getCutList();
+        for(int i=0; i<list.size(); i++){
+            if(list.get(i).getId() == id){
+                list.remove(i);
+                //todo look for potential non removable cut
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Finds a specific cut with id
+     * @param id id of the cut
+     * @return Optional<CutDTO> : CutDTO if found, null if not found
+     */
+    Optional<CutDTO> findSpecificCut(UUID id) {
+        List<CutDTO> cutsDTO = getPanelDTO().getCutsDTO();
+        for (CutDTO c : cutsDTO) {
+            if (c.getId() == id) {
+                return Optional.of(c);
+            }
+        }
+        return Optional.empty();
+    }
+
     List<ClampZone> getClamps() {
         return clamps;
     }
@@ -133,7 +166,7 @@ class PanelCNC {
     }
 
     /**
-     * Calculate all meeting point on the grid that cover the board.
+     * Computeds all meeting point on the grid that cover the board.
      *
      * @param precision The size of each square's side of the grid.
      * @return All the coordinates of the points of the grid.
@@ -154,7 +187,11 @@ class PanelCNC {
         return null;
     }
 
+    /**
+     * @return a DTO version of the Panel
+     */
     public PanelDTO getPanelDTO() {
         return new PanelDTO(this);
     }
+
 }

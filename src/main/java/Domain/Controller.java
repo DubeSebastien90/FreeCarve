@@ -61,16 +61,21 @@ public class Controller {
         return getProjectStateDTO().getPanelDTO();
     }
 
+    /**
+     * Finds a specific cut with id
+     *
+     * @param id id of the cut
+     * @return Optional<CutDTO> : CutDTO if found, null if not found
+     */
     public Optional<CutDTO> findSpecificCut(UUID id) {
-        List<CutDTO> cutsDTO = getProjectStateDTO().getPanelDTO().getCutsDTO();
-        for (CutDTO c : cutsDTO) {
-            if (c.getId() == id) {
-                return Optional.of(c);
-            }
-        }
-        return Optional.empty();
+        return this.currentProjectState.getPanel().findSpecificCut(id);
     }
 
+    /**
+     * Get the CutDTO list of the domain
+     *
+     * @return List<CutDTO> of the cuts in the domain
+     */
     public List<CutDTO> getCutListDTO() {
         return getProjectStateDTO().getPanelDTO().getCutsDTO();
     }
@@ -89,16 +94,10 @@ public class Controller {
      * Removes a cut from the current {@code ProjectState} board
      *
      * @param id The id of the {@code Cut} the needs to be removed
+     * @return Boolean : true if cut is removed, false if it can't be removed
      */
-    public void removeCut(UUID id) {
-        List<Cut> list = this.currentProjectState.getPanel().getCutList();
-        for(int i=0; i<list.size(); i++){
-            if(list.get(i).getId() == id){
-                list.remove(i);
-                //todo look for potential non removable cut
-                return;
-            }
-        }
+    public boolean removeCut(UUID id) {
+        return this.currentProjectState.getPanel().removeCut(id);
     }
 
     /**
@@ -170,7 +169,7 @@ public class Controller {
      * @return the grid
      */
     public GridDTO getGrid() {
-        return new GridDTO(this.grid.getSize(),this.grid.getMagnetPrecision());
+        return new GridDTO(this.grid.getSize(), this.grid.getMagnetPrecision());
     }
 
     /**
@@ -252,7 +251,7 @@ public class Controller {
         return camera.renderImage(image, position);
     }
 
-    public UUID getCameraId(){
+    public UUID getCameraId() {
         return camera.getId();
     }
 
@@ -260,31 +259,57 @@ public class Controller {
      * Rotates the {@code Transform} around the transform's origin as if it were on a gimbal.
      * Mostly meant to be used with the camera, but it is generic to any transform
      *
-     * @param transformId The id of the {@code Transform} to move
+     * @param transformId   The id of the {@code Transform} to move
      * @param XAxisRotation The amount of rotation in rad to apply around the X axis
      * @param YAxisRotation The amount of rotation in rad to apply around the Y axis
-     *
      * @throws InvalidKeyException if the given id does not correspond to a transform
      */
     public void panTransform(UUID transformId, float XAxisRotation, float YAxisRotation) throws InvalidKeyException {
-        if (camera.getId() == transformId){
+        if (camera.getId() == transformId) {
             camera.pan(XAxisRotation, YAxisRotation);
-        }
-        else {
+        } else {
             scene.getMesh(transformId).pan(XAxisRotation, YAxisRotation);
         }
     }
 
     /**
      * Applies a position, rotation, and scale change to the {@code Transform}
-     * @param transformId The id of the {@code Transform} to transform
+     *
+     * @param transformId    The id of the {@code Transform} to transform
      * @param positionChange The delta to apply to the position
      * @param rotationChange The euler angle vector in radians to apply to the rotation
-     * @param scaleChange The scale delta to apply to the scale
-     *
+     * @param scaleChange    The scale delta to apply to the scale
      * @throws InvalidKeyException if the given id does not correspond to a transform
      */
     public void applyTransform(UUID transformId, VertexDTO positionChange, VertexDTO rotationChange, float scaleChange) throws InvalidKeyException {
         scene.applyTransform(transformId, positionChange, rotationChange, scaleChange);
+    }
+
+    /**
+     * Returns an optional closest line point to the board outlines + cuts based on a reference point (cursor)
+     *
+     * @param p1        initial point of the cut
+     * @param cursor    current cursor position
+     * @param threshold threshold of the distance
+     * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
+     */
+    public Optional<VertexDTO> getGridLineNearAllBorderAndCuts(VertexDTO p1, VertexDTO cursor, double threshold) {
+        return this.grid.getLineNearAllBorderAndCuts(p1, cursor, this.currentProjectState.getPanel(), threshold);
+    }
+
+
+    /**
+     * Returns an optionnal closest point to the board outlines + cuts based on a reference point
+     *
+     * @param point     reference point
+     * @param threshold threshold of the distance
+     * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
+     */
+    public Optional<VertexDTO> getGridPointNearAllBorderAndCuts(VertexDTO point, double threshold) {
+        return this.grid.getPointNearAllBorderAndCuts(point, this.currentProjectState.getPanel(), threshold);
+    }
+
+    public boolean isPointOnBoard(VertexDTO point){
+        return this.grid.isPointInBoard(point, this.currentProjectState.getPanel());
     }
 }

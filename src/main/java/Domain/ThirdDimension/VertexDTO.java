@@ -40,6 +40,14 @@ public class VertexDTO {
         return new VertexDTO(0,0,0);
     }
 
+    public double getDistance(){
+        return Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2));
+    }
+
+    public double getDistance(VertexDTO other){
+        return Math.sqrt(Math.pow(x - other.x,2)+Math.pow(y - other.y,2)+Math.pow(z - other.z,2));
+    }
+
 
     /**
      * @return a formatted string of the 2D components of the vertex

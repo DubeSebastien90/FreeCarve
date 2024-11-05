@@ -38,7 +38,7 @@ public class DrawCutVertical extends DrawCutWrapper{
     }
 
     @Override
-    public void beingDrawned(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
+    public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
         this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
@@ -81,12 +81,16 @@ public class DrawCutVertical extends DrawCutWrapper{
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
 
-
-        if(this.points.isEmpty()){ // First vertical point
+        if(this.points.isEmpty()){ // First horizontal point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-            Optional<PersoPoint> closestPoint = drawing.getPointNearAllLine(p);
+
+            double threshold = 10;
+            threshold = renderer.scaleMMToPixel(threshold);
+            VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
+
             if(closestPoint.isPresent()){
-                p.movePoint(closestPoint.get().getLocationX(),closestPoint.get().getLocationY());
+                p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
                 p.setColor(Color.GREEN);
                 p.setValid(PersoPoint.Valid.VALID);
             }
@@ -95,18 +99,30 @@ public class DrawCutVertical extends DrawCutWrapper{
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
         }
-        else{ // Second vertical point
+        else{ // Second horizontal point
             double firstPointX = this.points.getFirst().getLocationX();
-            p.movePoint(firstPointX, renderer.getMmMousePt().getY()); // lock to X axis
+            p.movePoint(firstPointX, renderer.getMmMousePt().getY()); // lock to Y axis
 
-            Optional<PersoPoint> closestPoint = drawing.getLineNearAllLine(points.getFirst(), p);
-            closestPoint.ifPresent(persoPoint -> p.movePoint(persoPoint.getLocationX(), persoPoint.getLocationY()));
+            // Get possible snap points
+            double threshold = 10;
+            threshold = renderer.scaleMMToPixel(threshold);
+            VertexDTO cursor = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+            VertexDTO p1 = new VertexDTO(points.getFirst().getLocationX(), points.getFirst().getLocationY(), 0.0f);
+            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridLineNearAllBorderAndCuts(p1,
+                    cursor,threshold
+            );
 
-            Rectangle2D boundaries = renderer.getBoard();
-            if(p.getLocationX() <= boundaries.getWidth() + boundaries.getX() &&
-            p.getLocationX() >= boundaries.getX() &&
-            p.getLocationY() <= boundaries.getHeight() + boundaries.getY() &&
-            p.getLocationY() >= boundaries.getY()){
+            // Snap
+            if(closestPoint.isPresent()){
+                p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
+                p.setColor(Color.YELLOW);
+                p.setValid(PersoPoint.Valid.VALID);
+                return;
+            }
+
+            // Test if on board
+            VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+            if(mainWindow.getController().isPointOnBoard(pointDTO)){
                 // Inside of the board
                 p.setColor(Color.GREEN);
                 p.setValid(PersoPoint.Valid.VALID);
@@ -117,6 +133,5 @@ public class DrawCutVertical extends DrawCutWrapper{
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
         }
-
     }
 }
