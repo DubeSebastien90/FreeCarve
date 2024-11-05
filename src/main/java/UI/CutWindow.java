@@ -101,13 +101,21 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
 
     @Override
     public void addCutEventOccured(ChangeCutEvent event){
+
         this.cutListPanel.update();
+
         Optional<CutBox> cutBox = this.cutListPanel.getCutBoxWithId(event.getCutId());
         if(cutBox.isPresent()){
             this.selectedAttributable = cutBox.get();
             this.attributePanel.updateAttribute(this.selectedAttributable);
             cutBox.get().select();
         }
+
+        SwingUtilities.invokeLater(()->{ // Invoke later necessary to wait for the repaint
+            JScrollBar scrollBar = this.cutListPanel.getScrollPane().getVerticalScrollBar();
+            scrollBar.setValue(scrollBar.getMaximum());
+        });
+
 
     }
 

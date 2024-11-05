@@ -260,8 +260,8 @@ public class CutBox implements Attributable {
         panel.setAlignmentX(0);
         panel.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
                 UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding()));
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-        panel.setMinimumSize(new Dimension(Integer.MIN_VALUE, 100));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        panel.setMinimumSize(new Dimension(Integer.MIN_VALUE, 60));
         GridBagConstraints gc = new GridBagConstraints();
         bitnameLabel = new RoundedJLabel("Bitname placeholder", 15);
         numberLabel = new JLabel("Number placeholder");
@@ -314,30 +314,30 @@ public class CutBox implements Attributable {
 
 
         gc.gridx = 2; gc.gridy = 0;
-        gc.gridwidth = 1; gc.gridheight=1;
+        gc.gridwidth = 1; gc.gridheight=2;
         gc.anchor = GridBagConstraints.CENTER;
-        gc.fill = GridBagConstraints.VERTICAL;
+        gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
         gc.weighty = 0.0f;
-        gc.insets = new Insets(0,0,0,0);
+        gc.insets = new Insets(0,0,0,UIConfig.INSTANCE.getDefaultPadding()/2);
         panel.add(moveDownButton, gc);
 
         gc.gridx = 3; gc.gridy = 0;
-        gc.gridwidth = 1; gc.gridheight=1;
+        gc.gridwidth = 1; gc.gridheight=2;
         gc.anchor = GridBagConstraints.CENTER;
-        gc.fill = GridBagConstraints.VERTICAL;
+        gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
         gc.weighty = 0.0f;
-        gc.insets = new Insets(0,0,0,0);
+        gc.insets = new Insets(0,0,0,UIConfig.INSTANCE.getDefaultPadding()/2);
         panel.add(moveUpButton, gc);
 
-        gc.gridx = 2; gc.gridy = 1;
-        gc.gridwidth = 2; gc.gridheight=1;
+        gc.gridx = 4; gc.gridy = 0;
+        gc.gridwidth = 1; gc.gridheight=2;
         gc.anchor = GridBagConstraints.CENTER;
-        gc.fill = GridBagConstraints.VERTICAL;
+        gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
         gc.weighty = 0.0f;
-        gc.insets = new Insets(0,0,0,0);
+        gc.insets = new Insets(0,0,0, UIConfig.INSTANCE.getDefaultPadding()/2);
         panel.add(deleteButton, gc);
 
 

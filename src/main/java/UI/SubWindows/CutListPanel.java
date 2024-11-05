@@ -133,4 +133,11 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
         }
         return Optional.empty();
     }
+
+    /**
+     * @return the JScrollPane of the object
+     */
+    public JScrollPane getScrollPane(){
+        return this.scrollPane;
+    }
 }
