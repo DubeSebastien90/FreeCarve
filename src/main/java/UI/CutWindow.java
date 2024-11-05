@@ -106,6 +106,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         if(cutBox.isPresent()){
             this.selectedAttributable = cutBox.get();
             this.attributePanel.updateAttribute(this.selectedAttributable);
+            cutBox.get().select();
         }
 
     }
@@ -143,7 +144,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
 
         cutInformationSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 8);
         splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 2);
-        mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 2);
+        mainSplitPane.setResizeWeight(0.8);
     }
 
     /**

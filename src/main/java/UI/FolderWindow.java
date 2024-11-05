@@ -1,6 +1,8 @@
 package UI;
 
 import static Common.UiUtil.createSVGButton;
+import com.formdev.flatlaf.ui.FlatButtonBorder;
+import com.sun.tools.javac.Main;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -16,7 +18,7 @@ import java.awt.*;
 public class FolderWindow extends JPanel {
     private final UIConfig uiConfig = UIConfig.INSTANCE;
     private final JButton newButton = createSpecialWindowButton("newFile", "Nouveau");
-    private final JButton openButton = createSpecialWindowButton("openFile", "ouvrir");
+    private final JButton openButton = createSpecialWindowButton("openFile", "Ouvrir");
     private final JPanel westPanel = new JPanel(new GridBagLayout());
     private final JPanel eastPanel = new JPanel(new GridBagLayout());
     private final JScrollPane scrollRecentProject = new JScrollPane();
@@ -58,22 +60,28 @@ public class FolderWindow extends JPanel {
      */
     private void initButtonLeft() {
         GridBagConstraints gbc = new GridBagConstraints();
-
         gbc.gridwidth = 3;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 20, 40, 0);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.BOTH;
+
         JLabel projets = new JLabel("Projets");
         projets.setFont(projets.getFont().deriveFont(40f));
         westPanel.add(projets, gbc);
 
         gbc.gridy = 2;
-        gbc.insets = new Insets(0, 0, 20, 0);
+        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+        gbc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding()*2, 0);
+        newButton.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
+                UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding()));
         westPanel.add(newButton, gbc);
 
         gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+        openButton.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
+                UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding()));
         westPanel.add(openButton, gbc);
     }
 
@@ -136,6 +144,7 @@ public class FolderWindow extends JPanel {
         button.setText(text);
         button.setForeground(UIManager.getColor("Button.secondaryBackground"));
         button.setFont(button.getFont().deriveFont(20f));
+        button.setHorizontalAlignment(SwingConstants.LEFT);
         return button;
     }
 

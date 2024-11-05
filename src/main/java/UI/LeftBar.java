@@ -106,7 +106,7 @@ public class LeftBar extends JScrollPane {
             add(createSVGButton("rectangle", false, "Coupe Rectangle", uiConfig.getToolIconSize()));
             add(createSVGButton("coupeL", false, "Coupe en L", uiConfig.getToolIconSize()));
             add(createSVGButton("retailler", false, "Retaille le panneau", uiConfig.getToolIconSize()));
-            add(createSVGButton("modify", false, "Modifier", uiConfig.getToolIconSize()));
+            add(createSVGButton("modify", false, "Coupe droite libre", uiConfig.getToolIconSize()));
             add(createSVGButton("forbidden", false, "Zone interdite", uiConfig.getToolIconSize()));
             addSeparator();
             add(createSVGButton("zoomOut", false, "Rétrécir", uiConfig.getToolIconSize()));

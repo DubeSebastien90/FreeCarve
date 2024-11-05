@@ -12,6 +12,8 @@ import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import UI.UIConfig;
 import Common.UiUtil;
+import com.formdev.flatlaf.ui.FlatButtonBorder;
+import com.sun.tools.javac.Main;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -41,8 +43,6 @@ public class CutBox implements Attributable {
     private GridBagLayout layout;
     private RoundedJLabel bitnameLabel;
     private JLabel numberLabel;
-    private RoundedJLabel coordinateLabel1;
-    private RoundedJLabel coordinateLabel2;
     private JLabel imageLabel;
     private int index;
     private boolean selected;
@@ -111,8 +111,6 @@ public class CutBox implements Attributable {
         attributeContainer.setLayout(layout);
         gc.gridx = 0;
         gc.gridy = 0;
-        gc.gridx = 0;
-        gc.gridy = 0;
         gc.weightx = 1;
         gc.weighty = 1;
         gc.fill = GridBagConstraints.HORIZONTAL;
@@ -160,13 +158,6 @@ public class CutBox implements Attributable {
         String iconName = UiUtil.getIconFileName(type);
         imageLabel.setIcon(UiUtil.getIcon(iconName, UIConfig.INSTANCE.getCutBoxIconSize(),
                 UIManager.getColor("button.Foreground")));
-
-        // Setting the coordinate value of the Cut
-        List<VertexDTO> points = newCutDTO.getPoints();
-        String coordinateText1 = points.getFirst().format2D();
-        String coordinateText2 = points.getLast().format2D();
-        coordinateLabel1.setText(coordinateText1);
-        coordinateLabel2.setText(coordinateText2);
     }
 
     /**
@@ -174,6 +165,14 @@ public class CutBox implements Attributable {
      */
     public JPanel getPanel() {
         return this.panel;
+    }
+
+    /**
+     * Select this CutBox
+     */
+    public void select(){
+        selected = true;
+        panel.setBackground(UIManager.getColor("Button.green"));
     }
 
     /**
@@ -215,8 +214,7 @@ public class CutBox implements Attributable {
             public void mouseClicked(MouseEvent e) {
                 ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
                 listener.changeAttributeEventOccurred(event);
-                selected = true;
-                panel.setBackground(UIManager.getColor("Button.green"));
+                select();
             }
 
             @Override
@@ -262,23 +260,19 @@ public class CutBox implements Attributable {
         panel.setAlignmentX(0);
         panel.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
                 UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding()));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        panel.setMinimumSize(new Dimension(Integer.MIN_VALUE, 100));
         GridBagConstraints gc = new GridBagConstraints();
         bitnameLabel = new RoundedJLabel("Bitname placeholder", 15);
         numberLabel = new JLabel("Number placeholder");
-        coordinateLabel1 = new RoundedJLabel("(Coordinates label)", 15);
-        coordinateLabel2 = new RoundedJLabel("", 15);
         imageLabel = new JLabel(UiUtil.getIcon("coupeL", UIConfig.INSTANCE.getCutBoxIconSize(),
                 UIManager.getColor("button.Foreground")));
         numberLabel.setBackground(Color.RED);
         bitnameLabel.setBackground(UIManager.getColor("SubWindow.background"));
         bitnameLabel.setHorizontalAlignment(JLabel.CENTER);
-        coordinateLabel1.setHorizontalAlignment(JLabel.CENTER);
-        coordinateLabel1.setBackground(UIManager.getColor("SubWindow.background"));
-        coordinateLabel2.setHorizontalAlignment(JLabel.CENTER);
-        coordinateLabel2.setBackground(UIManager.getColor("SubWindow.background"));
+        bitnameLabel.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
+                UIConfig.INSTANCE.getDefaultPadding(),  UIConfig.INSTANCE.getDefaultPadding()));
         numberLabel.putClientProperty("FlatLaf.style", "font: bold $h3.regular.font");
-        coordinateLabel1.setMinimumSize(new Dimension(100, 100));
-        coordinateLabel2.setMinimumSize(new Dimension(100, 100));
         deleteButton = UiUtil.createSVGButton("trash", true, UIConfig.INSTANCE.getToolIconSize(), Color.RED);
         deleteButton.addActionListener(new ActionListener() {
             @Override
@@ -288,6 +282,9 @@ public class CutBox implements Attributable {
         });
         moveUpButton = UiUtil.createSVGButton("upArrow", true, UIConfig.INSTANCE.getToolIconSize());
         moveDownButton = UiUtil.createSVGButton("downArrow", true, UIConfig.INSTANCE.getToolIconSize());
+        deleteButton.setBorder(new FlatButtonBorder());
+        moveUpButton.setBorder(new FlatButtonBorder());
+        moveDownButton.setBorder(new FlatButtonBorder());
 
         gc.gridx = 0;
         gc.gridy = 0;
@@ -295,7 +292,7 @@ public class CutBox implements Attributable {
         gc.gridheight = 1;
         gc.weightx = 0.0;
         gc.anchor = GridBagConstraints.CENTER;
-        gc.insets = new Insets(0, 0, 0, 0);
+        gc.insets = new Insets(0,0,0,UIConfig.INSTANCE.getDefaultPadding());
         panel.add(numberLabel, gc);
 
         gc.gridx = 0;
@@ -304,73 +301,44 @@ public class CutBox implements Attributable {
         gc.gridheight = 1;
         gc.anchor = GridBagConstraints.FIRST_LINE_START;
         gc.weightx = 0.0;
-        gc.insets = new Insets(0, 0, 0, 0);
+        gc.insets = new Insets(0,0,0,UIConfig.INSTANCE.getDefaultPadding());
         panel.add(imageLabel, gc);
 
-        gc.gridx = 1;
-        gc.gridy = 0;
-        gc.gridwidth = 1;
-        gc.gridheight = 1;
-        gc.anchor = GridBagConstraints.CENTER;
-        gc.fill = GridBagConstraints.HORIZONTAL;
-        gc.weightx = 1.0;
-        gc.insets = new Insets(5, 0, 5, 0);
-        panel.add(bitnameLabel, gc);
-        gc.insets = new Insets(0, UIConfig.INSTANCE.getDefaultPadding() * 3, 0, UIConfig.INSTANCE.getDefaultPadding() * 3);
-        panel.add(coordinateLabel1, gc);
-
-        gc.gridx = 1;
-        gc.gridy = 1;
-        gc.gridwidth = 1;
-        gc.gridheight = 1;
-        gc.anchor = GridBagConstraints.CENTER;
-        gc.fill = GridBagConstraints.HORIZONTAL;
-        gc.weightx = 1.0;
-        gc.insets = new Insets(0, UIConfig.INSTANCE.getDefaultPadding() * 3, 0, UIConfig.INSTANCE.getDefaultPadding() * 3);
-        panel.add(coordinateLabel2, gc);
-
-        gc.gridx = 2;
-        gc.gridy = 0;
-        gc.gridwidth = 1;
-        gc.gridheight = 2;
+        gc.gridx = 1; gc.gridy = 0;
+        gc.gridwidth =1; gc.gridheight=2;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 0.0;
+        gc.weightx = 1.0f;
         gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding());
         panel.add(bitnameLabel, gc);
 
-        gc.gridx = 3;
-        gc.gridy = 0;
-        gc.gridwidth = 1;
-        gc.gridheight = 1;
-        gc.anchor = GridBagConstraints.CENTER;
-        gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 0.0;
-        gc.weighty = 1.0f;
-        gc.insets = new Insets(0, 0, 0, 0);
-        panel.add(deleteButton);
 
-        gc.gridx = 3;
-        gc.gridy = 1;
-        gc.gridwidth = 1;
-        gc.gridheight = 1;
+        gc.gridx = 2; gc.gridy = 0;
+        gc.gridwidth = 1; gc.gridheight=1;
         gc.anchor = GridBagConstraints.CENTER;
-        gc.fill = GridBagConstraints.NONE;
+        gc.fill = GridBagConstraints.VERTICAL;
         gc.weightx = 0.0;
-        gc.weighty = 1.0f;
-        gc.insets = new Insets(0, 0, 0, 0);
-        panel.add(moveDownButton);
+        gc.weighty = 0.0f;
+        gc.insets = new Insets(0,0,0,0);
+        panel.add(moveDownButton, gc);
 
-        gc.gridx = 3;
-        gc.gridy = 1;
-        gc.gridwidth = 1;
-        gc.gridheight = 1;
+        gc.gridx = 3; gc.gridy = 0;
+        gc.gridwidth = 1; gc.gridheight=1;
         gc.anchor = GridBagConstraints.CENTER;
-        gc.fill = GridBagConstraints.NONE;
+        gc.fill = GridBagConstraints.VERTICAL;
         gc.weightx = 0.0;
-        gc.weighty = 1.0f;
-        gc.insets = new Insets(0, 0, 0, 0);
-        panel.add(moveUpButton);
+        gc.weighty = 0.0f;
+        gc.insets = new Insets(0,0,0,0);
+        panel.add(moveUpButton, gc);
+
+        gc.gridx = 2; gc.gridy = 1;
+        gc.gridwidth = 2; gc.gridheight=1;
+        gc.anchor = GridBagConstraints.CENTER;
+        gc.fill = GridBagConstraints.VERTICAL;
+        gc.weightx = 0.0;
+        gc.weighty = 0.0f;
+        gc.insets = new Insets(0,0,0,0);
+        panel.add(deleteButton, gc);
 
 
     }

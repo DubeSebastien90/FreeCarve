@@ -33,6 +33,7 @@ public class GenericAttributeBox extends BasicWindow {
                 UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding()));
         this.setBackground(UIManager.getColor("SubWindow.lightBackground1"));
         this.name = new JLabel(name);
+        this.name.setBorder(new EmptyBorder(0, 0, UIConfig.INSTANCE.getDefaultPadding(), 0));
         gc.gridx = 0; gc.gridy = 0;
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.weightx = 1;
