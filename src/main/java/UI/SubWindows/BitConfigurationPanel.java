@@ -20,7 +20,7 @@ import java.awt.event.ActionListener;
  * @version 1.1
  * @since 2024-11-01
  */
-public class BitSelectionPanel extends BasicWindow {
+public class BitConigurationPanel extends BasicWindow {
     private final int MAX_BIT = 12;
     private final JToggleButton[] bitList = new JToggleButton[MAX_BIT];
     private BitDTO[] bitDTOList;
@@ -33,7 +33,7 @@ public class BitSelectionPanel extends BasicWindow {
      *
      * @param listener the listener for attribute changes triggered by bit selection.
      */
-    public BitSelectionPanel(ChangeAttributeListener listener, MainWindow mainWindow) {
+    public BitConigurationPanel(ChangeAttributeListener listener, MainWindow mainWindow) {
         super(true);
         this.mainWindow = mainWindow;
         this.listener = listener;
@@ -109,7 +109,7 @@ public class BitSelectionPanel extends BasicWindow {
                             new BitInfoDisplay(
                                     mainWindow.getController().getBitsDTO()[finalI],
                                     true,
-                                    BitSelectionPanel.this, mainWindow
+                                    BitConigurationPanel.this, mainWindow
                             )
                     );
                     listener.changeAttributeEventOccurred(event);
