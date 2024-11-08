@@ -51,7 +51,7 @@ class ProjectState {
     }
 
     public ProjectStateDTO getDTO() {
-        return new ProjectStateDTO(Arrays.stream(bitList).map(bit -> (bit!=null) ? bit.getDTO() : null).toList().toArray(new BitDTO[]{}), getPanel().getDTO());
+        return new ProjectStateDTO(Arrays.stream(bitList).map(bit -> (bit != null) ? bit.getDTO() : null).toList().toArray(new BitDTO[]{}), getPanel().getDTO());
     }
 
     /**

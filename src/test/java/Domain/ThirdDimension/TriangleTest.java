@@ -13,11 +13,11 @@ import java.util.stream.Stream;
 public class TriangleTest {
 
     @Test
-    void findBoundingRectangle_withinBounds_calculatesArea(){
+    void findBoundingRectangle_withinBounds_calculatesArea() {
         // Arrange
         int maxWidth = 5;
         int maxHeight = 5;
-        Triangle triangle = new Triangle(new Vertex(0,0,0), new Vertex(maxWidth,0,0), new Vertex(0,maxHeight,0));
+        Triangle triangle = new Triangle(new Vertex(0, 0, 0), new Vertex(maxWidth, 0, 0), new Vertex(0, maxHeight, 0));
 
         // Act
         int[] result = triangle.findBoundingRectangle(maxWidth, maxHeight);
@@ -27,11 +27,11 @@ public class TriangleTest {
     }
 
     @Test
-    void findBoundingRectangle_outOfBounds_calculatesAreaWithinBounds(){
+    void findBoundingRectangle_outOfBounds_calculatesAreaWithinBounds() {
         // Arrange
         int maxWidth = 5;
         int maxHeight = 5;
-        Triangle triangle = new Triangle(new Vertex(0,0,0), new Vertex(maxWidth*2,0,0), new Vertex(0,maxHeight*2,0));
+        Triangle triangle = new Triangle(new Vertex(0, 0, 0), new Vertex(maxWidth * 2, 0, 0), new Vertex(0, maxHeight * 2, 0));
 
         // Act
         int[] result = triangle.findBoundingRectangle(maxWidth, maxHeight);

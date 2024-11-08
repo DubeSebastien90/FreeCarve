@@ -73,7 +73,7 @@ public class ProjectStateTest {
     }
 
     @Test
-    void valid_board(){
+    void valid_board() {
         // Arrange
         PanelCNC panelCNC = new PanelCNC(new VertexDTO(12, 13, 0), 5.0f);
         Bit[] bitList = new Bit[12];
@@ -96,7 +96,7 @@ public class ProjectStateTest {
         points.add(new VertexDTO(50, 46, 47));
 
         // Act
-        stateTest.getPanel().requestCut(new RequestCutDTO(points, CutType.LINE_VERTICAL, 5,  2.0f));
+        stateTest.getPanel().requestCut(new RequestCutDTO(points, CutType.LINE_VERTICAL, 5, 2.0f));
 
 
         // Assert

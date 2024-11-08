@@ -65,7 +65,7 @@ public class CutBox implements Attributable {
      * @param index    index of the cut
      * @param listener reference to the parent listener
      */
-    public CutBox(CutDTO cutDTO, int index, ChangeAttributeListener listener,  ChangeCutListener cutListener, MainWindow mainWindow) {
+    public CutBox(CutDTO cutDTO, int index, ChangeAttributeListener listener, ChangeCutListener cutListener, MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         this.cut = cutDTO;
         this.index = index;
@@ -106,7 +106,8 @@ public class CutBox implements Attributable {
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gc = new GridBagConstraints();
         attributeContainer.setLayout(layout);
-        gc.gridx = 0; gc.gridy = 0;
+        gc.gridx = 0;
+        gc.gridy = 0;
         gc.gridx = 0;
         gc.gridy = 0;
         gc.weightx = 1;
@@ -285,7 +286,7 @@ public class CutBox implements Attributable {
         gc.gridheight = 1;
         gc.weightx = 0.0;
         gc.anchor = GridBagConstraints.CENTER;
-        gc.insets = new Insets(0,0,0,0);
+        gc.insets = new Insets(0, 0, 0, 0);
         panel.add(numberLabel, gc);
 
         gc.gridx = 0;
@@ -294,7 +295,7 @@ public class CutBox implements Attributable {
         gc.gridheight = 1;
         gc.anchor = GridBagConstraints.FIRST_LINE_START;
         gc.weightx = 0.0;
-        gc.insets = new Insets(0,0,0,0);
+        gc.insets = new Insets(0, 0, 0, 0);
         panel.add(imageLabel, gc);
 
         gc.gridx = 1;
@@ -306,7 +307,7 @@ public class CutBox implements Attributable {
         gc.weightx = 1.0;
         gc.insets = new Insets(5, 0, 5, 0);
         panel.add(bitnameLabel, gc);
-        gc.insets = new Insets(0,UIConfig.INSTANCE.getDefaultPadding()* 3,0,UIConfig.INSTANCE.getDefaultPadding()* 3);
+        gc.insets = new Insets(0, UIConfig.INSTANCE.getDefaultPadding() * 3, 0, UIConfig.INSTANCE.getDefaultPadding() * 3);
         panel.add(coordinateLabel1, gc);
 
         gc.gridx = 1;
@@ -316,42 +317,50 @@ public class CutBox implements Attributable {
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.weightx = 1.0;
-        gc.insets = new Insets(0,UIConfig.INSTANCE.getDefaultPadding()* 3,0,UIConfig.INSTANCE.getDefaultPadding()* 3);
+        gc.insets = new Insets(0, UIConfig.INSTANCE.getDefaultPadding() * 3, 0, UIConfig.INSTANCE.getDefaultPadding() * 3);
         panel.add(coordinateLabel2, gc);
 
-        gc.gridx = 2; gc.gridy = 0;
-        gc.gridwidth =1; gc.gridheight=2;
+        gc.gridx = 2;
+        gc.gridy = 0;
+        gc.gridwidth = 1;
+        gc.gridheight = 2;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
-        gc.insets = new Insets(0,0,0,UIConfig.INSTANCE.getDefaultPadding());
+        gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding());
         panel.add(bitnameLabel, gc);
 
-        gc.gridx = 3; gc.gridy = 0;
-        gc.gridwidth = 1; gc.gridheight=1;
+        gc.gridx = 3;
+        gc.gridy = 0;
+        gc.gridwidth = 1;
+        gc.gridheight = 1;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
         gc.weighty = 1.0f;
-        gc.insets = new Insets(0,0,0,0);
+        gc.insets = new Insets(0, 0, 0, 0);
         panel.add(deleteButton);
 
-        gc.gridx = 3; gc.gridy = 1;
-        gc.gridwidth = 1; gc.gridheight=1;
+        gc.gridx = 3;
+        gc.gridy = 1;
+        gc.gridwidth = 1;
+        gc.gridheight = 1;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
         gc.weighty = 1.0f;
-        gc.insets = new Insets(0,0,0,0);
+        gc.insets = new Insets(0, 0, 0, 0);
         panel.add(moveDownButton);
 
-        gc.gridx = 3; gc.gridy = 1;
-        gc.gridwidth = 1; gc.gridheight=1;
+        gc.gridx = 3;
+        gc.gridy = 1;
+        gc.gridwidth = 1;
+        gc.gridheight = 1;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
         gc.weighty = 1.0f;
-        gc.insets = new Insets(0,0,0,0);
+        gc.insets = new Insets(0, 0, 0, 0);
         panel.add(moveUpButton);
 
 
