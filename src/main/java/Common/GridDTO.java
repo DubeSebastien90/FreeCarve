@@ -1,4 +1,4 @@
-package Domain;
+package Common;
 
 public class GridDTO {
     private final int size;

@@ -1,7 +1,6 @@
 package Domain;
 
-import Domain.ThirdDimension.VertexDTO;
-import Domain.ThirdDimension.Vertex;
+import Common.VertexDTO;
 
 import java.util.UUID;
 
@@ -13,7 +12,7 @@ import java.util.UUID;
  * @since 2024-10-20
  */
 class ClampZone {
-    private final Vertex[] zone = new Vertex[2];
+    private final VertexDTO[] zone = new VertexDTO[2];
     private UUID id;
 
     /**

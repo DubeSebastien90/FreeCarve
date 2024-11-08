@@ -1,7 +1,5 @@
 package Domain;
 
-import Domain.ThirdDimension.Vertex;
-
 import java.util.Stack;
 
 /**

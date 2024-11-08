@@ -1,9 +1,9 @@
 package Domain;
 
-import Domain.ThirdDimension.VertexDTO;
-import Domain.ThirdDimension.Vertex;
+import Common.CutDTO;
+import Common.RequestCutDTO;
+import Common.VertexDTO;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,21 +15,18 @@ import java.util.UUID;
  * @since 2024-09-21
  */
 class Cut {
-    private Vertex startPoint;
+    private VertexDTO startPoint;
     private CutType type;
-    private List<Vertex> points;
+    private List<VertexDTO> points;
     private int bitIndex;
     private double depth;
     private UUID id;
 
 
     public Cut(CutDTO uiCut){
-        this.startPoint = new Vertex(uiCut.getPoints().getFirst());
+        this.startPoint = uiCut.getPoints().getFirst();
         this.type = uiCut.getCutType();
-        this.points = new ArrayList<>();
-        for(VertexDTO domainVertex : uiCut.getPoints()){
-            points.add(new Vertex(domainVertex));
-        }
+        this.points = uiCut.getPoints();
         this.bitIndex = uiCut.getBitIndex();
         this.depth = uiCut.getDepth();
         this.id = uiCut.getId();
@@ -43,32 +40,36 @@ class Cut {
      * @param bitIndex   the index of the bit that is used for the cut
      * @param depth      the depth of the cut
      */
-    public Cut(Vertex startPoint, CutType type, List<Vertex> points, int bitIndex, double depth) {
+    public Cut(VertexDTO startPoint, CutType type, List<VertexDTO> points, int bitIndex, double depth) {
         this.startPoint = startPoint;
         this.type = type;
         this.points = points;
         this.bitIndex = bitIndex;
         this.depth = depth;
-        //todo determine the id
+        this.id = UUID.randomUUID();
     }
 
     public Cut(RequestCutDTO requestCutDTO) {
         //todo
     }
 
-    public Vertex getStartPoint() {
+    public CutDTO getDTO(){
+        return new CutDTO(id, depth, bitIndex, type, points.stream().toList());
+    }
+
+    public VertexDTO getStartPoint() {
         return startPoint;
     }
 
-    public void setStartPoint(Vertex startPoint) {
+    public void setStartPoint(VertexDTO startPoint) {
         this.startPoint = startPoint;
     }
 
-    public List<Vertex> getPoints() {
+    public List<VertexDTO> getPoints() {
         return points;
     }
 
-    public void setPoints(List<Vertex> points) {
+    public void setPoints(List<VertexDTO> points) {
         this.points = points;
     }
 

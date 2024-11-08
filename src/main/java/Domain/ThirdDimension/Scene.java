@@ -1,5 +1,7 @@
 package Domain.ThirdDimension;
 
+import Common.VertexDTO;
+
 import java.awt.*;
 import java.security.InvalidKeyException;
 import java.util.*;

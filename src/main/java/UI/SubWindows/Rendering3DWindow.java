@@ -1,9 +1,9 @@
 package UI.SubWindows;
 
-import Domain.ThirdDimension.*;
+import Common.VertexDTO;
 import UI.MainWindow;
 import UI.Widgets.MeshManipulator;
-import Util.UiUtil;
+import Common.UiUtil;
 
 import javax.swing.*;
 

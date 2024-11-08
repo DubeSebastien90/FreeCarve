@@ -3,7 +3,7 @@ package UI;
 
 import UI.Widgets.ColoredBox;
 
-import static Util.UiUtil.createSVGButton;
+import static Common.UiUtil.createSVGButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

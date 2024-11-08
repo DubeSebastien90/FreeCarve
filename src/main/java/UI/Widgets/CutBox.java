@@ -1,8 +1,8 @@
 package UI.Widgets;
 
-import Domain.CutDTO;
+import Common.CutDTO;
 import Domain.CutType;
-import Domain.ThirdDimension.VertexDTO;
+import Common.VertexDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutEvent;
@@ -10,8 +10,7 @@ import UI.Events.ChangeCutListener;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import UI.UIConfig;
-import Util.UiUtil;
-import com.sun.tools.javac.Main;
+import Common.UiUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

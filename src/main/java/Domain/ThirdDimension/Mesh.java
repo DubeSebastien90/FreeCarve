@@ -1,7 +1,7 @@
 package Domain.ThirdDimension;
 
-import Parser.ParsedSTL;
-import Parser.STLParser;
+import IO.ParsedSTL;
+import IO.STLParser;
 
 import java.awt.*;
 import java.io.*;

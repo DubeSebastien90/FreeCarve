@@ -1,11 +1,7 @@
 package UI.Widgets;
 
-import Domain.ThirdDimension.VertexDTO;
-import UI.SubWindows.BasicWindow;
-import UI.UIConfig;
+import Common.VertexDTO;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**

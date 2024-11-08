@@ -3,7 +3,7 @@ import Domain.CutType;
 
 import javax.swing.*;
 
-import static Util.UiUtil.createSVGButton;
+import static Common.UiUtil.createSVGButton;
 
 /**
  * The {@code LeftBar} class extends {@code JScrollPane} and is basically a scrollpane with a {@code ToolBar} in it.

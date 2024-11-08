@@ -1,6 +1,6 @@
 package Domain;
 
-import Domain.BitDTO;
+import Common.BitDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -97,19 +97,19 @@ public class BitTest {
     }
 
     @Test
-    void getBitDTO_WhenCalled_ReturnsDTO() {
+    void getDTO_WhenCalled_ReturnsDTO() {
         // Arrange
         // Act
-        BitDTO dto = bit.getBitDTO();
+        BitDTO dto = bit.getDTO();
         // Assert
         Assertions.assertEquals(BitDTO.class, dto.getClass());
     }
 
     @Test
-    void getBitDTO_WhenCalled_ReturnsDTOWithCorrectValues() {
+    void getDTO_WhenCalled_ReturnsDTOWithCorrectValues() {
         // Arrange
         // Act
-        BitDTO dto = bit.getBitDTO();
+        BitDTO dto = bit.getDTO();
         // Assert
         Assertions.assertEquals("test", dto.getName());
         Assertions.assertEquals(1.0f, dto.getDiameter());

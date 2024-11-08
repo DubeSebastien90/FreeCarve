@@ -1,8 +1,5 @@
-package Domain;
+package Common;
 
-import Domain.ThirdDimension.VertexDTO;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,12 +13,9 @@ public class PanelDTO {
     private final List<CutDTO> cutList;
     private final VertexDTO panelDimension;
 
-    public PanelDTO(PanelCNC domainPanel) {
-        panelDimension = new VertexDTO(domainPanel.getPanelDimension());
-        cutList = new ArrayList<>();
-        for (Cut cDomain : domainPanel.getCutList()) {
-            cutList.add(new CutDTO(cDomain));
-        }
+    public PanelDTO(List<CutDTO> cutList, VertexDTO panelDimension) {
+        this.cutList = cutList;
+        this.panelDimension = panelDimension;
     }
 
     public List<CutDTO> getCutsDTO() {

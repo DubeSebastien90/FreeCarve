@@ -1,8 +1,6 @@
 package UI;
 
-import com.sun.tools.javac.Main;
-
-import static Util.UiUtil.createSVGButton;
+import static Common.UiUtil.createSVGButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

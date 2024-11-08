@@ -1,7 +1,7 @@
-package Domain.Util;
+package Common;
 
 /**
- * The {@code Util} class regroup function that can be useful for any other class in the Domain.
+ * The {@code Util} class regroup function that can be useful for any other class in the Application.
  *
  * @author Adam Côté
  * @version 1.0

@@ -1,13 +1,15 @@
 package Domain;
 
-import Domain.ThirdDimension.Vertex;
-import Domain.ThirdDimension.VertexDTO;
+import Common.BitDTO;
+import Common.CutDTO;
+import Common.ProjectStateDTO;
+import Common.RequestCutDTO;
+import Common.VertexDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class ControllerTest {
 

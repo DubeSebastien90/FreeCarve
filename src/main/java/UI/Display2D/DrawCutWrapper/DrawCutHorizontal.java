@@ -1,16 +1,15 @@
 package UI.Display2D.DrawCutWrapper;
 
-import Domain.CutDTO;
+import Common.CutDTO;
 import Domain.CutType;
-import Domain.RequestCutDTO;
-import Domain.ThirdDimension.VertexDTO;
+import Common.RequestCutDTO;
+import Common.VertexDTO;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

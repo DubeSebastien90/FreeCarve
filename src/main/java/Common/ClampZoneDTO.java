@@ -1,6 +1,4 @@
-package Domain;
-
-import Domain.ThirdDimension.Vertex;
+package Common;
 
 /**
  * The {@code ClampZoneDTO} class is a read-only {@code ClampZone}
@@ -10,14 +8,14 @@ import Domain.ThirdDimension.Vertex;
  * @since 2024-10-20
  */
 public class ClampZoneDTO {
-    private final Vertex[] zone = new Vertex[2];
+    private final VertexDTO[] zone = new VertexDTO[2];
 
-    public ClampZoneDTO(Vertex first, Vertex second) {
+    public ClampZoneDTO(VertexDTO first, VertexDTO second) {
         zone[0] = first;
         zone[1] = second;
     }
 
-    public Vertex[] getZone() {
+    public VertexDTO[] getZone() {
         return zone;
     }
 }

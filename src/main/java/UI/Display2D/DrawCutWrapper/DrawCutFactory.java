@@ -1,6 +1,6 @@
 package UI.Display2D.DrawCutWrapper;
 
-import Domain.CutDTO;
+import Common.CutDTO;
 import Domain.CutType;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;

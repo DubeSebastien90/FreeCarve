@@ -1,7 +1,7 @@
 package UI.SubWindows;
 
 import UI.Widgets.Header;
-import Util.UiUtil;
+import Common.UiUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

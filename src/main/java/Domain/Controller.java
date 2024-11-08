@@ -1,11 +1,10 @@
 package Domain;
 
+import Common.*;
 import Domain.ThirdDimension.*;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.security.InvalidKeyException;
-import java.security.KeyException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,7 +50,7 @@ public class Controller {
      * @return The current {@code ProjectState}
      */
     public ProjectStateDTO getProjectStateDTO() {
-        return this.currentProjectState.getCurrentStateDTO();
+        return this.currentProjectState.getDTO();
     }
 
     /**

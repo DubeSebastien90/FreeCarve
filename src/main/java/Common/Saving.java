@@ -1,4 +1,4 @@
-package Util;
+package Common;
 
 import javax.swing.*;
 import java.io.*;

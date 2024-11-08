@@ -1,4 +1,4 @@
-package Util;
+package Common;
 
 import Domain.CutType;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -128,7 +128,7 @@ public class UiUtil {
     }
 
     /**
-     * Get the french name of the CutType based on the enum value
+     * Get the French name of the CutType based on the enum value
      * @param type type of the Cut
      * @return the name of the Cut
      */

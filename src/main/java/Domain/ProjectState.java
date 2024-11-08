@@ -1,6 +1,10 @@
 package Domain;
 
-import Domain.ThirdDimension.Vertex;
+import Common.BitDTO;
+import Common.ProjectStateDTO;
+import Common.VertexDTO;
+
+import java.util.Arrays;
 
 /**
  * The {@code ProjectState} class represent the current state of the project.
@@ -12,19 +16,19 @@ import Domain.ThirdDimension.Vertex;
 class ProjectState {
     private final Bit[] bitList = new Bit[12];
     private PanelCNC panel;
-    private final Vertex defaultPanelDimension = new Vertex(1219.2,914.4,  0); // dimension in mm
+    private final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 0); // dimension in mm
     private final float defaultPanelDepth = 1.0f; // depth in mm
 
     /**
      * Constructs a default new {@code ProjectState}.
-     *
      */
-    ProjectState(){
-        for (int i =0; i < bitList.length; i++){
+    ProjectState() {
+        for (int i = 0; i < bitList.length; i++) {
             bitList[i] = new Bit();
         }
         panel = new PanelCNC(defaultPanelDimension, defaultPanelDepth);
     }
+
     /**
      * Constructs a new {@code ProjectState}.
      *
@@ -46,8 +50,8 @@ class ProjectState {
         return bitList;
     }
 
-    public ProjectStateDTO getProjectStateDTO(){
-        return new ProjectStateDTO(this);
+    public ProjectStateDTO getDTO() {
+        return new ProjectStateDTO(Arrays.stream(bitList).map(bit -> (bit!=null) ? bit.getDTO() : null).toList().toArray(new BitDTO[]{}), getPanel().getDTO());
     }
 
     /**
@@ -73,31 +77,17 @@ class ProjectState {
      * change the name or diameter of a bit.
      *
      * @param position The position of the bit in the bitList
-     * @param bitDTO The DTO of the bit
+     * @param bitDTO   The DTO of the bit
      */
     void updateBit(int position, BitDTO bitDTO) {
         if (position < 0 || position > bitList.length)
             throw new IllegalArgumentException("L'index doit être entre 0 et 11");
 
-        if(bitList[position] == null){
+        if (bitList[position] == null) {
             bitList[position] = new Bit(bitDTO.getName(), bitDTO.getDiameter());
-        }
-        else {
+        } else {
             bitList[position].setName(bitDTO.getName());
             bitList[position].setDiameter(bitDTO.getDiameter());
         }
-    }
-
-
-    public ProjectStateDTO getCurrentStateDTO(){
-        BitDTO[] bitDTOList = new BitDTO[12];
-        for(int i = 0; i < bitList.length; i++){
-            if(bitList[i] == null){
-                bitDTOList[i] = new BitDTO(new Bit());
-                continue;
-            }
-            bitDTOList[i] = bitList[i].getBitDTO();
-        }
-        return new ProjectStateDTO(bitDTOList, panel.getPanelDTO());
     }
 }

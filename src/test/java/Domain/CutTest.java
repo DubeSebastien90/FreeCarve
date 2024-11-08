@@ -1,26 +1,25 @@
 package Domain;
 
-import Domain.ThirdDimension.Vertex;
-import Domain.ThirdDimension.VertexDTO;
+import Common.CutDTO;
+import Common.VertexDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class CutTest {
     private Cut cut;
     private Cut cutWithDTO;
-    private ArrayList<Vertex> pointsList;
+    private ArrayList<VertexDTO> pointsList;
     private ArrayList<VertexDTO> pointsListDTO;
 
     @BeforeEach
     void setUp(){
-        pointsList = new ArrayList<Vertex>();
-        Vertex temp1 = new Vertex(300, 400, 500);
-        Vertex temp2 = new Vertex(100, 200, 300);
+        pointsList = new ArrayList<VertexDTO>();
+        VertexDTO temp1 = new VertexDTO(300, 400, 500);
+        VertexDTO temp2 = new VertexDTO(100, 200, 300);
         pointsList.add(temp1);
         pointsList.add(temp2);
         cut = new Cut(temp1, CutType.RECTANGULAR, pointsList, 0,

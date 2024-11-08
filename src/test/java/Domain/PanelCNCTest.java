@@ -1,7 +1,8 @@
 package Domain;
 
-import Domain.ThirdDimension.Vertex;
-import Domain.ThirdDimension.VertexDTO;
+import Common.PanelDTO;
+import Common.RequestCutDTO;
+import Common.VertexDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,12 +11,12 @@ import java.util.ArrayList;
 
 public class PanelCNCTest {
     private PanelCNC panelCNC;
-    private Vertex boardDimension;
+    private VertexDTO boardDimension;
     private float depth;
 
     @BeforeEach
     void SetUp(){
-        boardDimension = new Vertex(1,2,3);
+        boardDimension = new VertexDTO(1,2,3);
         depth = 13.0f;
         panelCNC = new PanelCNC(boardDimension, depth);
     }
@@ -68,7 +69,7 @@ public class PanelCNCTest {
         Assertions.assertEquals(panelCNC.getCutList().size(), 0);
         RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f);
         panelCNC.requestCut(rcDTO);
-        PanelDTO pDTO = panelCNC.getPanelDTO();
+        PanelDTO pDTO = panelCNC.getDTO();
 
         // Assert
         Assertions.assertEquals(pDTO.getCutsDTO().size(), panelCNC.getCutList().size());

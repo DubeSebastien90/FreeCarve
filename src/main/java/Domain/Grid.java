@@ -1,10 +1,8 @@
 package Domain;
 
-import Domain.ThirdDimension.Vertex;
-import Domain.ThirdDimension.VertexDTO;
-import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
+import Common.CutDTO;
+import Common.VertexDTO;
 
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -156,7 +154,7 @@ public class Grid {
                                                    Optional<VertexDTO> closestPoint) {
 
         // Testing all of the cuts
-        for (CutDTO wrapper : board.getPanelDTO().getCutsDTO()) {
+        for (CutDTO wrapper : board.getDTO().getCutsDTO()) {
             List<VertexDTO> points = wrapper.getPoints();
             if (points.size() > 1) {
                 for (int i = 0; i < points.size() - 1; i++) {
@@ -188,7 +186,7 @@ public class Grid {
 
         // Testing the border
         List<VertexDTO> borderList = new ArrayList<>();
-        Vertex resizedBoard = board.getPanelDimension();
+        VertexDTO resizedBoard = board.getPanelDimension();
         VertexDTO borderP1 = new VertexDTO(0.0f, 0.0f, 0.0f);
         VertexDTO borderP2 = new VertexDTO(resizedBoard.getX(), 0.0f, 0.0f);
         VertexDTO borderP3 = new VertexDTO(resizedBoard.getX(), resizedBoard.getY(), 0.0f);
@@ -246,7 +244,7 @@ public class Grid {
                                                   Optional<VertexDTO> closestPoint) {
 
         // Testing all of the cuts
-        for (CutDTO wrapper : board.getPanelDTO().getCutsDTO()) {
+        for (CutDTO wrapper : board.getDTO().getCutsDTO()) {
             List<VertexDTO> points = wrapper.getPoints();
             if (points.size() > 1) {
                 for (int i = 0; i < points.size() - 1; i++) {
@@ -281,7 +279,7 @@ public class Grid {
 
         // Testing the border
         List<VertexDTO> borderList = new ArrayList<>();
-        Vertex resizedBoard = board.getPanelDimension();
+        VertexDTO resizedBoard = board.getPanelDimension();
         VertexDTO borderP1 = new VertexDTO(0.0f, 0.0f, 0.0f);
         VertexDTO borderP2 = new VertexDTO(resizedBoard.getX(), 0.0f, 0.0f);
         VertexDTO borderP3 = new VertexDTO(resizedBoard.getX(), resizedBoard.getY(), 0.0f);
@@ -334,7 +332,7 @@ public class Grid {
      * @return boolean of true if the point is on the board
      */
     public boolean isPointInBoard(VertexDTO point, PanelCNC board) {
-        Vertex boardDimension = board.getPanelDimension();
+        VertexDTO boardDimension = board.getPanelDimension();
         return 0.0f <= point.getX() && point.getX() <= boardDimension.getX() &&
                 0.0f <= point.getY() && point.getY() <= boardDimension.getY();
     }

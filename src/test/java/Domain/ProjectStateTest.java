@@ -1,7 +1,9 @@
 package Domain;
 
-import Domain.ThirdDimension.Vertex;
-import Domain.ThirdDimension.VertexDTO;
+import Common.BitDTO;
+import Common.ProjectStateDTO;
+import Common.RequestCutDTO;
+import Common.VertexDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +18,7 @@ public class ProjectStateTest {
     @BeforeEach
     void setUp() {
         Bit[] bitList = new Bit[12];
-        PanelCNC board = new PanelCNC(new Vertex(15.0, 15.0, 0.0), 5);
+        PanelCNC board = new PanelCNC(new VertexDTO(15.0, 15.0, 0.0), 5);
         stateTest = new ProjectState(bitList, board);
     }
 
@@ -62,10 +64,10 @@ public class ProjectStateTest {
     }
 
     @Test
-    void getCurrentStateDTO_WhenCalled_ReturnDTO() {
+    void getDTO_WhenCalled_ReturnDTO() {
         // Arrange
         // Act
-        ProjectStateDTO dto = stateTest.getCurrentStateDTO();
+        ProjectStateDTO dto = stateTest.getDTO();
         // Assert
         Assertions.assertEquals(ProjectStateDTO.class, dto.getClass());
     }
@@ -73,7 +75,7 @@ public class ProjectStateTest {
     @Test
     void valid_board(){
         // Arrange
-        PanelCNC panelCNC = new PanelCNC(new Vertex(12, 13, 0), 5.0f);
+        PanelCNC panelCNC = new PanelCNC(new VertexDTO(12, 13, 0), 5.0f);
         Bit[] bitList = new Bit[12];
 
         // Act
@@ -87,7 +89,7 @@ public class ProjectStateTest {
     void valid_projectStateDTO() throws Exception {
         // Arrange
         stateTest.setBit(new Bit("Test", 3.0f), 3);
-        ProjectStateDTO test = stateTest.getCurrentStateDTO();
+        ProjectStateDTO test = stateTest.getDTO();
 
         ArrayList<VertexDTO> points = new ArrayList<>();
         points.add(new VertexDTO(45, 46, 47));
@@ -101,12 +103,12 @@ public class ProjectStateTest {
         Assertions.assertEquals(test.getBitList()[3].getName(), "Test");
         Assertions.assertEquals(test.getBitList()[3].getDiameter(), 3.0f);
 
-        Assertions.assertEquals(stateTest.getCurrentStateDTO().getClass(), ProjectStateDTO.class);
+        Assertions.assertEquals(stateTest.getDTO().getClass(), ProjectStateDTO.class);
 
-        Assertions.assertEquals(stateTest.getCurrentStateDTO().getPanelDTO().getCutsDTO().size(), 1);
-        Assertions.assertEquals(stateTest.getCurrentStateDTO().getPanelDTO().getCutsDTO().getFirst().getPoints().getFirst().getX(), 45);
-        Assertions.assertEquals(stateTest.getCurrentStateDTO().getPanelDTO().getCutsDTO().getFirst().getPoints().getFirst().getY(), 46);
-        Assertions.assertEquals(stateTest.getCurrentStateDTO().getPanelDTO().getCutsDTO().getFirst().getPoints().getFirst().getZ(), 47);
+        Assertions.assertEquals(stateTest.getDTO().getPanelDTO().getCutsDTO().size(), 1);
+        Assertions.assertEquals(stateTest.getDTO().getPanelDTO().getCutsDTO().getFirst().getPoints().getFirst().getX(), 45);
+        Assertions.assertEquals(stateTest.getDTO().getPanelDTO().getCutsDTO().getFirst().getPoints().getFirst().getY(), 46);
+        Assertions.assertEquals(stateTest.getDTO().getPanelDTO().getCutsDTO().getFirst().getPoints().getFirst().getZ(), 47);
 
     }
 }

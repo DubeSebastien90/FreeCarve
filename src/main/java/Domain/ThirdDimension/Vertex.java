@@ -1,6 +1,7 @@
 package Domain.ThirdDimension;
 
-import Parser.STLParser;
+import Common.VertexDTO;
+import IO.STLParser;
 
 /**
  * The {@code Vertex} class provides methods to interact in a 3-dimensional space, with the vertex itself being a location in this space.
@@ -10,16 +11,17 @@ import Parser.STLParser;
  * @version 0.1
  * @since 2024-09-07
  */
-public class Vertex {
+class Vertex {
     private double x;
     private double y;
     private double z;
 
     /**
      * Create a domain vertex based on a VertexDTO
+     *
      * @param vertexDTO vertexDTO
      */
-    public Vertex(VertexDTO vertexDTO){
+    public Vertex(VertexDTO vertexDTO) {
         setX(vertexDTO.getX());
         setY(vertexDTO.getY());
         setZ(vertexDTO.getZ());
@@ -77,7 +79,7 @@ public class Vertex {
      * @return a vertex with 0 in all coordinates
      */
     public static Vertex zero() {
-        return new Vertex(0,0,0);
+        return new Vertex(0, 0, 0);
     }
 
     /**
@@ -200,10 +202,11 @@ public class Vertex {
 
     /**
      * Returns the length of the vector
+     *
      * @return the length of the vector
      */
     public float length() {
-        return (float) Math.sqrt(x*x + y*y + z*z);
+        return (float) Math.sqrt(x * x + y * y + z * z);
     }
 
     /**
@@ -258,6 +261,7 @@ public class Vertex {
 
     /**
      * Rotates the vector according to the quaternion
+     *
      * @param quaternion quaternion representing a rotation
      * @return self to enable method chaining
      */
@@ -271,5 +275,9 @@ public class Vertex {
         setY(rotation.getY());
         setZ(rotation.getZ());
         return this;
+    }
+
+    public VertexDTO getDTO() {
+        return new VertexDTO(x, y, z);
     }
 }

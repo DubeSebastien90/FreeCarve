@@ -1,7 +1,7 @@
 package Domain;
 
-import Domain.ThirdDimension.Vertex;
-import Domain.ThirdDimension.VertexDTO;
+import Common.CutDTO;
+import Common.VertexDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ public class CutDTOTest {
     private CutDTO cut;
     private CutDTO cutDTOwithCut;
     private ArrayList<VertexDTO> pointsList;
-    private ArrayList<Vertex> pointsListToDTO;
+    private ArrayList<VertexDTO> pointsListToDTO;
 
     @BeforeEach
     void setUp(){
@@ -25,15 +25,15 @@ public class CutDTOTest {
         cut = new CutDTO(new UUID(10000, 10000), 5.0f, 0,
                 CutType.BORDER, pointsList);
 
-        Vertex temp3 = new Vertex(1, 2, 3);
-        Vertex temp4 = new Vertex(4, 5, 6);
-        Vertex temp5 = new Vertex(7, 8, 9);
-        pointsListToDTO = new ArrayList<Vertex>();
+        VertexDTO temp3 = new VertexDTO(1, 2, 3);
+        VertexDTO temp4 = new VertexDTO(4, 5, 6);
+        VertexDTO temp5 = new VertexDTO(7, 8, 9);
+        pointsListToDTO = new ArrayList<VertexDTO>();
         pointsListToDTO.add(temp3);
         pointsListToDTO.add(temp4);
         pointsListToDTO.add(temp5);
         Cut cut = new Cut(temp3, CutType.LINE_VERTICAL, pointsListToDTO, 0, 3.0f);
-        cutDTOwithCut = new CutDTO(cut);
+        cutDTOwithCut = cut.getDTO();
     }
 
     @Test

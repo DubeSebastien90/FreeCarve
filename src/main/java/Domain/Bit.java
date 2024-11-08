@@ -1,6 +1,6 @@
 package Domain;
 
-import Domain.BitDTO;
+import Common.BitDTO;
 
 /**
  * The {@code Tool} class encapsulates a tool (bit) object and all of it's attributes
@@ -30,7 +30,7 @@ class Bit {
         setDiameter(diameter);
     }
 
-    public Bit(){
+    public Bit() {
         this.name = "Aucun outil assigné";
         this.diameter = 0.0f;
     }
@@ -40,7 +40,7 @@ class Bit {
     }
 
     public void setName(String name) {
-        if(name == null || name.isEmpty()){
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Le nom ne peut pas être vide");
         }
         this.name = name;
@@ -57,7 +57,7 @@ class Bit {
         this.diameter = diameter;
     }
 
-    public BitDTO getBitDTO(){
-        return new BitDTO(this);
+    public BitDTO getDTO() {
+        return new BitDTO(getName(), getDiameter());
     }
 }

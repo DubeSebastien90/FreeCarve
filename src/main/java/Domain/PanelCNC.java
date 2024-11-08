@@ -1,13 +1,13 @@
 package Domain;
 
-import Domain.ThirdDimension.VertexDTO;
-import Domain.ThirdDimension.Vertex;
-import Domain.Util.*;
+import Common.*;
+import Common.VertexDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * The {@code PanelCNC} class represents the board on the CNC. It can have {@code Cut}s and {@code ClampZone}s
@@ -19,23 +19,26 @@ import java.util.UUID;
 class PanelCNC {
     private final List<Cut> cutList;
     private final List<ClampZone> clamps;
-    private final Vertex panelDimension;
+    private VertexDTO panelDimension;
     private float depth;
     private static final int MAX_FEET_WIDTH = 10;
     private static final int MAX_FEET_HEIGHT = 5;
 
-
     /**
-     * Constructs a new {@code PanelCNC} with no {@code Cut} or {@code ClampZone} on it. The dimensions of the board are determined by the {@code Vertex} passed as parameter.
+     * Constructs a new {@code PanelCNC} with no {@code Cut} or {@code ClampZone} on it. The dimensions of the board are determined by the {@code VertexDTO} passed as parameter.
      *
      * @param panelDimension dimensions of the board
      * @param depth          depth of the board
      */
-    PanelCNC(Vertex panelDimension, float depth) {
+    PanelCNC(VertexDTO panelDimension, float depth) {
         this.cutList = new ArrayList<>();
         this.clamps = new ArrayList<>();
         this.panelDimension = panelDimension;
         this.depth = depth;
+    }
+
+    public PanelDTO getDTO(){
+        return new PanelDTO(cutList.stream().map(Cut::getDTO).collect(Collectors.toList()), panelDimension);
     }
 
     public float getDepth() {
@@ -111,7 +114,7 @@ class PanelCNC {
      * @return Optional<CutDTO> : CutDTO if found, null if not found
      */
     Optional<CutDTO> findSpecificCut(UUID id) {
-        List<CutDTO> cutsDTO = getPanelDTO().getCutsDTO();
+        List<CutDTO> cutsDTO = getDTO().getCutsDTO();
         for (CutDTO c : cutsDTO) {
             if (c.getId() == id) {
                 return Optional.of(c);
@@ -133,7 +136,7 @@ class PanelCNC {
         this.clamps.add(clamp);
     }
 
-    Vertex getPanelDimension() {
+    VertexDTO getPanelDimension() {
         return panelDimension;
     }
 
@@ -167,8 +170,10 @@ class PanelCNC {
      * @param height The new height of the board.
      */
     void resize(double width, double height) {
-        panelDimension.setX(Math.min(Math.max(0, width), Util.feet_to_mm(MAX_FEET_WIDTH)));
-        panelDimension.setY(Math.min(Math.max(0, height), Util.feet_to_mm(MAX_FEET_HEIGHT)));
+        double newWidth = Math.min(Math.max(0, width), Util.feet_to_mm(MAX_FEET_WIDTH));
+        double newHeight = Math.min(Math.max(0, height), Util.feet_to_mm(MAX_FEET_HEIGHT));
+
+        panelDimension = new VertexDTO(newWidth, newHeight, 0);
     }
 
     /**
@@ -177,7 +182,7 @@ class PanelCNC {
      * @param precision The size of each square's side of the grid.
      * @return All the coordinates of the points of the grid.
      */
-    List<Vertex> calculateGridPoint(int precision) {
+    List<VertexDTO> calculateGridPoint(int precision) {
         //todo
         return null;
     }
@@ -191,13 +196,6 @@ class PanelCNC {
     Optional<UUID> getElementAtmm(VertexDTO coordinates) {
         //todo
         return null;
-    }
-
-    /**
-     * @return a DTO version of the Panel
-     */
-    public PanelDTO getPanelDTO() {
-        return new PanelDTO(this);
     }
 
 }

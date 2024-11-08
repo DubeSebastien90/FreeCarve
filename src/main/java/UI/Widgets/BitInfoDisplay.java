@@ -2,7 +2,7 @@ package UI.Widgets;
 
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
-import Domain.BitDTO;
+import Common.BitDTO;
 import UI.SubWindows.BitSelectionPanel;
 
 import javax.swing.*;

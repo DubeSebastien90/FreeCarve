@@ -2,14 +2,14 @@ package UI.Display2D;
 
 import Domain.CutType;
 
-import Domain.GridDTO;
-import Domain.ThirdDimension.VertexDTO;
+import Common.GridDTO;
+import Common.VertexDTO;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
 import UI.LeftBar;
 import UI.MainWindow;
 import UI.Widgets.PersoPoint;
-import Util.UiUtil;
+import Common.UiUtil;
 
 import javax.swing.*;
 import java.awt.*;

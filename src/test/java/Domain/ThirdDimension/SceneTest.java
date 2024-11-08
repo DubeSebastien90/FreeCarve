@@ -1,6 +1,6 @@
 package Domain.ThirdDimension;
 
-import com.kitfox.svg.A;
+import Common.VertexDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,8 +8,6 @@ import java.awt.*;
 import java.security.InvalidKeyException;
 import java.util.List;
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class SceneTest {
     @Test

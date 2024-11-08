@@ -1,4 +1,5 @@
-package Domain.ThirdDimension;
+package Common;
+
 
 /**
  * The {@code VertexDTO} class is a read-only {@code Vertex}
@@ -13,11 +14,6 @@ public class VertexDTO {
     private final double y;
     private final double z;
 
-    public VertexDTO(Vertex vDomain){
-        this.x = vDomain.getX();
-        this.y = vDomain.getY();
-        this.z = vDomain.getZ();
-    }
     public VertexDTO(double x, double y, double z) {
         this.x = x;
         this.y = y;

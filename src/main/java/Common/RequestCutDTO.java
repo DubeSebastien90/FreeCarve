@@ -1,8 +1,7 @@
-package Domain;
+package Common;
 
-import Domain.ThirdDimension.VertexDTO;
+import Domain.CutType;
 
-import java.util.List;
 import java.util.List;
 
 /**

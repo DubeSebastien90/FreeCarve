@@ -1,6 +1,6 @@
 package UI.Widgets;
 
-import Util.UiUtil;
+import Common.UiUtil;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;

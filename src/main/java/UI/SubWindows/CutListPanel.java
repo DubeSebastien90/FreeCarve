@@ -1,6 +1,6 @@
 package UI.SubWindows;
 
-import Domain.CutDTO;
+import Common.CutDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
@@ -8,10 +8,8 @@ import UI.MainWindow;
 import UI.UIConfig;
 import UI.Widgets.Attributable;
 import UI.Widgets.CutBox;
-import org.w3c.dom.Attr;
 
 import javax.swing.*;
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

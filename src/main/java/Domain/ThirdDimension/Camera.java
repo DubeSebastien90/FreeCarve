@@ -1,5 +1,7 @@
 package Domain.ThirdDimension;
 
+import Common.VertexDTO;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
