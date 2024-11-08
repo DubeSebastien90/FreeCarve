@@ -89,6 +89,7 @@ public class BitSelectionPanel extends BasicWindow {
             public void ancestorAdded(AncestorEvent event) {
                 updateBitList();
                 update(gbc);
+                enableLastSelectedBit();
                 panel.revalidate();
                 panel.repaint();
             }
@@ -133,5 +134,16 @@ public class BitSelectionPanel extends BasicWindow {
 
     public int getSelectedBit() {
         return selectedBit;
+    }
+
+    private void enableLastSelectedBit(){
+        if (selectedBit != -1) {
+            for (JToggleButton button : bitButtonList) {
+                if (button != null && Integer.parseInt(button.getActionCommand()) == selectedBit) {
+                    button.setSelected(true);
+                    break;
+                }
+            }
+        }
     }
 }

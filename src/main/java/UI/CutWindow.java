@@ -135,7 +135,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, cutInformationSplitPane, panel3);
         mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel1, splitPane1);
 
-        cutInformationSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 4);
+        cutInformationSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 8);
         splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 2);
         mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 2);
     }
