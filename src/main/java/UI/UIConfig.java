@@ -19,6 +19,7 @@ public enum UIConfig {
     private final int cutBoxIconSize = 20;
     private final int scrollbarSpeed = 16;
     private final int defaultPadding = 10;
+    private final int MAX_NB_BITS = 12;
 
     private UIConfig() {
     }
@@ -76,5 +77,7 @@ public enum UIConfig {
      * @return the default padding of the element of this application
      */
     public int getDefaultPadding() {return defaultPadding;}
+
+    public int getMAX_NB_BITS() { return MAX_NB_BITS; }
 
 }

@@ -4,6 +4,7 @@ import Common.DTO.BitDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.MainWindow;
+import UI.UIConfig;
 import UI.Widgets.BitInfoDisplay;
 
 import javax.swing.*;
@@ -20,9 +21,8 @@ import java.awt.event.ActionListener;
  * @version 1.1
  * @since 2024-11-01
  */
-public class BitConigurationPanel extends BasicWindow {
-    private final int MAX_BIT = 12;
-    private final JToggleButton[] bitList = new JToggleButton[MAX_BIT];
+public class BitConfigurationPanel extends BasicWindow {
+    private final JToggleButton[] bitList = new JToggleButton[UIConfig.INSTANCE.getMAX_NB_BITS()];
     private BitDTO[] bitDTOList;
     private final ChangeAttributeListener listener;
     private int selectedBit = 0;
@@ -33,7 +33,7 @@ public class BitConigurationPanel extends BasicWindow {
      *
      * @param listener the listener for attribute changes triggered by bit selection.
      */
-    public BitConigurationPanel(ChangeAttributeListener listener, MainWindow mainWindow) {
+    public BitConfigurationPanel(ChangeAttributeListener listener, MainWindow mainWindow) {
         super(true);
         this.mainWindow = mainWindow;
         this.listener = listener;
@@ -73,11 +73,11 @@ public class BitConigurationPanel extends BasicWindow {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        for (int i = 0; i < MAX_BIT / 2; i++) {
+        for (int i = 0; i < UIConfig.INSTANCE.getMAX_NB_BITS() / 2; i++) {
             for (int j = 0; j < 2; j++) {
                 gbc.gridy = j;
                 gbc.gridx = i;
-                add(bitList[i + (MAX_BIT / 2) * j], gbc);
+                add(bitList[i + (UIConfig.INSTANCE.getMAX_NB_BITS() / 2) * j], gbc);
             }
         }
     }
@@ -109,7 +109,7 @@ public class BitConigurationPanel extends BasicWindow {
                             new BitInfoDisplay(
                                     mainWindow.getController().getBitsDTO()[finalI],
                                     true,
-                                    BitConigurationPanel.this, mainWindow
+                                    BitConfigurationPanel.this, mainWindow
                             )
                     );
                     listener.changeAttributeEventOccurred(event);

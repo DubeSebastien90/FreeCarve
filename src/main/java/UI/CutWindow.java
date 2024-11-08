@@ -6,6 +6,7 @@ import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
 import UI.SubWindows.AttributePanel;
 import UI.SubWindows.BasicWindow;
+import UI.SubWindows.BitSelectionPanel;
 import UI.SubWindows.CutListPanel;
 import UI.Display2D.Rendering2DWindow;
 import UI.Widgets.Attributable;
@@ -14,6 +15,8 @@ import UI.Widgets.CutBox;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.Optional;
 
 /**
@@ -27,15 +30,17 @@ import java.util.Optional;
 public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     private JSplitPane mainSplitPane;
     private JSplitPane splitPane1;
-    private JSplitPane splitPane2;
+    private JSplitPane cutInformationSplitPane;
     private JPanel panel1;
     private JPanel panel2;
     private JPanel panel3;
+    private JPanel bitPanel;
     private CutListPanel cutListPanel;
     private AttributePanel attributePanel;
     private Attributable selectedAttributable;
     private Rendering2DWindow rendering2DWindow;
     private MainWindow mainWindow;
+    private BitSelectionPanel bitSelectionPanel;
 
     /**
      * Constructs a {@code CutWindow} instance initializing all of it's sub-panels
@@ -117,16 +122,22 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         rendering2DWindow = new Rendering2DWindow(mainWindow, this, this);
         panel1 = rendering2DWindow;
 
+        bitSelectionPanel = new BitSelectionPanel(true, this, mainWindow);
+        bitPanel = bitSelectionPanel;
+
         attributePanel = new AttributePanel(true);
         panel2 = attributePanel;
 
         cutListPanel = new CutListPanel(true, this, this, mainWindow);
         panel3 = cutListPanel;
 
-        splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panel2, panel3);
+        cutInformationSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, bitPanel, panel2);
+        splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, cutInformationSplitPane, panel3);
         mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel1, splitPane1);
 
+        cutInformationSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 4);
         splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 2);
         mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 2);
     }
+
 }

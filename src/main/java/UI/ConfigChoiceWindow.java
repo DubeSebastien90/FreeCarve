@@ -5,7 +5,7 @@ import UI.Events.ChangeCutListener;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.SubWindows.AttributePanel;
-import UI.SubWindows.BitSelectionPanel;
+import UI.SubWindows.BitConfigurationPanel;
 import UI.Display2D.Rendering2DWindow;
 
 import UI.Widgets.BigButton;
@@ -30,7 +30,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
     private final Rendering2DWindow rend;
     private final BigButton nextButton = new BigButton("Suivant");
     private final MainWindow mainWindow;
-    private final BitSelectionPanel bitWindow;
+    private final BitConfigurationPanel bitWindow;
     private final AttributePanel attributePanel;
 
     /**
@@ -39,7 +39,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
     public ConfigChoiceWindow(MainWindow mainWindow) {
         this.setLayout(new GridBagLayout());
         rend = new Rendering2DWindow(mainWindow, this, this);
-        bitWindow = new BitSelectionPanel(this, mainWindow);
+        bitWindow = new BitConfigurationPanel(this, mainWindow);
         attributePanel = new AttributePanel(true);
         setFocusable(true);
         requestFocusInWindow();
@@ -127,7 +127,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
         return bitWindow.getSelectedBit();
     }
 
-    public BitSelectionPanel getBitWindow() {
+    public BitConfigurationPanel getBitWindow() {
         return bitWindow;
     }
 

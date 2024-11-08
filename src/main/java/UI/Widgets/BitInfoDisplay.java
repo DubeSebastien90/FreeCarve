@@ -3,6 +3,7 @@ package UI.Widgets;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import Common.DTO.BitDTO;
+import UI.SubWindows.BitConfigurationPanel;
 import UI.SubWindows.BitSelectionPanel;
 
 import javax.swing.*;
@@ -20,7 +21,7 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     private final BitDTO bit;
     private final Boolean editable;
     private JButton modifyButton;
-    private final BitSelectionPanel bitSelectionPanel;
+    private final BitConfigurationPanel bitConfigurationPanel;
     private NumberTextField widthTextArea;
     private JTextArea nameTextArea;
     private final MainWindow mainWindow;
@@ -32,12 +33,12 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
      * @param editable          a boolean indicating if the bit information can be edited.
      * @param bitSelectionPanel the panel that displays the list of selectable bits.
      */
-    public BitInfoDisplay(BitDTO bit, boolean editable, BitSelectionPanel bitSelectionPanel, MainWindow mainWindow) {
+    public BitInfoDisplay(BitDTO bit, boolean editable, BitConfigurationPanel bitConfigurationPanel, MainWindow mainWindow) {
         super(false);
         this.mainWindow = mainWindow;
         this.bit = bit;
         this.editable = editable;
-        this.bitSelectionPanel = bitSelectionPanel;
+        this.bitConfigurationPanel = bitConfigurationPanel;
         init();
         setEventHandlers();
     }
@@ -105,11 +106,11 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
         modifyButton.addActionListener(e -> {
             if (editable) {
                 mainWindow.getController().modifyBit(
-                        bitSelectionPanel.getSelectedBit(),
+                        bitConfigurationPanel.getSelectedBit(),
                         new BitDTO(nameTextArea.getText(), Float.parseFloat(widthTextArea.getText()))
                 );
             }
-            bitSelectionPanel.refresh();
+            bitConfigurationPanel.refresh();
         });
     }
 
@@ -121,11 +122,11 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     private void modifyBit(float diameter) {
         if (editable) {
             mainWindow.getController().modifyBit(
-                    bitSelectionPanel.getSelectedBit(),
+                    bitConfigurationPanel.getSelectedBit(),
                     new BitDTO(nameTextArea.getText(), diameter)
             );
         }
-        bitSelectionPanel.refresh();
+        bitConfigurationPanel.refresh();
 
     }
 
