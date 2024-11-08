@@ -81,7 +81,6 @@ public class BitSelectionPanel extends BasicWindow {
                     break;
             }
         }
-        this.repaint();
     }
 
     private void setupEventsListeners(GridBagConstraints gbc){
@@ -90,6 +89,8 @@ public class BitSelectionPanel extends BasicWindow {
             public void ancestorAdded(AncestorEvent event) {
                 updateBitList();
                 update(gbc);
+                panel.revalidate();
+                panel.repaint();
             }
 
             @Override
