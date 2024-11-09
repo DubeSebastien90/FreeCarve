@@ -57,8 +57,12 @@ public class ChooseDimension extends BasicWindow implements Attributable {
         JLabel dimensionLabel = new JLabel("Dimensions");
         dimensionLabel.setFont(dimensionLabel.getFont().deriveFont(20f));
 
-        xTextField = new NumberTextField("" + rend.getBoard().getWidth(), width -> rend.resizePanneau(width, rend.getBoard().getHeight()));
-        yTextField = new NumberTextField("" + rend.getBoard().getHeight(), height -> rend.resizePanneau(rend.getBoard().getWidth(), height));
+        double displayWidth = Math.round(rend.getBoard().getWidth() * 100);
+        displayWidth = displayWidth / 100;
+        double displayHeight = Math.round(rend.getBoard().getHeight() * 100);
+        displayHeight = displayHeight / 100;
+        xTextField = new NumberTextField("" + displayWidth, width -> rend.resizePanneau(width, rend.getBoard().getHeight()));
+        yTextField = new NumberTextField("" + displayHeight, height -> rend.resizePanneau(rend.getBoard().getWidth(), height));
 
         JLabel xLabel = new JLabel("x");
         JLabel yLabel = new JLabel("y");
@@ -109,7 +113,7 @@ public class ChooseDimension extends BasicWindow implements Attributable {
             gbc.gridx = 0;
             gbc.gridy = 4;
             add(magnetLabel, gbc);
-            
+
             gbc.gridx = 4;
             add(magnetPrecision, gbc);
 
