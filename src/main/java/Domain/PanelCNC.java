@@ -1,7 +1,10 @@
 package Domain;
 
 import Common.*;
-import Common.VertexDTO;
+import Common.DTO.CutDTO;
+import Common.DTO.PanelDTO;
+import Common.DTO.RequestCutDTO;
+import Common.DTO.VertexDTO;
 
 import java.util.ArrayList;
 import java.util.List;

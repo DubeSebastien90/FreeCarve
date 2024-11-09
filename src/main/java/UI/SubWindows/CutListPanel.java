@@ -1,6 +1,6 @@
 package UI.SubWindows;
 
-import Common.CutDTO;
+import Common.DTO.CutDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;

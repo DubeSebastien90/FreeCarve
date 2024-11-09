@@ -1,6 +1,6 @@
 package UI.Widgets;
 
-import Common.VertexDTO;
+import Common.DTO.VertexDTO;
 
 import java.awt.*;
 

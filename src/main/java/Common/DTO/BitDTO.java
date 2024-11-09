@@ -1,4 +1,4 @@
-package Common;
+package Common.DTO;
 
 /**
  * This class is a DTO wrapper of the {@code Bit} class in order to transfer READ-ONLY informations

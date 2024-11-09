@@ -1,6 +1,6 @@
 package Domain;
 
-import Common.BitDTO;
+import Common.DTO.BitDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

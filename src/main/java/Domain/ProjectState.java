@@ -1,8 +1,8 @@
 package Domain;
 
-import Common.BitDTO;
-import Common.ProjectStateDTO;
-import Common.VertexDTO;
+import Common.DTO.BitDTO;
+import Common.DTO.ProjectStateDTO;
+import Common.DTO.VertexDTO;
 
 import java.util.Arrays;
 

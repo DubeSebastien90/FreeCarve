@@ -1,7 +1,7 @@
 package Domain;
 
-import Common.CutDTO;
-import Common.VertexDTO;
+import Common.DTO.CutDTO;
+import Common.DTO.VertexDTO;
 
 import java.util.ArrayList;
 import java.util.List;

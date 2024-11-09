@@ -1,6 +1,6 @@
 package Domain.ThirdDimension;
 
-import Common.VertexDTO;
+import Common.DTO.VertexDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

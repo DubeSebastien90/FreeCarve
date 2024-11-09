@@ -1,8 +1,8 @@
 package Domain;
 
-import Common.PanelDTO;
-import Common.RequestCutDTO;
-import Common.VertexDTO;
+import Common.DTO.PanelDTO;
+import Common.DTO.RequestCutDTO;
+import Common.DTO.VertexDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

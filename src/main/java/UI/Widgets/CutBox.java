@@ -1,8 +1,8 @@
 package UI.Widgets;
 
-import Common.CutDTO;
+import Common.DTO.CutDTO;
 import Domain.CutType;
-import Common.VertexDTO;
+import Common.DTO.VertexDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutEvent;

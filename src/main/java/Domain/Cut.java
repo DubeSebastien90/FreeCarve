@@ -1,8 +1,8 @@
 package Domain;
 
-import Common.CutDTO;
-import Common.RequestCutDTO;
-import Common.VertexDTO;
+import Common.DTO.CutDTO;
+import Common.DTO.RequestCutDTO;
+import Common.DTO.VertexDTO;
 
 import java.util.List;
 import java.util.UUID;

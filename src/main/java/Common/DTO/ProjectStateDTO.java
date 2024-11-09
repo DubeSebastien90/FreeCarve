@@ -1,4 +1,4 @@
-package Common;
+package Common.DTO;
 
 /**
  * The {@code ProjectStateDTO} class is a read-only {@code ProjectState}

@@ -1,6 +1,6 @@
 package Domain;
 
-import Common.VertexDTO;
+import Common.DTO.VertexDTO;
 
 import java.util.UUID;
 

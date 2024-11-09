@@ -1,13 +1,13 @@
 package Domain;
 
-import Common.*;
+import Common.DTO.*;
+import Common.Interfaces.IDoAction;
+import Common.Interfaces.IUndoAction;
 import Domain.ThirdDimension.*;
 
 import java.awt.image.BufferedImage;
 import java.security.InvalidKeyException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The {@code Controller} class is a Larman's Controller which will be the entry point if an interface wants to interact with the Domain.
@@ -18,23 +18,22 @@ import java.util.UUID;
  */
 public class Controller {
     private final FileManager fileManager = new FileManager();
-    private final UndoRedo undoRedo;
+    private final UndoRedoManager undoRedoManager;
     private final ProjectState currentProjectState;
     private Grid grid;
     private final Scene scene;
     private final Camera camera;
 
     public Controller() {
-        this(new UndoRedo(), new ProjectState(), new Scene());
+        this(new UndoRedoManager(new LinkedList<>(), new LinkedList<>()), new ProjectState(), new Scene());
     }
 
-    Controller(UndoRedo undoRedo, ProjectState projectState, Scene scene) {
-        this.undoRedo = undoRedo;
+    Controller(UndoRedoManager undoRedoManager, ProjectState projectState, Scene scene) {
+        this.undoRedoManager = undoRedoManager;
         this.currentProjectState = projectState;
         this.scene = scene;
         this.camera = new Camera(scene);
     }
-
 
     /**
      * Requests a cut to do on the panel of the current {@code ProjectState}
@@ -138,7 +137,7 @@ public class Controller {
      * Does the Redo action on the project.
      */
     public ProjectStateDTO redo() {
-        this.undoRedo.redo();
+        this.undoRedoManager.redo();
         return getProjectStateDTO();
     }
 
@@ -146,7 +145,7 @@ public class Controller {
      * Does the Undo action on the project.
      */
     public ProjectStateDTO undo() {
-        this.undoRedo.undo();
+        this.undoRedoManager.undo();
         return getProjectStateDTO();
     }
 
@@ -175,7 +174,7 @@ public class Controller {
      * Saves the current state of the project.
      */
     public void saveProject() {
-        fileManager.saveProject(undoRedo.getCurrentState());
+        fileManager.saveProject(currentProjectState);
     }
 
     /**
@@ -231,7 +230,7 @@ public class Controller {
      * @return The String that represent the GCode instructions.
      */
     public String convertToGCode() {
-        return fileManager.convertToGCode(undoRedo.getCurrentState());
+        return fileManager.convertToGCode(currentProjectState);
     }
 
 
@@ -319,6 +318,15 @@ public class Controller {
     public void setGridAvtive(boolean active) {
         grid.setActive(active);
 
+    }
+
+    /**
+     * Executes the doAction and memorizes it for the undoRedo system
+     * @param doAction lambda of method to execute
+     * @param undoAction lambda of method undoing the first one
+     */
+    public void executeAndMemorize(IDoAction doAction, IUndoAction undoAction){
+        undoRedoManager.executeAndMemorize(doAction, undoAction);
     }
 }
 

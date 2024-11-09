@@ -1,4 +1,4 @@
-package Common;
+package Common.DTO;
 
 /**
  * The {@code ClampZoneDTO} class is a read-only {@code ClampZone}

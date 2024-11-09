@@ -2,8 +2,8 @@ package UI.Display2D;
 
 import Domain.CutType;
 
-import Common.GridDTO;
-import Common.VertexDTO;
+import Common.DTO.GridDTO;
+import Common.DTO.VertexDTO;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
 import UI.LeftBar;

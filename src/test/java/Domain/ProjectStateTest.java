@@ -1,9 +1,9 @@
 package Domain;
 
-import Common.BitDTO;
-import Common.ProjectStateDTO;
-import Common.RequestCutDTO;
-import Common.VertexDTO;
+import Common.DTO.BitDTO;
+import Common.DTO.ProjectStateDTO;
+import Common.DTO.RequestCutDTO;
+import Common.DTO.VertexDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

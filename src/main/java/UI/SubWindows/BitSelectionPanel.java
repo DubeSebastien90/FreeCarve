@@ -1,6 +1,6 @@
 package UI.SubWindows;
 
-import Common.BitDTO;
+import Common.DTO.BitDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.MainWindow;

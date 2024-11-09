@@ -1,6 +1,6 @@
 package Domain.ThirdDimension;
 
-import Common.VertexDTO;
+import Common.DTO.VertexDTO;
 import IO.STLParser;
 
 /**

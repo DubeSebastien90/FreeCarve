@@ -1,7 +1,7 @@
 package UI.Widgets;
 
 import Domain.Controller;
-import Common.VertexDTO;
+import Common.DTO.VertexDTO;
 import UI.MainWindow;
 import UI.SubWindows.Rendering3DWindow;
 

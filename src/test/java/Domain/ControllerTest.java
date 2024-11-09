@@ -1,10 +1,10 @@
 package Domain;
 
-import Common.BitDTO;
-import Common.CutDTO;
-import Common.ProjectStateDTO;
-import Common.RequestCutDTO;
-import Common.VertexDTO;
+import Common.DTO.BitDTO;
+import Common.DTO.CutDTO;
+import Common.DTO.ProjectStateDTO;
+import Common.DTO.RequestCutDTO;
+import Common.DTO.VertexDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

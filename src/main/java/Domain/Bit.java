@@ -1,6 +1,6 @@
 package Domain;
 
-import Common.BitDTO;
+import Common.DTO.BitDTO;
 
 /**
  * The {@code Tool} class encapsulates a tool (bit) object and all of it's attributes

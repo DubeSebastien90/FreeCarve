@@ -1,6 +1,6 @@
 package UI.SubWindows;
 
-import Common.VertexDTO;
+import Common.DTO.VertexDTO;
 import UI.MainWindow;
 import UI.Widgets.MeshManipulator;
 import Common.UiUtil;
