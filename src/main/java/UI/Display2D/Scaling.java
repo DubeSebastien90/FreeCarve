@@ -12,7 +12,7 @@ import java.awt.event.MouseMotionListener;
 public class Scaling {
     private MouseMotionListener scaleListener;
     private final Rendering2DWindow rend;
-    private final ChooseDimension chooseDimension;
+    private ChooseDimension chooseDimension;
 
     /**
      * Construcs a new Scaling object
@@ -21,7 +21,6 @@ public class Scaling {
      */
     public Scaling(Rendering2DWindow rend) {
         this.rend = rend;
-        chooseDimension = new ChooseDimension(rend);
         addMouseMotionListener();
         initScalePointMouseListener();
     }
@@ -36,6 +35,11 @@ public class Scaling {
      * the board responds to resize events.
      */
     void initiateScaling() {
+        chooseDimension = new ChooseDimension(rend, rend.getMainWindow().getController().getGrid().isActive());
+        chooseDimension.getxTextField().setMaximumNumber(rend.getMainWindow().getController().getPanelDTO().getMaxMMWidth());
+        chooseDimension.getyTextField().setMaximumNumber(rend.getMainWindow().getController().getPanelDTO().getMaxMMHeight());
+        chooseDimension.getxTextField().setMinimumNumber(0);
+        chooseDimension.getyTextField().setMinimumNumber(0);
         double radius = 5;
         double locationX = (rend.getOffsetX() + rend.getBoard().getX() + rend.getBoard().getWidth()) * rend.getZoom() - radius / 2;
         double locationY = rend.getHeight() - (rend.getBoard().getY() + rend.getOffsetY() + rend.getBoard().getHeight()) * rend.getZoom() - radius / 2;

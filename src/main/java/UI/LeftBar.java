@@ -1,4 +1,5 @@
 package UI;
+
 import Domain.CutType;
 
 import javax.swing.*;
@@ -224,6 +225,9 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.GRID).addActionListener(e -> {
             mainWindow.getController().setGridAvtive(!mainWindow.getController().getGrid().isActive());
             mainWindow.getMiddleContent().getPanel().repaint();
+            if (mainWindow.getMiddleContent().getCurrent() == MiddleContent.MiddleWindowType.CONFIG) {
+                mainWindow.getMiddleContent().getConfigChoiceWindow().getRendering2DWindow().scale();
+            }
         });
         toolBar.getTool(ToolBar.Tool.MAGNET).addActionListener(e -> {
             mainWindow.getController().setGridMagnetism(!mainWindow.getController().getGrid().isMagnetic());
@@ -234,9 +238,9 @@ public class LeftBar extends JScrollPane {
      * Sets the free line cut tool
      */
     private void freeLinelActionListener() {
-        toolBar.getTool(ToolBar.Tool.FREE_LINE).addActionListener(e->{
+        toolBar.getTool(ToolBar.Tool.FREE_LINE).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
-            if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT){
+            if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
                 middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_FREE);
             }
         });
@@ -245,10 +249,10 @@ public class LeftBar extends JScrollPane {
     /**
      * Sets the vertical cut tool
      */
-    private void verticalActionListener(){
-        toolBar.getTool(ToolBar.Tool.VERTICAL).addActionListener(e->{
+    private void verticalActionListener() {
+        toolBar.getTool(ToolBar.Tool.VERTICAL).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
-            if(middle.getCurrent() == MiddleContent.MiddleWindowType.CUT){
+            if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
                 middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_VERTICAL);
             }
         });
@@ -257,10 +261,10 @@ public class LeftBar extends JScrollPane {
     /**
      * Sets the horizontal cut tool
      */
-    private void horizontalActionListener(){
-        toolBar.getTool(ToolBar.Tool.HORIZONTAL).addActionListener(e->{
+    private void horizontalActionListener() {
+        toolBar.getTool(ToolBar.Tool.HORIZONTAL).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
-            if(middle.getCurrent() == MiddleContent.MiddleWindowType.CUT){
+            if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
                 middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_HORIZONTAL);
             }
         });

@@ -21,6 +21,9 @@ import java.util.function.Consumer;
  */
 public class NumberTextField extends JTextArea {
 
+    private double maxNumber = Double.POSITIVE_INFINITY;
+    private double minNumber = Double.NEGATIVE_INFINITY;
+
     /**
      * Constructs a NumberTextField that applies a specified function when the user finishes entering a valid number.
      *
@@ -44,6 +47,14 @@ public class NumberTextField extends JTextArea {
         addInputFinishListener(onFinishInput);
     }
 
+    public void setMaximumNumber(double maxNumber) {
+        this.maxNumber = maxNumber;
+    }
+
+    public void setMinimumNumber(double minNumber) {
+        this.minNumber = minNumber;
+    }
+
     /**
      * Adds listeners to detect when the user has finished entering input.
      * The function is triggered on Enter key press or focus loss.
@@ -65,7 +76,10 @@ public class NumberTextField extends JTextArea {
             public void focusLost(FocusEvent e) {
                 if (getText().length() > 0) {
                     try {
-                        onFinishInput.accept(Double.parseDouble(getText()));
+                        double num = Double.parseDouble(getText());
+                        num = Math.max(Math.min(num, NumberTextField.this.maxNumber), NumberTextField.this.minNumber);
+                        setText("" + num);
+                        onFinishInput.accept(num);
                     } catch (NumberFormatException ex) {
                         Toolkit.getDefaultToolkit().beep();
                     }

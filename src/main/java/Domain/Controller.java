@@ -32,7 +32,7 @@ public class Controller {
         this.camera = new Camera(scene);
     }
 
-    public static Controller initialize(){
+    public static Controller initialize() {
         UndoRedoManager undoRedoManager = new UndoRedoManager();
         return new Controller(undoRedoManager, new ProjectState(undoRedoManager), new Scene());
     }
@@ -156,7 +156,12 @@ public class Controller {
      * @return The list of intersections of the grid.
      */
     public List<VertexDTO> putGrid(int precision, int magnetPrecision) {
-        this.grid = new Grid(precision, magnetPrecision);
+        if (this.grid == null) {
+            this.grid = new Grid(precision, magnetPrecision);
+        } else {
+            this.grid.setMagnetPrecision(magnetPrecision);
+            this.grid.setSize(precision);
+        }
         return null;
     }
 
@@ -321,20 +326,30 @@ public class Controller {
     }
 
     /**
+     * <<<<<<< HEAD
      * Executes the doAction and memorizes it for the undoRedo system
-     * @param doAction lambda of method to execute
+     *
+     * @param doAction   lambda of method to execute
      * @param undoAction lambda of method undoing the first one
      */
-    public void executeAndMemorize(IDoAction doAction, IUndoAction undoAction){
+    public void executeAndMemorize(IDoAction doAction, IUndoAction undoAction) {
         undoRedoManager.executeAndMemorize(doAction, undoAction);
     }
 
     /**
      * Register a method to be called when an undo or redo is done
+     *
      * @param refreshable class that implements a refresh method
      */
     public void addRefreshListener(IRefreshable refreshable) {
         undoRedoManager.addRefreshListener(refreshable);
+    }
+
+    /**
+     * @return True if the point is on the board.
+     */
+    boolean isPointonPanel(VertexDTO point) {
+        return this.currentProjectState.getPanel().isPointonPanel(point);
     }
 }
 

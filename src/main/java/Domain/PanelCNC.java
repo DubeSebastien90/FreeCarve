@@ -43,12 +43,20 @@ class PanelCNC {
         this.memorizer = memorizer;
     }
 
-    public PanelDTO getDTO(){
-        return new PanelDTO(cutList.stream().map(Cut::getDTO).collect(Collectors.toList()), panelDimension);
+    public PanelDTO getDTO() {
+        return new PanelDTO(cutList.stream().map(Cut::getDTO).collect(Collectors.toList()), panelDimension, MAX_FEET_WIDTH, MAX_FEET_HEIGHT);
     }
 
     public float getDepth() {
         return depth;
+    }
+
+    public static double getMaxFeetWidth() {
+        return MAX_FEET_WIDTH;
+    }
+
+    public static double getMaxFeetHeight() {
+        return MAX_FEET_HEIGHT;
     }
 
     public void setDepth(float depth) {
@@ -104,8 +112,8 @@ class PanelCNC {
      */
     boolean removeCut(UUID id) {
         List<Cut> list = getCutList();
-        for(int i=0; i<list.size(); i++){
-            if(list.get(i).getId() == id){
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getId() == id) {
                 list.remove(i);
                 //todo look for potential non removable cut
                 return true;
@@ -116,6 +124,7 @@ class PanelCNC {
 
     /**
      * Finds a specific cut with id
+     *
      * @param id id of the cut
      * @return Optional<CutDTO> : CutDTO if found, null if not found
      */
@@ -202,6 +211,14 @@ class PanelCNC {
     Optional<UUID> getElementAtmm(VertexDTO coordinates) {
         //todo
         return null;
+    }
+
+
+    /**
+     * @return True if the point is on the board.
+     */
+    boolean isPointonPanel(VertexDTO point) {
+        return point.getX() >= 0 && point.getY() >= 0 && point.getX() <= getWidth() && point.getY() <= getHeight();
     }
 
 }

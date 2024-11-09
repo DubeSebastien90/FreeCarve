@@ -17,17 +17,21 @@ import java.awt.*;
 public class ChooseDimension extends BasicWindow implements Attributable {
 
     private final Rendering2DWindow rend;
+    private final boolean gridDisaplyed;
     private NumberTextField xTextField;
     private NumberTextField yTextField;
+    private NumberTextField gridPrecision;
+    private NumberTextField magnetPrecision;
 
     /**
      * Constructs a ChooseDimension panel for modifying the width and height of the specified Rendering2DWindow.
      *
      * @param rend The Rendering2DWindow instance to be resized
      */
-    public ChooseDimension(Rendering2DWindow rend) {
+    public ChooseDimension(Rendering2DWindow rend, boolean gridDisplayed) {
         super(false);
         this.rend = rend;
+        this.gridDisaplyed = gridDisplayed;
         init();
     }
 
@@ -81,6 +85,35 @@ public class ChooseDimension extends BasicWindow implements Attributable {
 
         gbc.gridx = 4;
         add(yTextField, gbc);
+
+        if (gridDisaplyed) {
+            gridPrecision = new NumberTextField("" + rend.getMainWindow().getController().getGrid().getSize(), size -> {
+                rend.getMainWindow().getController().putGrid(size.intValue(), rend.getMainWindow().getController().getGrid().getMagnetPrecision());
+                rend.repaint();
+            });
+            magnetPrecision = new NumberTextField("" + rend.getMainWindow().getController().getGrid().getMagnetPrecision(), magnet -> {
+                rend.resizePanneau(rend.getMainWindow().getController().getGrid().getSize(), magnet.intValue());
+                rend.repaint();
+            });
+
+            JLabel gridLabel = new JLabel("Grid Size");
+            JLabel magnetLabel = new JLabel("Magnet Precision");
+
+            gbc.gridx = 0;
+            gbc.gridy = 3;
+            add(gridLabel, gbc);
+
+            gbc.gridx = 4;
+            add(gridPrecision, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 4;
+            add(magnetLabel, gbc);
+            
+            gbc.gridx = 4;
+            add(magnetPrecision, gbc);
+
+        }
     }
 
     /**

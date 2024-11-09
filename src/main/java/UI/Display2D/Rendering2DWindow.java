@@ -92,7 +92,7 @@ public class Rendering2DWindow extends JPanel {
         return changeAttributeListener;
     }
 
-    public ChangeCutListener getChangeCutListener(){
+    public ChangeCutListener getChangeCutListener() {
         return this.changeCutListener;
     }
 
@@ -206,7 +206,7 @@ public class Rendering2DWindow extends JPanel {
     /**
      * Update the cuts of the Drawing class
      */
-    public void updateCuts(){
+    public void updateCuts() {
         this.drawing.updateCuts();
     }
 
@@ -351,14 +351,6 @@ public class Rendering2DWindow extends JPanel {
         }
     }
 
-
-    /**
-     * @return True if the mouse is on the board.
-     */
-    boolean isPointonPanel() {
-        return fakeMousePt.getX() >= 0 && fakeMousePt.getY() >= 0 && fakeMousePt.getX() <= board.getWidth() && fakeMousePt.getY() <= board.getHeight();
-    }
-
     /**
      * Changes the width and the height of the board
      *
@@ -417,10 +409,11 @@ public class Rendering2DWindow extends JPanel {
 
     /**
      * Scales a mm measure into pixel according to the zoom
+     *
      * @param mm measure
      * @return pixel measure with zoom
      */
-    public double scaleMMToPixel(double mm){
+    public double scaleMMToPixel(double mm) {
         return mm / zoom;
     }
 
@@ -507,9 +500,10 @@ public class Rendering2DWindow extends JPanel {
 
     /**
      * Initialize the cut behaviours by setting up the Drawing class
+     *
      * @param type type of the cut initialized
      */
-    public void cut(CutType type){
+    public void cut(CutType type) {
         drawing.initCut(type);
         repaint();
     }
@@ -527,6 +521,10 @@ public class Rendering2DWindow extends JPanel {
     private void clearPoints() {
         points.clear();
         removeMouseMotionListener(scaling.getScaleListener());
+    }
+
+    public boolean isPointonPanel() {
+        return mainWindow.getController().isPointOnBoard(new VertexDTO(fakeMousePt.getX(), fakeMousePt.getY(), 0));
     }
 
 
