@@ -48,6 +48,7 @@ public class DrawCutFactory {
         else if(type == CutType.LINE_HORIZONTAL){
             return new DrawCutHorizontal(type, renderer, mainWindow);
         }
+
         return new DrawFreeCut(type, renderer, mainWindow);
     }
 

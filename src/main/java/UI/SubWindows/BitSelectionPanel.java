@@ -8,6 +8,7 @@ import UI.UIConfig;
 import javax.swing.*;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
+import javax.swing.plaf.LabelUI;
 import java.awt.*;
 
 public class BitSelectionPanel extends BasicWindow {
@@ -62,8 +63,17 @@ public class BitSelectionPanel extends BasicWindow {
     public void update(GridBagConstraints gbc){
         panel.removeAll();
         int realLen = getRealListLen();
-        int index = 0;
 
+        if (realLen == 0) {
+            JLabel label = new JLabel("Aucun bit configuré");
+            label.setHorizontalAlignment(JLabel.CENTER);
+            label.setVerticalAlignment(JLabel.CENTER);
+
+            panel.add(label, gbc);
+            return;
+        }
+
+        int index = 0;
         // The list is null at the launch of the App because no bit is created
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < (realLen + 1) / 2; j++) { // We want 2 rows

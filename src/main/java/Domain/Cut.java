@@ -21,6 +21,7 @@ class Cut {
     private int bitIndex;
     private double depth;
     private UUID id;
+    private boolean valid;
 
 
     public Cut(CutDTO uiCut){

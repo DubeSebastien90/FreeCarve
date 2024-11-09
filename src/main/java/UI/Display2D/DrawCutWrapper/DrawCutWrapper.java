@@ -1,6 +1,8 @@
 package UI.Display2D.DrawCutWrapper;
 
+import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
+import Common.Exceptions.BitNotSelectedException;
 import Domain.CutType;
 import Common.DTO.VertexDTO;
 import UI.Display2D.Drawing;
@@ -92,8 +94,20 @@ public abstract class DrawCutWrapper {
      * @param mainWindow reference to mainWindow instance
      */
     public DrawCutWrapper(CutType type, Rendering2DWindow renderer, MainWindow mainWindow){
-        this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>());
-        this.stroke = new BasicStroke(strokeWidth);
+        if(mainWindow.getMiddleContent() == null){
+            return;
+        }
+        int selectedBit = mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().getSelectedBit();
+        try{
+            BitDTO bit = validateSelectedBit(selectedBit);
+            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, selectedBit, type, new ArrayList<VertexDTO>());
+            this.stroke = new BasicStroke(bit.getDiameter());
+        } catch (BitNotSelectedException e) {
+            e.printStackTrace(); // Est-ce qu'on veut une barre d'action ou on affiche les commandes a faire?
+            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>());
+            this.stroke = new BasicStroke(strokeWidth);
+        }
+
         this.mainWindow = mainWindow;
         cursorPoint  = null;
         this.update(renderer);
@@ -154,4 +168,18 @@ public abstract class DrawCutWrapper {
             points.add(p1);
         }
     }
+
+    /**
+     * Validate the selected bit
+     * @param selectedBit the selected bit
+     * @return the bit information if it is valid
+     * @throws InvalidBitException when there's no bit selected
+     */
+    private BitDTO validateSelectedBit(int selectedBit) throws BitNotSelectedException {
+        if (selectedBit == -1){
+            throw new BitNotSelectedException("Aucun bit sélectionner"); // Gérer l'erreur de non sélection de bit
+        }
+
+        return mainWindow != null ? mainWindow.getController().getBitsDTO()[selectedBit]: new BitDTO("Error", 1);
+        }
 }
