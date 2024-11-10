@@ -2,6 +2,7 @@ package Domain;
 
 import Common.DTO.*;
 import Common.Interfaces.IDoAction;
+import Common.Interfaces.IRefreshable;
 import Common.Interfaces.IUndoAction;
 import Domain.ThirdDimension.*;
 
@@ -24,15 +25,16 @@ public class Controller {
     private final Scene scene;
     private final Camera camera;
 
-    public Controller() {
-        this(new UndoRedoManager(new LinkedList<>(), new LinkedList<>()), new ProjectState(), new Scene());
-    }
-
     Controller(UndoRedoManager undoRedoManager, ProjectState projectState, Scene scene) {
         this.undoRedoManager = undoRedoManager;
         this.currentProjectState = projectState;
         this.scene = scene;
         this.camera = new Camera(scene);
+    }
+
+    public static Controller initialize(){
+        UndoRedoManager undoRedoManager = new UndoRedoManager();
+        return new Controller(undoRedoManager, new ProjectState(undoRedoManager), new Scene());
     }
 
     /**
@@ -136,17 +138,15 @@ public class Controller {
     /**
      * Does the Redo action on the project.
      */
-    public ProjectStateDTO redo() {
+    public void redo() {
         this.undoRedoManager.redo();
-        return getProjectStateDTO();
     }
 
     /**
      * Does the Undo action on the project.
      */
-    public ProjectStateDTO undo() {
+    public void undo() {
         this.undoRedoManager.undo();
-        return getProjectStateDTO();
     }
 
     /**
@@ -327,6 +327,14 @@ public class Controller {
      */
     public void executeAndMemorize(IDoAction doAction, IUndoAction undoAction){
         undoRedoManager.executeAndMemorize(doAction, undoAction);
+    }
+
+    /**
+     * Register a method to be called when an undo or redo is done
+     * @param refreshable class that implements a refresh method
+     */
+    public void addRefreshListener(IRefreshable refreshable) {
+        undoRedoManager.addRefreshListener(refreshable);
     }
 }
 

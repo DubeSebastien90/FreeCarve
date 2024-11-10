@@ -1,4 +1,4 @@
-package UI.Widgets;
+package UI.Listeners;
 
 import Domain.Controller;
 import Common.DTO.VertexDTO;

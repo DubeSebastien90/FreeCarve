@@ -92,8 +92,8 @@ public class LeftBar extends JScrollPane {
             JButton save = createSVGButton("save", true, "Enregistrer", uiConfig.getToolIconSize());
             add(save);
             addSeparator();
-            add(createSVGButton("undo", false, "Undo", uiConfig.getToolIconSize()));
-            add(createSVGButton("redo", false, "Redo", uiConfig.getToolIconSize()));
+            add(createSVGButton("undo", true, "Undo", uiConfig.getToolIconSize()));
+            add(createSVGButton("redo", true, "Redo", uiConfig.getToolIconSize()));
             add(createSVGButton("trash", false, "Delete", uiConfig.getToolIconSize()));
             addSeparator();
             add(createSVGButton("grid", false, "Activer grille", uiConfig.getToolIconSize()));
@@ -176,6 +176,8 @@ public class LeftBar extends JScrollPane {
         gridActionListener();
         verticalActionListener();
         horizontalActionListener();
+        undoActionListener();
+        redoActionListener();
     }
 
     /**
@@ -261,6 +263,24 @@ public class LeftBar extends JScrollPane {
             if(middle.getCurrent() == MiddleContent.MiddleWindowType.CUT){
                 middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_HORIZONTAL);
             }
+        });
+    }
+
+    /**
+     * Sets the undo action listener
+     */
+    private void undoActionListener(){
+        toolBar.getTool(ToolBar.Tool.UNDO).addActionListener(e->{
+            mainWindow.getController().undo();
+        });
+    }
+
+    /**
+     * Sets the redo action listener
+     */
+    private void redoActionListener(){
+        toolBar.getTool(ToolBar.Tool.REDO).addActionListener(e->{
+            mainWindow.getController().redo();
         });
     }
 }

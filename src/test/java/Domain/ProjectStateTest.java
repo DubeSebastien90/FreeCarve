@@ -18,8 +18,8 @@ public class ProjectStateTest {
     @BeforeEach
     void setUp() {
         Bit[] bitList = new Bit[12];
-        PanelCNC board = new PanelCNC(new VertexDTO(15.0, 15.0, 0.0), 5);
-        stateTest = new ProjectState(bitList, board);
+        PanelCNC board = new PanelCNC(new VertexDTO(15.0, 15.0, 0.0), 5, new UndoRedoManager());
+        stateTest = new ProjectState(bitList, board, new UndoRedoManager());
     }
 
     @Test
@@ -75,11 +75,11 @@ public class ProjectStateTest {
     @Test
     void valid_board() {
         // Arrange
-        PanelCNC panelCNC = new PanelCNC(new VertexDTO(12, 13, 0), 5.0f);
+        PanelCNC panelCNC = new PanelCNC(new VertexDTO(12, 13, 0), 5.0f, new UndoRedoManager());
         Bit[] bitList = new Bit[12];
 
         // Act
-        ProjectState projectState = new ProjectState(bitList, panelCNC);
+        ProjectState projectState = new ProjectState(bitList, panelCNC, new UndoRedoManager());
 
         // Assert
         Assertions.assertEquals(projectState.getPanel(), panelCNC);

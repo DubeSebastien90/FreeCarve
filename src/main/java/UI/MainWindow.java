@@ -1,12 +1,13 @@
 package UI;
 
 import Domain.Controller;
+import UI.Listeners.UndoRedoDispatcher;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.util.ArrayList;
+import java.awt.event.KeyEvent;
 
 import com.formdev.flatlaf.FlatLaf;
 
@@ -67,7 +68,7 @@ public class MainWindow {
      * and adds all necessary panels and menus to the frame.</p>
      */
     private void init() {
-        this.controller = new Controller();
+        this.controller = Controller.initialize();
 
         ToolTipManager.sharedInstance().setInitialDelay(1000);
         frame = new JFrame();
@@ -89,6 +90,7 @@ public class MainWindow {
         mainInsidePanel.add(middleContent.getPanel(), BorderLayout.CENTER);
         mainInsidePanel.add(downBar.getDownBar(), BorderLayout.SOUTH);
         frame.add(mainInsidePanel);
+        frame.setFocusable(true);
     }
 
     /**
@@ -161,5 +163,7 @@ public class MainWindow {
                 // Handle resizing if needed
             }
         });
+
+        DefaultKeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new UndoRedoDispatcher(controller));
     }
 }

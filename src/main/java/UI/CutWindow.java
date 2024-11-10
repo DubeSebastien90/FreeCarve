@@ -44,6 +44,8 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     public CutWindow(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         this.init(mainWindow);
+        
+        mainWindow.getController().addRefreshListener(()->this.rendering2DWindow.updateCuts());
     }
 
     public Rendering2DWindow getRenderer() {
@@ -100,7 +102,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     @Override
     public void deleteCutEventOccured(ChangeCutEvent event) {
         mainWindow.getController().removeCut(event.getCutId());
-        if (event.getSource() == this.selectedAttributable) {// this means it's the same object, so the attributable will be delete
+        if (event.getSource() == this.selectedAttributable) {// this means it's the same object, so the attributable will be deleted
             this.attributePanel.updateAttribute(null);
         }
         this.cutListPanel.update();

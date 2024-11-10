@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class PanelCNCTest {
     private PanelCNC panelCNC;
@@ -18,7 +19,7 @@ public class PanelCNCTest {
     void SetUp(){
         boardDimension = new VertexDTO(1,2,3);
         depth = 13.0f;
-        panelCNC = new PanelCNC(boardDimension, depth);
+        panelCNC = new PanelCNC(boardDimension, depth, new UndoRedoManager());
     }
 
     @Test

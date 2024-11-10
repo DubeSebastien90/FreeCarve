@@ -17,7 +17,7 @@ public class ControllerTest {
 
     @BeforeAll
     static void setup(){
-        controllerTest = new Controller();
+        controllerTest = Controller.initialize();
     }
 
     @Test

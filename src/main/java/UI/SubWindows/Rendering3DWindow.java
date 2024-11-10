@@ -2,7 +2,7 @@ package UI.SubWindows;
 
 import Common.DTO.VertexDTO;
 import UI.MainWindow;
-import UI.Widgets.MeshManipulator;
+import UI.Listeners.MeshManipulator;
 import Common.UiUtil;
 
 import javax.swing.*;

@@ -3,6 +3,7 @@ package Domain;
 import Common.DTO.BitDTO;
 import Common.DTO.ProjectStateDTO;
 import Common.DTO.VertexDTO;
+import Domain.Interfaces.IMemorizer;
 
 import java.util.Arrays;
 
@@ -14,19 +15,17 @@ import java.util.Arrays;
  * @since 2024-10-20
  */
 class ProjectState {
-    private final Bit[] bitList = new Bit[12];
+    private final Bit[] bitList;
     private PanelCNC panel;
-    private final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 0); // dimension in mm
-    private final float defaultPanelDepth = 1.0f; // depth in mm
+    private static final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 0); // dimension in mm
+    private static final float defaultPanelDepth = 1.0f; // depth in mm
+    private final IMemorizer memorizer;
 
     /**
      * Constructs a default new {@code ProjectState}.
      */
-    ProjectState() {
-        for (int i = 0; i < bitList.length; i++) {
-            bitList[i] = new Bit();
-        }
-        panel = new PanelCNC(defaultPanelDimension, defaultPanelDepth);
+    ProjectState(IMemorizer memorizer) {
+        this(Arrays.stream(new Bit[12]).map(bit -> new Bit()).toList().toArray(Bit[]::new), new PanelCNC(defaultPanelDimension, defaultPanelDepth, memorizer), memorizer);
     }
 
     /**
@@ -35,15 +34,10 @@ class ProjectState {
      * @param bitList The list of {@code Bit} of the CNC.
      * @param panel   The {@code PanelCNC} of the project.
      */
-    ProjectState(Bit[] bitList, PanelCNC panel) {
-        try {
-            for (int i = 0; i < bitList.length; i++) {
-                setBit(bitList[i], i);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    ProjectState(Bit[] bitList, PanelCNC panel, IMemorizer memorizer) {
+        this.bitList = bitList;
         setPanel(panel);
+        this.memorizer = memorizer;
     }
 
     public Bit[] getBitList() {

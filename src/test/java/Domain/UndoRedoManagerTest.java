@@ -2,6 +2,7 @@ package Domain;
 
 import Common.Exceptions.NullActionException;
 import Common.Interfaces.IDoAction;
+import Common.Interfaces.IRefreshable;
 import Common.Interfaces.IUndoAction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,15 +14,17 @@ import static org.mockito.Mockito.*;
 class UndoRedoManagerTest {
 
     @Test
-    void undo_HappyPath_UndoesActionAndFillsPile() {
+    void undo_HappyPath_UndoesActionAndFillsPile_Refresh() {
         // Arrange
         IUndoAction undoAction = mock(IUndoAction.class);
         IDoAction doAction = mock(IDoAction.class);
+        IRefreshable refreshable = mock(IRefreshable.class);
 
         LinkedList<UndoRedoManager.ActionPair> undo = new LinkedList<>(List.of(new UndoRedoManager.ActionPair(doAction, undoAction)));
         LinkedList<UndoRedoManager.ActionPair> redo = new LinkedList<>();
 
         UndoRedoManager undoRedoManager = new UndoRedoManager(undo, redo);
+        undoRedoManager.addRefreshListener(refreshable);
 
         // Act
         Assertions.assertDoesNotThrow(undoRedoManager::undo);
@@ -29,6 +32,7 @@ class UndoRedoManagerTest {
         // Assert
         verify(doAction, times(0)).execute();
         verify(undoAction, times(1)).execute();
+        verify(refreshable, times(1)).refresh();
         Assertions.assertEquals(0, undo.size());
         Assertions.assertEquals(1, redo.size());
     }
@@ -39,6 +43,7 @@ class UndoRedoManagerTest {
         IUndoAction undoAction = mock(IUndoAction.class);
         IDoAction doAction = mock(IDoAction.class);
         UndoRedoManager undoRedoManager = new UndoRedoManager(new LinkedList<>(), new LinkedList<>(List.of(new UndoRedoManager.ActionPair(doAction, undoAction))));
+        undoRedoManager.addRefreshListener(Assertions::fail);
 
         // Act
         Assertions.assertDoesNotThrow(undoRedoManager::undo);
@@ -50,15 +55,17 @@ class UndoRedoManagerTest {
 
 
     @Test
-    void redo_HappyPath_RedoesActionAndFillsPile() {
+    void redo_HappyPath_RedoesAction_FillsPile_Refreshes() {
         // Arrange
         IUndoAction undoAction = mock(IUndoAction.class);
         IDoAction doAction = mock(IDoAction.class);
+        IRefreshable refreshable = mock(IRefreshable.class);
 
         LinkedList<UndoRedoManager.ActionPair> undo = new LinkedList<>();
         LinkedList<UndoRedoManager.ActionPair> redo = new LinkedList<>(List.of(new UndoRedoManager.ActionPair(doAction, undoAction)));
 
         UndoRedoManager undoRedoManager = new UndoRedoManager(undo, redo);
+        undoRedoManager.addRefreshListener(refreshable);
 
         // Act
         Assertions.assertDoesNotThrow(undoRedoManager::redo);
@@ -66,6 +73,7 @@ class UndoRedoManagerTest {
         // Assert
         verify(doAction, times(1)).execute();
         verify(undoAction, times(0)).execute();
+        verify(refreshable, times(1)).refresh();
         Assertions.assertEquals(1, undo.size());
         Assertions.assertEquals(0, redo.size());
     }
@@ -76,6 +84,7 @@ class UndoRedoManagerTest {
         IUndoAction undoAction = mock(IUndoAction.class);
         IDoAction doAction = mock(IDoAction.class);
         UndoRedoManager undoRedoManager = new UndoRedoManager(new LinkedList<>(List.of(new UndoRedoManager.ActionPair(doAction, undoAction))), new LinkedList<>());
+        undoRedoManager.addRefreshListener(Assertions::fail);
 
         // Act
         Assertions.assertDoesNotThrow(undoRedoManager::redo);
@@ -88,7 +97,7 @@ class UndoRedoManagerTest {
     @Test
     void memorize_GivenAction_ExecutesAndRecordsIt_EmptiesRedoPile() {
         // Arrange
-        Queue<UndoRedoManager.ActionPair> redoStack = mock(Queue.class);
+        Deque<UndoRedoManager.ActionPair> redoStack = mock(Deque.class);
 
         UndoRedoManager undoRedoManager = new UndoRedoManager(new LinkedList<>(), redoStack);
         IDoAction doAction = mock(IDoAction.class);
@@ -114,5 +123,36 @@ class UndoRedoManagerTest {
 
         // Assert
         verify(undoAction, times(0)).execute();
+    }
+
+    @Test
+    void addRefreshListener_GivenNullAction_ThrowsErrorAndDoesNothing() {
+        // Arrange
+        UndoRedoManager undoRedoManager = new UndoRedoManager(new LinkedList<>(), new LinkedList<>());
+        undoRedoManager.addRefreshListener(Assertions::fail);
+
+        // Act and Assert
+        Assertions.assertThrows(NullPointerException.class, ()-> undoRedoManager.addRefreshListener(null));
+    }
+
+    @Test
+    void addRefreshListener_HappyPath_RegistersAction() {
+        // Arrange
+        IUndoAction undoAction = mock(IUndoAction.class);
+        IDoAction doAction = mock(IDoAction.class);
+        IRefreshable refreshable = mock(IRefreshable.class);
+
+        LinkedList<UndoRedoManager.ActionPair> undo = new LinkedList<>();
+        LinkedList<UndoRedoManager.ActionPair> redo = new LinkedList<>(List.of(new UndoRedoManager.ActionPair(doAction, undoAction)));
+
+        UndoRedoManager undoRedoManager = new UndoRedoManager(undo, redo);
+
+        // Act
+        Assertions.assertDoesNotThrow(()-> undoRedoManager.addRefreshListener(refreshable));
+        undoRedoManager.redo();
+
+        // Assert
+        verify(refreshable, times(1)).refresh();
+
     }
 }

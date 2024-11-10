@@ -5,6 +5,7 @@ import Common.DTO.CutDTO;
 import Common.DTO.PanelDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
+import Domain.Interfaces.IMemorizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ class PanelCNC {
     private final List<ClampZone> clamps;
     private VertexDTO panelDimension;
     private float depth;
+    private final IMemorizer memorizer;
     private static final int MAX_FEET_WIDTH = 10;
     private static final int MAX_FEET_HEIGHT = 5;
 
@@ -33,11 +35,12 @@ class PanelCNC {
      * @param panelDimension dimensions of the board
      * @param depth          depth of the board
      */
-    PanelCNC(VertexDTO panelDimension, float depth) {
+    PanelCNC(VertexDTO panelDimension, float depth, IMemorizer memorizer) {
         this.cutList = new ArrayList<>();
         this.clamps = new ArrayList<>();
         this.panelDimension = panelDimension;
         this.depth = depth;
+        this.memorizer = memorizer;
     }
 
     public PanelDTO getDTO(){
@@ -71,7 +74,7 @@ class PanelCNC {
                 cut.getType(),
                 cut.getPoints()
         );
-        this.cutList.add(new Cut(cutDTO));
+        memorizer.executeAndMemorize(()->this.cutList.add(new Cut(cutDTO)), ()->this.cutList.removeIf(e->e.getId() == newUUID));
         return Optional.of(newUUID);
     }
 
