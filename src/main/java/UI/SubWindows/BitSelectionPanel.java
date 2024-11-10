@@ -8,16 +8,18 @@ import UI.UIConfig;
 import javax.swing.*;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
-import javax.swing.plaf.LabelUI;
-import java.util.List;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * Represents a panel allowing the selection of bits through toggle buttons.
+ *
+ * @author Antoine Morin
+ * @version 1.0
+ */
 public class BitSelectionPanel extends BasicWindow {
     private MainWindow mainWindow;
     private ChangeAttributeListener listener;
-    private BitDTO[] bitDTOList;
     private JScrollPane scrollPane;
     private JPanel panel;
     private ButtonGroup buttonGroup = new ButtonGroup();
@@ -30,6 +32,14 @@ public class BitSelectionPanel extends BasicWindow {
      */
     private int selectedBit = -1;
 
+    /**
+     * Constructs a BitSelectionPanel with a specified attribute change listener.
+     *
+     * @param haveBackground true if the panel should have a background, false otherwise
+     * @param listener the listener for attribute changes triggered by bit selection.
+     * @param mainWindow the main window of the application
+     * @param configuredBitsMap the map of configured bits
+     */
     public BitSelectionPanel(boolean haveBackground, ChangeAttributeListener listener, MainWindow mainWindow, Map<Integer, BitDTO> configuredBitsMap) {
         super(haveBackground);
         this.mainWindow = mainWindow;
@@ -39,6 +49,10 @@ public class BitSelectionPanel extends BasicWindow {
         init();
     }
 
+    /**
+     * Initializes the layout and components of the BitSelectionPanel, such as labels, text areas,
+     * and the modify button. Sets up layout constraints and adds components to the panel.
+     */
     private void init(){
         buttonGroup = new ButtonGroup();
         panel = new JPanel();
@@ -65,9 +79,12 @@ public class BitSelectionPanel extends BasicWindow {
         setupEventsListeners(gbc);
     }
 
+    /**
+     * Updates the panel with the latest bits from the controller
+     * @param gbc The grid bag constraints to use for the layout
+     */
     public void update(GridBagConstraints gbc){
         panel.removeAll();
-        int realLen = getRealListLen();
 
         if(configuredBitsMap == null || configuredBitsMap.isEmpty()){
             JLabel label = new JLabel("Aucun bit configuré");
@@ -76,9 +93,6 @@ public class BitSelectionPanel extends BasicWindow {
             panel.add(label, gbc);
             return;
         }
-
-        // We want to iterate through configuredBitMap to display the bits in order
-        //System.out.println("configuredBitsMap: " + configuredBitsMap);
 
         int columns = (configuredBitsMap.size() + 1) / 2; // Calcul du nombre de colonnes pour 2 lignes
         int row = 0;
@@ -100,8 +114,16 @@ public class BitSelectionPanel extends BasicWindow {
         }
     }
 
+    /**
+     * Sets up event listeners for the panel, such as the ancestor listener.
+     * @param gbc The grid bag constraints to use for the layout
+     */
     private void setupEventsListeners(GridBagConstraints gbc){
         panel.addAncestorListener(new AncestorListener() {
+            /**
+             * Called when we get to the CutWindow interface
+             * @param event The ancestor event
+             */
             @Override
             public void ancestorAdded(AncestorEvent event) {
                 updateBitList();
@@ -123,8 +145,10 @@ public class BitSelectionPanel extends BasicWindow {
         });
     }
 
+    /**
+     * Updates the bit list with the latest bits from the controller
+     */
     private void updateBitList(){
-        bitDTOList = mainWindow.getController().getBitsDTO();
         for(Map.Entry<Integer, BitDTO> entry : configuredBitsMap.entrySet()){
             BitDTO bitDTO = entry.getValue();
             JToggleButton button = new JToggleButton(bitDTO.getName());
@@ -138,20 +162,18 @@ public class BitSelectionPanel extends BasicWindow {
         }
     }
 
-    private int getRealListLen(){
-        int len = 0;
-        for (JToggleButton jToggleButton : bitButtonList) {
-            if (jToggleButton != null) {
-                len++;
-            }
-        }
-        return len;
-    }
-
+    /**
+     * Returns the selected bit index of all the configured bits
+     * @return The selected bit index
+     */
     public int getSelectedBit() {
         return selectedBit;
     }
 
+    /**
+     * On window revalidation, this method will highlight the last selected bit for user to know
+     * which bit he selected last time
+     */
     private void enableLastSelectedBit(){
         if (selectedBit != -1) {
             for (JToggleButton button : bitButtonList) {
@@ -161,15 +183,5 @@ public class BitSelectionPanel extends BasicWindow {
                 }
             }
         }
-    }
-
-    public List<String> getCreatedBitsReadable(){
-        List<String> createdBits = new ArrayList<>();
-        for (BitDTO bitDTO : bitDTOList) {
-            if (bitDTO.getDiameter() != 0) {
-                createdBits.add(bitDTO.getName() + " - " + bitDTO.getDiameter() + "mm");
-            }
-        }
-        return createdBits;
     }
 }

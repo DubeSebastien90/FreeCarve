@@ -128,10 +128,4 @@ public class BitConfigurationPanel extends BasicWindow {
             });
         }
     }
-
-
-
-    public Map<Integer, BitDTO> getConfiguredBitsMap() {
-        return configuredBitsMap;
-    }
 }

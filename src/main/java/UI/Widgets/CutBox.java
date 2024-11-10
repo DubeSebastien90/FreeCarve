@@ -148,7 +148,7 @@ public class CutBox implements Attributable {
         this.cut = newCutDTO;
 
         // Setting the bit info
-        bitnameLabel.setText("Outil :" + (mainWindow.getController().getBitsDTO()[newCutDTO.getBitIndex()].getName()));
+        bitnameLabel.setText("Outil : " + (mainWindow.getController().getBitsDTO()[newCutDTO.getBitIndex()].getName()));
 
         // Setting the index of the cut
         numberLabel.setText(String.valueOf(this.index));
@@ -457,11 +457,19 @@ public class CutBox implements Attributable {
         depthBox = new SingleValueBox(true, "Profondeur", this.cut.getDepth());
 
         ArrayList<JLabel> labelListBits = new ArrayList<>();
-        for (String bit : mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().getCreatedBitsReadable()){
+        for (String bit : mainWindow.getMiddleContent().getCutWindow().getCreatedBitsReadable()){
             JLabel l = new JLabel(bit);
             labelListBits.add(l);
         }
-        bitChoiceBox = new ChoiceBox(true, "Outil", labelListBits, this.cut.getBitIndex());
+
+        int index = 0;
+        for (int i = 0; i < labelListBits.size(); i++){
+            if (labelListBits.get(i).getText().startsWith(mainWindow.getController().getBitsDTO()[this.cut.getBitIndex()].getName())){
+                index = i;
+                break;
+            }
+        }
+        bitChoiceBox = new ChoiceBox(true, "Outil", labelListBits, index);
 
         ArrayList<JLabel> labelList = new ArrayList<>();
         for (CutType t : CutType.values()) {

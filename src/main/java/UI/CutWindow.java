@@ -18,6 +18,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -150,6 +152,14 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
 
     public Map<Integer, BitDTO> getConfiguredBitsMap() {
         return configuredBitsMap;
+    }
+
+    public java.util.List<String> getCreatedBitsReadable(){
+        List<String> createdBits = new ArrayList<>();
+        for (BitDTO bitDTO : configuredBitsMap.values()) {
+            createdBits.add(bitDTO.getName() + " - " + bitDTO.getDiameter() + "mm");
+        }
+        return createdBits;
     }
 
 }
