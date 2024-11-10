@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import Common.BitDTO;
+import Common.DTO.BitDTO;
 import UI.Display2D.Rendering2DWindow;
 import UI.LeftBar.ToolBar.Tool;
 
@@ -181,5 +181,9 @@ public class MiddleContent {
         } else {
             configuredBitsMap.put(index, configuredBit);
         }
+    }
+
+    public Map<Integer, Common.DTO.BitDTO> getConfiguredBitsMap() {
+        return configuredBitsMap;
     }
 }

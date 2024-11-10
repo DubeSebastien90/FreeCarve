@@ -150,16 +150,4 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         return bitSelectionPanel;
     }
 
-    public Map<Integer, BitDTO> getConfiguredBitsMap() {
-        return configuredBitsMap;
-    }
-
-    public java.util.List<String> getCreatedBitsReadable(){
-        List<String> createdBits = new ArrayList<>();
-        for (BitDTO bitDTO : configuredBitsMap.values()) {
-            createdBits.add(bitDTO.getName() + " - " + bitDTO.getDiameter() + "mm");
-        }
-        return createdBits;
-    }
-
 }

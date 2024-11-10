@@ -1,5 +1,6 @@
 package UI.Widgets;
 
+import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
 import Domain.CutType;
 import Common.DTO.VertexDTO;
@@ -23,6 +24,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -56,7 +58,7 @@ public class CutBox implements Attributable {
     PointsBox pointsBox1;
     PointsBox pointsBox2;
     SingleValueBox depthBox;
-    ChoiceBox bitChoiceBox;
+    BitChoiceBox bitChoiceBox;
     ChoiceBox cuttypeBox;
 
     /**
@@ -246,6 +248,7 @@ public class CutBox implements Attributable {
         addEventListenerToPointBox(pointsBox1, 0);
         addEventListenerToPointBox(pointsBox2, 1);
         addEventListenerToSingleValue(depthBox);
+        addEventListenerToBitChoiceBox(bitChoiceBox);
         addEventListenerToChoiceBox(cuttypeBox);
     }
 
@@ -439,9 +442,23 @@ public class CutBox implements Attributable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JComboBox comboBox = (JComboBox) e.getSource();
-                CutType chosenCutType = CutType.values()[comboBox.getSelectedIndex()];
                 CutDTO c = CutBox.this.cut;
+                CutType chosenCutType = CutType.values()[comboBox.getSelectedIndex()];
                 c = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), chosenCutType, c.getPoints());
+                mainWindow.getController().modifyCut(c);
+                listener.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
+            }
+        });
+    }
+
+    private void addEventListenerToBitChoiceBox(BitChoiceBox cb) {
+        cb.getComboBox().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox comboBox = (JComboBox) e.getSource();
+                CutDTO c = CutBox.this.cut;
+                ComboBitItem chosenBit = (ComboBitItem) comboBox.getModel().getSelectedItem();
+                c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints());
                 mainWindow.getController().modifyCut(c);
                 listener.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
             }
@@ -456,20 +473,16 @@ public class CutBox implements Attributable {
         pointsBox2 = new PointsBox(true, "Point2", this.cut.getPoints().get(1));
         depthBox = new SingleValueBox(true, "Profondeur", this.cut.getDepth());
 
-        ArrayList<JLabel> labelListBits = new ArrayList<>();
-        for (String bit : mainWindow.getMiddleContent().getCutWindow().getCreatedBitsReadable()){
-            JLabel l = new JLabel(bit);
-            labelListBits.add(l);
-        }
+        Map<Integer, BitDTO> configuredBitsMap = mainWindow.getMiddleContent().getConfiguredBitsMap();
 
         int index = 0;
-        for (int i = 0; i < labelListBits.size(); i++){
-            if (labelListBits.get(i).getText().startsWith(mainWindow.getController().getBitsDTO()[this.cut.getBitIndex()].getName())){
-                index = i;
+        for(Map.Entry<Integer, BitDTO> entry : configuredBitsMap.entrySet()){
+            if(entry.getKey().equals(this.cut.getBitIndex())){
                 break;
             }
+            index++;
         }
-        bitChoiceBox = new ChoiceBox(true, "Outil", labelListBits, index);
+        bitChoiceBox = new BitChoiceBox(true, "Outil", configuredBitsMap, index);
 
         ArrayList<JLabel> labelList = new ArrayList<>();
         for (CutType t : CutType.values()) {

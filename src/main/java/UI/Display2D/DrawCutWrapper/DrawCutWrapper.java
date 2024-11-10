@@ -96,7 +96,7 @@ public abstract class DrawCutWrapper {
     public DrawCutWrapper(CutType type, Rendering2DWindow renderer, MainWindow mainWindow){
         if(mainWindow.getMiddleContent() == null)
             return;
-        
+
         int selectedBit = mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().getSelectedBit();
         try{
             BitDTO bit = validateSelectedBit(selectedBit);

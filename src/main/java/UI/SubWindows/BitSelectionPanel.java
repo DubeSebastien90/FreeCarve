@@ -121,7 +121,7 @@ public class BitSelectionPanel extends BasicWindow {
     private void setupEventsListeners(GridBagConstraints gbc){
         panel.addAncestorListener(new AncestorListener() {
             /**
-             * Called when we get to the CutWindow interface
+             * Called when enter CutWindow interface
              * @param event The ancestor event
              */
             @Override
