@@ -120,12 +120,17 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
      * @param diameter The diameter of the bit
      */
     private void modifyBit(float diameter) {
+        BitDTO newBit = new BitDTO(nameTextArea.getText(), diameter);
         if (editable) {
             mainWindow.getController().modifyBit(
                     bitConfigurationPanel.getSelectedBit(),
-                    new BitDTO(nameTextArea.getText(), diameter)
+                    newBit
             );
         }
+        mainWindow.getMiddleContent().configuredBitsListener(
+                bitConfigurationPanel.getSelectedBit(),
+                newBit
+        );
         bitConfigurationPanel.refresh();
 
     }

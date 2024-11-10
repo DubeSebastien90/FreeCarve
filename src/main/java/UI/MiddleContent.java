@@ -2,7 +2,10 @@ package UI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
+import Common.BitDTO;
 import UI.Display2D.Rendering2DWindow;
 import UI.LeftBar.ToolBar.Tool;
 
@@ -31,10 +34,12 @@ public class MiddleContent {
     private ExportWindow exportWindow;
     private final MainWindow mainWindow;
     private MiddleWindowType current;
+    private Map<Integer, BitDTO> configuredBitsMap;
 
     public MiddleContent(MainWindow mainWindow) {
         this.panel = new JPanel();
         this.mainWindow = mainWindow;
+        configuredBitsMap = new HashMap<Integer, BitDTO>();
         init(mainWindow);
         this.panel.setBackground(Color.RED);
     }
@@ -71,10 +76,10 @@ public class MiddleContent {
      * Initiates all of the {@code MiddleContent} components
      */
     private void init(MainWindow mainWindow) {
-        cutWindow = new CutWindow(mainWindow);
+        cutWindow = new CutWindow(mainWindow, configuredBitsMap);
         projectWindow = new FolderWindow(mainWindow);
         simulationWindow = new SimulationWindow(mainWindow);
-        configChoiceWindow = new ConfigChoiceWindow(mainWindow);
+        configChoiceWindow = new ConfigChoiceWindow(mainWindow, configuredBitsMap);
         exportWindow = new ExportWindow(mainWindow);
 
 
@@ -166,6 +171,15 @@ public class MiddleContent {
             configChoiceWindow.getRendering2DWindow().zoomOrigin(zoomfactor);
         } else if (current == MiddleWindowType.CUT) {
             ((Rendering2DWindow) cutWindow.getScreen(1)).zoomOrigin(zoomfactor);
+        }
+    }
+
+    public void configuredBitsListener(int index, BitDTO configuredBit) {
+        if (configuredBitsMap.containsKey(index)) {
+            configuredBitsMap.remove(index);
+            configuredBitsMap.put(index, configuredBit);
+        } else {
+            configuredBitsMap.put(index, configuredBit);
         }
     }
 }

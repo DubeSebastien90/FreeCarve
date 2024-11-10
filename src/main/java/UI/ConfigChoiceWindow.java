@@ -1,5 +1,6 @@
 package UI;
 
+import Common.BitDTO;
 import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
 import UI.Events.ChangeAttributeEvent;
@@ -15,6 +16,7 @@ import UI.Widgets.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Map;
 
 /**
  * Represents a configuration choice window that allows users to select
@@ -32,15 +34,17 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
     private final MainWindow mainWindow;
     private final BitConfigurationPanel bitWindow;
     private final AttributePanel attributePanel;
+    private Map<Integer, BitDTO> configuredBitsMap;
 
     /**
      * Constructs a ConfigChoiceWindow and initializes its components and layout.
      */
-    public ConfigChoiceWindow(MainWindow mainWindow) {
+    public ConfigChoiceWindow(MainWindow mainWindow, Map<Integer, BitDTO> configuredBitsMap) {
         this.setLayout(new GridBagLayout());
         rend = new Rendering2DWindow(mainWindow, this, this);
         bitWindow = new BitConfigurationPanel(this, mainWindow);
         attributePanel = new AttributePanel(true);
+        configuredBitsMap = configuredBitsMap;
         setFocusable(true);
         requestFocusInWindow();
         init();

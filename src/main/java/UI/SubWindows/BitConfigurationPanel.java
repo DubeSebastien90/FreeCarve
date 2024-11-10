@@ -11,6 +11,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a panel allowing the selection of bits through toggle buttons.
@@ -28,6 +31,9 @@ public class BitConfigurationPanel extends BasicWindow {
     private int selectedBit = 0;
     private final MainWindow mainWindow;
 
+    // Map of the configured Bits, with the index of the bit as key
+    private Map<Integer, BitDTO> configuredBitsMap;
+
     /**
      * Constructs a BitSelectionPanel with a specified attribute change listener.
      *
@@ -41,6 +47,7 @@ public class BitConfigurationPanel extends BasicWindow {
         for (int i = 0; i < bitList.length; i++) {
             bitList[i] = new JToggleButton(bitDTOList[i].getName());
         }
+        configuredBitsMap = new HashMap<Integer, BitDTO>();
         init();
         setButtonEvent();
     }
@@ -120,5 +127,11 @@ public class BitConfigurationPanel extends BasicWindow {
                 }
             });
         }
+    }
+
+
+
+    public Map<Integer, BitDTO> getConfiguredBitsMap() {
+        return configuredBitsMap;
     }
 }

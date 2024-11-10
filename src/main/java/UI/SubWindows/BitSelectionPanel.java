@@ -9,7 +9,10 @@ import javax.swing.*;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import javax.swing.plaf.LabelUI;
+import java.util.List;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class BitSelectionPanel extends BasicWindow {
     private MainWindow mainWindow;
@@ -19,6 +22,7 @@ public class BitSelectionPanel extends BasicWindow {
     private JPanel panel;
     private ButtonGroup buttonGroup = new ButtonGroup();
     private final JToggleButton[] bitButtonList = new JToggleButton[UIConfig.INSTANCE.getMAX_NB_BITS()];
+    private Map<Integer, BitDTO> configuredBitsMap;
 
     /**
      * The position of the selected bit in the bit list
@@ -26,9 +30,10 @@ public class BitSelectionPanel extends BasicWindow {
      */
     private int selectedBit = -1;
 
-    public BitSelectionPanel(boolean haveBackground, ChangeAttributeListener listener, MainWindow mainWindow){
+    public BitSelectionPanel(boolean haveBackground, ChangeAttributeListener listener, MainWindow mainWindow, Map<Integer, BitDTO> configuredBitsMap) {
         super(haveBackground);
         this.mainWindow = mainWindow;
+        this.configuredBitsMap = configuredBitsMap;
         this.listener = listener;
         updateBitList();
         init();
@@ -64,31 +69,33 @@ public class BitSelectionPanel extends BasicWindow {
         panel.removeAll();
         int realLen = getRealListLen();
 
-        if (realLen == 0) {
+        if(configuredBitsMap == null || configuredBitsMap.isEmpty()){
             JLabel label = new JLabel("Aucun bit configuré");
             label.setHorizontalAlignment(JLabel.CENTER);
             label.setVerticalAlignment(JLabel.CENTER);
-
             panel.add(label, gbc);
             return;
         }
 
-        int index = 0;
-        // The list is null at the launch of the App because no bit is created
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < (realLen + 1) / 2; j++) { // We want 2 rows
-                gbc.gridx = j;
-                gbc.gridy = i;
+        // We want to iterate through configuredBitMap to display the bits in order
+        //System.out.println("configuredBitsMap: " + configuredBitsMap);
 
-                while (index < bitButtonList.length && bitButtonList[index] == null) {
-                    index++;
-                }
+        int columns = (configuredBitsMap.size() + 1) / 2; // Calcul du nombre de colonnes pour 2 lignes
+        int row = 0;
+        int col = 0;
 
-                if (index < bitButtonList.length) {
-                    panel.add(bitButtonList[index], gbc);
-                    index++;
-                } else
-                    break;
+        for (Integer index: configuredBitsMap.keySet()) {
+            gbc.gridx = col;
+            gbc.gridy = row;
+
+            if (bitButtonList[index] != null) {
+                panel.add(bitButtonList[index], gbc);
+            }
+
+            col++;
+            if (col >= columns) {
+                col = 0;
+                row++;
             }
         }
     }
@@ -118,17 +125,16 @@ public class BitSelectionPanel extends BasicWindow {
 
     private void updateBitList(){
         bitDTOList = mainWindow.getController().getBitsDTO();
-        for (int i = 0; i < bitDTOList.length; i++) {
-            if (bitDTOList[i].getDiameter() != 0) {
-                JToggleButton button = new JToggleButton(bitDTOList[i].getName());
-                bitButtonList[i] = button;
-                buttonGroup.add(button);
+        for(Map.Entry<Integer, BitDTO> entry : configuredBitsMap.entrySet()){
+            BitDTO bitDTO = entry.getValue();
+            JToggleButton button = new JToggleButton(bitDTO.getName());
+            button.setActionCommand(String.valueOf(entry.getKey()));
+            buttonGroup.add(button);
+            bitButtonList[entry.getKey()] = button;
 
-                button.setActionCommand(String.valueOf(i));
-                button.addActionListener(e -> {
-                    selectedBit = Integer.parseInt(button.getActionCommand());
-                });
-            }
+            button.addActionListener(e -> {
+                selectedBit = Integer.parseInt(button.getActionCommand());
+            });
         }
     }
 
@@ -155,5 +161,15 @@ public class BitSelectionPanel extends BasicWindow {
                 }
             }
         }
+    }
+
+    public List<String> getCreatedBitsReadable(){
+        List<String> createdBits = new ArrayList<>();
+        for (BitDTO bitDTO : bitDTOList) {
+            if (bitDTO.getDiameter() != 0) {
+                createdBits.add(bitDTO.getName() + " - " + bitDTO.getDiameter() + "mm");
+            }
+        }
+        return createdBits;
     }
 }

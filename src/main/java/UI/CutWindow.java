@@ -1,5 +1,6 @@
 package UI;
 
+import Common.BitDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutEvent;
@@ -17,6 +18,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -41,13 +43,15 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     private Rendering2DWindow rendering2DWindow;
     private MainWindow mainWindow;
     private BitSelectionPanel bitSelectionPanel;
+    private Map<Integer, BitDTO> configuredBitsMap;
 
     /**
      * Constructs a {@code CutWindow} instance initializing all of it's sub-panels
      * and sub-components
      */
-    public CutWindow(MainWindow mainWindow) {
+    public CutWindow(MainWindow mainWindow, Map<Integer, BitDTO> configuredBitsMap) {
         this.mainWindow = mainWindow;
+        this.configuredBitsMap = configuredBitsMap;
         this.init(mainWindow);
         
         mainWindow.getController().addRefreshListener(()->this.rendering2DWindow.updateCuts());
@@ -122,7 +126,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         rendering2DWindow = new Rendering2DWindow(mainWindow, this, this);
         panel1 = rendering2DWindow;
 
-        bitSelectionPanel = new BitSelectionPanel(true, this, mainWindow);
+        bitSelectionPanel = new BitSelectionPanel(true, this, mainWindow, configuredBitsMap);
         bitPanel = bitSelectionPanel;
 
         attributePanel = new AttributePanel(true);
@@ -142,6 +146,10 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
 
     public BitSelectionPanel getBitSelectionPanel() {
         return bitSelectionPanel;
+    }
+
+    public Map<Integer, BitDTO> getConfiguredBitsMap() {
+        return configuredBitsMap;
     }
 
 }
