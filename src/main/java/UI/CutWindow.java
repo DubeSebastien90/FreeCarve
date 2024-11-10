@@ -146,6 +146,9 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 2);
     }
 
+    /**
+     * @return the {@code BitSelectionPanel} of the {@code CutWindow}
+     */
     public BitSelectionPanel getBitSelectionPanel() {
         return bitSelectionPanel;
     }

@@ -174,6 +174,12 @@ public class MiddleContent {
         }
     }
 
+    /**
+     * Listener for the configured bits
+     * Called when the user configures a bit in the ConfigChoiceWindow
+     * @param index The index of the bit in the list of bits
+     * @param configuredBit The BitDTO of the configured bit
+     */
     public void configuredBitsListener(int index, BitDTO configuredBit) {
         if (configuredBitsMap.containsKey(index)) {
             configuredBitsMap.remove(index);
@@ -183,6 +189,10 @@ public class MiddleContent {
         }
     }
 
+    /**
+     * The configuredBitsMap is a map containing the index of the in the list of bits and it's corresponding BitDTO
+     * @return The configuredBitsMap of the project.
+     */
     public Map<Integer, Common.DTO.BitDTO> getConfiguredBitsMap() {
         return configuredBitsMap;
     }

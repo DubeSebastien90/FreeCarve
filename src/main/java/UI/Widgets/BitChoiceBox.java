@@ -3,19 +3,41 @@ package UI.Widgets;
 import Common.BitDTO;
 
 import javax.swing.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Map;
 import java.awt.*;
 
+/**
+ * The {@code BitChoiceBox} class is a UI class that encapsulate the BitChoiceBox editor (choosing a bit in a drop down menu)
+ *  It is used to store the index and the name of the item
+ *  So when the user wants to change the bit of a cut, he can choose it in a drop down menu
+ *
+ * @author Antoine Morin
+ * @version 1.0
+ */
 public class BitChoiceBox extends GenericAttributeBox {
 
     private JComboBox comboBox;
-    public BitChoiceBox(boolean haveBackground, String name, Map<Integer, BitDTO> bitList, int index) {
+
+    /**
+     * Constructs a {@code BitChoiceBox} instance initializing all of it's sub-components
+     *
+     * @param haveBackground boolean to know if the widget have a background
+     * @param name the name of the widget
+     * @param bitMap a Map of the configured bits
+     * @param index the index of the selected bit
+     */
+    public BitChoiceBox(boolean haveBackground, String name, Map<Integer, BitDTO> bitMap, int index) {
         super(haveBackground, name);
-        init(name, bitList, index);
+        init(name, bitMap, index);
     }
 
+    /**
+     * Initializes the BitChoiceBox
+     *
+     * @param name the name of the widget
+     * @param bitList a Map of the configured bits
+     * @param index the index of the selected bit
+     */
     private void init(String name, Map<Integer, BitDTO> bitList, int index){
         DefaultComboBoxModel<ComboBitItem> model = new DefaultComboBoxModel<ComboBitItem>();
 
@@ -33,5 +55,10 @@ public class BitChoiceBox extends GenericAttributeBox {
         this.add(comboBox, gc);
     }
 
+    /**
+     * Returns the JComboBox of the BitChoiceBox
+     *
+     * @return the JComboBox of the BitChoiceBox
+     */
     public JComboBox getComboBox(){return this.comboBox;}
 }

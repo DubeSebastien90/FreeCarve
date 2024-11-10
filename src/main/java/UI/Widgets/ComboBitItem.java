@@ -12,6 +12,11 @@ public class ComboBitItem {
     private int index;
     private String name;
 
+    /**
+     * Constructor of the {@code ComboBitItem} class
+     * @param index the position of the bit in the bit list
+     * @param name the name of the bit
+     */
     public ComboBitItem(int index, String name){
         this.index = index;
         this.name = name;

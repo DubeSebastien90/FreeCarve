@@ -451,6 +451,14 @@ public class CutBox implements Attributable {
         });
     }
 
+    /**
+     * Adding the custom event listeners to BitChoiceBox objects. The goal is to make
+     * the ComboBox attribute react to change events
+     *
+     * Called when the user selects a new bit in the BitChoiceBox
+     *
+     * @param cb {@code BitChoiceBox object} The combo box containing the bits informations
+     */
     private void addEventListenerToBitChoiceBox(BitChoiceBox cb) {
         cb.getComboBox().addActionListener(new ActionListener() {
             @Override
