@@ -1,6 +1,6 @@
 package UI.Widgets;
 
-import Common.BitDTO;
+import Common.DTO.BitDTO;
 
 import javax.swing.*;
 import java.util.Map;

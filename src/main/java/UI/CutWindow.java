@@ -1,6 +1,6 @@
 package UI;
 
-import Common.BitDTO;
+import Common.DTO.BitDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutEvent;
