@@ -177,7 +177,7 @@ public abstract class DrawCutWrapper {
      */
     private BitDTO validateSelectedBit(int selectedBit) throws BitNotSelectedException {
         if (selectedBit == -1){
-            throw new BitNotSelectedException("Aucun bit sélectionner"); // Gérer l'erreur de non sélection de bit
+            throw new BitNotSelectedException("Aucun bit sélectionné"); // Gérer l'erreur de non sélection de bit
         }
 
         return mainWindow != null ? mainWindow.getController().getBitsDTO()[selectedBit]: new BitDTO("Error", 1);
