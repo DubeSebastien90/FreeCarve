@@ -324,19 +324,6 @@ public class Grid {
         return closestPoint;
     }
 
-    /**
-     * Is the point on the board?
-     *
-     * @param point point to compare
-     * @param board reference to the PanelCNC
-     * @return boolean of true if the point is on the board
-     */
-    public boolean isPointInBoard(VertexDTO point, PanelCNC board) {
-        VertexDTO boardDimension = board.getPanelDimension();
-        return 0.0f <= point.getX() && point.getX() <= boardDimension.getX() &&
-                0.0f <= point.getY() && point.getY() <= boardDimension.getY();
-    }
-
     public boolean isMagnetic() {
         return magnetic;
     }

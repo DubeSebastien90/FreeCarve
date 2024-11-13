@@ -312,10 +312,6 @@ public class Controller {
         return this.grid.getPointNearAllBorderAndCuts(point, this.currentProjectState.getPanel(), threshold);
     }
 
-    public boolean isPointOnBoard(VertexDTO point) {
-        return this.grid.isPointInBoard(point, this.currentProjectState.getPanel());
-    }
-
     public void setGridMagnetism(boolean magnetism) {
         grid.setMagnetic(magnetism);
     }
@@ -326,7 +322,6 @@ public class Controller {
     }
 
     /**
-     * <<<<<<< HEAD
      * Executes the doAction and memorizes it for the undoRedo system
      *
      * @param doAction   lambda of method to execute
@@ -348,8 +343,8 @@ public class Controller {
     /**
      * @return True if the point is on the board.
      */
-    boolean isPointonPanel(VertexDTO point) {
-        return this.currentProjectState.getPanel().isPointonPanel(point);
+    public boolean isPointOnPanel(VertexDTO point) {
+        return this.currentProjectState.getPanel().isPointOnPanel(point);
     }
 }
 

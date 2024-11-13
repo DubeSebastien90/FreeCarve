@@ -14,14 +14,14 @@ import Common.Util;
 public class PanelDTO {
     private final List<CutDTO> cutList;
     private final VertexDTO panelDimension;
-    private final double MAX_FEET_WIDTH;
-    private final double MAX_FEET_HEIGHT;
+    private final double maxFeetWidth;
+    private final double maxFeetHeight;
 
-    public PanelDTO(List<CutDTO> cutList, VertexDTO panelDimension, double MAX_FEET_WIDTH, double MAX_FEET_HEIGHT) {
+    public PanelDTO(List<CutDTO> cutList, VertexDTO panelDimension, double maxFeetWidth, double maxFeetHeight) {
         this.cutList = cutList;
         this.panelDimension = panelDimension;
-        this.MAX_FEET_WIDTH = MAX_FEET_WIDTH;
-        this.MAX_FEET_HEIGHT = MAX_FEET_HEIGHT;
+        this.maxFeetWidth = maxFeetWidth;
+        this.maxFeetHeight = maxFeetHeight;
     }
 
     public List<CutDTO> getCutsDTO() {
@@ -33,10 +33,10 @@ public class PanelDTO {
     }
 
     public double getMaxMMWidth() {
-        return Util.feet_to_mm(MAX_FEET_WIDTH);
+        return Util.feet_to_mm(maxFeetWidth);
     }
 
     public double getMaxMMHeight() {
-        return Util.feet_to_mm(MAX_FEET_HEIGHT);
+        return Util.feet_to_mm(maxFeetHeight);
     }
 }

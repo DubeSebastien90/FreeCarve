@@ -121,7 +121,7 @@ public class DrawCutVertical extends DrawCutWrapper{
 
             // Test if on board
             VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-            if(mainWindow.getController().isPointOnBoard(pointDTO)){
+            if(mainWindow.getController().isPointOnPanel(pointDTO)){
                 // Inside of the board
                 p.setColor(Color.GREEN);
                 p.setValid(PersoPoint.Valid.VALID);

@@ -17,7 +17,7 @@ import java.awt.*;
 public class ChooseDimension extends BasicWindow implements Attributable {
 
     private final Rendering2DWindow rend;
-    private final boolean gridDisaplyed;
+    private final boolean gridDisplayed;
     private NumberTextField xTextField;
     private NumberTextField yTextField;
     private NumberTextField gridPrecision;
@@ -31,7 +31,7 @@ public class ChooseDimension extends BasicWindow implements Attributable {
     public ChooseDimension(Rendering2DWindow rend, boolean gridDisplayed) {
         super(false);
         this.rend = rend;
-        this.gridDisaplyed = gridDisplayed;
+        this.gridDisplayed = gridDisplayed;
         init();
     }
 
@@ -90,7 +90,7 @@ public class ChooseDimension extends BasicWindow implements Attributable {
         gbc.gridx = 4;
         add(yTextField, gbc);
 
-        if (gridDisaplyed) {
+        if (gridDisplayed) {
             gridPrecision = new NumberTextField("" + rend.getMainWindow().getController().getGrid().getSize(), size -> {
                 rend.getMainWindow().getController().putGrid(size.intValue(), rend.getMainWindow().getController().getGrid().getMagnetPrecision());
                 rend.repaint();

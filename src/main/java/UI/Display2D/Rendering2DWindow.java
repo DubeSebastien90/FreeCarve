@@ -524,7 +524,7 @@ public class Rendering2DWindow extends JPanel {
     }
 
     public boolean isPointonPanel() {
-        return mainWindow.getController().isPointOnBoard(new VertexDTO(mmMousePt.getX(), mmMousePt.getY(), 0));
+        return mainWindow.getController().isPointOnPanel(new VertexDTO(mmMousePt.getX(), mmMousePt.getY(), 0));
     }
 
 
