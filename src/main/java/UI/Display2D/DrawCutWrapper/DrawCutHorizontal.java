@@ -116,7 +116,6 @@ public class DrawCutHorizontal extends  DrawCutWrapper{
 
             // Snap
             if(closestPoint.isPresent()){
-                System.out.println("THRESHOLD");
                 p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
                 p.setColor(Color.YELLOW);
                 p.setValid(PersoPoint.Valid.VALID);
