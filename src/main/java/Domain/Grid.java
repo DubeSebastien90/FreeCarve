@@ -126,8 +126,8 @@ public class Grid {
 
         double x = (c1 * b2 - c2 * b1) / det;
         double y = (a1 * c2 - a2 * c1) / det;
-        if (Math.min(p1.getX(), cursorPoint.getX()) <= x && x <= Math.max(p1.getX(), cursorPoint.getX())
-                && Math.min(p1.getY(), cursorPoint.getY()) <= y && y <= Math.max(p1.getY(), cursorPoint.getY())
+        if(Math.min(p1.getX(), cursorPoint.getX() - threshold) <= x && x <= Math.max(p1.getX(), cursorPoint.getX() + threshold) // The threshold addition and substraction is to allow the snap
+                && Math.min(p1.getY(), cursorPoint.getY() - threshold) <= y && y <= Math.max(p1.getY(), cursorPoint.getY() + threshold)
                 && Math.min(p3.getX(), p4.getX()) <= x && x <= Math.max(p3.getX(), p4.getX())
                 && Math.min(p3.getY(), p4.getY()) <= y && y <= Math.max(p3.getY(), p4.getY())) {
             VertexDTO outputIntersect = new VertexDTO(x, y, 0.0f);
