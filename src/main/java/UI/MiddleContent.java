@@ -40,6 +40,7 @@ public class MiddleContent {
         this.panel = new JPanel();
         this.mainWindow = mainWindow;
         configuredBitsMap = new HashMap<Integer, BitDTO>();
+        setupConfiguredBitsMap();
         init(mainWindow);
         this.panel.setBackground(Color.RED);
     }
@@ -195,5 +196,14 @@ public class MiddleContent {
      */
     public Map<Integer, Common.DTO.BitDTO> getConfiguredBitsMap() {
         return configuredBitsMap;
+    }
+
+    public void setupConfiguredBitsMap() {
+        BitDTO[] bits = this.mainWindow.getController().getBitsDTO();
+        for(int i = 0; i < bits.length; i++) {
+            if (bits[i].getDiameter() != 0) {
+                this.configuredBitsMap.put(i, bits[i]);
+            }
+        }
     }
 }
