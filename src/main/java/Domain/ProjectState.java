@@ -36,6 +36,7 @@ class ProjectState {
      */
     ProjectState(Bit[] bitList, PanelCNC panel, IMemorizer memorizer) {
         this.bitList = bitList;
+        bitList[0] = new Bit("Défaut", 0.5f);
         setPanel(panel);
         this.memorizer = memorizer;
     }

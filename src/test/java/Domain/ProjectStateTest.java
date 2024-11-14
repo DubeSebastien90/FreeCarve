@@ -28,6 +28,9 @@ public class ProjectStateTest {
         // Act
         // Assert
         Assertions.assertEquals(12, stateTest.getBitList().length);
+
+        // Check that the default bit is created
+        Assertions.assertEquals(0.5f, stateTest.getBitList()[0].getDiameter());
     }
 
     @Test
