@@ -30,7 +30,7 @@ public class BitSelectionPanel extends BasicWindow {
      * The position of the selected bit in the bit list
      * -1 means originally, no bits selected
      */
-    private int selectedBit = -1;
+    private int selectedBit = 0;
 
     /**
      * Constructs a BitSelectionPanel with a specified attribute change listener.
