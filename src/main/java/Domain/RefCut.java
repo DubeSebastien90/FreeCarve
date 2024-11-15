@@ -61,6 +61,11 @@ public class RefCut {
         return absoluteVertex.get(index+1);
     }
 
+    public RefCut(RefCutDTO refCutDTO){
+        this.cut = new Cut(refCutDTO.getCut());
+        this.index = refCutDTO.getIndex();
+    }
+
     RefCutDTO getDTO(){
         return new RefCutDTO(cut.getDTO(), this.index, interpolation);
     }
