@@ -25,7 +25,7 @@ public abstract class DrawCutWrapper {
     protected float cursorRadius = 25;
     protected ArrayList<PersoPoint> points; // Stores the PersoPoint in MM - necessary to keep precision
     protected CutDTO cut;
-    protected Color strokeColor = Color.RED;
+    protected Color strokeColor = Color.BLACK;
     protected float strokeWidth = 3.0f;
     protected Stroke stroke;
     protected MainWindow mainWindow;
