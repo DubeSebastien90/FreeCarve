@@ -155,7 +155,7 @@ public abstract class DrawCutWrapper {
             this.strokeColor = Color.BLUE;
         }
         else{
-            this.strokeColor = Color.RED;
+            this.strokeColor = Color.BLACK;
         }
 
         renderer.repaint();
