@@ -339,6 +339,15 @@ public class Controller {
         this.grid.computeIntersectionPointList(this.currentProjectState.getPanel());
     }
 
+    /**
+     * Return the list of the reference Cut that are touching the input point
+     * @param point point position to analyse
+     * @return list of reference Cut touching the point
+     */
+    public List<RefCutDTO> getRefCutsAndBorderOnPoint(VertexDTO point){
+        return this.grid.getRefCutsAndBorderOnPoint(point, this.currentProjectState.getPanel());
+    }
+
     public void setGridMagnetism(boolean magnetism) {
         grid.setMagnetic(magnetism);
     }

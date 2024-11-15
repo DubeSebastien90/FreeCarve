@@ -1,6 +1,7 @@
 package Domain;
 
 import Common.DTO.CutDTO;
+import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
 
 import java.util.ArrayList;
@@ -88,6 +89,29 @@ public class Grid {
 
         if (distance < threshold) {
             return Optional.of(closestPoint);
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<VertexDTO> isPointOnLinePure(VertexDTO point, VertexDTO linePoint1, VertexDTO linePoint2){
+        double projector_t_numerator = (point.getX() - linePoint1.getX()) * (linePoint2.getX() - linePoint1.getX()) +
+                (point.getY() - linePoint1.getY()) * (linePoint2.getY() - linePoint1.getY());
+        double projector_t_denominator = Math.pow(linePoint2.getX() - linePoint1.getX(), 2) +
+                Math.pow(linePoint2.getY() - linePoint1.getY(), 2);
+
+        double t = projector_t_numerator / projector_t_denominator;
+        if (t >= 0 && t <= 1) {
+            VertexDTO closestPoint = new VertexDTO((linePoint1.getX() + t * (linePoint2.getX() - linePoint1.getX())),
+                    (linePoint1.getY() + t * (linePoint2.getY() - linePoint1.getY())), 0.0f);
+
+            double tolerance = 1e-6; // Adjust the tolerance value as needed to only proc when close values
+            double distanceSquared = Math.pow(closestPoint.getX() - point.getX(), 2) +
+                    Math.pow(closestPoint.getY() - point.getY(), 2);
+
+            if (distanceSquared <= tolerance * tolerance) {
+                return Optional.of(closestPoint);
+            }
         }
 
         return Optional.empty();
@@ -306,6 +330,52 @@ public class Grid {
         return closestPoint;
     }
 
+    public List<RefCutDTO> getRefBorderOnPoint(VertexDTO point, PanelCNC board){
+        List<RefCutDTO> ref = new ArrayList<>();
+
+        List<CutDTO> allLineList = new ArrayList<>();
+        List<VertexDTO> boardPoints = board.getDTO().getListBoardPointsDTO();
+        int bitIndex = 1; //not important
+
+        CutDTO borderCut = new CutDTO(UUID.randomUUID(), board.getDepth(), bitIndex, CutType.RECTANGULAR, boardPoints);
+        allLineList.add(borderCut); // adding the border as cuts to consider any line intersection on the border of the board
+
+        for(CutDTO cut : allLineList){
+
+            for(int i =0; i < cut.getPoints().size() - 1; i++){
+                Optional<VertexDTO> isPointOnLine = isPointOnLinePure(point, cut.getPoints().get(i), cut.getPoints().get(i+1));
+                if(isPointOnLine.isPresent()){
+                    ref.add(new RefCutDTO(cut, i)); // add the ref to the ref list with the index
+                }
+            }
+        }
+        return ref;
+    }
+
+    public List<RefCutDTO> getRefCutsOnPoint(VertexDTO point, PanelCNC board){
+        List<RefCutDTO> ref = new ArrayList<>();
+
+        List<CutDTO> allLineList = board.getDTO().getCutsDTO();
+
+        for(CutDTO cut : allLineList){
+
+            for(int i =0; i < cut.getPoints().size() - 1; i++){
+                Optional<VertexDTO> isPointOnLine = isPointOnLinePure(point, cut.getPoints().get(i), cut.getPoints().get(i+1));
+                if(isPointOnLine.isPresent()){
+                    ref.add(new RefCutDTO(cut, i)); // add the ref to the ref list with the index
+                }
+            }
+        }
+        return ref;
+    }
+
+    public List<RefCutDTO> getRefCutsAndBorderOnPoint(VertexDTO point, PanelCNC board){
+        List<RefCutDTO> ref = new ArrayList<>();
+        ref.addAll(getRefCutsOnPoint(point, board));
+        ref.addAll(getRefBorderOnPoint(point, board));
+        return ref;
+    }
+
     /**
      * Returns an optionnal closest line on  the cuts based on a reference point
      *
@@ -378,11 +448,6 @@ public class Grid {
                     }
                 }
             }
-        }
-        System.out.println("INTERSECTIONS : =====================================");
-        for(VertexDTO points : intersectionPoints){
-            System.out.println(points.getX() + " - " + points.getY());
-
         }
     }
 

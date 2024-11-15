@@ -22,6 +22,7 @@ class Cut {
     private double depth;
     private UUID id;
     private boolean valid;
+    private RefCut refCut;
 
 
     public Cut(CutDTO uiCut) {
@@ -31,6 +32,7 @@ class Cut {
         this.bitIndex = uiCut.getBitIndex();
         this.depth = uiCut.getDepth();
         this.id = uiCut.getId();
+        this.refCut = null;
     }
 
     /**
@@ -49,6 +51,7 @@ class Cut {
         this.bitIndex = bitIndex;
         this.depth = depth;
         this.id = UUID.randomUUID();
+        this.refCut = null;
     }
 
     public Cut(RequestCutDTO requestCutDTO) {

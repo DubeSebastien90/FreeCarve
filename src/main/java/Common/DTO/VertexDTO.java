@@ -44,6 +44,11 @@ public class VertexDTO {
         return Math.sqrt(Math.pow(x - other.x,2)+Math.pow(y - other.y,2)+Math.pow(z - other.z,2));
     }
 
+    public VertexDTO add(VertexDTO other){
+        return new VertexDTO(this.getX() + other.getX(),
+                this.getY() + other.getY(),
+                this.getZ() + other.getZ());
+    }
 
     /**
      * @return a formatted string of the 2D components of the vertex

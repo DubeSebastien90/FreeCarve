@@ -1,6 +1,7 @@
 package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
+import Common.DTO.RefCutDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import Domain.CutType;
@@ -19,6 +20,9 @@ import java.util.UUID;
  * @author Louis-Etienne Messier
  */
 public class DrawCutL extends DrawCutWrapper{
+
+    private List<RefCutDTO> refs;
+
     public DrawCutL(CutType type, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(type, renderer, mainWindow);
     }
@@ -48,6 +52,7 @@ public class DrawCutL extends DrawCutWrapper{
 
             PersoPoint p1 = new PersoPoint(points.getFirst());
             PersoPoint p2 = new PersoPoint(points.getFirst());
+
             p1.movePoint(cursor.getLocationX(), this.points.getFirst().getLocationY());
             p2.movePoint(this.points.getFirst().getLocationX(), cursor.getLocationY());
             p1.drawLineMM(graphics2D, renderer, cursor, this.strokeWidth);
@@ -63,9 +68,16 @@ public class DrawCutL extends DrawCutWrapper{
         List<VertexDTO> newPoints = this.cut.getPoints();
 
         if(newPoints.isEmpty()){ // premier point a ajouter
-            newPoints.add(new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth()));
-            // Ajoute les deux autres points d'ancrage de la coupe rectangulaire
+            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
+            refs = mainWindow.getController().getRefCutsAndBorderOnPoint(newPoint);
 
+            if(refs.size() >= 2){
+                newPoints.add(newPoint);
+            }
+            else{
+                System.out.println("TOO ENOUGH REFS IN THE L CUT");
+                System.out.println("REF SIZE " + refs.size());
+            }
         }
         else{
             // Dans le cas contraire, c'est le dernier point, donc ajoute les 4 points finauxx:
@@ -121,6 +133,49 @@ public class DrawCutL extends DrawCutWrapper{
         }
         else{ // Rest of the rectangle points
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
+
+            // Restraining the L cut
+            // There is exactly 2 refs
+            // The refs are utilised to prevent overflowing L cuts
+            double minX = Double.MAX_VALUE;
+            double minY = Double.MAX_VALUE;
+            double maxX = Double.MIN_VALUE;
+            double maxY = Double.MIN_VALUE;
+
+            for (RefCutDTO ref : refs) {
+                VertexDTO p1l1 = ref.getAbsoluteFirstPoint();
+                VertexDTO p2l1 = ref.getAbsoluteSecondPoint();
+
+                minX = Math.min(p1l1.getX(), minX);
+                minX = Math.min(minX, p2l1.getX());
+
+                maxX = Math.max(maxX, p2l1.getX());
+                maxX = Math.max(p1l1.getX(), maxX);
+
+                minY = Math.min(minY, p2l1.getY());
+                minY = Math.min(p1l1.getY(), minY);
+
+                maxY = Math.max(maxY, p2l1.getY());
+                maxY = Math.max(p1l1.getY(), maxY);
+            }
+
+            System.out.println("============================");
+            System.out.println(minX + " - " + maxX);
+            System.out.println(minY + " - " + maxY);
+
+            if(p.getLocationX() <= minX){
+                p.movePoint(minX, p.getLocationY());
+            }
+            else if(p.getLocationX() >= maxX){
+                p.movePoint(maxX, p.getLocationY());
+            }
+
+            if(p.getLocationY() <= minY){
+                p.movePoint(p.getLocationX(), minY);
+            }
+            else if(p.getLocationY() >= maxY){
+                p.movePoint(p.getLocationX(), maxY);
+            }
 
             // For the snap area
             double threshold = 10;

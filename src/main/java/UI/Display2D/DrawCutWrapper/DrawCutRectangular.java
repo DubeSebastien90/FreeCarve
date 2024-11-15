@@ -72,8 +72,6 @@ public class DrawCutRectangular extends DrawCutWrapper{
 
         if(newPoints.isEmpty()){ // premier point a ajouter
             newPoints.add(new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth()));
-            // Ajoute les deux autres points d'ancrage de la coupe rectangulaire
-
         }
         else{
             // Dans le cas contraire, c'est le dernier point, donc ajoute les 4 points finauxx:
