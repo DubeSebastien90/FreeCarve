@@ -322,6 +322,23 @@ public class Controller {
         return this.grid.getPointNearAllBorderAndCuts(point, this.currentProjectState.getPanel(), threshold);
     }
 
+    /**
+     * Returns an optionnal closest point to all intersections on the board
+     * @param point     reference point
+     * @param threshold threshold of the distance
+     * @return Optional<VertexDTO> : null if no intersection nearby, the closest Point if point nearby
+     */
+    public Optional<VertexDTO> getPointNearIntersections(VertexDTO point, double threshold){
+        return this.grid.isPointNearIntersections(point, threshold);
+    }
+
+    /**
+     * Computes all of the intersection points  on the board, stores them in the grid class
+     */
+    public void computeGridIntersections(){
+        this.grid.computeIntersectionPointList(this.currentProjectState.getPanel());
+    }
+
     public void setGridMagnetism(boolean magnetism) {
         grid.setMagnetic(magnetism);
     }

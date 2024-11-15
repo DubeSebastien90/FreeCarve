@@ -6,6 +6,7 @@ import Common.DTO.VertexDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * The {@code Grid} class regroup functions that are useful for putting a grid on a {@code PanelCNC}
@@ -19,10 +20,12 @@ public class Grid {
     private int magnetPrecision;
     private boolean magnetic = false;
     private boolean active = false;
+    private List<VertexDTO> intersectionPoints;
 
     Grid(int size, int magnetPrecision) {
         this.size = size;
         this.magnetPrecision = magnetPrecision;
+        intersectionPoints = new ArrayList<>();
     }
 
     public int getSize() {
@@ -100,8 +103,8 @@ public class Grid {
      * @param threshold   distance threshold
      * @return {@code Optional<VertexDTO>} can be null if no intersection, or VertexDTO if there is an intersection
      */
-    private Optional<VertexDTO> isLineIntersect(VertexDTO p1, VertexDTO cursorPoint, VertexDTO p3, VertexDTO p4,
-                                                double threshold) {
+    private Optional<VertexDTO> isLineIntersectCursor(VertexDTO p1, VertexDTO cursorPoint, VertexDTO p3, VertexDTO p4,
+                                                      double threshold) {
         double a1 = cursorPoint.getY() - p1.getY();
         double b1 = p1.getX() - cursorPoint.getX();
         double c1 = a1 * p1.getX() + b1 * p1.getY();
@@ -140,6 +143,79 @@ public class Grid {
         }
 
         return Optional.empty();
+    }
+
+
+    /**
+     * Compute the intersection between two lines (no cursor involved)
+     *
+     * @param p1          first point of the cursor line
+     * @param cursorPoint cursor
+     * @param p3          first point of the reference line
+     * @param p4          second point of the reference line
+     * @return {@code Optional<VertexDTO>} can be null if no intersection, or VertexDTO if there is an intersection
+     */
+    private Optional<VertexDTO> isLineIntersectPure(VertexDTO p1, VertexDTO cursorPoint, VertexDTO p3, VertexDTO p4) {
+        double a1 = cursorPoint.getY() - p1.getY();
+        double b1 = p1.getX() - cursorPoint.getX();
+        double c1 = a1 * p1.getX() + b1 * p1.getY();
+
+        double a2 = p4.getY() - p3.getY();
+        double b2 = p3.getX() - p4.getX();
+        double c2 = a2 * p3.getX() + b2 * p3.getY();
+
+        double det = a1 * b2 - a2 * b1;
+        if ((cursorPoint.getY() - p1.getY()) * (p3.getX() - cursorPoint.getX())
+                == (p3.getY() - cursorPoint.getY()) * (cursorPoint.getX() - p1.getX())) {
+            // The lines are colinear
+            if (Math.min(p3.getX(), p4.getX()) <= cursorPoint.getX() &&
+                    cursorPoint.getX() <= Math.max(p3.getX(), p4.getX())) {
+                // Point of the cursor is contained in the colinear line
+                return Optional.of(new VertexDTO(cursorPoint.getX(), cursorPoint.getY(), 0.0f));
+            }
+
+        } else if (det == 0) {
+            return Optional.empty(); // Parrallel lines or colinear
+        }
+
+        double x = (c1 * b2 - c2 * b1) / det;
+        double y = (a1 * c2 - a2 * c1) / det;
+        if (Math.min(p1.getX(), cursorPoint.getX()) <= x && x <= Math.max(p1.getX(), cursorPoint.getX())
+                && Math.min(p1.getY(), cursorPoint.getY()) <= y && y <= Math.max(p1.getY(), cursorPoint.getY())
+                && Math.min(p3.getX(), p4.getX()) <= x && x <= Math.max(p3.getX(), p4.getX())
+                && Math.min(p3.getY(), p4.getY()) <= y && y <= Math.max(p3.getY(), p4.getY())) {
+            VertexDTO outputIntersect = new VertexDTO(x, y, 0.0f);
+            return Optional.of(outputIntersect); // Intersection is true
+
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Returns the optional closest point to all intersections of the cuts + board
+     * @param point point of the cursor to compare to
+     * @param threshold threshold of the snap
+     * @return Optional<VertexDTO> of the closest point
+     */
+    public Optional<VertexDTO> isPointNearIntersections(VertexDTO point, double threshold){
+        VertexDTO closestPoint = null;
+        for(VertexDTO intersectionPoint : intersectionPoints){
+            double distancePointIntersection = point.getDistance(intersectionPoint);
+            if(distancePointIntersection < threshold){
+                if (closestPoint == null){
+                    closestPoint = intersectionPoint;
+                }
+                else{
+                    if (distancePointIntersection  < point.getDistance(closestPoint)){
+                        closestPoint = intersectionPoint;
+                    }
+                }
+            }
+        }
+
+        if(closestPoint == null) {return Optional.empty();}
+        return Optional.of(closestPoint);
     }
 
     /**
@@ -248,7 +324,7 @@ public class Grid {
             List<VertexDTO> points = wrapper.getPoints();
             if (points.size() > 1) {
                 for (int i = 0; i < points.size() - 1; i++) {
-                    Optional<VertexDTO> checkPoint = isLineIntersect(p1, cursor, points.get(i), points.get(i + 1), threshold);
+                    Optional<VertexDTO> checkPoint = isLineIntersectCursor(p1, cursor, points.get(i), points.get(i + 1), threshold);
                     if (checkPoint.isPresent()) {
                         if (closestPoint.isEmpty()) {
                             closestPoint = checkPoint;
@@ -262,6 +338,52 @@ public class Grid {
 
         return closestPoint;
 
+    }
+
+    /**
+     * Checks for intersection points on all lines on the board, and store them in the grid
+     *
+     * @param board
+     * @return
+     */
+    public void computeIntersectionPointList(PanelCNC board){
+
+        intersectionPoints.clear();
+
+        List<CutDTO> allLineList = board.getDTO().getCutsDTO();
+        List<VertexDTO> boardPoints = board.getDTO().getListBoardPointsDTO();
+        int bitIndex = 1; //not important
+
+        CutDTO borderCut = new CutDTO(UUID.randomUUID(), board.getDepth(), bitIndex, CutType.RECTANGULAR, boardPoints);
+        allLineList.add(borderCut); // adding the border as cuts to consider any line intersection on the border of the board
+
+        for(CutDTO cuts : allLineList){
+            List<VertexDTO> points = cuts.getPoints();
+
+            if(points.size() > 1){
+                for(CutDTO cuts2 : allLineList){
+
+                    List<VertexDTO> points2 = cuts2.getPoints();
+                    if(points2.size() > 1){
+                        for(int i =0; i < points.size()-1; i++){
+                            for(int j =0; j < points2.size() -1 ; j++){
+//                                if(cuts == cuts2 && i == j){continue;}
+                                // Checks intersection of all lines of all cuts
+                                Optional<VertexDTO> checkPoint = isLineIntersectPure(points2.get(j), points2.get(j+1),
+                                        points.get(i), points.get(i + 1));
+                                checkPoint.ifPresent(vertexDTO -> intersectionPoints.add(vertexDTO));
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println("INTERSECTIONS : =====================================");
+        for(VertexDTO points : intersectionPoints){
+            System.out.println(points.getX() + " - " + points.getY());
+
+        }
     }
 
     /**
@@ -291,7 +413,7 @@ public class Grid {
         borderList.add(borderP4);
         borderList.add(borderP5);
         for (int i = 0; i < borderList.size() - 1; i++) {
-            Optional<VertexDTO> checkPoint = isLineIntersect(p1, cursor, borderList.get(i), borderList.get(i + 1),
+            Optional<VertexDTO> checkPoint = isLineIntersectCursor(p1, cursor, borderList.get(i), borderList.get(i + 1),
                     threshold);
 
             if (checkPoint.isPresent()) {

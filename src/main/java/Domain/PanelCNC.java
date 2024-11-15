@@ -44,7 +44,7 @@ class PanelCNC {
     }
 
     public PanelDTO getDTO() {
-        return new PanelDTO(cutList.stream().map(Cut::getDTO).collect(Collectors.toList()), panelDimension, MAX_FEET_WIDTH, MAX_FEET_HEIGHT);
+        return new PanelDTO(cutList.stream().map(Cut::getDTO).collect(Collectors.toList()), panelDimension, depth, MAX_FEET_WIDTH, MAX_FEET_HEIGHT);
     }
 
     public float getDepth() {
@@ -220,4 +220,5 @@ class PanelCNC {
     boolean isPointOnPanel(VertexDTO point) {
         return point.getX() >= 0 && point.getY() >= 0 && point.getX() <= getWidth() && point.getY() <= getHeight();
     }
+
 }

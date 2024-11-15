@@ -17,7 +17,7 @@ import java.util.UUID;
 class Cut {
     private VertexDTO startPoint;
     private CutType type;
-    private List<VertexDTO> points;
+    private List<VertexDTO> points; // IMPORTANT : For rectangular cuts, there is always 5 points, i.e 2 times the first point to comeback to the original place
     private int bitIndex;
     private double depth;
     private UUID id;

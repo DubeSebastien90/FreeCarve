@@ -177,6 +177,8 @@ public class LeftBar extends JScrollPane {
         gridActionListener();
         verticalActionListener();
         horizontalActionListener();
+        rectangularActionListener();
+        lActionListener();
         undoActionListener();
         redoActionListener();
     }
@@ -266,6 +268,24 @@ public class LeftBar extends JScrollPane {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
                 middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_HORIZONTAL);
+            }
+        });
+    }
+
+    private void rectangularActionListener(){
+        toolBar.getTool(ToolBar.Tool.RECTANGLE).addActionListener(e->{
+            MiddleContent middle = mainWindow.getMiddleContent();
+            if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
+                middle.getCutWindow().getRendering2DWindow().cut(CutType.RECTANGULAR);
+            }
+        });
+    }
+
+    private void lActionListener(){
+        toolBar.getTool(ToolBar.Tool.COUPEL).addActionListener(e->{
+            MiddleContent middle = mainWindow.getMiddleContent();
+            if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
+                middle.getCutWindow().getRendering2DWindow().cut(CutType.L_SHAPE);
             }
         });
     }

@@ -41,7 +41,6 @@ public class DrawFreeCut extends DrawCutWrapper {
         this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
-        graphics2D.setColor(this.strokeColor);
 
         for (int i =0; i < points.size()-1; i++){ // drawing the lines
             points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), this.strokeWidth);

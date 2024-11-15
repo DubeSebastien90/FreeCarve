@@ -27,6 +27,12 @@ public class DrawCutFactory {
         else if(cut.getCutType() == CutType.LINE_HORIZONTAL){
             return new DrawCutHorizontal(cut, renderer, mainWindow);
         }
+        else if(cut.getCutType() == CutType.RECTANGULAR){
+            return new DrawCutRectangular(cut, renderer, mainWindow);
+        }
+        else if(cut.getCutType() == CutType.L_SHAPE){
+            return new DrawCutL(cut, renderer, mainWindow);
+        }
 
         return new DrawFreeCut(cut, renderer, mainWindow);
     }
@@ -47,6 +53,14 @@ public class DrawCutFactory {
         }
         else if(type == CutType.LINE_HORIZONTAL){
             return new DrawCutHorizontal(type, renderer, mainWindow);
+        }
+        else if(type == CutType.RECTANGULAR){
+            mainWindow.getController().computeGridIntersections(); // Computes the intersections of the board and store them in the domain (the Grid Class)
+            return new DrawCutRectangular(type, renderer, mainWindow);
+        }
+        else if(type == CutType.L_SHAPE){
+            mainWindow.getController().computeGridIntersections(); // Computes the intersections of the board and store them in the domain (the Grid Class)
+            return new DrawCutL(type, renderer, mainWindow);
         }
 
         return new DrawFreeCut(type, renderer, mainWindow);
