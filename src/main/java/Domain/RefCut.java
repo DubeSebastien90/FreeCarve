@@ -1,10 +1,13 @@
 package Domain;
 
+import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
 
 import java.security.InvalidParameterException;
 import java.util.List;
+
+import java.util.UUID;
 
 /**
  * RefCut object to store references to other cuts with an index.
@@ -62,7 +65,7 @@ public class RefCut {
     }
 
     public RefCut(RefCutDTO refCutDTO){
-        this.cut = new Cut(refCutDTO.getCut());
+        this.cut = new Cut(refCutDTO.getCut()); // TODO should be the actual cut that exists not a copy ::: select it with UUID
         this.index = refCutDTO.getIndex();
     }
 
