@@ -34,16 +34,20 @@ public class RefCutDTO {
         return this.cut;
     }
 
+    public int getIndex(){
+        return this.index;
+    }
+
     /**
      * Recursive offset function to get the absolute offset -- use the getAbsolutePosition on the CutDTO to get the absolute position
      * @return an absolute offset
      */
     public VertexDTO getOffset(){
-        if(cut.getRefCutDTO() == null){
+        if(cut.getRefCutDTO().isEmpty()){
             return new VertexDTO(0, 0,0);
         }
         else{
-            return cut.getRefCutDTO().getOffset();
+            return cut.getRefCutDTO().get().getOffset();
         }
     }
 

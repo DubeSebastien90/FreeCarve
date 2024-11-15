@@ -28,17 +28,6 @@ public class DrawCutRectangular extends DrawCutWrapper{
     }
 
     @Override
-    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
-        this.update(renderer);
-        graphics2D.setStroke(stroke);
-        graphics2D.setColor(this.strokeColor);
-
-        for(int i =0; i  < points.size() - 1; i++){
-            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), this.strokeWidth);
-        }
-    }
-
-    @Override
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
         this.update(renderer);
         graphics2D.setStroke(stroke);
@@ -95,7 +84,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
      * @return {@code Optional<UUID>} UUID if the cut is valid, null if the cut is invalid
      */
     private Optional<UUID> createCut() {
-        RequestCutDTO rq = new RequestCutDTO(this.cut.getPoints(), this.cut.getCutType(), this.cut.getBitIndex(), this.cut.getDepth());
+        RequestCutDTO rq = new RequestCutDTO(this.cut.getPoints(), this.cut.getCutType(), this.cut.getBitIndex(), this.cut.getDepth(), selectedRef);
         return mainWindow.getController().requestCut(rq);
     }
 

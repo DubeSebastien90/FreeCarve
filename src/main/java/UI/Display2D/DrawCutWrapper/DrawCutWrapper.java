@@ -2,9 +2,12 @@ package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
+import Common.DTO.RefCutDTO;
+
 import Common.Exceptions.BitNotSelectedException;
 import Domain.CutType;
 import Common.DTO.VertexDTO;
+import Domain.RefCut;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
@@ -14,6 +17,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 /**
  * Polymorphic drawing class for cuts
@@ -29,6 +33,8 @@ public abstract class DrawCutWrapper {
     protected float strokeWidth = 3.0f;
     protected Stroke stroke;
     protected MainWindow mainWindow;
+    protected List<RefCutDTO> refs;
+    protected Optional<RefCutDTO> selectedRef = Optional.empty();
     protected DrawCutState state = DrawCutState.NOT_SELECTED;
     public enum DrawCutState {
         SELECTED,
@@ -41,7 +47,15 @@ public abstract class DrawCutWrapper {
      * @param graphics2D reference to grahics
      * @param renderer reference to renderer instance
      */
-    public abstract void draw(Graphics2D graphics2D, Rendering2DWindow renderer);
+    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer){
+        this.update(renderer);
+        graphics2D.setStroke(stroke);
+        graphics2D.setColor(this.strokeColor);
+
+        for(int i =0; i  < points.size() - 1; i++){
+            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), this.strokeWidth);
+        }
+    }
 
     /**
      * Draw the cut that is still being created
@@ -91,6 +105,7 @@ public abstract class DrawCutWrapper {
         this.stroke = new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         this.mainWindow = mainWindow;
         cursorPoint  = null;
+        selectedRef = Optional.empty();
         this.update(renderer);
     }
 
@@ -118,6 +133,7 @@ public abstract class DrawCutWrapper {
 
         this.mainWindow = mainWindow;
         cursorPoint  = null;
+        selectedRef = Optional.empty();
         this.update(renderer);
     }
 
@@ -210,6 +226,22 @@ public abstract class DrawCutWrapper {
             PersoPoint p1 = new PersoPoint(point.getX(), point.getY(), 10.0f, true, strokeColor);
             points.add(p1);
         }
+    }
+
+    protected List<VertexDTO> getRelativePoints(){
+        List<VertexDTO> newRelativePoints = new ArrayList<>();
+        if(selectedRef.isPresent()){
+            for(VertexDTO v : this.cut.getPoints()){
+                newRelativePoints.add(selectedRef.get().getFirstPoint().mul(-1).add(v));
+            }
+        }
+        else{
+            for(VertexDTO v : this.cut.getPoints()){
+                newRelativePoints.add(new VertexDTO(v));
+            }
+        }
+
+        return newRelativePoints;
     }
 
     /**

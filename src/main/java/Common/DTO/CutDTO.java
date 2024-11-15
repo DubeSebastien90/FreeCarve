@@ -4,6 +4,7 @@ import Domain.CutType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -18,7 +19,7 @@ public class CutDTO {
     private int bitIndex;
     private List<VertexDTO> points;
     private CutType type;
-    private RefCutDTO refCutDTO; // reference to another cut
+    private Optional<RefCutDTO> refCutDTO; // reference to another cut
 
     /**
      * Basic constructor of the {@code CutDTO}
@@ -33,7 +34,19 @@ public class CutDTO {
         this.bitIndex = bitIndex;
         this.type = type;
         this.points = points;
-        refCutDTO = null;
+        refCutDTO = Optional.empty();
+    }
+
+    public CutDTO(CutDTO other){
+        this.idCut = other.idCut;
+        this.depth = other.depth;
+        this.bitIndex = other.bitIndex;
+        this.type = other.type;
+        this.points = new ArrayList<>();
+        for(VertexDTO p : other.getPoints()){
+            this.points.add(new VertexDTO(p));
+        }
+        refCutDTO = other.getRefCutDTO();
     }
 
     public int getBitIndex() {
@@ -54,7 +67,9 @@ public class CutDTO {
 
     public List<VertexDTO> getPoints() {return this.points;}
 
-    public RefCutDTO getRefCutDTO() {return this.refCutDTO;}
+    public Optional<RefCutDTO> getRefCutDTO() {
+        return this.refCutDTO;
+    }
 
     public CutDTO getCopy(){
         List<VertexDTO> newPoints = new ArrayList<>();
@@ -75,11 +90,11 @@ public class CutDTO {
     }
 
     public CutDTO getAbsoluteCutDTO(){
-        if(refCutDTO == null){
+        if(refCutDTO.isEmpty()){
             return getCopy();
         }
         else{
-            return this.addOffsetToPoints(refCutDTO.getOffset());
+            return this.addOffsetToPoints(refCutDTO.get().getOffset());
         }
     }
 }

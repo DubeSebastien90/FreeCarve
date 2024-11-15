@@ -4,7 +4,9 @@ import Common.DTO.CutDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -22,7 +24,7 @@ class Cut {
     private double depth;
     private UUID id;
     private boolean valid;
-    private RefCut refCut;
+    private Optional<RefCut> refCut;
 
 
     public Cut(CutDTO uiCut) {
@@ -32,11 +34,18 @@ class Cut {
         this.bitIndex = uiCut.getBitIndex();
         this.depth = uiCut.getDepth();
         this.id = uiCut.getId();
-        this.refCut = null;
+
+        if(uiCut.getRefCutDTO().isPresent()){
+            this.refCut = Optional.of(new RefCut(uiCut.getRefCutDTO().get()));
+        }
+        else{
+            this.refCut = Optional.empty();
+        }
+
     }
 
     /**
-     * Constructs a new {@code Cut} with all of it's attributes
+     * Constructs a new {@code Cut} with all of it's attributes, set the ref to null
      *
      * @param startPoint the initial {@code Point} of the cut
      * @param type       the type of the cut
@@ -52,6 +61,26 @@ class Cut {
         this.depth = depth;
         this.id = UUID.randomUUID();
         this.refCut = null;
+    }
+
+    /**
+     * Constructs a new {@code Cut} with all of it's attributes
+     *
+     * @param startPoint the initial {@code Point} of the cut
+     * @param type       the type of the cut
+     * @param points     all the other point that characterise the cut
+     * @param bitIndex   the index of the bit that is used for the cut
+     * @param depth      the depth of the cut
+     * @param refCut        reference to the anchor point of the cut
+     */
+    public Cut(VertexDTO startPoint, CutType type, List<VertexDTO> points, int bitIndex, double depth, Optional<RefCut> refCut) {
+        this.startPoint = startPoint;
+        this.type = type;
+        this.points = points;
+        this.bitIndex = bitIndex;
+        this.depth = depth;
+        this.id = UUID.randomUUID();
+        this.refCut = refCut;
     }
 
     public Cut(RequestCutDTO requestCutDTO) {

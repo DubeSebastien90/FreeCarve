@@ -74,6 +74,7 @@ class PanelCNC {
      */
     public Optional<UUID> requestCut(RequestCutDTO cut) {
         //todo tester si la coupe est bonne ou non!!
+        System.out.println("cut resquested by the panel");
         UUID newUUID = new UUID(1000000, 1000000);
         CutDTO cutDTO = new CutDTO(
                 newUUID,

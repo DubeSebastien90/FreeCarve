@@ -21,25 +21,12 @@ import java.util.UUID;
  */
 public class DrawCutL extends DrawCutWrapper{
 
-    private List<RefCutDTO> refs;
-
     public DrawCutL(CutType type, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(type, renderer, mainWindow);
     }
 
     public DrawCutL(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(cut, renderer, mainWindow);
-    }
-
-    @Override
-    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
-        this.update(renderer);
-        graphics2D.setStroke(stroke);
-        graphics2D.setColor(this.strokeColor);
-
-        for(int i =0; i  < points.size() - 1; i++){
-            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), this.strokeWidth);
-        }
     }
 
     @Override
@@ -73,6 +60,7 @@ public class DrawCutL extends DrawCutWrapper{
 
             if(refs.size() >= 2){
                 newPoints.add(newPoint);
+                selectedRef = Optional.of(refs.getFirst());
             }
             else{
                 System.out.println("TOO ENOUGH REFS IN THE L CUT");
@@ -100,7 +88,7 @@ public class DrawCutL extends DrawCutWrapper{
      * @return {@code Optional<UUID>} UUID if the cut is valid, null if the cut is invalid
      */
     private Optional<UUID> createCut() {
-        RequestCutDTO rq = new RequestCutDTO(this.cut.getPoints(), this.cut.getCutType(), this.cut.getBitIndex(), this.cut.getDepth());
+        RequestCutDTO rq = new RequestCutDTO(this.getRelativePoints(), this.cut.getCutType(), this.cut.getBitIndex(), this.cut.getDepth(), selectedRef);
         return mainWindow.getController().requestCut(rq);
     }
 
@@ -158,10 +146,6 @@ public class DrawCutL extends DrawCutWrapper{
                 maxY = Math.max(maxY, p2l1.getY());
                 maxY = Math.max(p1l1.getY(), maxY);
             }
-
-            System.out.println("============================");
-            System.out.println(minX + " - " + maxX);
-            System.out.println(minY + " - " + maxY);
 
             if(p.getLocationX() <= minX){
                 p.movePoint(minX, p.getLocationY());

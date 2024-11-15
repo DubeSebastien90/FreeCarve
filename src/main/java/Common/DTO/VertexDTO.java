@@ -20,6 +20,12 @@ public class VertexDTO {
         this.z = z;
     }
 
+    public VertexDTO(VertexDTO other){
+        this.x = other.x;
+        this.y = other.y;
+        this.z = other.z;
+    }
+
     public double getX() {
         return x;
     }
@@ -48,6 +54,12 @@ public class VertexDTO {
         return new VertexDTO(this.getX() + other.getX(),
                 this.getY() + other.getY(),
                 this.getZ() + other.getZ());
+    }
+
+    public VertexDTO mul(double factor){
+        return new VertexDTO(this.getX() * factor,
+                this.getY() * factor,
+                this.getZ() * factor);
     }
 
     /**

@@ -87,7 +87,7 @@ public class CutBox implements Attributable {
      */
     public CutBox(CutDTO cutDTO, int index, ChangeCutListener cutListener, MainWindow mainWindow, CutListPanel cutListPanel) {
         this.mainWindow = mainWindow;
-        this.cut = cutDTO;
+        this.cut = new CutDTO(cutDTO);
         this.index = index;
         this.cutListener = cutListener;
         this.cutListPanel = cutListPanel;
@@ -162,7 +162,7 @@ public class CutBox implements Attributable {
      * @param newCutDTO new CutDTO to modify the CutBox with
      */
     public void updatePanel(CutDTO newCutDTO) {
-        this.cut = newCutDTO;
+        this.cut = new CutDTO(newCutDTO);
 
         // Setting the bit info
         bitnameLabel.setText("Outil : " + (mainWindow.getController().getBitsDTO()[newCutDTO.getBitIndex()].getName()));
