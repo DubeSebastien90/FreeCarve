@@ -162,7 +162,7 @@ public class CutBox implements Attributable {
      * @param newCutDTO new CutDTO to modify the CutBox with
      */
     public void updatePanel(CutDTO newCutDTO) {
-        this.cut = new CutDTO(newCutDTO);
+        this.cut = new CutDTO(newCutDTO); // duplicate the cutDTO to modify it's own copy
 
         // Setting the bit info
         bitnameLabel.setText("Outil : " + (mainWindow.getController().getBitsDTO()[newCutDTO.getBitIndex()].getName()));
