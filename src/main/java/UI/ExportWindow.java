@@ -81,7 +81,7 @@ public class ExportWindow extends JPanel {
         gbc.weightx = 3;
         gbc.weighty = 0.40;
         gbc.fill = GridBagConstraints.BOTH;
-        add(new BasicWindow(true), gbc);
+        add(gcodeWindow, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 2;

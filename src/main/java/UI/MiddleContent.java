@@ -156,6 +156,7 @@ public class MiddleContent {
             case EXPORT -> {
                 ((CardLayout) panel.getLayout()).show(panel, "export");
                 current = MiddleWindowType.EXPORT;
+                exportWindow.calculateGcode();
                 exportWindow.getRenderer().requestFocusInWindow();
                 db.setButtonBlueToIndex(4);
             }
