@@ -1,8 +1,6 @@
 package UI;
 
-import static Common.UiUtil.createSVGButton;
-import com.formdev.flatlaf.ui.FlatButtonBorder;
-import com.sun.tools.javac.Main;
+import static UI.UiUtil.createSVGButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

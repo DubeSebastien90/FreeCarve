@@ -18,8 +18,8 @@ public class ChooseDimension extends BasicWindow implements Attributable {
 
     private final Rendering2DWindow rend;
     private final boolean gridDisplayed;
-    private NumberTextField xTextField;
-    private NumberTextField yTextField;
+    private ConfigurableNumberTextField xTextField;
+    private ConfigurableNumberTextField yTextField;
     private NumberTextField gridPrecision;
     private NumberTextField magnetPrecision;
 
@@ -39,14 +39,14 @@ public class ChooseDimension extends BasicWindow implements Attributable {
      * @return The NumberTextfield for the width input
      */
     public NumberTextField getxTextField() {
-        return xTextField;
+        return xTextField.getNumberTextField();
     }
 
     /**
      * @return The NumberTextfield for the height input
      */
     public NumberTextField getyTextField() {
-        return yTextField;
+        return yTextField.getNumberTextField();
     }
 
     /**
@@ -61,8 +61,8 @@ public class ChooseDimension extends BasicWindow implements Attributable {
         displayWidth = displayWidth / 100;
         double displayHeight = Math.round(rend.getBoard().getHeight() * 100);
         displayHeight = displayHeight / 100;
-        xTextField = new NumberTextField("" + displayWidth, width -> rend.resizePanneau(width, rend.getBoard().getHeight()));
-        yTextField = new NumberTextField("" + displayHeight, height -> rend.resizePanneau(rend.getBoard().getWidth(), height));
+        xTextField = new ConfigurableNumberTextField("" + displayWidth, width -> rend.resizePanneau(width, rend.getBoard().getHeight()));
+        yTextField = new ConfigurableNumberTextField("" + displayHeight, height -> rend.resizePanneau(rend.getBoard().getWidth(), height));
 
         JLabel xLabel = new JLabel("x");
         JLabel yLabel = new JLabel("y");

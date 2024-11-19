@@ -2,13 +2,12 @@ package UI.Widgets;
 
 import UI.SubWindows.BasicWindow;
 import UI.UIConfig;
-import com.formdev.flatlaf.ui.FlatButtonBorder;
+import UI.UiUnits;
 import com.formdev.flatlaf.ui.FlatEmptyBorder;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -21,6 +20,7 @@ import java.text.NumberFormat;
 public class CustomNumericInputField extends BasicWindow {
     private JLabel nameOfInput;
     private JFormattedTextField numericInput;
+    private JComboBox<UiUnits> unitComboBox;
     private BoxLayout layout;
 
     CustomNumericInputField(String nameOfInput, double value){
@@ -31,13 +31,16 @@ public class CustomNumericInputField extends BasicWindow {
     }
 
     private void init(String nameOfInput, double value){
+        layout = new BoxLayout(this, BoxLayout.X_AXIS);
+        this.setLayout(layout);
+
         this.nameOfInput = new JLabel(nameOfInput);
         this.nameOfInput.setOpaque(true);
         this.nameOfInput.setBackground(UIManager.getColor("SubWindow.lightBackground1"));
         this.nameOfInput.setBorder(new FlatEmptyBorder());
         this.nameOfInput.setHorizontalAlignment(SwingConstants.RIGHT);
         this.nameOfInput.setBorder(new EmptyBorder(0, 0 ,0 , UIConfig.INSTANCE.getDefaultPadding()));
-        layout = new BoxLayout(this, BoxLayout.X_AXIS);
+
         NumberFormat numberFormat = DecimalFormat.getNumberInstance();
         this.numericInput = new JFormattedTextField(numberFormat);
         this.numericInput.setColumns(10);
@@ -45,9 +48,11 @@ public class CustomNumericInputField extends BasicWindow {
         this.numericInput.setValue(value);
         this.numericInput.setBackground(UIManager.getColor("SubWindow.lightBackground2"));
 
+        this.unitComboBox = new JComboBox<>(UiUnits.values());
+
         this.add(this.nameOfInput);
         this.add(this.numericInput);
-        this.setLayout(layout);
+        this.add(this.unitComboBox);
     }
 
     public JFormattedTextField getNumericInput(){return this.numericInput;}

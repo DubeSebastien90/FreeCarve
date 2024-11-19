@@ -1,6 +1,6 @@
 package UI.Widgets;
 
-import Common.UiUtil;
+import UI.UiUtil;
 
 import javax.swing.*;
 import java.awt.*;

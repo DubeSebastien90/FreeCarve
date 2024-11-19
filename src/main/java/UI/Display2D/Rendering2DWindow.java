@@ -9,7 +9,7 @@ import UI.Events.ChangeCutListener;
 import UI.LeftBar;
 import UI.MainWindow;
 import UI.Widgets.PersoPoint;
-import Common.UiUtil;
+import UI.UiUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,8 @@ import java.util.ArrayList;
  * The {@code Rendering2DWindow} class is used to construct and display a board which represent the panel on the CNC. This
  * class also manage how the board is perceived. This includes the zoom, and the display of the mouse position relative to the board.
  *
- * @author Sébastien Dubé & Adam Côté
+ * @author Sébastien Dubé
+ * @author Adam Côté
  * @version 1.2
  * @since 2024-10-22
  */
@@ -48,7 +49,7 @@ public class Rendering2DWindow extends JPanel {
 
 
     /**
-     * Constructor for Renderinf2DWIndow
+     * Constructor for Rendering2DWindow
      *
      * @param mainWindow The main window to get the controller
      */

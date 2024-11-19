@@ -5,16 +5,14 @@ import Common.DTO.CutDTO;
 import Domain.CutType;
 import Common.DTO.VertexDTO;
 import UI.Events.ChangeAttributeEvent;
-import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
-import Common.UiUtil;
+import UI.UiUtil;
 import com.formdev.flatlaf.ui.FlatButtonBorder;
-import com.sun.tools.javac.Main;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -26,12 +24,11 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * The {@code CutBox} class is a UI class that encapsulates a box containing all the informations
+ * The {@code CutBox} class is a UI class that encapsulates a box containing all the information
  * about a specific cut
  *
  * @author Louis-Etienne Messier
@@ -69,7 +66,7 @@ public class CutBox implements Attributable {
     ChoiceBox cuttypeBox;
 
     /**
-     * Basic constructor of {@code CutBox}, initiates all of the UI values and get a reference to the CutList parent
+     * Basic constructor of {@code CutBox}, initiates all the UI values and get a reference to the CutList parent
      *
      * @param cutDTO   cut that CutBox will present
      * @param index    index of the cut
@@ -77,7 +74,7 @@ public class CutBox implements Attributable {
      */
 
     /**
-     * Basic constructor of {@code CutBox}, initiates all of the UI values and get a reference to the CutList parent
+     * Basic constructor of {@code CutBox}, initiates all the UI values and get a reference to the CutList parent
      *
      * @param cutDTO   cut that CutBox will present
      * @param index    index of the cut     *
@@ -396,7 +393,6 @@ public class CutBox implements Attributable {
         gc.weighty = 0.0f;
         gc.insets = new Insets(0,0,0, UIConfig.INSTANCE.getDefaultPadding()/2);
         panel.add(deleteButton, gc);
-
 
     }
 

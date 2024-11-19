@@ -1,4 +1,4 @@
-package Common;
+package UI;
 
 import Domain.CutType;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
