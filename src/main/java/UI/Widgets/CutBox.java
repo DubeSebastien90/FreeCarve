@@ -51,7 +51,7 @@ public class CutBox implements Attributable {
     private CutBoxState cutBoxState = CutBoxState.NOT_SELECTED;
     private CutListPanel cutListPanel;
 
-    public enum CutBoxState{
+    public enum CutBoxState {
         SELECTED,
         NOT_SELECTED,
         HOVER,
@@ -76,10 +76,10 @@ public class CutBox implements Attributable {
     /**
      * Basic constructor of {@code CutBox}, initiates all the UI values and get a reference to the CutList parent
      *
-     * @param cutDTO   cut that CutBox will present
-     * @param index    index of the cut     *
-     * @param cutListener cutListener, parent of the CutBox
-     * @param mainWindow reference to the mainWindow
+     * @param cutDTO       cut that CutBox will present
+     * @param index        index of the cut     *
+     * @param cutListener  cutListener, parent of the CutBox
+     * @param mainWindow   reference to the mainWindow
      * @param cutListPanel refernce to the cutListPanel
      */
     public CutBox(CutDTO cutDTO, int index, ChangeCutListener cutListener, MainWindow mainWindow, CutListPanel cutListPanel) {
@@ -184,31 +184,29 @@ public class CutBox implements Attributable {
     /**
      * Select this CutBox
      */
-    public void select(){
+    public void select() {
         setState(CutBoxState.SELECTED);
     }
 
     /**
      * Set the state of the CutBox and it's underlying parameters
+     *
      * @param state
      */
-    public void setState(CutBoxState state){
+    public void setState(CutBoxState state) {
 
-        if(state == CutBoxState.NOT_SELECTED)
-        {
+        if (state == CutBoxState.NOT_SELECTED) {
             cutBoxState = state;
             ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
             this.cutListPanel.changeAttributeEventOccurred(event);
             setBackgroundToIndex();
-        }
-        else if(state == CutBoxState.SELECTED){
+        } else if (state == CutBoxState.SELECTED) {
             this.cutListPanel.refreshSelectedCutBox();
             cutBoxState = state;
             ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
             this.cutListPanel.changeAttributeEventOccurred(event);
             panel.setBackground(UIManager.getColor("Button.green"));
-        }
-        else if(state == CutBoxState.HOVER){
+        } else if (state == CutBoxState.HOVER) {
             cutBoxState = state;
             ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
             this.cutListPanel.changeAttributeEventOccurred(event);
@@ -219,7 +217,7 @@ public class CutBox implements Attributable {
     /**
      * @return the current state of the CutBox
      */
-    public CutBoxState getState(){
+    public CutBoxState getState() {
         return this.cutBoxState;
     }
 
@@ -258,10 +256,9 @@ public class CutBox implements Attributable {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(getState() != CutBoxState.SELECTED){
+                if (getState() != CutBoxState.SELECTED) {
                     select();
-                }
-                else{
+                } else {
                     deselect();
                 }
 
@@ -325,7 +322,7 @@ public class CutBox implements Attributable {
         bitnameLabel.setBackground(UIManager.getColor("SubWindow.background"));
         bitnameLabel.setHorizontalAlignment(JLabel.CENTER);
         bitnameLabel.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
-                UIConfig.INSTANCE.getDefaultPadding(),  UIConfig.INSTANCE.getDefaultPadding()));
+                UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding()));
         numberLabel.putClientProperty("FlatLaf.style", "font: bold $h3.regular.font");
         deleteButton = UiUtil.createSVGButton("trash", true, UIConfig.INSTANCE.getToolIconSize(), Color.RED);
         deleteButton.addActionListener(new ActionListener() {
@@ -346,7 +343,7 @@ public class CutBox implements Attributable {
         gc.gridheight = 1;
         gc.weightx = 0.0;
         gc.anchor = GridBagConstraints.CENTER;
-        gc.insets = new Insets(0,0,0,UIConfig.INSTANCE.getDefaultPadding());
+        gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding());
         panel.add(numberLabel, gc);
 
         gc.gridx = 0;
@@ -355,11 +352,13 @@ public class CutBox implements Attributable {
         gc.gridheight = 1;
         gc.anchor = GridBagConstraints.FIRST_LINE_START;
         gc.weightx = 0.0;
-        gc.insets = new Insets(0,0,0,UIConfig.INSTANCE.getDefaultPadding());
+        gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding());
         panel.add(imageLabel, gc);
 
-        gc.gridx = 1; gc.gridy = 0;
-        gc.gridwidth =1; gc.gridheight=2;
+        gc.gridx = 1;
+        gc.gridy = 0;
+        gc.gridwidth = 1;
+        gc.gridheight = 2;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 1.0f;
@@ -367,31 +366,37 @@ public class CutBox implements Attributable {
         panel.add(bitnameLabel, gc);
 
 
-        gc.gridx = 2; gc.gridy = 0;
-        gc.gridwidth = 1; gc.gridheight=2;
+        gc.gridx = 2;
+        gc.gridy = 0;
+        gc.gridwidth = 1;
+        gc.gridheight = 2;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
         gc.weighty = 0.0f;
-        gc.insets = new Insets(0,0,0,UIConfig.INSTANCE.getDefaultPadding()/2);
+        gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding() / 2);
         panel.add(moveDownButton, gc);
 
-        gc.gridx = 3; gc.gridy = 0;
-        gc.gridwidth = 1; gc.gridheight=2;
+        gc.gridx = 3;
+        gc.gridy = 0;
+        gc.gridwidth = 1;
+        gc.gridheight = 2;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
         gc.weighty = 0.0f;
-        gc.insets = new Insets(0,0,0,UIConfig.INSTANCE.getDefaultPadding()/2);
+        gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding() / 2);
         panel.add(moveUpButton, gc);
 
-        gc.gridx = 4; gc.gridy = 0;
-        gc.gridwidth = 1; gc.gridheight=2;
+        gc.gridx = 4;
+        gc.gridy = 0;
+        gc.gridwidth = 1;
+        gc.gridheight = 2;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 0.0;
         gc.weighty = 0.0f;
-        gc.insets = new Insets(0,0,0, UIConfig.INSTANCE.getDefaultPadding()/2);
+        gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding() / 2);
         panel.add(deleteButton, gc);
 
     }
@@ -406,7 +411,7 @@ public class CutBox implements Attributable {
     private void addEventListenerToPointBox(PointsBox pb, int index) {
 
         // Listen for changes in the X field
-        pb.getxInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
+        pb.getxInput().addPropertyChangeListener("value", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = CutBox.this.cut;
@@ -419,7 +424,7 @@ public class CutBox implements Attributable {
             }
         });
         // Listen for changes in the Y field
-        pb.getyInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
+        pb.getyInput().addPropertyChangeListener("value", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = CutBox.this.cut;
@@ -440,7 +445,7 @@ public class CutBox implements Attributable {
      * @param sb {@code SingleValueBox object}
      */
     private void addEventListenerToSingleValue(SingleValueBox sb) {
-        sb.getInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
+        sb.getInput().addPropertyChangeListener("value", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = CutBox.this.cut;
@@ -475,7 +480,7 @@ public class CutBox implements Attributable {
     /**
      * Adding the custom event listeners to BitChoiceBox objects. The goal is to make
      * the ComboBox attribute react to change events
-     *
+     * <p>
      * Called when the user selects a new bit in the BitChoiceBox
      *
      * @param cb {@code BitChoiceBox object} The combo box containing the bits informations
@@ -498,15 +503,15 @@ public class CutBox implements Attributable {
      * Initialize variables relevant to the Attribute Panel
      */
     private void init_attribute() {
-        pointsBox1 = new PointsBox(true, "Point1", this.cut.getPoints().get(0));
-        pointsBox2 = new PointsBox(true, "Point2", this.cut.getPoints().get(1));
-        depthBox = new SingleValueBox(true, "Profondeur", this.cut.getDepth());
+        pointsBox1 = new PointsBox(mainWindow.getController(), true, "Point1", this.cut.getPoints().get(0));
+        pointsBox2 = new PointsBox(mainWindow.getController(), true, "Point2", this.cut.getPoints().get(1));
+        depthBox = new SingleValueBox(mainWindow.getController(), true, "Profondeur", this.cut.getDepth());
 
         Map<Integer, BitDTO> configuredBitsMap = mainWindow.getMiddleContent().getConfiguredBitsMap();
 
         int index = 0;
-        for(Map.Entry<Integer, BitDTO> entry : configuredBitsMap.entrySet()){
-            if(entry.getKey().equals(this.cut.getBitIndex())){
+        for (Map.Entry<Integer, BitDTO> entry : configuredBitsMap.entrySet()) {
+            if (entry.getKey().equals(this.cut.getBitIndex())) {
                 break;
             }
             index++;

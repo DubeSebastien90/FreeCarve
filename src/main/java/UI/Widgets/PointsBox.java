@@ -1,6 +1,7 @@
 package UI.Widgets;
 
 import Common.DTO.VertexDTO;
+import Common.Interfaces.IUnitConverter;
 
 import java.awt.*;
 
@@ -17,27 +18,34 @@ public class PointsBox extends GenericAttributeBox {
     private CustomNumericInputField yInput;
 
 
-    public PointsBox(boolean hasBackground, String name, VertexDTO vertexDTO){
+    public PointsBox(IUnitConverter unitConverter, boolean hasBackground, String name, VertexDTO vertexDTO) {
         super(hasBackground, name);
-        this.init(vertexDTO);
+        this.init(unitConverter, vertexDTO);
     }
 
-    private void init(VertexDTO vertexDTO){
+    private void init(IUnitConverter unitConverter, VertexDTO vertexDTO) {
         GridBagConstraints gc = new GridBagConstraints();
 
-        this.xInput = new CustomNumericInputField("X", vertexDTO.getX());
-        this.yInput = new CustomNumericInputField("Y", vertexDTO.getY());
+        this.xInput = new CustomNumericInputField(unitConverter, "X", vertexDTO.getX());
+        this.yInput = new CustomNumericInputField(unitConverter, "Y", vertexDTO.getY());
 
-        gc.gridx = 0; gc.gridy = 1;
+        gc.gridx = 0;
+        gc.gridy = 1;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 1;
         this.add(xInput, gc);
-        gc.gridx = 0; gc.gridy = 2;
+        gc.gridx = 0;
+        gc.gridy = 2;
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 1;
         this.add(yInput, gc);
     }
 
-    public CustomNumericInputField getxInput(){return this.xInput;}
-    public CustomNumericInputField getyInput(){return this.yInput;}
+    public CustomNumericInputField getxInput() {
+        return this.xInput;
+    }
+
+    public CustomNumericInputField getyInput() {
+        return this.yInput;
+    }
 }

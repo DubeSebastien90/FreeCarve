@@ -1,5 +1,6 @@
 package UI.Widgets;
 
+import Common.Interfaces.IUnitConverter;
 import UI.Display2D.Rendering2DWindow;
 
 
@@ -55,12 +56,13 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
      * with real-time resizing functionality.
      */
     private void init() {
+        IUnitConverter unitConverter = rend.getMainWindow().getController();
         double displayWidth = Math.round(rend.getBoard().getWidth() * 100);
         displayWidth = displayWidth / 100;
         double displayHeight = Math.round(rend.getBoard().getHeight() * 100);
         displayHeight = displayHeight / 100;
-        xTextField = new CustomNumericInputField("Width", displayWidth, 0, rend.getMainWindow().getController().getPanelDTO().getMaxMMWidth());
-        yTextField = new CustomNumericInputField("Height", displayHeight, 0, rend.getMainWindow().getController().getPanelDTO().getMaxMMHeight());
+        xTextField = new CustomNumericInputField(unitConverter, "Width", displayWidth, 0, rend.getMainWindow().getController().getPanelDTO().getMaxMMWidth());
+        yTextField = new CustomNumericInputField(unitConverter, "Height", displayHeight, 0, rend.getMainWindow().getController().getPanelDTO().getMaxMMHeight());
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.weightx = 1.0;
@@ -73,8 +75,8 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
         add(yTextField, gbc);
 
         if (gridDisplayed) {
-            gridPrecision = new CustomNumericInputField("Grid size", rend.getMainWindow().getController().getGrid().getSize(), 0, Double.POSITIVE_INFINITY);
-            magnetPrecision = new CustomNumericInputField("Magnet Precision", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), 0, Double.POSITIVE_INFINITY);
+            gridPrecision = new CustomNumericInputField(unitConverter, "Grid size", rend.getMainWindow().getController().getGrid().getSize(), 0, Double.POSITIVE_INFINITY);
+            magnetPrecision = new CustomNumericInputField(unitConverter, "Magnet Precision", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), 0, Double.POSITIVE_INFINITY);
             gbc.gridy = 3;
             add(gridPrecision, gbc);
             gbc.gridy = 4;
@@ -84,24 +86,21 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
 
     private void addEventListenerToPointBox() {
         xTextField.getNumericInput().addPropertyChangeListener("value", evt -> {
-            Number width = (Number) evt.getNewValue();
-            rend.resizePanneau(width.doubleValue(), rend.getBoard().getHeight());
+            rend.resizePanneau(xTextField.getMMValue(), rend.getBoard().getHeight());
         });
         yTextField.getNumericInput().addPropertyChangeListener("value", evt -> {
-            Number height = (Number) evt.getNewValue();
-            rend.resizePanneau(height.doubleValue(), rend.getBoard().getHeight());
+            rend.resizePanneau(yTextField.getMMValue(), rend.getBoard().getHeight());
         });
         if (gridPrecision != null) {
             gridPrecision.getNumericInput().addPropertyChangeListener("value", evt -> {
-                Number size = (Number) evt.getNewValue();
-                rend.getMainWindow().getController().putGrid(size.intValue(), rend.getMainWindow().getController().getGrid().getMagnetPrecision());
+                // TODO clarify what precision means and why it's an int
+                rend.getMainWindow().getController().putGrid((int)gridPrecision.getMMValue(), rend.getMainWindow().getController().getGrid().getMagnetPrecision());
                 rend.repaint();
             });
         }
         if (magnetPrecision != null) {
             magnetPrecision.getNumericInput().addPropertyChangeListener("value", evt -> {
-                Number precision = (Number) evt.getNewValue();
-                rend.getMainWindow().getController().putGrid(rend.getMainWindow().getController().getGrid().getSize(), precision.intValue());
+                rend.getMainWindow().getController().putGrid(rend.getMainWindow().getController().getGrid().getSize(), (int)magnetPrecision.getMMValue());
                 rend.repaint();
             });
         }
