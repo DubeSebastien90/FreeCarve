@@ -24,7 +24,7 @@ class Cut {
     private boolean valid;
 
 
-    public Cut(CutDTO uiCut){
+    public Cut(CutDTO uiCut) {
         this.startPoint = uiCut.getPoints().getFirst();
         this.type = uiCut.getCutType();
         this.points = uiCut.getPoints();
@@ -32,6 +32,7 @@ class Cut {
         this.depth = uiCut.getDepth();
         this.id = uiCut.getId();
     }
+
     /**
      * Constructs a new {@code Cut} with all of it's attributes
      *
@@ -54,7 +55,7 @@ class Cut {
         //todo
     }
 
-    public CutDTO getDTO(){
+    public CutDTO getDTO() {
         return new CutDTO(id, depth, bitIndex, type, points.stream().toList());
     }
 
@@ -90,9 +91,13 @@ class Cut {
         this.depth = depth;
     }
 
-    public UUID getId(){return this.id;}
+    public UUID getId() {
+        return this.id;
+    }
 
-    public CutType getType() {return this.type;}
+    public CutType getType() {
+        return this.type;
+    }
 
     /**
      * Finds if a coordinate is in the current {@code Cut} zone.

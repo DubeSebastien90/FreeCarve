@@ -4,6 +4,7 @@ import Common.DTO.*;
 import Common.Interfaces.IDoAction;
 import Common.Interfaces.IRefreshable;
 import Common.Interfaces.IUndoAction;
+import Domain.IO.ProjectFileManager;
 import Domain.ThirdDimension.*;
 
 import java.awt.image.BufferedImage;
@@ -18,7 +19,6 @@ import java.util.*;
  * @since 2024-10-20
  */
 public class Controller {
-    private final FileManager fileManager = new FileManager();
     private final UndoRedoManager undoRedoManager;
     private final ProjectState currentProjectState;
     private Grid grid;
@@ -179,14 +179,19 @@ public class Controller {
      * Saves the current state of the project.
      */
     public void saveProject() {
-        fileManager.saveProject(currentProjectState);
+    }
+
+    /**
+     * Saves the Gcode of the project.
+     */
+    public void saveGcode(String path) {
+        ProjectFileManager.saveGcode(path, convertToGCode());
     }
 
     /**
      * Opens a file and set the current project as the project saved in the file.
      */
     public void openProject() {
-        fileManager.openProject();
         //todo
     }
 
@@ -235,7 +240,7 @@ public class Controller {
      * @return The String that represent the GCode instructions.
      */
     public String convertToGCode() {
-        return fileManager.convertToGCode(currentProjectState);
+        return DataGenerator.convertToGCode(currentProjectState);
     }
 
 

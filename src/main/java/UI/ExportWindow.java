@@ -7,6 +7,8 @@ import com.sun.tools.javac.Main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Represents an export window that displays a 3D renderer for visualizing
@@ -21,6 +23,11 @@ public class ExportWindow extends JPanel {
     private BigButton nextButton = new BigButton("Export");
     private Rendering3DWindow rendering3DWindow;
     private final MainWindow mainWindow;
+    private String gcode;
+    private JTextArea gcodeDisplay = new JTextArea();
+    private BasicWindow realGcodeContainer = new BasicWindow(true);
+    private JScrollPane gcodeWindow = new JScrollPane();
+
 
     /**
      * Constructs an ExportWindow and initializes its layout and components.
@@ -29,6 +36,8 @@ public class ExportWindow extends JPanel {
         this.setLayout(new GridBagLayout());
         this.mainWindow = mainWindow;
         init();
+        calculateGcode();
+        setButtonAction();
     }
 
     /**
@@ -67,7 +76,6 @@ public class ExportWindow extends JPanel {
         gbc.weighty = 0.40;
         gbc.fill = GridBagConstraints.BOTH;
         add(rendering3DWindow, gbc);
-
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridheight = 1;
@@ -83,6 +91,39 @@ public class ExportWindow extends JPanel {
         gbc.weighty = 0.20;
         gbc.fill = GridBagConstraints.BOTH;
         add(nextButton, gbc);
+
+
+        gcodeDisplay.setEditable(false);
+        gcodeDisplay.setFont(new Font("Consolas", Font.PLAIN, 20));
+        gcodeDisplay.setLineWrap(true);
+        gcodeDisplay.setWrapStyleWord(true);
+        gcodeDisplay.setBorder(null);
+        gcodeDisplay.setBackground(null);
+        GridBagConstraints g = new GridBagConstraints();
+        g.anchor = GridBagConstraints.WEST;
+        g.fill = GridBagConstraints.BOTH;
+        realGcodeContainer.add(gcodeDisplay, g);
+        gcodeWindow.setViewportView(realGcodeContainer);
+        gcodeWindow.getViewport().setViewPosition(new Point(0, 0));
+    }
+
+    public void calculateGcode() {
+        this.gcode = mainWindow.getController().convertToGCode();
+        gcodeDisplay.setText(gcode);
+        gcodeWindow.repaint();
+        this.repaint();
+    }
+
+    private void setButtonAction() {
+        nextButton.getButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String path = Utils.chooseFile("Where to save", "ProjectGcode.gcode", ExportWindow.this, "Gcode files", "gcode");
+                if (path != null) {
+                    mainWindow.getController().saveGcode(path);
+                }
+            }
+        });
     }
 
     /**
