@@ -23,10 +23,9 @@ public class ExportWindow extends JPanel {
     private BigButton nextButton = new BigButton("Export");
     private Rendering3DWindow rendering3DWindow;
     private final MainWindow mainWindow;
-    private String gcode;
-    private JTextArea gcodeDisplay = new JTextArea();
-    private BasicWindow realGcodeContainer = new BasicWindow(true);
-    private JScrollPane gcodeWindow = new JScrollPane();
+    private final JScrollPane gcodeWindow = new JScrollPane();
+    private final BasicWindow realGcodeContainer = new BasicWindow(true);
+    private final JTextArea gcodeDisplay = new JTextArea();
 
 
     /**
@@ -108,7 +107,7 @@ public class ExportWindow extends JPanel {
     }
 
     public void calculateGcode() {
-        this.gcode = mainWindow.getController().convertToGCode();
+        String gcode = mainWindow.getController().convertToGCode();
         gcodeDisplay.setText(gcode);
         gcodeWindow.repaint();
         this.repaint();

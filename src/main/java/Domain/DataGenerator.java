@@ -23,14 +23,17 @@ class DataGenerator {
         StringBuilder instructions = new StringBuilder();
 
         //definition of constants
-        String rotationSpeed = "S12000"; // rotation speed
-        String movementSpeed = "F500"; // movement speed
+        final String rotationSpeed = "S1200"; // rotation speed
+        final String movementSpeed = "F50"; // movement speed
         final String lineEnd = ";\n";
 
         //initiate CNC State
         instructions.append("G21" + lineEnd); //mm
         instructions.append("G17" + lineEnd); //xy plane
         instructions.append("G28" + lineEnd); //go to (0,0)
+        instructions.append("G90" + lineEnd); //Absolute position used for the program
+        instructions.append("G92 Z0" + lineEnd);
+        instructions.append(movementSpeed + lineEnd); //Define speed of the CNC
 
         List<Cut> cutlist = state.getPanel().getCutList();
         for (Cut cut : cutlist) {
