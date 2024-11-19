@@ -53,9 +53,9 @@ public class Afficheur {
     void drawMousePos(Graphics2D graphics2D) {
         if (rend.isPointonPanel()) {
             graphics2D.setColor(Color.BLACK);
-            double displayposX = Math.round(rend.getFakeMousePt().getX() * 100);
+            double displayposX = Math.round(rend.getMmMousePt().getX() * 100);
             displayposX = displayposX / 100;
-            double displayposY = Math.round(rend.getFakeMousePt().getY() * 100);
+            double displayposY = Math.round(rend.getMmMousePt().getY() * 100);
             displayposY = displayposY / 100;
             graphics2D.drawString(displayposX + "; " + displayposY, 20, 20);
         }

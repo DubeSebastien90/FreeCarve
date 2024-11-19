@@ -30,16 +30,12 @@ import java.util.ArrayList;
 public class Rendering2DWindow extends JPanel {
 
     private Rectangle2D board = new Rectangle2D.Double(0, 0, 1219.2, 914.4);
-    private Point2D mousePt = new Point2D.Double(0, 0);
-    private final Point2D fakeMousePt = new Point2D.Double(0, 0);
+    private Point2D mousePt;
+    private final Point2D mmMousePt;
     private double offsetX = 100;
     private double offsetY = 100;
     private double zoom = 1;
-    private final Point2D mmMousePt;
-    private double prevZoom;
-    private int wW;
-    private int wH;
-    private ChangeCutListener changeCutListener;
+    private final ChangeCutListener changeCutListener;
     private final ChangeAttributeListener changeAttributeListener;
     private final MainWindow mainWindow;
     private final ArrayList<Double> areammBoard = new ArrayList<>();
@@ -59,19 +55,21 @@ public class Rendering2DWindow extends JPanel {
 
     public Rendering2DWindow(MainWindow mainWindow, ChangeAttributeListener changeAttributeListener, ChangeCutListener changeCutListener) {
         super();
+        //references to other windows
         this.mainWindow = mainWindow;
         this.changeCutListener = changeCutListener;
         this.changeAttributeListener = changeAttributeListener;
+        //rendering variables
         zoom = 1;
         mousePt = new Point(0, 0);
         mmMousePt = new Point2D.Double(0, 0);
         offsetY = 100;
         offsetX = 100;
+        //
         mainWindow.getController().putGrid(70, 5);
         addMouseListener();
         addMouseMotionListener();
         addMouseWheelListener();
-        addComponentListener();
         afficheur = new Afficheur(this);
         scaling = new Scaling(this);
         drawing = new Drawing(this, mainWindow);
@@ -103,15 +101,6 @@ public class Rendering2DWindow extends JPanel {
      */
     public Rectangle2D getBoard() {
         return this.board;
-    }
-
-    /**
-     * Returns the coordinates of the simulated mouse point.
-     *
-     * @return the Point2D representing the fake mouse point.
-     */
-    public Point2D getFakeMousePt() {
-        return this.fakeMousePt;
     }
 
     /**
@@ -150,32 +139,6 @@ public class Rendering2DWindow extends JPanel {
         return zoom;
     }
 
-    /**
-     * Returns the previous zoom level before the last change.
-     *
-     * @return the previous zoom level as a double.
-     */
-    public double getPrevZoom() {
-        return prevZoom;
-    }
-
-    /**
-     * Returns the width of the window or canvas in pixels.
-     *
-     * @return the window width as an integer.
-     */
-    public int getwW() {
-        return wW;
-    }
-
-    /**
-     * Returns the height of the window or canvas in pixels.
-     *
-     * @return the window height as an integer.
-     */
-    public int getwH() {
-        return wH;
-    }
 
     /**
      * Indicates whether a point is currently being dragged.
@@ -295,7 +258,7 @@ public class Rendering2DWindow extends JPanel {
             public void mouseMoved(MouseEvent e) {
                 if (!draggingAPoint) {
                     mousePt = e.getPoint();
-                    mmMousePt.setLocation((mousePt.getX() - (offsetX * zoom)) / zoom, ((-1 * (mousePt.getY() - wH)) - (offsetY * zoom)) / zoom);
+                    mmMousePt.setLocation((mousePt.getX() - (offsetX * zoom)) / zoom, ((-1 * (mousePt.getY() - getHeight())) - (offsetY * zoom)) / zoom);
                     repaint();
                 }
             }
@@ -311,23 +274,9 @@ public class Rendering2DWindow extends JPanel {
             double zoomFactor = ((double) 25 / Math.signum(e.getWheelRotation()));
             zoom -= zoom / zoomFactor;
             offsetX = (mousePt.getX() - (mmMousePt.getX() * zoom)) / zoom;
-            offsetY = ((-1 * (mousePt.getY() - wH)) - (mmMousePt.getY() * zoom)) / zoom;
+            offsetY = ((-1 * (mousePt.getY() - getHeight())) - (mmMousePt.getY() * zoom)) / zoom;
             points.clear();
             repaint();
-        });
-    }
-
-    /**
-     * Instantiate a global listener for all component in the {@code Rendering2DWindow}. It reinitialises the view of the board when a component is resized.
-     */
-    private void addComponentListener() {
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                wW = getWidth();
-                wH = getHeight();
-                repaint();
-            }
         });
     }
 
@@ -404,7 +353,7 @@ public class Rendering2DWindow extends JPanel {
      * @return The point in pixel
      */
     public Point2D mmTopixel(Point2D mmPt) {
-        return new Point2D.Double(((mmPt.getX() * zoom) + (offsetX * zoom)), ((-1 * ((mmPt.getY() * zoom) + (offsetY * zoom))) + wH));
+        return new Point2D.Double(((mmPt.getX() * zoom) + (offsetX * zoom)), ((-1 * ((mmPt.getY() * zoom) + (offsetY * zoom))) + getHeight()));
     }
 
     /**
@@ -424,7 +373,7 @@ public class Rendering2DWindow extends JPanel {
      * @return The point in double mm
      */
     public Point2D pixelTomm(Point2D pixelPt) {
-        return new Point2D.Double(((pixelPt.getX() - (offsetX * zoom)) / zoom), (((-1 * (pixelPt.getY() - wH)) - (offsetY * zoom)) / zoom));
+        return new Point2D.Double(((pixelPt.getX() - (offsetX * zoom)) / zoom), (((-1 * (pixelPt.getY() - getHeight())) - (offsetY * zoom)) / zoom));
     }
 
     /**
@@ -437,8 +386,8 @@ public class Rendering2DWindow extends JPanel {
         areammBoard.clear();
         areammBoard.add((rectangle.getX() + offsetX) * zoom);
         areammBoard.add((rectangle.getX() + offsetX) * zoom + (rectangle.getWidth() * zoom));
-        areammBoard.add((((-1 * (rectangle.getY() - wH)) - ((offsetY + rectangle.getHeight()) * zoom))));
-        areammBoard.add((((-1 * (rectangle.getY() - wH)) - ((offsetY + rectangle.getHeight()) * zoom))) + (rectangle.getHeight() * zoom));
+        areammBoard.add((((-1 * (rectangle.getY() - getHeight())) - ((offsetY + rectangle.getHeight()) * zoom))));
+        areammBoard.add((((-1 * (rectangle.getY() - getHeight())) - ((offsetY + rectangle.getHeight()) * zoom))) + (rectangle.getHeight() * zoom));
         return new Rectangle2D.Double(areammBoard.get(0).intValue(), areammBoard.get(2).intValue(), (rectangle.getWidth() * zoom), (rectangle.getHeight() * zoom));
     }
 
@@ -530,7 +479,7 @@ public class Rendering2DWindow extends JPanel {
     /**
      * @return the Drawing instance
      */
-    public Drawing getDrawing(){
+    public Drawing getDrawing() {
         return this.drawing;
     }
 
