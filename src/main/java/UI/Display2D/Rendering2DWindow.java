@@ -29,12 +29,12 @@ import java.util.ArrayList;
  */
 public class Rendering2DWindow extends JPanel {
 
-    private Rectangle2D board = new Rectangle2D.Double(0, 0, 1219.2, 914.4);
-    private Point2D mousePt;
-    private final Point2D mmMousePt;
-    private double offsetX = 100;
-    private double offsetY = 100;
-    private double zoom = 1;
+    private Rectangle2D board = new Rectangle2D.Double(0, 0, 1219.2, 914.4); //board to render
+    private Point2D mousePt; //pixel mouse point
+    private final Point2D mmMousePt; //mm mouse point
+    private double offsetX = 100; //offset of the board on the screen
+    private double offsetY = 100; // offset of the board on the screen
+    private double zoom = 1; // ]0, infinite[
     private final ChangeCutListener changeCutListener;
     private final ChangeAttributeListener changeAttributeListener;
     private final MainWindow mainWindow;
