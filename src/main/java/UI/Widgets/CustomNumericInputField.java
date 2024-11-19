@@ -8,6 +8,7 @@ import com.formdev.flatlaf.ui.FlatRoundBorder;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.NumberFormatter;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -22,12 +23,20 @@ public class CustomNumericInputField extends BasicWindow {
     private JFormattedTextField numericInput;
     private JComboBox<UiUnits> unitComboBox;
     private BoxLayout layout;
+    private double maxNumber;
+    private double minNumber;
 
-    CustomNumericInputField(String nameOfInput, double value){
+    CustomNumericInputField(String nameOfInput, double value) {
+        this(nameOfInput, value, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+    }
+
+    CustomNumericInputField(String nameOfInput, double value, double minimumValue, double maximumValue) {
         super(false);
         this.setBackground(null);
         this.setOpaque(false);
         this.init(nameOfInput, value);
+        this.minNumber = minimumValue;
+        this.maxNumber = maximumValue;
     }
 
     private void init(String nameOfInput, double value){
@@ -39,10 +48,13 @@ public class CustomNumericInputField extends BasicWindow {
         this.nameOfInput.setBackground(UIManager.getColor("SubWindow.lightBackground1"));
         this.nameOfInput.setBorder(new FlatEmptyBorder());
         this.nameOfInput.setHorizontalAlignment(SwingConstants.RIGHT);
-        this.nameOfInput.setBorder(new EmptyBorder(0, 0 ,0 , UIConfig.INSTANCE.getDefaultPadding()));
+        this.nameOfInput.setBorder(new EmptyBorder(0, 0, 0 , UIConfig.INSTANCE.getDefaultPadding()));
 
         NumberFormat numberFormat = DecimalFormat.getNumberInstance();
-        this.numericInput = new JFormattedTextField(numberFormat);
+        NumberFormatter numberFormatter = new NumberFormatter(numberFormat);
+        numberFormatter.setMaximum(maxNumber);
+        numberFormatter.setMinimum(minNumber);
+        this.numericInput = new JFormattedTextField(numberFormatter);
         this.numericInput.setColumns(10);
         this.numericInput.setBorder(new FlatRoundBorder());
         this.numericInput.setValue(value);

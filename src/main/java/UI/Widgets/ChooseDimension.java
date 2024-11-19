@@ -1,7 +1,7 @@
 package UI.Widgets;
 
 import UI.Display2D.Rendering2DWindow;
-import UI.SubWindows.BasicWindow;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,14 +14,14 @@ import java.awt.*;
  * @version 1.1
  * @since 2024-11-02
  */
-public class ChooseDimension extends BasicWindow implements Attributable {
+public class ChooseDimension extends GenericAttributeBox implements Attributable {
 
     private final Rendering2DWindow rend;
     private final boolean gridDisplayed;
-    private ConfigurableNumberTextField xTextField;
-    private ConfigurableNumberTextField yTextField;
-    private NumberTextField gridPrecision;
-    private NumberTextField magnetPrecision;
+    private CustomNumericInputField xTextField;
+    private CustomNumericInputField yTextField;
+    private CustomNumericInputField gridPrecision;
+    private CustomNumericInputField magnetPrecision;
 
     /**
      * Constructs a ChooseDimension panel for modifying the width and height of the specified Rendering2DWindow.
@@ -29,24 +29,25 @@ public class ChooseDimension extends BasicWindow implements Attributable {
      * @param rend The Rendering2DWindow instance to be resized
      */
     public ChooseDimension(Rendering2DWindow rend, boolean gridDisplayed) {
-        super(false);
+        super(false, "Panneau");
         this.rend = rend;
         this.gridDisplayed = gridDisplayed;
         init();
+        addEventListenerToPointBox();
     }
 
     /**
      * @return The NumberTextfield for the width input
      */
-    public NumberTextField getxTextField() {
-        return xTextField.getNumberTextField();
+    public CustomNumericInputField getxTextField() {
+        return xTextField;
     }
 
     /**
      * @return The NumberTextfield for the height input
      */
-    public NumberTextField getyTextField() {
-        return yTextField.getNumberTextField();
+    public CustomNumericInputField getyTextField() {
+        return yTextField;
     }
 
     /**
@@ -54,69 +55,55 @@ public class ChooseDimension extends BasicWindow implements Attributable {
      * with real-time resizing functionality.
      */
     private void init() {
-        JLabel dimensionLabel = new JLabel("Dimensions");
-        dimensionLabel.setFont(dimensionLabel.getFont().deriveFont(20f));
-
         double displayWidth = Math.round(rend.getBoard().getWidth() * 100);
         displayWidth = displayWidth / 100;
         double displayHeight = Math.round(rend.getBoard().getHeight() * 100);
         displayHeight = displayHeight / 100;
-        xTextField = new ConfigurableNumberTextField("" + displayWidth, width -> rend.resizePanneau(width, rend.getBoard().getHeight()));
-        yTextField = new ConfigurableNumberTextField("" + displayHeight, height -> rend.resizePanneau(rend.getBoard().getWidth(), height));
-
-        JLabel xLabel = new JLabel("x");
-        JLabel yLabel = new JLabel("y");
+        xTextField = new CustomNumericInputField("Width", displayWidth, 0, rend.getMainWindow().getController().getPanelDTO().getMaxMMWidth());
+        yTextField = new CustomNumericInputField("Height", displayHeight, 0, rend.getMainWindow().getController().getPanelDTO().getMaxMMHeight());
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 10, 15, 10);
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.anchor = GridBagConstraints.CENTER;
-
-        gbc.gridx = 4;
-        gbc.gridy = 0;
-        add(dimensionLabel, gbc);
-
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(xLabel, gbc);
-
-        gbc.gridx = 4;
         add(xTextField, gbc);
-
-        gbc.gridx = 0;
         gbc.gridy = 2;
-        add(yLabel, gbc);
-
-        gbc.gridx = 4;
         add(yTextField, gbc);
 
         if (gridDisplayed) {
-            gridPrecision = new NumberTextField("" + rend.getMainWindow().getController().getGrid().getSize(), size -> {
+            gridPrecision = new CustomNumericInputField("Grid size", rend.getMainWindow().getController().getGrid().getSize(), 0, Double.POSITIVE_INFINITY);
+            magnetPrecision = new CustomNumericInputField("Magnet Precision", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), 0, Double.POSITIVE_INFINITY);
+            gbc.gridy = 3;
+            add(gridPrecision, gbc);
+            gbc.gridy = 4;
+            add(magnetPrecision, gbc);
+        }
+    }
+
+    private void addEventListenerToPointBox() {
+        xTextField.getNumericInput().addPropertyChangeListener("value", evt -> {
+            Number width = (Number) evt.getNewValue();
+            rend.resizePanneau(width.doubleValue(), rend.getBoard().getHeight());
+        });
+        yTextField.getNumericInput().addPropertyChangeListener("value", evt -> {
+            Number height = (Number) evt.getNewValue();
+            rend.resizePanneau(height.doubleValue(), rend.getBoard().getHeight());
+        });
+        if (gridPrecision != null) {
+            gridPrecision.getNumericInput().addPropertyChangeListener("value", evt -> {
+                Number size = (Number) evt.getNewValue();
                 rend.getMainWindow().getController().putGrid(size.intValue(), rend.getMainWindow().getController().getGrid().getMagnetPrecision());
                 rend.repaint();
             });
-            magnetPrecision = new NumberTextField("" + rend.getMainWindow().getController().getGrid().getMagnetPrecision(), magnet -> {
-                rend.resizePanneau(rend.getMainWindow().getController().getGrid().getSize(), magnet.intValue());
+        }
+        if (magnetPrecision != null) {
+            magnetPrecision.getNumericInput().addPropertyChangeListener("value", evt -> {
+                Number precision = (Number) evt.getNewValue();
+                rend.getMainWindow().getController().putGrid(rend.getMainWindow().getController().getGrid().getSize(), precision.intValue());
                 rend.repaint();
             });
-
-            JLabel gridLabel = new JLabel("Grid Size");
-            JLabel magnetLabel = new JLabel("Magnet Precision");
-
-            gbc.gridx = 0;
-            gbc.gridy = 3;
-            add(gridLabel, gbc);
-
-            gbc.gridx = 4;
-            add(gridPrecision, gbc);
-
-            gbc.gridx = 0;
-            gbc.gridy = 4;
-            add(magnetLabel, gbc);
-
-            gbc.gridx = 4;
-            add(magnetPrecision, gbc);
-
         }
     }
 
@@ -125,7 +112,7 @@ public class ChooseDimension extends BasicWindow implements Attributable {
      */
     @Override
     public JLabel showName() {
-        return new JLabel("Dimensions du panneau en mm");
+        return new JLabel("");
     }
 
     /**
@@ -136,3 +123,4 @@ public class ChooseDimension extends BasicWindow implements Attributable {
         return this;
     }
 }
+

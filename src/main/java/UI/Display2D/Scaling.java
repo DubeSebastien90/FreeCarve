@@ -36,10 +36,6 @@ public class Scaling {
      */
     void initiateScaling() {
         chooseDimension = new ChooseDimension(rend, rend.getMainWindow().getController().getGrid().isActive());
-        chooseDimension.getxTextField().setMaximumNumber(rend.getMainWindow().getController().getPanelDTO().getMaxMMWidth());
-        chooseDimension.getyTextField().setMaximumNumber(rend.getMainWindow().getController().getPanelDTO().getMaxMMHeight());
-        chooseDimension.getxTextField().setMinimumNumber(0);
-        chooseDimension.getyTextField().setMinimumNumber(0);
         double radius = 5;
         double locationX = (rend.getOffsetX() + rend.getBoard().getX() + rend.getBoard().getWidth()) * rend.getZoom() - radius / 2;
         double locationY = rend.getHeight() - (rend.getBoard().getY() + rend.getOffsetY() + rend.getBoard().getHeight()) * rend.getZoom() - radius / 2;
@@ -76,8 +72,8 @@ public class Scaling {
                     displayWidth = displayWidth / 100;
                     double displayHeight = Math.round(rend.getBoard().getHeight() * 100);
                     displayHeight = displayHeight / 100;
-                    chooseDimension.getxTextField().setText("" + displayWidth);
-                    chooseDimension.getyTextField().setText("" + displayHeight);
+                    chooseDimension.getxTextField().getNumericInput().setText("" + displayWidth);
+                    chooseDimension.getyTextField().getNumericInput().setText("" + displayHeight);
                     rend.repaint();
                 }
             }
