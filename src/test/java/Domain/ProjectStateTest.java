@@ -4,6 +4,7 @@ import Common.DTO.BitDTO;
 import Common.DTO.ProjectStateDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
+import Common.Exceptions.InvalidBitException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -113,5 +114,50 @@ public class ProjectStateTest {
         Assertions.assertEquals(stateTest.getDTO().getPanelDTO().getCutsDTO().getFirst().getPoints().getFirst().getY(), 46);
         Assertions.assertEquals(stateTest.getDTO().getPanelDTO().getCutsDTO().getFirst().getPoints().getFirst().getZ(), 47);
 
+    }
+
+    @Test
+    void removeBit_WhenBitIsValid_SetsBitToDefault() throws Exception {
+        // Arrange
+        stateTest.setBit(new Bit("Test", 0.5f), 0);
+        Bit defaultBit = new Bit();
+
+        // Act
+        stateTest.removeBit(0);
+
+        // Assert
+        Assertions.assertEquals(stateTest.getBitList()[0].getDiameter(), defaultBit.getDiameter());
+        Assertions.assertEquals(stateTest.getBitList()[0].getName(), defaultBit.getName());
+    }
+
+    @Test
+    void removeBit_WhenPositionNegative_ThrowsIndexOutOfBoundException(){
+        // Arrange
+
+        // Act
+
+        // Assert
+        Assertions.assertThrows(IndexOutOfBoundsException.class, ()-> {stateTest.removeBit(-1);});
+    }
+
+    @Test
+    void removeBit_WhenPositionBiggerThen12_ThrowsIndexOutOfBoundException(){
+        // Arrange
+
+        // Act
+
+        // Assert
+        Assertions.assertThrows(IndexOutOfBoundsException.class, ()-> {stateTest.removeBit(12);});
+    }
+
+    @Test
+    void removeBit_WhenRemoveBitIsDefault_ThrowsInvalidBitException() throws Exception {
+        // Arrange
+
+        // Act
+        stateTest.setBit(new Bit(), 1);
+
+        // Assert
+        Assertions.assertThrows(InvalidBitException.class, ()-> {stateTest.removeBit(1);});
     }
 }

@@ -220,5 +220,4 @@ class PanelCNC {
     boolean isPointOnPanel(VertexDTO point) {
         return point.getX() >= 0 && point.getY() >= 0 && point.getX() <= getWidth() && point.getY() <= getHeight();
     }
-
 }
