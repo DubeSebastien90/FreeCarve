@@ -14,6 +14,7 @@ public class GcodeGeneratorTest {
 
     @Test
     void convertCutList_AtLeastOne_AsExpected() throws IOException {
+        //Arrange
         List<VertexDTO> list = new ArrayList<>();
         list.add(new VertexDTO(100, 100, 0));
         list.add(new VertexDTO(50, 100, 0));
@@ -24,6 +25,8 @@ public class GcodeGeneratorTest {
         BitDTO[] bits = {new BitDTO("g", 3)};
         ProjectStateDTO pjt = new ProjectStateDTO(bits, pnel);
 
+        //Act
+        String actual = GcodeGenerator.convertToGCode(pjt);
         String expectedGcode = """
                 G21;
                 G17;
@@ -44,6 +47,7 @@ public class GcodeGeneratorTest {
                 G00 X0 Y0;
                 M02;
                 """;
-        Assertions.assertEquals(expectedGcode, GcodeGenerator.convertToGCode(pjt));
+        //Assert
+        Assertions.assertEquals(expectedGcode, actual);
     }
 }

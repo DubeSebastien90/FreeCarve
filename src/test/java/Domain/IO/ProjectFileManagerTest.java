@@ -12,8 +12,11 @@ public class ProjectFileManagerTest {
 
     @Test
     void filePath_WriteInto_GoodThingWrote() {
+        //Arrange
         String path = "TestFile.txt";
         String texte = "Gateau\nau\nBananes";
+
+        //Act
         ProjectFileManager.saveString(path, texte);
         StringBuilder actualText = new StringBuilder();
         try {
@@ -24,7 +27,8 @@ public class ProjectFileManagerTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        
+        //Assert
         Assertions.assertEquals(texte.replaceAll("\n", ""), actualText.toString());
     }
 }
