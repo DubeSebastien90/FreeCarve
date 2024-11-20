@@ -117,7 +117,7 @@ public class ExportWindow extends JPanel {
         nextButton.getButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String path = Utils.chooseFile("Where to save", "ProjectGcode.gcode", ExportWindow.this, "Gcode files", "gcode");
+                String path = Utils.chooseFile("Enregistrer", "ProjectGcode.gcode", ExportWindow.this, "Gcode files", "gcode");
                 if (path != null) {
                     mainWindow.getController().saveGcode(path);
                 }
