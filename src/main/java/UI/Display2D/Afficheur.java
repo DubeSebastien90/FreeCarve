@@ -62,7 +62,6 @@ public class Afficheur {
     }
 
     /**
-     * <<<<<<< HEAD
      * Draws the cuts of on the board
      */
     void drawCuts(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing) {
@@ -81,8 +80,6 @@ public class Afficheur {
 
 
     /**
-     * =======
-     * >>>>>>> ff140ea (grid button and same rendering2dWindow)
      * Draws the grid on the board
      *
      * @param graphics2D the <code>Graphics</code> object to protect
