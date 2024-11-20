@@ -95,7 +95,7 @@ class ProjectState {
      * @throws InvalidBitException If the bit to remove is a default bit
      */
     void removeBit(int position) throws IndexOutOfBoundsException, InvalidBitException{
-        if(position < 0 || position > 12)
+        if(position < 0 || position > 11)
             throw new IndexOutOfBoundsException("La position doit être entre 0 et 11 inclusivement");
 
         if(bitList[position].getDiameter() == 0)
