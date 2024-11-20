@@ -315,6 +315,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         mainWindow.getController().resizePanel(newWidth, newHeight);
         VertexDTO dim = mainWindow.getController().getPanelDTO().getPanelDimension();
         board.setRect(board.getX(), board.getY(), dim.getX(), dim.getY());
+        //drawing.updateCuts();
         repaint();
     }
 
