@@ -7,6 +7,7 @@ import Common.Exceptions.InvalidBitException;
 import Domain.Interfaces.IMemorizer;
 
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * The {@code ProjectState} class represent the current state of the project.

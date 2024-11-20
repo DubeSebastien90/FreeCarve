@@ -1,10 +1,13 @@
 package UI.Widgets;
 
+import Common.Exceptions.InvalidBitException;
+import Common.UiUtil;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import Common.DTO.BitDTO;
 import UI.SubWindows.BitConfigurationPanel;
 import UI.SubWindows.BitSelectionPanel;
+import UI.UIConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +24,7 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     private final BitDTO bit;
     private final Boolean editable;
     private JButton modifyButton;
+    private JButton removeButton;
     private final BitConfigurationPanel bitConfigurationPanel;
     private NumberTextField widthTextArea;
     private JTextArea nameTextArea;
@@ -48,54 +52,62 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
      * and the modify button. Sets up layout constraints and adds components to the panel.
      */
     private void init() {
-        JLabel dimension = new JLabel("Outil");
-        dimension.setFont(dimension.getFont().deriveFont(20f));
+        JLabel displayTitle = new JLabel("Outil");
+        displayTitle.setFont(displayTitle.getFont().deriveFont(20f));
         widthTextArea = new NumberTextField(String.valueOf(bit.getDiameter()), diameter -> modifyBit(diameter.floatValue()));
 
-        JLabel widthinfo = new JLabel("bitWidth");
         JLabel widthLabel = new JLabel("Diamètre");
         nameTextArea = new JTextArea(bit.getName());
         JLabel nameLabel = new JLabel("Nom");
         modifyButton = new JButton("Modifier");
+        removeButton = UiUtil.createSVGButton("trash", true, UIConfig.INSTANCE.getToolIconSize(), Color.RED);
 
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.insets = new Insets(0, 10, 15, 10);
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.gridx = 4;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        add(dimension, gbc);
+        add(displayTitle, gbc);
 
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.insets = new Insets(0, 10, 15, 10);
         add(nameLabel, gbc);
 
-        gbc.gridx = 4;
+        gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1;
+        gbc.insets = new Insets(0, 10, 15, 10);
         add(nameTextArea, gbc);
 
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 10, 15, 10);
-        gbc.weightx = 1;
         gbc.gridx = 0;
         gbc.gridy = 2;
         add(widthLabel, gbc);
-        gbc.insets = new Insets(0, 0, 15, 10);
-        gbc.gridx = 4;
+        gbc.insets = new Insets(0, 10, 15, 10);
+        gbc.gridx = 1;
         gbc.gridy = 2;
-        if (editable) {
-            add(widthTextArea, gbc);
-        } else {
-            add(widthinfo);
-        }
+        gbc.weightx = 1;
+        add(widthTextArea, gbc);
 
         gbc.insets = new Insets(0, 10, 15, 10);
         gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.weightx = 3;
         gbc.anchor = GridBagConstraints.CENTER;
         add(modifyButton, gbc);
+
+        gbc.insets = new Insets(0, 10, 15, 10);
+        gbc.gridy = 3;
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(removeButton, gbc);
     }
 
     /**
@@ -108,6 +120,10 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
                 modifyBit(Float.parseFloat(widthTextArea.getText()));
             }
             bitConfigurationPanel.refresh();
+        });
+
+        removeButton.addActionListener(e -> {
+            removeBit();
         });
     }
 
@@ -129,7 +145,25 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
                 newBit
         );
         bitConfigurationPanel.refresh();
+    }
 
+    private void removeBit(){
+        if(widthTextArea.getText().equals("0.0"))
+            //Todo: Gérer message qui dit qu'on ne peut pas delete si aucun bit configuré
+            return;
+
+        if (mainWindow.getMiddleContent().getConfiguredBitsMap().size() == 1){
+            //Todo: Gérer message d'erreur pour la zone de message
+            return;
+        }
+
+        try{
+            mainWindow.getController().removeBit(bitConfigurationPanel.getSelectedBit());
+        } catch (InvalidBitException e) {
+            //Todo: Gérer le message d'erreur, might never happen
+            return;
+        }
+        bitConfigurationPanel.refresh();
     }
 
     /**

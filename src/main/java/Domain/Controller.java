@@ -1,6 +1,7 @@
 package Domain;
 
 import Common.DTO.*;
+import Common.Exceptions.InvalidBitException;
 import Common.Interfaces.IDoAction;
 import Common.Interfaces.IRefreshable;
 import Common.Interfaces.IUndoAction;
@@ -125,8 +126,8 @@ public class Controller {
      *
      * @param index The index of the bit that needs to be removed.
      */
-    public void removeBit(int index) {
-        //todo
+    public void removeBit(int index) throws InvalidBitException {
+        currentProjectState.removeBit(index);
     }
 
     /**
