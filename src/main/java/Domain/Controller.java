@@ -357,6 +357,10 @@ public class Controller {
         return this.currentProjectState.getPanel().isPointOnPanel(point);
     }
 
+    /**
+     * Returns a Map of the Bits as (Position of the bit, BitDTO) to know what bit has a value
+     * @return Map containing Position of the bit, BitDTO
+     */
     public Map<Integer, BitDTO> refreshConfiguredBitMaps(){
         return currentProjectState.getConfiguredBits();
     }
