@@ -47,6 +47,7 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
     /**
      * Updates the UI of the CutList based on the stored CutDTO
      */
+
     public void update(){
         this.cuts = mainWindow.getController().getCutListDTO();
         this.cutBoxes = new ArrayList<CutBox>();

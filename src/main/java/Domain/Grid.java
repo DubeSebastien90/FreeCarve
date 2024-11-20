@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * The {@code Grid} class regroup functions that are useful for putting a grid on a {@code PanelCNC}
  *
- * @author Adam Côté
+ * @author Louis-Étiene Messier
  * @version 1.0
  * @since 2024-10-20
  */
@@ -126,7 +126,7 @@ public class Grid {
 
         double x = (c1 * b2 - c2 * b1) / det;
         double y = (a1 * c2 - a2 * c1) / det;
-        if(Math.min(p1.getX(), cursorPoint.getX() - threshold) <= x && x <= Math.max(p1.getX(), cursorPoint.getX() + threshold) // The threshold addition and substraction is to allow the snap
+        if (Math.min(p1.getX(), cursorPoint.getX() - threshold) <= x && x <= Math.max(p1.getX(), cursorPoint.getX() + threshold) // The threshold addition and substraction is to allow the snap
                 && Math.min(p1.getY(), cursorPoint.getY() - threshold) <= y && y <= Math.max(p1.getY(), cursorPoint.getY() + threshold)
                 && Math.min(p3.getX(), p4.getX()) <= x && x <= Math.max(p3.getX(), p4.getX())
                 && Math.min(p3.getY(), p4.getY()) <= y && y <= Math.max(p3.getY(), p4.getY())) {
