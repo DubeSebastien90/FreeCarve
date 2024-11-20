@@ -163,6 +163,9 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
             //Todo: Gérer le message d'erreur, might never happen
             return;
         }
+        mainWindow.getMiddleContent().getConfiguredBitsMap().remove(bitConfigurationPanel.getSelectedBit());
+        nameTextArea.setText("Aucun outil assigné");
+        widthTextArea.setText("0.0");
         bitConfigurationPanel.refresh();
     }
 
