@@ -356,5 +356,9 @@ public class Controller {
     public boolean isPointOnPanel(VertexDTO point) {
         return this.currentProjectState.getPanel().isPointOnPanel(point);
     }
+
+    public Map<Integer, BitDTO> refreshConfiguredBitMaps(){
+        return currentProjectState.getConfiguredBits();
+    }
 }
 

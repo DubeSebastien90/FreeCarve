@@ -39,8 +39,7 @@ public class MiddleContent {
     public MiddleContent(MainWindow mainWindow) {
         this.panel = new JPanel();
         this.mainWindow = mainWindow;
-        configuredBitsMap = new HashMap<Integer, BitDTO>();
-        setupConfiguredBitsMap();
+        configuredBitsMap = mainWindow.getController().refreshConfiguredBitMaps();
         init(mainWindow);
         this.panel.setBackground(Color.RED);
     }
@@ -183,12 +182,7 @@ public class MiddleContent {
      * @param configuredBit The BitDTO of the configured bit
      */
     public void configuredBitsListener(int index, BitDTO configuredBit) {
-        if (configuredBitsMap.containsKey(index)) {
-            configuredBitsMap.remove(index);
-            configuredBitsMap.put(index, configuredBit);
-        } else {
-            configuredBitsMap.put(index, configuredBit);
-        }
+        configuredBitsMap = mainWindow.getController().refreshConfiguredBitMaps();
     }
 
     /**
@@ -197,14 +191,5 @@ public class MiddleContent {
      */
     public Map<Integer, Common.DTO.BitDTO> getConfiguredBitsMap() {
         return configuredBitsMap;
-    }
-
-    public void setupConfiguredBitsMap() {
-        BitDTO[] bits = this.mainWindow.getController().getBitsDTO();
-        for(int i = 0; i < bits.length; i++) {
-            if (bits[i].getDiameter() != 0) {
-                this.configuredBitsMap.put(i, bits[i]);
-            }
-        }
     }
 }

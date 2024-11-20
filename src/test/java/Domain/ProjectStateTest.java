@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 
@@ -159,5 +160,18 @@ public class ProjectStateTest {
 
         // Assert
         Assertions.assertThrows(InvalidBitException.class, ()-> {stateTest.removeBit(1);});
+    }
+
+    @Test
+    void getConfiguredBits_WhenBitsConfigured_IsPutInMap() throws InvalidBitException {
+        // Arrange
+        stateTest.setBit(new Bit("Test", 0.2f), 1);
+
+        // Act
+        Map<Integer, BitDTO> configuredBits = stateTest.getConfiguredBits();
+
+        // Assert
+        Assertions.assertEquals(configuredBits.size(), 2);
+        Assertions.assertEquals(configuredBits.get(1).getDiameter(), 0.2f);
     }
 }

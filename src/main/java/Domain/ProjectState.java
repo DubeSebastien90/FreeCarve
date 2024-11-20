@@ -7,6 +7,7 @@ import Common.Exceptions.InvalidBitException;
 import Domain.Interfaces.IMemorizer;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,6 +23,7 @@ class ProjectState {
     private static final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 0); // dimension in mm
     private static final float defaultPanelDepth = 1.0f; // depth in mm
     private final IMemorizer memorizer;
+    private Map<Integer, BitDTO> configuredBits;
 
     /**
      * Constructs a default new {@code ProjectState}.
@@ -41,6 +43,7 @@ class ProjectState {
         bitList[0] = new Bit("Défaut", 0.5f);
         setPanel(panel);
         this.memorizer = memorizer;
+        this.configuredBits = new HashMap<>();
     }
 
     public Bit[] getBitList() {
@@ -103,5 +106,13 @@ class ProjectState {
             throw new InvalidBitException("Il doit y avoir un bit présent pour le supprimer");
 
         bitList[position] = new Bit();
+    }
+
+    protected Map<Integer, BitDTO> getConfiguredBits(){
+        for(int i = 0; i < bitList.length; i++){
+            if (bitList[i] != null && bitList[i].getDiameter() != 0.0f)
+                configuredBits.put(i, new BitDTO(bitList[i].getName(), bitList[i].getDiameter()));
+        }
+        return configuredBits;
     }
 }
