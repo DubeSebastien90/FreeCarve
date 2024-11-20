@@ -4,12 +4,16 @@ import Common.DTO.*;
 import Common.Interfaces.IDoAction;
 import Common.Interfaces.IRefreshable;
 import Common.Interfaces.IUndoAction;
+import Domain.IO.GcodeGenerator;
 import Domain.IO.ProjectFileManager;
-import Domain.ThirdDimension.*;
+import Domain.ThirdDimension.Camera;
+import Domain.ThirdDimension.Scene;
 
 import java.awt.image.BufferedImage;
 import java.security.InvalidKeyException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * The {@code Controller} class is a Larman's Controller which will be the entry point if an interface wants to interact with the Domain.
@@ -185,7 +189,7 @@ public class Controller {
      * Saves the Gcode of the project.
      */
     public void saveGcode(String path) {
-        ProjectFileManager.saveGcode(path, convertToGCode());
+        ProjectFileManager.saveString(path, convertToGCode());
     }
 
     /**
@@ -240,7 +244,7 @@ public class Controller {
      * @return The String that represent the GCode instructions.
      */
     public String convertToGCode() {
-        return DataGenerator.convertToGCode(currentProjectState);
+        return GcodeGenerator.convertToGCode(getProjectStateDTO());
     }
 
 

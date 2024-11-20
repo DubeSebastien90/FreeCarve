@@ -1,4 +1,4 @@
-package IO;
+package Domain.IO;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

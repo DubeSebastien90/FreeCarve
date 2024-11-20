@@ -1,7 +1,7 @@
 package Domain.ThirdDimension;
 
 import Annotations.VariableSource;
-import IO.ParsedSTL;
+import Domain.IO.ParsedSTL;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

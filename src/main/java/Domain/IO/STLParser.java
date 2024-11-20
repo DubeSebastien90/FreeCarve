@@ -1,4 +1,4 @@
-package IO;
+package Domain.IO;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ public class STLParser {
 
         int nbTriangles = Integer.reverseBytes(stlInputStream.readInt());
 
-        float[][] vertices = new float[nbTriangles*SIDES][DIMENSIONS];
+        float[][] vertices = new float[nbTriangles * SIDES][DIMENSIONS];
         float[][] normals = new float[nbTriangles][DIMENSIONS];
 
         for (int i = 0; i < nbTriangles; i++) {
@@ -27,7 +27,7 @@ public class STLParser {
 
             for (int j = 0; j < SIDES; j++) {
                 for (int k = 0; k < DIMENSIONS; k++) {
-                    vertices[i*SIDES + j][k] = stlInputStream.readFloatLittleEndian();
+                    vertices[i * SIDES + j][k] = stlInputStream.readFloatLittleEndian();
                 }
             }
             stlInputStream.skipBytes(BYTES_ATTRIBUTE); // Skip attribute byte count
@@ -36,16 +36,16 @@ public class STLParser {
         return new ParsedSTL(vertices, normals);
     }
 
-    public static void printParsedSTL(ParsedSTL parsedSTL){
+    public static void printParsedSTL(ParsedSTL parsedSTL) {
         System.out.println("Number of triangles : " + parsedSTL.normals().length);
         for (int i = 0; i < parsedSTL.normals().length; i++) {
             System.out.println("Triangle " + i);
             System.out.print("Normals : ");
             System.out.println(Arrays.toString(parsedSTL.normals()[i]));
             System.out.println("Vertices : ");
-            System.out.println(Arrays.toString(parsedSTL.vertices()[i*3]));
-            System.out.println(Arrays.toString(parsedSTL.vertices()[i*3+1]));
-            System.out.println(Arrays.toString(parsedSTL.vertices()[i*3+2]));
+            System.out.println(Arrays.toString(parsedSTL.vertices()[i * 3]));
+            System.out.println(Arrays.toString(parsedSTL.vertices()[i * 3 + 1]));
+            System.out.println(Arrays.toString(parsedSTL.vertices()[i * 3 + 2]));
         }
     }
 }

@@ -1,6 +1,6 @@
 package Domain.ThirdDimension;
 
-import IO.ParsedSTL;
+import Domain.IO.ParsedSTL;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -87,7 +87,7 @@ public class Triangle {
      * Sets the vertex at the index of the triangle.
      *
      * @param vertex the new vertex of the triangle
-     * @param index the index of the triangle to set  
+     * @param index  the index of the triangle to set
      */
     public void setVertex(Vertex vertex, int index) {
         this.vertices[index] = vertex;

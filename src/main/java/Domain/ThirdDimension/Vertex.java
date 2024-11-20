@@ -1,7 +1,7 @@
 package Domain.ThirdDimension;
 
 import Common.DTO.VertexDTO;
-import IO.STLParser;
+import Domain.IO.STLParser;
 
 /**
  * The {@code Vertex} class provides methods to interact in a 3-dimensional space, with the vertex itself being a location in this space.

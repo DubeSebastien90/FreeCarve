@@ -1,4 +1,4 @@
-package IO;
+package Domain.IO;
 
 import java.io.DataInputStream;
 import java.io.IOException;

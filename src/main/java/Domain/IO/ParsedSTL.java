@@ -1,3 +1,4 @@
-package IO;
+package Domain.IO;
 
-public record ParsedSTL(float[][] vertices, float[][] normals){}
+public record ParsedSTL(float[][] vertices, float[][] normals) {
+}

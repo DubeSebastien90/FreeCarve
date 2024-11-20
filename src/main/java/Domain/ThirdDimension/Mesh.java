@@ -1,10 +1,13 @@
 package Domain.ThirdDimension;
 
-import IO.ParsedSTL;
-import IO.STLParser;
+import Domain.IO.ParsedSTL;
+import Domain.IO.STLParser;
 
 import java.awt.*;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,9 +28,9 @@ public class Mesh extends Transform {
     /**
      * Base constructor for a Mesh object
      *
-     * @param position - the position of the mesh in the scene
-     * @param color    - the color of the mesh
-     * @param scale - The scaling factor to apply to the triangles
+     * @param position  - the position of the mesh in the scene
+     * @param color     - the color of the mesh
+     * @param scale     - The scaling factor to apply to the triangles
      * @param triangles - The initial triangles of the mesh
      */
     protected Mesh(Vertex position, float scale, Color color, List<Triangle> triangles) {
@@ -39,10 +42,11 @@ public class Mesh extends Transform {
 
     /**
      * Constructor for a Mesh object with a file
-     * @param position - the position of the mesh in the scene
-     * @param color - the color of the mesh
+     *
+     * @param position    - the position of the mesh in the scene
+     * @param color       - the color of the mesh
      * @param stlFilePath - Absolute path of the file containing the triangles
-     * @param scale - The scaling factor to apply to the read triangles
+     * @param scale       - The scaling factor to apply to the read triangles
      */
     public Mesh(Vertex position, Color color, String stlFilePath, float scale) throws IOException {
         this(position, scale, color, Arrays.asList(Triangle.fromParsedSTL(parseStlFile(stlFilePath), color)));
@@ -50,6 +54,7 @@ public class Mesh extends Transform {
 
     /**
      * Copy constructor of mesh (deep copy)
+     *
      * @param mesh Mesh to be copied
      */
     public Mesh(Mesh mesh) {
@@ -65,10 +70,10 @@ public class Mesh extends Transform {
      * @param height   = the height of the box
      * @param color    - the color of the box
      */
-    public static Mesh createBox(Vertex position, double width, double length, double height, Color color){
+    public static Mesh createBox(Vertex position, double width, double length, double height, Color color) {
         return new Mesh(position, 1, color, generateRectangularPrism(width, length, height, color));
     }
-    
+
     private static List<Triangle> generateRectangularPrism(double width, double length, double height, Color color) {
         return new ArrayList<>(List.of(
                 new Triangle(new Vertex(0, 0, 0), new Vertex(0, length, height), new Vertex(0, length, 0), new Vertex(-1, 0, 0), color),
@@ -95,7 +100,7 @@ public class Mesh extends Transform {
      */
     private static List<Triangle> cloneTriangles(List<Triangle> triangles) {
         List<Triangle> newTriangles = new ArrayList<>(triangles.size());
-        for(Triangle t : triangles){
+        for (Triangle t : triangles) {
             newTriangles.add(new Triangle(t));
         }
         return newTriangles;
@@ -108,12 +113,12 @@ public class Mesh extends Transform {
      */
     public Vertex calculateCenter() {
         Vertex center = Vertex.zero();
-        for(Triangle triangle : localTriangles) {
+        for (Triangle triangle : localTriangles) {
             for (Vertex v : triangle.getVertices()) {
                 center.add(v);
             }
         }
-        center.multiply(1.0/(localTriangles.size()*3));
+        center.multiply(1.0 / (localTriangles.size() * 3));
         return center;
     }
 
@@ -125,11 +130,11 @@ public class Mesh extends Transform {
         this.color = color;
     }
 
-    private void setLocalTriangles(List<Triangle> list){
+    private void setLocalTriangles(List<Triangle> list) {
         localTriangles = list;
         Vertex translation = Vertex.multiply(calculateCenter(), -1);
         for (Triangle t : getLocalTriangles()) {
-            for(Vertex v : t.getVertices()){
+            for (Vertex v : t.getVertices()) {
                 v.add(translation);
             }
         }
@@ -137,7 +142,7 @@ public class Mesh extends Transform {
 
     private static ParsedSTL parseStlFile(String path) throws IOException {
         DataInputStream dis = null;
-        try{
+        try {
             dis = new DataInputStream(new BufferedInputStream(new FileInputStream(path)));
             return STLParser.parse(dis);
         } finally {
