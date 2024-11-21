@@ -48,16 +48,6 @@ public class DrawCutHorizontal extends  DrawCutWrapper{
         }
     }
 
-    /**
-     * Create the cut
-     * @return {@code Optional<UUID>} UUID if the cut is valid, null if the cut is invalid
-     */
-    private Optional<UUID> createCut() {
-        System.out.println("CREATE CUT");
-        RequestCutDTO rq = new RequestCutDTO(this.cut.getPoints(), this.cut.getCutType(), this.cut.getBitIndex(), this.cut.getDepth(), selectedRef);
-        return mainWindow.getController().requestCut(rq);
-    }
-
     @Override
     public boolean addPoint(Rendering2DWindow renderer, PersoPoint pointInMM) {
         List<VertexDTO> newPoints = this.cut.getPoints();

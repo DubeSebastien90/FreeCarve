@@ -1,6 +1,7 @@
 package Common.DTO;
 
 import Domain.CutType;
+import Domain.RefCut;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,14 +18,14 @@ public class RequestCutDTO {
     private final CutType type;
     private final int bitLocation;
     private final double depth;
-    private final Optional<RefCutDTO> refCutDTO;
+    private final List<RefCutDTO> refs;
 
-    public RequestCutDTO(List<VertexDTO> points, CutType type, int bitLocation, double depth, Optional<RefCutDTO> refCutDTO) {
+    public RequestCutDTO(List<VertexDTO> points, CutType type, int bitLocation, double depth, List<RefCutDTO> refs) {
         this.points = points;
         this.type = type;
         this.bitLocation = bitLocation;
         this.depth = depth;
-        this.refCutDTO = refCutDTO;
+        this.refs = refs;
     }
 
     public List<VertexDTO> getPoints() {
@@ -42,4 +43,6 @@ public class RequestCutDTO {
     public double getDepth() {
         return depth;
     }
+
+    public List<RefCutDTO> getRefs() {return this.refs;}
 }

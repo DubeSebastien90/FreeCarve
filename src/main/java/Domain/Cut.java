@@ -1,10 +1,11 @@
 package Domain;
 
 import Common.DTO.CutDTO;
+import Common.DTO.RefCutDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 
-import javax.swing.text.html.Option;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,7 +25,7 @@ class Cut {
     private double depth;
     private UUID id;
     private boolean valid;
-    private Optional<RefCut> refCut;
+    private List<RefCut> refs;
 
 
     public Cut(CutDTO uiCut) {
@@ -35,11 +36,9 @@ class Cut {
         this.depth = uiCut.getDepth();
         this.id = uiCut.getId();
 
-        if(uiCut.getRefCutDTO().isPresent()){
-            this.refCut = Optional.of(new RefCut(uiCut.getRefCutDTO().get()));
-        }
-        else{
-            this.refCut = Optional.empty();
+        refs = new ArrayList<>();
+        for(RefCutDTO ref : uiCut.getRefsDTO()){
+            refs.add(new RefCut(ref));
         }
 
     }
@@ -60,7 +59,7 @@ class Cut {
         this.bitIndex = bitIndex;
         this.depth = depth;
         this.id = UUID.randomUUID();
-        this.refCut = null;
+        this.refs = new ArrayList<>();
     }
 
     /**
@@ -73,14 +72,14 @@ class Cut {
      * @param depth      the depth of the cut
      * @param refCut        reference to the anchor point of the cut
      */
-    public Cut(VertexDTO startPoint, CutType type, List<VertexDTO> points, int bitIndex, double depth, Optional<RefCut> refCut) {
+    public Cut(VertexDTO startPoint, CutType type, List<VertexDTO> points, int bitIndex, double depth, ArrayList<RefCut> refCut) {
         this.startPoint = startPoint;
         this.type = type;
         this.points = points;
         this.bitIndex = bitIndex;
         this.depth = depth;
         this.id = UUID.randomUUID();
-        this.refCut = refCut;
+        this.refs = refCut;
     }
 
     public Cut(RequestCutDTO requestCutDTO) {
@@ -131,14 +130,5 @@ class Cut {
         return this.type;
     }
 
-    /**
-     * Finds if a coordinate is in the current {@code Cut} zone.
-     *
-     * @param coordinatesmm The coordinate.
-     * @return A boolean indicating if the point is in the Cut's zone.
-     */
-    boolean pointCollision(VertexDTO coordinatesmm) {
-        //todo
-        return false;
-    }
+    public List<RefCut> getRefs() {return this.refs;}
 }

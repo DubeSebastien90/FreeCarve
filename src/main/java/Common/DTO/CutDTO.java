@@ -4,7 +4,6 @@ import Domain.CutType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -19,7 +18,7 @@ public class CutDTO {
     private int bitIndex;
     private List<VertexDTO> points;
     private CutType type;
-    private Optional<RefCutDTO> refCutDTO; // reference to another cut
+    private List<RefCutDTO> refs; // reference to another cut
 
     /**
      * Basic constructor of the {@code CutDTO}
@@ -34,7 +33,16 @@ public class CutDTO {
         this.bitIndex = bitIndex;
         this.type = type;
         this.points = points;
-        refCutDTO = Optional.empty();
+        refs = new ArrayList<>();
+    }
+
+    public CutDTO(UUID uuid, RequestCutDTO requestCutDTO){
+        this.idCut = uuid;
+        this.depth = requestCutDTO.getDepth();
+        this.bitIndex = requestCutDTO.getBitLocation();
+        this.type = requestCutDTO.getType();
+        this.points = requestCutDTO.getPoints();
+        this.refs = requestCutDTO.getRefs();
     }
 
     public CutDTO(CutDTO other){
@@ -46,7 +54,11 @@ public class CutDTO {
         for(VertexDTO p : other.getPoints()){
             this.points.add(new VertexDTO(p));
         }
-        refCutDTO = other.getRefCutDTO();
+
+        refs = new ArrayList<>();
+        for(RefCutDTO ref : other.getRefsDTO()){
+            this.refs.add(new RefCutDTO(ref));
+        }
     }
 
     public int getBitIndex() {
@@ -67,8 +79,8 @@ public class CutDTO {
 
     public List<VertexDTO> getPoints() {return this.points;}
 
-    public Optional<RefCutDTO> getRefCutDTO() {
-        return this.refCutDTO;
+    public List<RefCutDTO> getRefsDTO() {
+        return this.refs;
     }
 
     public CutDTO getCopy(){
@@ -87,14 +99,5 @@ public class CutDTO {
                     point.getY() + offset.getY(), point.getZ() + offset.getZ()));
         }
         return new CutDTO(this.idCut, this.depth, this.bitIndex, this.type, newPoints);
-    }
-
-    public CutDTO getAbsoluteCutDTO(){
-        if(refCutDTO.isEmpty()){
-            return getCopy();
-        }
-        else{
-            return this.addOffsetToPoints(refCutDTO.get().getOffset());
-        }
     }
 }

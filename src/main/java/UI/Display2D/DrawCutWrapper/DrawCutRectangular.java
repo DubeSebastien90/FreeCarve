@@ -78,16 +78,6 @@ public class DrawCutRectangular extends DrawCutWrapper{
         return this.cut.getPoints().size() >= 5;
     }
 
-
-    /**
-     * Create the cut
-     * @return {@code Optional<UUID>} UUID if the cut is valid, null if the cut is invalid
-     */
-    private Optional<UUID> createCut() {
-        RequestCutDTO rq = new RequestCutDTO(this.cut.getPoints(), this.cut.getCutType(), this.cut.getBitIndex(), this.cut.getDepth(), selectedRef);
-        return mainWindow.getController().requestCut(rq);
-    }
-
     @Override
     public Optional<UUID> end() {
         return createCut();

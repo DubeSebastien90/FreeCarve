@@ -11,6 +11,7 @@ import UI.MainWindow;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -60,7 +61,6 @@ public class DrawCutL extends DrawCutWrapper{
 
             if(refs.size() >= 2){
                 newPoints.add(newPoint);
-                selectedRef = Optional.of(refs.getFirst());
             }
             else{
                 System.out.println("TOO ENOUGH REFS IN THE L CUT");
@@ -83,14 +83,6 @@ public class DrawCutL extends DrawCutWrapper{
         return this.cut.getPoints().size() >= 3;
     }
 
-    /**
-     * Create the cut
-     * @return {@code Optional<UUID>} UUID if the cut is valid, null if the cut is invalid
-     */
-    private Optional<UUID> createCut() {
-        RequestCutDTO rq = new RequestCutDTO(this.getRelativePoints(), this.cut.getCutType(), this.cut.getBitIndex(), this.cut.getDepth(), selectedRef);
-        return mainWindow.getController().requestCut(rq);
-    }
 
     @Override
     public Optional<UUID> end() {
@@ -131,8 +123,8 @@ public class DrawCutL extends DrawCutWrapper{
             double maxY = Double.MIN_VALUE;
 
             for (RefCutDTO ref : refs) {
-                VertexDTO p1l1 = ref.getAbsoluteFirstPoint();
-                VertexDTO p2l1 = ref.getAbsoluteSecondPoint();
+                VertexDTO p1l1 = ref.getFirstPoint();
+                VertexDTO p2l1 = ref.getSecondPoint();
 
                 minX = Math.min(p1l1.getX(), minX);
                 minX = Math.min(minX, p2l1.getX());

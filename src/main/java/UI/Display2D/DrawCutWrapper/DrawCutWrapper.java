@@ -4,9 +4,9 @@ import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
 
+import Common.DTO.*;
 import Common.Exceptions.BitNotSelectedException;
 import Domain.CutType;
-import Common.DTO.VertexDTO;
 import Domain.RefCut;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
@@ -105,8 +105,8 @@ public abstract class DrawCutWrapper {
         this.stroke = new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         this.mainWindow = mainWindow;
         cursorPoint  = null;
-        selectedRef = Optional.empty();
         this.update(renderer);
+        this.refs = new ArrayList<>();
     }
 
     /**
@@ -133,8 +133,8 @@ public abstract class DrawCutWrapper {
 
         this.mainWindow = mainWindow;
         cursorPoint  = null;
-        selectedRef = Optional.empty();
         this.update(renderer);
+        this.refs = new ArrayList<>();
     }
 
     /**
@@ -228,20 +228,13 @@ public abstract class DrawCutWrapper {
         }
     }
 
-    protected List<VertexDTO> getRelativePoints(){
-        List<VertexDTO> newRelativePoints = new ArrayList<>();
-        if(selectedRef.isPresent()){
-            for(VertexDTO v : this.cut.getPoints()){
-                newRelativePoints.add(selectedRef.get().getFirstPoint().mul(-1).add(v));
-            }
-        }
-        else{
-            for(VertexDTO v : this.cut.getPoints()){
-                newRelativePoints.add(new VertexDTO(v));
-            }
-        }
-
-        return newRelativePoints;
+    /**
+     * Create the cut
+     * @return {@code Optional<UUID>} UUID if the cut is valid, null if the cut is invalid
+     */
+    protected Optional<UUID> createCut() {
+        RequestCutDTO rq = new RequestCutDTO(this.cut.getPoints(), this.cut.getCutType(), this.cut.getBitIndex(), this.cut.getDepth(), refs);
+        return mainWindow.getController().requestCut(rq);
     }
 
     /**

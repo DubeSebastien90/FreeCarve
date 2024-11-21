@@ -49,11 +49,6 @@ public class DrawFreeCut extends DrawCutWrapper {
 
     }
 
-    private Optional<UUID> createCut() {
-        RequestCutDTO rq = new RequestCutDTO(this.cut.getPoints(), this.cut.getCutType(), this.cut.getBitIndex(), this.cut.getDepth(), selectedRef);
-        return mainWindow.getController().requestCut(rq);
-    }
-
     @Override
     public boolean addPoint(Rendering2DWindow renderer, PersoPoint pointInMM) {
         List<VertexDTO> newPoints = this.cut.getPoints();

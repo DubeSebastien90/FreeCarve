@@ -345,7 +345,7 @@ public class Grid {
             for(int i =0; i < cut.getPoints().size() - 1; i++){
                 Optional<VertexDTO> isPointOnLine = isPointOnLinePure(point, cut.getPoints().get(i), cut.getPoints().get(i+1));
                 if(isPointOnLine.isPresent()){
-                    ref.add(new RefCutDTO(cut, i)); // add the ref to the ref list with the index
+                    ref.add(new RefCutDTO(cut, i, 0)); // add the ref to the ref list with the index
                 }
             }
         }
@@ -362,7 +362,7 @@ public class Grid {
             for(int i =0; i < cut.getPoints().size() - 1; i++){
                 Optional<VertexDTO> isPointOnLine = isPointOnLinePure(point, cut.getPoints().get(i), cut.getPoints().get(i+1));
                 if(isPointOnLine.isPresent()){
-                    ref.add(new RefCutDTO(cut, i)); // add the ref to the ref list with the index
+                    ref.add(new RefCutDTO(cut, i, 0)); // add the ref to the ref list with the index
                 }
             }
         }

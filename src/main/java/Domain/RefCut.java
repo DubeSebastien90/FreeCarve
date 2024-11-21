@@ -15,20 +15,22 @@ import Common.DTO.RefCutDTO;
 public class RefCut {
     private Cut cut;
     private int index;
+    private double interpolation; // between 0 and 1, represents the interpolated point on the ref line
 
-    public RefCut(Cut cut, int index){
+    public RefCut(Cut cut, int index, double interpolation){
         this.cut = cut;
         this.index = index;
+        this.interpolation = interpolation;
     }
 
     public RefCut(RefCutDTO refCutDTO){
         this.cut = new Cut(refCutDTO.getCut());
         this.index = refCutDTO.getIndex();
+        this.interpolation = refCutDTO.getInterpolation();
     }
 
     RefCutDTO getDTO(){
-        return new RefCutDTO(cut.getDTO(), this.index);
+        return new RefCutDTO(cut.getDTO(), this.index, interpolation);
     }
-
 
 }
