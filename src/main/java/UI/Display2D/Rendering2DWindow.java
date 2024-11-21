@@ -6,6 +6,7 @@ import Domain.CutType;
 import Common.DTO.GridDTO;
 import Common.DTO.VertexDTO;
 import UI.Events.ChangeAttributeListener;
+import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
 import UI.LeftBar;
 import UI.MainWindow;
@@ -19,6 +20,7 @@ import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * The {@code Rendering2DWindow} class is used to construct and display a board which represent the panel on the CNC. This
@@ -70,6 +72,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         //
         mainWindow.getController().putGrid(70, 5);
         addMouseListener();
+        addChangeAtributeListeners();
         addMouseMotionListener();
         addMouseWheelListener();
         afficheur = new Afficheur(this);
@@ -77,7 +80,6 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         drawing = new Drawing(this, mainWindow);
         drawing.updateCuts();
     }
-
 
     public Point2D.Double getMmMousePt() {
         return (Point2D.Double) mmMousePt;
@@ -200,6 +202,13 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
     }
 
     /**
+     * Initiates the basic change attributes listener for when the domain changes cuts
+     */
+    private void addChangeAtributeListeners() {
+        System.out.println("Implémeter un change cut listener");
+    }
+
+    /**
      * Initiates the basic mouse listener for when the mouse is pressed.
      */
     private void addMouseListener() {
@@ -313,7 +322,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         mainWindow.getController().resizePanel(newWidth, newHeight);
         VertexDTO dim = mainWindow.getController().getPanelDTO().getPanelDimension();
         board.setRect(board.getX(), board.getY(), dim.getX(), dim.getY());
-        //drawing.updateCuts();
+        drawing.updateCuts();
         repaint();
     }
 
