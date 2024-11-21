@@ -108,7 +108,6 @@ public abstract class DrawCutWrapper {
         try{
             BitDTO bit = validateSelectedBit(selectedBit);
             this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, selectedBit, type, new ArrayList<VertexDTO>());
-            double zoom = renderer.getZoom();
             this.strokeWidth = mainWindow.getController().getBitsDTO()[cut.getBitIndex()].getDiameter() * (float) renderer.getZoom();
             this.stroke = new BasicStroke(strokeWidth);
         } catch (BitNotSelectedException e) {
