@@ -1,5 +1,6 @@
 package UI.Widgets;
 
+import Domain.CutType;
 import UI.Display2D.Rendering2DWindow;
 
 import java.awt.*;
