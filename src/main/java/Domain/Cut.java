@@ -6,10 +6,12 @@ import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import Common.Pair;
 
+import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * The {@code Cut} class encapsulates the basic attributes of a cuto
@@ -29,7 +31,7 @@ class Cut {
     private List<RefCut> refs;
 
 
-    public Cut(CutDTO uiCut) {
+    public Cut(CutDTO uiCut, List<Cut> cutAndBorderList) {
         this.startPoint = uiCut.getPoints().getFirst();
         this.type = uiCut.getCutType();
         this.points = uiCut.getPoints();
@@ -39,7 +41,7 @@ class Cut {
 
         refs = new ArrayList<>();
         for(RefCutDTO ref : uiCut.getRefsDTO()){
-            refs.add(new RefCut(ref));
+            refs.add(new RefCut(ref, cutAndBorderList));
         }
 
     }
@@ -76,7 +78,12 @@ class Cut {
     public Cut(VertexDTO startPoint, CutType type, List<VertexDTO> points, int bitIndex, double depth, ArrayList<RefCut> refCut) {
         this.startPoint = startPoint;
         this.type = type;
-        this.points = points;
+
+        this.points = new ArrayList<>();
+        for (VertexDTO point : points){
+            this.points.add(new VertexDTO(point));
+        }
+
         this.bitIndex = bitIndex;
         this.depth = depth;
         this.id = UUID.randomUUID();
@@ -88,7 +95,7 @@ class Cut {
     }
 
     public CutDTO getDTO() {
-        return new CutDTO(id, depth, bitIndex, type, points.stream().toList());
+        return new CutDTO(id, depth, bitIndex, type, points.stream().toList(), refs.stream().map(RefCut::getDTO).collect(Collectors.toList()));
     }
 
     public VertexDTO getStartPoint() {
@@ -149,6 +156,10 @@ class Cut {
 
     public List<RefCut> getRefs() {return this.refs;}
 
+    public void setRefs(List<RefCut> refs){
+        this.refs = refs;
+    }
+
     /**
      * Get the copied absolute points of the cut, based on it's references
      * @return List<VertexDTO> of the copied absolute points
@@ -178,6 +189,9 @@ class Cut {
             VertexDTO p2a = refs.get(1).getAbsoluteOffset();
             VertexDTO p2b = refs.get(1).getAbsoluteFirstPoint();
 
+            System.out.println(p1a.toString() + " - " + p1b.toString());
+            System.out.println(p2a.toString() + " - " + p2b.toString());
+
             // Needs to find the absolute corner point of the L-cut
             // 1. Find the perpendicular lines of the two refs
             // 2. Find the intersection of those 2 slopes
@@ -185,17 +199,22 @@ class Cut {
             Pair<VertexDTO, VertexDTO> paPerpendicular = VertexDTO.perpendicularPointsAroundP1(p1a, p1b);
             Pair<VertexDTO, VertexDTO> pbPerpendicular = VertexDTO.perpendicularPointsAroundP1(p2a, p2b);
 
+            System.out.println(paPerpendicular.getFirst().toString() + " - " + paPerpendicular.getSecond().toString());
+            System.out.println(pbPerpendicular.getFirst().toString() + " - " + pbPerpendicular.getSecond().toString());
+
             Optional<VertexDTO> intersectionPoint = VertexDTO.isLineIntersectNoLimitation(paPerpendicular.getFirst(),
                     paPerpendicular.getSecond(), pbPerpendicular.getFirst(), pbPerpendicular.getSecond());
 
             if(intersectionPoint.isEmpty()) {
                 // Lines are colinear or perpendicular
+                System.out.println("Colinear");
                 VertexDTO midpoint = p1a.add(p1b).mul(0.5);
                 outputPoints.add(p1a);
                 outputPoints.add(midpoint);
                 outputPoints.add(p2a);
             }
             else{
+                System.out.println("Non-colinear");
                 outputPoints.add(p1a);
                 outputPoints.add(intersectionPoint.get());
                 outputPoints.add(p2a);

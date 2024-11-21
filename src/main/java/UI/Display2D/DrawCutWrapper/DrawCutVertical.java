@@ -53,7 +53,7 @@ public class DrawCutVertical extends DrawCutWrapper{
     public boolean addPoint(Rendering2DWindow renderer, PersoPoint pointInMM) {
         List<VertexDTO> newPoints = this.cut.getPoints();
         newPoints.add(new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth()));
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints);
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
 
         return this.cut.getPoints().size() >= 2; // returns true if all the points are added
     }
@@ -67,27 +67,36 @@ public class DrawCutVertical extends DrawCutWrapper{
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
 
-        if(this.points.isEmpty()){ // First horizontal point
+        if(this.points.isEmpty()){ // First Horizontal point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-
             double threshold = 10;
             threshold = renderer.scaleMMToPixel(threshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
 
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
+                p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+
+                refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+                drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
+
                 p.setColor(Color.GREEN);
                 p.setValid(PersoPoint.Valid.VALID);
             }
-            else{
+            else{// Second horizontal point
                 p.setColor(Color.RED);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
+
+                if(!refs.isEmpty()){
+                    drawing.changeGoBackWrapperById(refs.getFirst().getCut().getId());
+                }
             }
         }
         else{ // Second horizontal point
             double firstPointX = this.points.getFirst().getLocationX();
-            p.movePoint(firstPointX, renderer.getMmMousePt().getY()); // lock to Y axis
+            p.movePoint(firstPointX, renderer.getMmMousePt().getY()); // lock to X axis
 
             // Get possible snap points
             double threshold = 10;
@@ -97,6 +106,7 @@ public class DrawCutVertical extends DrawCutWrapper{
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridLineNearAllBorderAndCuts(p1,
                     cursor,threshold
             );
+
 
             // Snap
             if(closestPoint.isPresent()){

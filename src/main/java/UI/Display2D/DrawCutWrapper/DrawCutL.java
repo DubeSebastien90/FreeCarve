@@ -78,7 +78,7 @@ public class DrawCutL extends DrawCutWrapper{
             newPoints.removeFirst();
         }
 
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints);
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
 
         return this.cut.getPoints().size() >= 3;
     }
@@ -123,8 +123,8 @@ public class DrawCutL extends DrawCutWrapper{
             double maxY = Double.MIN_VALUE;
 
             for (RefCutDTO ref : refs) {
-                VertexDTO p1l1 = ref.getFirstPoint();
-                VertexDTO p2l1 = ref.getSecondPoint();
+                VertexDTO p1l1 = ref.getAbsoluteFirstPoint();
+                VertexDTO p2l1 = ref.getAbsoluteSecondPoint();
 
                 minX = Math.min(p1l1.getX(), minX);
                 minX = Math.min(minX, p2l1.getX());

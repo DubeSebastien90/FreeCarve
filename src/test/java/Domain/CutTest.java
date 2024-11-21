@@ -1,6 +1,7 @@
 package Domain;
 
 import Common.DTO.CutDTO;
+import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,8 +34,8 @@ public class CutTest {
         pointsListDTO.add(temp4);
         pointsListDTO.add(temp5);
         CutDTO cutDTO = new CutDTO(new UUID(1000, 1000),
-                1.0f, 0, CutType.L_SHAPE, pointsListDTO);
-        cutWithDTO = new Cut(cutDTO);
+                1.0f, 0, CutType.L_SHAPE, pointsListDTO, new ArrayList<RefCutDTO>());
+        cutWithDTO = new Cut(cutDTO, new ArrayList<Cut>());
     }
 
     @Test

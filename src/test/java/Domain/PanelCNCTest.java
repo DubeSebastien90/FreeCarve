@@ -1,6 +1,7 @@
 package Domain;
 
 import Common.DTO.PanelDTO;
+import Common.DTO.RefCutDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import org.junit.jupiter.api.Assertions;
@@ -46,7 +47,7 @@ public class PanelCNCTest {
         ArrayList<VertexDTO> pointList = new ArrayList<>();
         pointList.add(new VertexDTO(13, 14, 15));
         pointList.add(new VertexDTO(16, 17, 18));
-        RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f);
+        RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>());
         panelCNC.requestCut(rcDTO);
         ArrayList<Cut> refCutList = (ArrayList<Cut>) panelCNC.getCutList();
 
@@ -68,7 +69,7 @@ public class PanelCNCTest {
 
         // Act
         Assertions.assertEquals(panelCNC.getCutList().size(), 0);
-        RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f);
+        RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>());
         panelCNC.requestCut(rcDTO);
         PanelDTO pDTO = panelCNC.getDTO();
 

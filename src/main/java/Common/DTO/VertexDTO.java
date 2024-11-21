@@ -30,6 +30,10 @@ public class VertexDTO {
         this.z = other.z;
     }
 
+    public String toString(){
+        return "(" + x + ", " + y + "," + z + ")";
+    }
+
     public double getX() {
         return x;
     }
@@ -88,6 +92,9 @@ public class VertexDTO {
 
         double rotatedXPrime = -yPrime;
         double rotatedYPrime = xPrime;
+
+        rotatedXPrime += p1.getX();
+        rotatedYPrime += p1.getY();
 
         VertexDTO newP2 = new VertexDTO(rotatedXPrime, rotatedYPrime, p2.getZ());
         return new Pair<>(p1, newP2);

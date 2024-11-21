@@ -174,6 +174,22 @@ public class Drawing {
         }
     }
 
+    public void changeRefWrapperById(UUID id){
+        for(DrawCutWrapper wrapper : cutWrappers){
+            if(wrapper.getCutDTO().getId() == id){
+                wrapper.setState(DrawCutWrapper.DrawCutState.REF, renderer);
+            }
+        }
+    }
+
+    public void changeGoBackWrapperById(UUID id){
+        for(DrawCutWrapper wrapper : cutWrappers){
+            if(wrapper.getCutDTO().getId() == id){
+                wrapper.goBackState(renderer);
+            }
+        }
+    }
+
     public Optional<DrawCutWrapper> getWrapperById(UUID id){
         for(DrawCutWrapper wrapper : cutWrappers){
             if(wrapper.getCutDTO().getId() == id){

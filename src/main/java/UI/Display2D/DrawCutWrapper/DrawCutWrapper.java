@@ -34,12 +34,13 @@ public abstract class DrawCutWrapper {
     protected Stroke stroke;
     protected MainWindow mainWindow;
     protected List<RefCutDTO> refs;
-    protected Optional<RefCutDTO> selectedRef = Optional.empty();
     protected DrawCutState state = DrawCutState.NOT_SELECTED;
+    protected DrawCutState previousState = DrawCutState.NOT_SELECTED;
     public enum DrawCutState {
         SELECTED,
         NOT_SELECTED,
         HOVER,
+        REF,
     }
 
     /**
@@ -168,15 +169,26 @@ public abstract class DrawCutWrapper {
         this.state = newState;
         if(newState == DrawCutState.SELECTED){
             this.strokeColor = Color.YELLOW;
+            this.previousState = DrawCutState.SELECTED;
         }
         else if(newState == DrawCutState.HOVER){
             this.strokeColor = Color.BLUE;
+            this.previousState = DrawCutState.HOVER;
+        }
+        else if(newState == DrawCutState.REF){
+            this.strokeColor = Color.GREEN;
+            // No setting previous state because a temporary one
         }
         else{
             this.strokeColor = Color.BLACK;
+            this.previousState = DrawCutState.NOT_SELECTED;
         }
 
         renderer.repaint();
+    }
+
+    public void goBackState(Rendering2DWindow renderer){
+        setState(this.previousState, renderer);
     }
 
     /**
@@ -222,7 +234,8 @@ public abstract class DrawCutWrapper {
      */
     protected void update(Rendering2DWindow renderer){
         this.points = new ArrayList<>();
-        for (VertexDTO point : cut.getPoints()){
+        for (VertexDTO point : cut.getAbsolutePointsPosition()){
+            System.out.println(point.toString());
             PersoPoint p1 = new PersoPoint(point.getX(), point.getY(), 10.0f, true, strokeColor);
             points.add(p1);
         }

@@ -449,7 +449,7 @@ public class CutBox implements Attributable {
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = CutBox.this.cut;
                 Number n = (Number) evt.getNewValue();
-                c = new CutDTO(c.getId(), n.doubleValue(), c.getBitIndex(), c.getCutType(), c.getPoints());
+                c = new CutDTO(c.getId(), n.doubleValue(), c.getBitIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
             }
@@ -469,7 +469,7 @@ public class CutBox implements Attributable {
                 JComboBox comboBox = (JComboBox) e.getSource();
                 CutDTO c = CutBox.this.cut;
                 CutType chosenCutType = CutType.values()[comboBox.getSelectedIndex()];
-                c = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), chosenCutType, c.getPoints());
+                c = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), chosenCutType, c.getPoints(), c.getRefsDTO());
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
             }
@@ -491,7 +491,7 @@ public class CutBox implements Attributable {
                 JComboBox comboBox = (JComboBox) e.getSource();
                 CutDTO c = CutBox.this.cut;
                 ComboBitItem chosenBit = (ComboBitItem) comboBox.getModel().getSelectedItem();
-                c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints());
+                c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
             }

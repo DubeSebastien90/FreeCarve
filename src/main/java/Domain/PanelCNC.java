@@ -24,6 +24,7 @@ class PanelCNC {
     private final List<Cut> cutList;
     private final List<ClampZone> clamps;
     private VertexDTO panelDimension;
+    private Cut borderCut; // This is to generalise the concept of reference cut, the panelCNC has a rectangular Cut that represents it's borders. When the panel is resized, you need to resize the cut as well
     private float depth;
     private final IMemorizer memorizer;
     private static final int MAX_FEET_WIDTH = 10;
@@ -41,10 +42,12 @@ class PanelCNC {
         this.panelDimension = panelDimension;
         this.depth = depth;
         this.memorizer = memorizer;
+        updateBorderCut();
+
     }
 
     public PanelDTO getDTO() {
-        return new PanelDTO(cutList.stream().map(Cut::getDTO).collect(Collectors.toList()), panelDimension, depth, MAX_FEET_WIDTH, MAX_FEET_HEIGHT);
+        return new PanelDTO(cutList.stream().map(Cut::getDTO).collect(Collectors.toList()), panelDimension, MAX_FEET_WIDTH, MAX_FEET_HEIGHT, borderCut.getId());
     }
 
     public float getDepth() {
@@ -76,7 +79,7 @@ class PanelCNC {
         //todo tester si la coupe est bonne ou non!!
         UUID newUUID = UUID.randomUUID();
         CutDTO cutDTO = new CutDTO(newUUID, cut);
-        memorizer.executeAndMemorize(()->this.cutList.add(new Cut(cutDTO)), ()->this.cutList.removeIf(e->e.getId() == newUUID));
+        memorizer.executeAndMemorize(()->this.cutList.add(createPanelCut(cutDTO)), ()->this.cutList.removeIf(e->e.getId() == newUUID));
         return Optional.of(newUUID);
     }
 
@@ -91,7 +94,7 @@ class PanelCNC {
         for (int i = 0; i < this.cutList.size(); i++) {
 
             if (cut.getId() == this.cutList.get(i).getId()) {
-                this.cutList.set(i, new Cut(cut));
+                this.cutList.set(i, createPanelCut(cut));
                 return Optional.of(cut.getId());
             }
         }
@@ -134,6 +137,21 @@ class PanelCNC {
 
     List<ClampZone> getClamps() {
         return clamps;
+    }
+
+    Cut createPanelCut(CutDTO cutDTO){
+        return new Cut(cutDTO, this.getCutAndBorderList());
+    }
+
+    Cut getBorderCut(){
+        return this.borderCut;
+    }
+
+    List<Cut> getCutAndBorderList(){
+        List<Cut> addAll = new ArrayList<>();
+        addAll.addAll(this.cutList);
+        addAll.add(borderCut);
+        return addAll;
     }
 
     /**
@@ -183,6 +201,7 @@ class PanelCNC {
         double newHeight = Math.min(Math.max(0, height), Util.feet_to_mm(MAX_FEET_HEIGHT));
 
         panelDimension = new VertexDTO(newWidth, newHeight, 0);
+        updateBorderCut();
     }
 
     /**
@@ -213,6 +232,27 @@ class PanelCNC {
      */
     boolean isPointOnPanel(VertexDTO point) {
         return point.getX() >= 0 && point.getY() >= 0 && point.getX() <= getWidth() && point.getY() <= getHeight();
+    }
+
+    void updateBorderCut(){
+        if(this.borderCut == null){
+            ArrayList<VertexDTO> borderPoints = new ArrayList<>();
+            borderPoints.add(new VertexDTO(0, 0,0 ));
+            borderPoints.add(new VertexDTO(0, panelDimension.getY(), 0 ));
+            borderPoints.add(new VertexDTO(panelDimension.getX(), panelDimension.getY(), 0 ));
+            borderPoints.add(new VertexDTO(panelDimension.getX(), 0,0 ));
+            borderPoints.add(new VertexDTO(0, 0,0 ));
+            this.borderCut = new Cut(new VertexDTO(0,0,0), CutType.RECTANGULAR, borderPoints, 0, this.depth);
+        }
+        else{
+            ArrayList<VertexDTO> borderPoints = new ArrayList<>();
+            borderPoints.add(new VertexDTO(0, 0,0 ));
+            borderPoints.add(new VertexDTO(0, panelDimension.getY(), 0 ));
+            borderPoints.add(new VertexDTO(panelDimension.getX(), panelDimension.getY(), 0 ));
+            borderPoints.add(new VertexDTO(panelDimension.getX(), 0,0 ));
+            borderPoints.add(new VertexDTO(0, 0,0 ));
+            this.borderCut.setPoints(borderPoints);
+        }
     }
 
 }

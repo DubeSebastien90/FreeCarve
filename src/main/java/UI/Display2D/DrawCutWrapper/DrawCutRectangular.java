@@ -73,7 +73,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
             newPoints.add(new VertexDTO(newPoints.getFirst().getX(), newPoints.getFirst().getY(),  this.cut.getDepth()));
         }
 
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints);
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
 
         return this.cut.getPoints().size() >= 5;
     }

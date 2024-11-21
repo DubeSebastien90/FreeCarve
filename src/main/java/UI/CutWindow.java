@@ -91,7 +91,6 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     @Override
     public void changeAttributeEventOccurred(ChangeAttributeEvent event) {
 
-
         // Change the cut that is selected
         if (event.getAttribute() instanceof  CutBox){
             CutBox eventCasted = (CutBox) event.getAttribute();

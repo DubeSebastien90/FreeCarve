@@ -2,6 +2,7 @@ package Domain.IO;
 
 import Common.DTO.*;
 import Domain.CutType;
+import com.kitfox.svg.A;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,9 +20,9 @@ public class GcodeGeneratorTest {
         list.add(new VertexDTO(100, 100, 0));
         list.add(new VertexDTO(50, 100, 0));
         list.add(new VertexDTO(50, 50, 0));
-        CutDTO cut1 = new CutDTO(new UUID(1, 1), 2, 1, CutType.LINE_FREE, list);
+        CutDTO cut1 = new CutDTO(new UUID(1, 1), 2, 1, CutType.LINE_FREE, list, new ArrayList<RefCutDTO>());
         List<CutDTO> c = List.of(new CutDTO[]{cut1});
-        PanelDTO pnel = new PanelDTO(c, new VertexDTO(300, 300, 5), 300, 300);
+        PanelDTO pnel = new PanelDTO(c, new VertexDTO(300, 300, 5), 300, 300, UUID.randomUUID());
         BitDTO[] bits = {new BitDTO("g", 3)};
         ProjectStateDTO pjt = new ProjectStateDTO(bits, pnel);
 

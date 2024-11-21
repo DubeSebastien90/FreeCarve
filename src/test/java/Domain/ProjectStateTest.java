@@ -1,5 +1,5 @@
 package Domain;
-
+import Common.DTO.*;
 import Common.DTO.BitDTO;
 import Common.DTO.ProjectStateDTO;
 import Common.DTO.RequestCutDTO;
@@ -101,7 +101,7 @@ public class ProjectStateTest {
         points.add(new VertexDTO(50, 46, 47));
 
         // Act
-        stateTest.getPanel().requestCut(new RequestCutDTO(points, CutType.LINE_VERTICAL, 5, 2.0f));
+        stateTest.getPanel().requestCut(new RequestCutDTO(points, CutType.LINE_VERTICAL, 5, 2.0f, new ArrayList<RefCutDTO>()));
 
 
         // Assert

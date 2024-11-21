@@ -3,6 +3,7 @@ package Domain;
 import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 /**
@@ -29,17 +30,25 @@ public class RefCut {
         this.interpolation = interpolation;
     }
 
-    public RefCut(RefCutDTO refCutDTO){
-        this.cut = new Cut(refCutDTO.getCut());
+    public RefCut(RefCutDTO refCutDTO, List<Cut> cutList){
+        for(Cut c : cutList){
+            if(c.getId() == refCutDTO.getCut().getId()){
+                this.cut = c;
+            }
+        }
+        if(cut == null) throw new InvalidParameterException("The reference of the Domain Cut was not found");
         this.index = refCutDTO.getIndex();
         this.interpolation = refCutDTO.getInterpolation();
     }
 
+
     public VertexDTO getAbsoluteOffset(){
         List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition();
+
         VertexDTO p1 = absoluteVertex.get(index);
         VertexDTO p2 = absoluteVertex.get(index+1);
-        return p1.interpolation(p2, index);
+
+        return p1.interpolation(p2, interpolation);
     }
 
     public VertexDTO getAbsoluteFirstPoint(){

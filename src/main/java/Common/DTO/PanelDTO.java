@@ -2,8 +2,10 @@ package Common.DTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import Common.Util;
+import Domain.CutType;
 
 /**
  * This class is a DTO wrapper of the {@code Panel} class in order to transfer READ-ONLY informations
@@ -15,16 +17,23 @@ import Common.Util;
 public class PanelDTO {
     private final List<CutDTO> cutList;
     private final VertexDTO panelDimension;
-    private final double depth;
+    private CutDTO borderCut;
     private final double maxFeetWidth;
     private final double maxFeetHeight;
 
-    public PanelDTO(List<CutDTO> cutList, VertexDTO panelDimension, double depth, double maxFeetWidth, double maxFeetHeight) {
+    public PanelDTO(List<CutDTO> cutList, VertexDTO panelDimension, double maxFeetWidth, double maxFeetHeight, UUID borderUUID) {
         this.cutList = cutList;
         this.panelDimension = panelDimension;
         this.maxFeetWidth = maxFeetWidth;
         this.maxFeetHeight = maxFeetHeight;
-        this.depth = depth;
+
+        ArrayList<VertexDTO> borderPoints = new ArrayList<>();
+        borderPoints.add(new VertexDTO(0, 0,0 ));
+        borderPoints.add(new VertexDTO(0, panelDimension.getY(), 0 ));
+        borderPoints.add(new VertexDTO(panelDimension.getX(), panelDimension.getY(), 0 ));
+        borderPoints.add(new VertexDTO(panelDimension.getX(), 0,0 ));
+        borderPoints.add(new VertexDTO(0, 0,0 ));
+        this.borderCut = new CutDTO(borderUUID, panelDimension.getZ(), 0, CutType.RECTANGULAR, borderPoints, new ArrayList<RefCutDTO>());
     }
 
     public List<CutDTO> getCutsDTO() {
@@ -49,13 +58,10 @@ public class PanelDTO {
      * @return List<VertexDTO> of the four points of the board
      */
     public List<VertexDTO> getListBoardPointsDTO(){
-        List<VertexDTO> list = new ArrayList<>();
-        list.add(new VertexDTO(0.0f, 0.0f, depth));
-        list.add(new VertexDTO(panelDimension.getX(), 0.0f, depth));
-        list.add(new VertexDTO(panelDimension.getX(), panelDimension.getY(), depth));
-        list.add(new VertexDTO(0.0f, panelDimension.getY(), depth));
-        list.add(new VertexDTO(0.0f, 0.0f, depth));
+        return this.borderCut.getPoints();
+    }
 
-        return list;
+    public CutDTO getBorderCut(){
+        return this.borderCut;
     }
 }
