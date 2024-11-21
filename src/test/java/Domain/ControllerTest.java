@@ -1,10 +1,6 @@
 package Domain;
 
-import Common.DTO.BitDTO;
-import Common.DTO.CutDTO;
-import Common.DTO.ProjectStateDTO;
-import Common.DTO.RequestCutDTO;
-import Common.DTO.VertexDTO;
+import Common.DTO.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -51,7 +47,7 @@ public class ControllerTest {
         points.add(new VertexDTO(17, 18, 19));
 
         // Act
-        controllerTest.requestCut(new RequestCutDTO(points, CutType.LINE_VERTICAL, 3, 7.0f));
+        controllerTest.requestCut(new RequestCutDTO(points, CutType.LINE_VERTICAL, 3, 7.0f, new ArrayList<RefCutDTO>()));
 
         // Assert
         Assertions.assertEquals(controllerTest.getCutListDTO().size(), 1);

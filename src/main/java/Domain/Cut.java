@@ -4,6 +4,7 @@ import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
+import Common.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +103,22 @@ class Cut {
         return points;
     }
 
+    public List<VertexDTO> getCopyPoints(){
+        ArrayList<VertexDTO> copyList = new ArrayList<>();
+        for(VertexDTO point : points){
+            copyList.add(new VertexDTO(point));
+        }
+        return copyList;
+    }
+
+    public List<VertexDTO> getCopyPointsWithOffset(VertexDTO offset){
+        ArrayList<VertexDTO> copyList = new ArrayList<>();
+        for(VertexDTO point : points){
+            copyList.add(new VertexDTO(point).add(offset));
+        }
+        return copyList;
+    }
+
     public void setPoints(List<VertexDTO> points) {
         this.points = points;
     }
@@ -131,4 +148,63 @@ class Cut {
     }
 
     public List<RefCut> getRefs() {return this.refs;}
+
+    /**
+     * Get the copied absolute points of the cut, based on it's references
+     * @return List<VertexDTO> of the copied absolute points
+     */
+    public List<VertexDTO> getAbsolutePointsPosition(){
+        // 4 possibilies :
+        // 1 : CutType = Rectangular, or Line_Vertical or Line_Horizontal or Free_Line : get first ref and use it as anchor point
+        // 2 : CutType = L : get 2 ref points and use them as position of the L cut
+        // 3 : ref list is empty : just return the points
+        if (refs.isEmpty()){
+            return this.getCopyPoints();
+        }
+        if (type == CutType.LINE_HORIZONTAL || type==CutType.LINE_VERTICAL || type==CutType.RECTANGULAR || type== CutType.LINE_FREE){
+            if(refs.size() != 1){throw new AssertionError(type + " needs a single ref, it has " + refs.size());}
+            return  this.getCopyPointsWithOffset(refs.getFirst().getAbsoluteOffset());
+        }
+        if(type == CutType.L_SHAPE){
+            if(refs.size() != 2){throw new AssertionError(type + " needs two refs, it has " + refs.size());}
+
+            ArrayList<VertexDTO> outputPoints = new ArrayList<>();
+
+            // Needs to calculate the absolute two points
+            VertexDTO p1a = refs.getFirst().getAbsoluteOffset();
+            VertexDTO p1b = refs.getFirst().getAbsoluteFirstPoint();
+
+            // Get the first absolute reference point
+            VertexDTO p2a = refs.get(1).getAbsoluteOffset();
+            VertexDTO p2b = refs.get(1).getAbsoluteFirstPoint();
+
+            // Needs to find the absolute corner point of the L-cut
+            // 1. Find the perpendicular lines of the two refs
+            // 2. Find the intersection of those 2 slopes
+
+            Pair<VertexDTO, VertexDTO> paPerpendicular = VertexDTO.perpendicularPointsAroundP1(p1a, p1b);
+            Pair<VertexDTO, VertexDTO> pbPerpendicular = VertexDTO.perpendicularPointsAroundP1(p2a, p2b);
+
+            Optional<VertexDTO> intersectionPoint = VertexDTO.isLineIntersectNoLimitation(paPerpendicular.getFirst(),
+                    paPerpendicular.getSecond(), pbPerpendicular.getFirst(), pbPerpendicular.getSecond());
+
+            if(intersectionPoint.isEmpty()) {
+                // Lines are colinear or perpendicular
+                VertexDTO midpoint = p1a.add(p1b).mul(0.5);
+                outputPoints.add(p1a);
+                outputPoints.add(midpoint);
+                outputPoints.add(p2a);
+            }
+            else{
+                outputPoints.add(p1a);
+                outputPoints.add(intersectionPoint.get());
+                outputPoints.add(p2a);
+            }
+
+            return outputPoints;
+        }
+        else{
+            throw new NullPointerException("Invalid cuttype");
+        }
+    }
 }
