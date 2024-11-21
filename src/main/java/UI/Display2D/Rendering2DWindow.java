@@ -299,6 +299,7 @@ public class Rendering2DWindow extends JPanel {
         if (mainWindow.getController().getGrid().isActive()) {
             afficheur.drawGrid(graphics2D);
         }
+        afficheur.drawMask(graphics2D);
     }
 
     /**

@@ -3,6 +3,7 @@ package UI.Display2D;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.Widgets.PersoPoint;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -62,7 +63,6 @@ public class Afficheur {
     }
 
     /**
-     * <<<<<<< HEAD
      * Draws the cuts of on the board
      */
     void drawCuts(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing) {
@@ -81,8 +81,6 @@ public class Afficheur {
 
 
     /**
-     * =======
-     * >>>>>>> ff140ea (grid button and same rendering2dWindow)
      * Draws the grid on the board
      *
      * @param graphics2D the <code>Graphics</code> object to protect
@@ -98,5 +96,21 @@ public class Afficheur {
         for (double i = areammBoard.get(3); i > areammBoard.get(2); i -= size) {
             graphics2D.drawLine(areammBoard.get(0).intValue(), (int) i, areammBoard.get(1).intValue(), (int) i);
         }
+    }
+
+    void drawMask(Graphics2D graphics2D){
+        Rectangle2D panneauOffset = rend.convertBoardTomm(rend.getBoard());
+        int rectX = (int) panneauOffset.getX();
+        int rectY = (int) panneauOffset.getY();
+        int rectWidth = (int) panneauOffset.getWidth();
+        int rectHeight = (int) panneauOffset.getHeight();
+
+        Color maskColor = UIManager.getColor("SubWindow.background");
+        graphics2D.setColor(maskColor);
+
+        graphics2D.fillRect(0, 0, rend.getWidth(), rectY);
+        graphics2D.fillRect(0, rectY + rectHeight, rend.getWidth(), rend.getHeight());
+        graphics2D.fillRect(0, rectY, rectX, rectHeight);
+        graphics2D.fillRect(rectX + rectWidth, rectY, rend.getWidth(), rectHeight);
     }
 }
