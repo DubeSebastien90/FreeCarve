@@ -26,19 +26,30 @@ class Bit {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Le nom ne peut pas être vide");
         }
-        setName(name);
-        setDiameter(diameter);
+        this.name = name;
+        this.diameter = diameter;
     }
 
+    /**
+     * Constructs a {@code Bit} with no attributes
+     */
     public Bit() {
         this.name = "Aucun outil assigné";
         this.diameter = 0.0f;
     }
 
+    /**
+     * @return the name of the {@code Bit}
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the {@code Bit}
+     *
+     * @param name the name of the {@code Bit}
+     */
     public void setName(String name) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Le nom ne peut pas être vide");
@@ -46,10 +57,18 @@ class Bit {
         this.name = name;
     }
 
+    /**
+     * @return the diameter of the {@code Bit}
+     */
     public float getDiameter() {
         return diameter;
     }
 
+    /**
+     * Sets the diameter of the {@code Bit}
+     *
+     * @param diameter the diameter of the {@code Bit}
+     */
     public void setDiameter(float diameter) {
         if (diameter <= 0) {
             throw new IllegalArgumentException("Le diametre doit être plus grand que 0");
@@ -57,6 +76,9 @@ class Bit {
         this.diameter = diameter;
     }
 
+    /**
+     * @return the DTO of the {@code Bit}
+     */
     public BitDTO getDTO() {
         return new BitDTO(getName(), getDiameter());
     }
