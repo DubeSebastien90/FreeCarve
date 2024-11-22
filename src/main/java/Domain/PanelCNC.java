@@ -389,7 +389,7 @@ class PanelCNC {
                         listPoints2.add(new VertexDTO(point.getX() + (border[0] - getWidth()), point.getY(), point.getZ()));
                         editedRef = true;
                     } else if (cut.getType() == CutType.LINE_HORIZONTAL && modifiedCut == null) {
-                        //par défaut pour l'instant, ref = côté droit
+                        //par défaut pour l'instant, ref = côté haut
                         listPoints2.add(new VertexDTO(point.getX(), point.getY() + (border[1] - getHeight()), point.getZ()));
                         editedRef = true;
                     }
