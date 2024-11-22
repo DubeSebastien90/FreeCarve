@@ -60,4 +60,6 @@ public class RefCut {
         return new RefCutDTO(cut.getDTO(), this.index, interpolation);
     }
 
+    Cut getCut() {return this.cut;}
+
 }

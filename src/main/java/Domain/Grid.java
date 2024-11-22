@@ -129,6 +129,14 @@ public class Grid {
      */
     private Optional<VertexDTO> isLineIntersectCursor(VertexDTO p1, VertexDTO cursorPoint, VertexDTO p3, VertexDTO p4,
                                                       double threshold) {
+
+        VertexDTO initialCursorPoint = new VertexDTO(cursorPoint);
+        VertexDTO diff = cursorPoint.sub(p1);
+        diff = diff.mul(1.0/diff.getDistance());
+        diff = diff.mul(threshold);
+
+        cursorPoint = cursorPoint.add(diff);
+
         double a1 = cursorPoint.getY() - p1.getY();
         double b1 = p1.getX() - cursorPoint.getX();
         double c1 = a1 * p1.getX() + b1 * p1.getY();
@@ -153,12 +161,12 @@ public class Grid {
 
         double x = (c1 * b2 - c2 * b1) / det;
         double y = (a1 * c2 - a2 * c1) / det;
-        if(Math.min(p1.getX(), cursorPoint.getX() - threshold) <= x && x <= Math.max(p1.getX(), cursorPoint.getX() + threshold) // The threshold addition and substraction is to allow the snap
-                && Math.min(p1.getY(), cursorPoint.getY() - threshold) <= y && y <= Math.max(p1.getY(), cursorPoint.getY() + threshold)
+        if(Math.min(p1.getX(), cursorPoint.getX()) <= x && x <= Math.max(p1.getX(), cursorPoint.getX()) // The threshold addition and substraction is to allow the snap
+                && Math.min(p1.getY(), cursorPoint.getY()) <= y && y <= Math.max(p1.getY(), cursorPoint.getY())
                 && Math.min(p3.getX(), p4.getX()) <= x && x <= Math.max(p3.getX(), p4.getX())
                 && Math.min(p3.getY(), p4.getY()) <= y && y <= Math.max(p3.getY(), p4.getY())) {
             VertexDTO outputIntersect = new VertexDTO(x, y, 0.0f);
-            if (outputIntersect.getDistance(cursorPoint) < threshold) { // check if the intersection is even close to the cursor
+            if (outputIntersect.getDistance(initialCursorPoint) < threshold) { // check if the intersection is even close to the cursor
                 if (outputIntersect.getDistance(p1) != 0) { // check if the intersection isn't on the first point of the cut
                     return Optional.of(outputIntersect); // Intersection is true
                 }
@@ -341,6 +349,7 @@ public class Grid {
                         if (closestPoint.isEmpty()) {
                             closestPoint = checkPoint;
                         } else if (checkPoint.get().getDistance() < closestPoint.get().getDistance()) {
+
                             closestPoint = checkPoint;
                         }
                     }
@@ -404,26 +413,17 @@ public class Grid {
                                                     Optional<VertexDTO> closestPoint) {
 
         // Testing the border
-        List<VertexDTO> borderList = new ArrayList<>();
-        VertexDTO resizedBoard = board.getPanelDimension();
-        VertexDTO borderP1 = new VertexDTO(0.0f, 0.0f, 0.0f);
-        VertexDTO borderP2 = new VertexDTO(resizedBoard.getX(), 0.0f, 0.0f);
-        VertexDTO borderP3 = new VertexDTO(resizedBoard.getX(), resizedBoard.getY(), 0.0f);
-        VertexDTO borderP4 = new VertexDTO(0.0f, resizedBoard.getY(), 0.0f);
-        VertexDTO borderP5 = new VertexDTO(0.0f, 0.0f, 0.0f);
-        borderList.add(borderP1);
-        borderList.add(borderP2);
-        borderList.add(borderP3);
-        borderList.add(borderP4);
-        borderList.add(borderP5);
+        List<VertexDTO> borderList = board.getBorderCut().getPoints();
         for (int i = 0; i < borderList.size() - 1; i++) {
             Optional<VertexDTO> checkPoint = isLineIntersectCursor(p1, cursor, borderList.get(i), borderList.get(i + 1),
                     threshold);
+
 
             if (checkPoint.isPresent()) {
                 if (closestPoint.isEmpty()) {
                     closestPoint = checkPoint;
                 } else if (checkPoint.get().getDistance() < closestPoint.get().getDistance()) {
+
                     closestPoint = checkPoint;
                 }
             }
@@ -446,7 +446,6 @@ public class Grid {
         Optional<VertexDTO> closestPoint = Optional.empty();
         closestPoint = this.getLineNearAllBorder(p1, cursor, board, threshold, closestPoint);
         closestPoint = this.getLineNearAllCuts(p1, cursor, board, threshold, closestPoint);
-
         return closestPoint;
     }
 

@@ -122,6 +122,10 @@ public class DrawCutRectangular extends DrawCutWrapper{
             else{
                 p.setColor(Color.RED);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
+
+                if(!refs.isEmpty()){
+                    drawing.changeGoBackWrapperById(refs.getFirst().getCut().getId());
+                }
             }
         }
         else{ // Rest of the rectangle points

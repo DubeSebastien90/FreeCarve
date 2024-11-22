@@ -50,6 +50,8 @@ public class DrawCutStraight extends DrawCutWrapper{
     @Override
     public boolean addPoint(Rendering2DWindow renderer, PersoPoint pointInMM) {
         List<VertexDTO> newPoints = this.cut.getPoints();
+
+
         VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
         VertexDTO offset = refs.getFirst().getAbsoluteOffset();
         newPoint = newPoint.sub(offset);
@@ -78,6 +80,7 @@ public class DrawCutStraight extends DrawCutWrapper{
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
 
             if(closestPoint.isPresent()){
+
                 p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
                 p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
                 refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
@@ -87,6 +90,7 @@ public class DrawCutStraight extends DrawCutWrapper{
                 p.setValid(PersoPoint.Valid.VALID);
             }
             else{// Second horizontal point
+
                 p.setColor(Color.RED);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
 
@@ -124,7 +128,6 @@ public class DrawCutStraight extends DrawCutWrapper{
                 p.setValid(PersoPoint.Valid.VALID);
                 return;
             }
-
             // Test if on board
             VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             if(mainWindow.getController().isPointOnPanel(pointDTO)){
