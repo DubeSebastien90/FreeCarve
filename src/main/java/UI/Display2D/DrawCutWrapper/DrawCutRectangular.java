@@ -60,17 +60,31 @@ public class DrawCutRectangular extends DrawCutWrapper{
         List<VertexDTO> newPoints = this.cut.getPoints();
 
         if(newPoints.isEmpty()){ // premier point a ajouter
-            newPoints.add(new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth()));
+            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
+            VertexDTO offset = refs.getFirst().getAbsoluteOffset();
+            newPoint = newPoint.sub(offset);
+            newPoints.add(newPoint);
         }
         else{
             // Dans le cas contraire, c'est le dernier point, donc ajoute les 4 points finauxx:
             //  3 - 2*
             //  |   |
             //  4 - 1
-            newPoints.add(new VertexDTO(pointInMM.getLocationX(),newPoints.getFirst().getY(),  this.cut.getDepth()));
-            newPoints.add(new VertexDTO(newPoints.getFirst().getX(),pointInMM.getLocationY(),  this.cut.getDepth()));
-            newPoints.add(2, new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth()));
-            newPoints.add(new VertexDTO(newPoints.getFirst().getX(), newPoints.getFirst().getY(),  this.cut.getDepth()));
+            VertexDTO offset = refs.getFirst().getAbsoluteOffset();
+            VertexDTO p1 = newPoints.getFirst().add(offset);
+            VertexDTO p2 = new VertexDTO(pointInMM.getLocationX(),p1.getY(),  this.cut.getDepth());
+            VertexDTO p3 = new VertexDTO(p1.getX(),pointInMM.getLocationY(),  this.cut.getDepth());
+            VertexDTO p4 = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
+            VertexDTO p5 = new VertexDTO(p1.getX(), p1.getY(),  this.cut.getDepth());
+
+            p2 = p2.sub(offset);
+            p3 = p3.sub(offset);
+            p4 = p4.sub(offset);
+            p5 = p5.sub(offset);
+            newPoints.add(p2);
+            newPoints.add(p3);
+            newPoints.add(2, p4);
+            newPoints.add(p5);
         }
 
         this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
@@ -97,6 +111,11 @@ public class DrawCutRectangular extends DrawCutWrapper{
 
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
+
+                p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+                refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+                drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
+
                 p.setColor(Color.GREEN);
                 p.setValid(PersoPoint.Valid.VALID);
             }

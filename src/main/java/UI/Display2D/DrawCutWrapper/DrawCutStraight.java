@@ -1,9 +1,8 @@
 package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
-import Domain.CutType;
-import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
+import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
@@ -15,16 +14,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Simple straight horizontal line drawing class that inherits from DrawCutWrapper
+ * Vertical/Horizontal line drawing that inherits from DrawCutWrapper
  * @author Louis-Etienne Messier
  */
-public class DrawCutHorizontal extends  DrawCutWrapper{
-
-    public DrawCutHorizontal(CutType type, Rendering2DWindow renderer, MainWindow mainWindow) {
+public class DrawCutStraight extends DrawCutWrapper{
+    public DrawCutStraight(CutType type, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(type, renderer, mainWindow);
     }
 
-    public DrawCutHorizontal(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
+    public DrawCutStraight(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(cut, renderer, mainWindow);
     }
 
@@ -46,12 +44,16 @@ public class DrawCutHorizontal extends  DrawCutWrapper{
         for (PersoPoint point : this.points){ // drawing the points
             point.drawMM(graphics2D, renderer);
         }
+
     }
 
     @Override
     public boolean addPoint(Rendering2DWindow renderer, PersoPoint pointInMM) {
         List<VertexDTO> newPoints = this.cut.getPoints();
-        newPoints.add(new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth()));
+        VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
+        VertexDTO offset = refs.getFirst().getAbsoluteOffset();
+        newPoint = newPoint.sub(offset);
+        newPoints.add(newPoint);
         this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
 
         return this.cut.getPoints().size() >= 2; // returns true if all the points are added
@@ -62,31 +64,48 @@ public class DrawCutHorizontal extends  DrawCutWrapper{
         return createCut();
     }
 
+
     @Override
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
 
-        if(this.points.isEmpty()){ // First horizontal point
+        if(this.points.isEmpty()){ // First Horizontal point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-
             double threshold = 10;
             threshold = renderer.scaleMMToPixel(threshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
 
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
+                p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+                refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+                drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
+
                 p.setColor(Color.GREEN);
                 p.setValid(PersoPoint.Valid.VALID);
             }
-            else{
+            else{// Second horizontal point
                 p.setColor(Color.RED);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
+
+                if(!refs.isEmpty()){
+                    drawing.changeGoBackWrapperById(refs.getFirst().getCut().getId());
+                }
             }
         }
-        else{ // Second horizontal point
-            double firstPointY = this.points.getFirst().getLocationY();
-            p.movePoint(renderer.getMmMousePt().getX(), firstPointY); // lock to Y axis
+        else{ // Second vertical point
+
+            if(this.cut.getCutType() == CutType.LINE_VERTICAL){
+                double firstPointX = this.points.getFirst().getLocationX();
+                p.movePoint(firstPointX, renderer.getMmMousePt().getY()); // lock to X axis
+            }
+            else{
+                double firstPointY = this.points.getFirst().getLocationY();
+                p.movePoint(renderer.getMmMousePt().getX(), firstPointY); // lock to X axis
+            }
+
 
             // Get possible snap points
             double threshold = 10;

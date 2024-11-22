@@ -112,6 +112,10 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         }
     }
 
+    /**
+     * One attribute got modified
+     * @param event
+     */
     @Override
     public void modifiedAttributeEventOccured(ChangeAttributeEvent event){
         this.rendering2DWindow.updateCuts();

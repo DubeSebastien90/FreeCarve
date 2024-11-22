@@ -64,6 +64,12 @@ public class VertexDTO {
                 this.getZ() + other.getZ());
     }
 
+    public VertexDTO sub(VertexDTO other){
+        return new VertexDTO(this.getX() - other.getX(),
+                this.getY() - other.getY(),
+                this.getZ() - other.getZ());
+    }
+
     public VertexDTO mul(double factor){
         return new VertexDTO(this.getX() * factor,
                 this.getY() * factor,

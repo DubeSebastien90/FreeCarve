@@ -94,7 +94,7 @@ class PanelCNC {
         for (int i = 0; i < this.cutList.size(); i++) {
 
             if (cut.getId() == this.cutList.get(i).getId()) {
-                this.cutList.set(i, createPanelCut(cut));
+                this.cutList.get(i).modifyCut(cut, this.getCutAndBorderList());
                 return Optional.of(cut.getId());
             }
         }

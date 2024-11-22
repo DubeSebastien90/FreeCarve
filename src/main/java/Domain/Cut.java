@@ -46,6 +46,21 @@ class Cut {
 
     }
 
+    public void modifyCut(CutDTO uiCut, List<Cut> cutAndBorderList){
+        this.startPoint = uiCut.getPoints().getFirst();
+        this.type = uiCut.getCutType();
+        this.points = uiCut.getPoints();
+        this.bitIndex = uiCut.getBitIndex();
+        this.depth = uiCut.getDepth();
+        this.id = uiCut.getId();
+
+        refs = new ArrayList<>();
+        for(RefCutDTO ref : uiCut.getRefsDTO()){
+            refs.add(new RefCut(ref, cutAndBorderList));
+        }
+    }
+
+
     /**
      * Constructs a new {@code Cut} with all of it's attributes, set the ref to null
      *
@@ -130,6 +145,7 @@ class Cut {
         this.points = points;
     }
 
+
     public int getBitIndex() {
         return bitIndex;
     }
@@ -189,9 +205,6 @@ class Cut {
             VertexDTO p2a = refs.get(1).getAbsoluteOffset();
             VertexDTO p2b = refs.get(1).getAbsoluteFirstPoint();
 
-            System.out.println(p1a.toString() + " - " + p1b.toString());
-            System.out.println(p2a.toString() + " - " + p2b.toString());
-
             // Needs to find the absolute corner point of the L-cut
             // 1. Find the perpendicular lines of the two refs
             // 2. Find the intersection of those 2 slopes
@@ -199,8 +212,6 @@ class Cut {
             Pair<VertexDTO, VertexDTO> paPerpendicular = VertexDTO.perpendicularPointsAroundP1(p1a, p1b);
             Pair<VertexDTO, VertexDTO> pbPerpendicular = VertexDTO.perpendicularPointsAroundP1(p2a, p2b);
 
-            System.out.println(paPerpendicular.getFirst().toString() + " - " + paPerpendicular.getSecond().toString());
-            System.out.println(pbPerpendicular.getFirst().toString() + " - " + pbPerpendicular.getSecond().toString());
 
             Optional<VertexDTO> intersectionPoint = VertexDTO.isLineIntersectNoLimitation(paPerpendicular.getFirst(),
                     paPerpendicular.getSecond(), pbPerpendicular.getFirst(), pbPerpendicular.getSecond());

@@ -27,6 +27,8 @@ public class Controller {
     private final UndoRedoManager undoRedoManager;
     private final ProjectState currentProjectState;
     private Grid grid;
+    private final int defaultGridPrecision = 5;
+    private final int defaultMagnetPrecision = 5;
     private final Scene scene;
     private final Camera camera;
 
@@ -35,6 +37,7 @@ public class Controller {
         this.currentProjectState = projectState;
         this.scene = scene;
         this.camera = new Camera(scene);
+        putGrid(defaultGridPrecision, defaultMagnetPrecision);
     }
 
     public static Controller initialize() {
@@ -110,8 +113,8 @@ public class Controller {
      *
      * @param cut The modified Cut.
      */
-    public void modifyCut(CutDTO cut) {
-        this.currentProjectState.getPanel().modifyCut(cut);
+    public Optional<UUID> modifyCut(CutDTO cut) {
+        return this.currentProjectState.getPanel().modifyCut(cut);
     }
 
     /**

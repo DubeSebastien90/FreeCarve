@@ -52,7 +52,10 @@ public class DrawFreeCut extends DrawCutWrapper {
     @Override
     public boolean addPoint(Rendering2DWindow renderer, PersoPoint pointInMM) {
         List<VertexDTO> newPoints = this.cut.getPoints();
-        newPoints.add(new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth()));
+        VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
+        VertexDTO offset = refs.getFirst().getAbsoluteOffset();
+        newPoint = newPoint.sub(offset);
+        newPoints.add(newPoint);
         this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
 
         return this.cut.getPoints().size() >= 2; // returns true if all the points are added
@@ -76,8 +79,17 @@ public class DrawFreeCut extends DrawCutWrapper {
         VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
         Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(pointDTO, threshold);
 
+
+
         if(closestPoint.isPresent()){
             p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
+
+            if(this.points.isEmpty()){ // If first point, set anchor
+                VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+                refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+                drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
+            }
+
             p.setColor(Color.GREEN);
             p.setValid(PersoPoint.Valid.VALID);
         }

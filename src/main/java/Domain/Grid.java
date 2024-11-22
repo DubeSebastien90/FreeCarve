@@ -208,7 +208,7 @@ public class Grid {
 
         // Testing all of the cuts
         for (CutDTO wrapper : board.getDTO().getCutsDTO()) {
-            List<VertexDTO> points = wrapper.getPoints();
+            List<VertexDTO> points = wrapper.getAbsolutePointsPosition();
             if (points.size() > 1) {
                 for (int i = 0; i < points.size() - 1; i++) {
                     Optional<VertexDTO> checkPoint = isPointNearLine(point, points.get(i), points.get(i + 1), threshold);
@@ -238,7 +238,7 @@ public class Grid {
     public Optional<VertexDTO> getPointNearAllBorder(VertexDTO point, PanelCNC board, double threshold, Optional<VertexDTO> closestPoint) {
 
         // Testing the border
-        List<VertexDTO> borderList = board.getBorderCut().getPoints();
+        List<VertexDTO> borderList = board.getBorderCut().getAbsolutePointsPosition();
         for (int i = 0; i < borderList.size() - 1; i++) {
             Optional<VertexDTO> checkPoint = isPointNearLine(point, borderList.get(i), borderList.get(i + 1),
                     threshold);
@@ -282,8 +282,9 @@ public class Grid {
 
         for(CutDTO cut : allLineList){
 
-            for(int i =0; i < cut.getPoints().size() - 1; i++){
-                Optional<Pair<VertexDTO, Double>> isPointOnLine = isPointOnLineGetRef(point, cut.getPoints().get(i), cut.getPoints().get(i+1));
+            List<VertexDTO> points = cut.getAbsolutePointsPosition();
+            for(int i =0; i < points.size() - 1; i++){
+                Optional<Pair<VertexDTO, Double>> isPointOnLine = isPointOnLineGetRef(point, points.get(i), points.get(i+1));
                 if(isPointOnLine.isPresent()){
                     ref.add(new RefCutDTO(cut, i, isPointOnLine.get().getSecond())); // add the ref to the ref list with the index, the get second is to get the interpolation
                 }
@@ -299,8 +300,9 @@ public class Grid {
 
         for(CutDTO cut : allLineList){
 
-            for(int i =0; i < cut.getPoints().size() - 1; i++){
-                Optional<Pair<VertexDTO, Double>> isPointOnLine = isPointOnLineGetRef(point, cut.getPoints().get(i), cut.getPoints().get(i+1));
+            List<VertexDTO> points = cut.getAbsolutePointsPosition();
+            for(int i =0; i < points.size() - 1; i++){
+                Optional<Pair<VertexDTO, Double>> isPointOnLine = isPointOnLineGetRef(point, points.get(i), points.get(i+1));
                 if(isPointOnLine.isPresent()){
                     ref.add(new RefCutDTO(cut, i, isPointOnLine.get().getSecond())); // add the ref to the ref list with the index, the get secodn is to get the interpolation
                 }
@@ -331,7 +333,7 @@ public class Grid {
 
         // Testing all of the cuts
         for (CutDTO wrapper : board.getDTO().getCutsDTO()) {
-            List<VertexDTO> points = wrapper.getPoints();
+            List<VertexDTO> points = wrapper.getAbsolutePointsPosition();
             if (points.size() > 1) {
                 for (int i = 0; i < points.size() - 1; i++) {
                     Optional<VertexDTO> checkPoint = isLineIntersectCursor(p1, cursor, points.get(i), points.get(i + 1), threshold);
@@ -365,16 +367,16 @@ public class Grid {
         allLineList.add(borderCut); // adding the border as cuts to consider any line intersection on the border of the board
 
         for(CutDTO cuts : allLineList){
-            List<VertexDTO> points = cuts.getPoints();
+            List<VertexDTO> points = cuts.getAbsolutePointsPosition();
 
             if(points.size() > 1){
                 for(CutDTO cuts2 : allLineList){
 
-                    List<VertexDTO> points2 = cuts2.getPoints();
+                    List<VertexDTO> points2 = cuts2.getAbsolutePointsPosition();
                     if(points2.size() > 1){
                         for(int i =0; i < points.size()-1; i++){
                             for(int j =0; j < points2.size() -1 ; j++){
-//                                if(cuts == cuts2 && i == j){continue;}
+                                // if(cuts == cuts2 && i == j){continue;}
                                 // Checks intersection of all lines of all cuts
                                 Optional<VertexDTO> checkPoint = VertexDTO.isLineIntersectLimited(points2.get(j), points2.get(j+1),
                                         points.get(i), points.get(i + 1));
