@@ -2,6 +2,8 @@ package UI.Widgets;
 
 
 import Common.Interfaces.IUnitConverter;
+import UI.UIConfig;
+import UI.UiUnits;
 
 import java.awt.*;
 
@@ -15,16 +17,16 @@ import java.awt.*;
  */
 public class SingleValueBox extends GenericAttributeBox {
 
-    private CustomNumericInputField theInput;
+    private MeasurementInputField theInput;
 
-    public SingleValueBox(IUnitConverter unitConverter, boolean haveBackground, String name, double value) {
+    public SingleValueBox(IUnitConverter unitConverter, boolean haveBackground, String name, double value, UiUnits units) {
         super(haveBackground, name);
-        this.init(unitConverter, name, value);
+        this.init(unitConverter, name, value, units);
     }
 
-    private void init(IUnitConverter unitConverter, String name, double value) {
+    private void init(IUnitConverter unitConverter, String name, double value, UiUnits units) {
         GridBagConstraints gc = new GridBagConstraints();
-        this.theInput = new CustomNumericInputField(unitConverter, name, value);
+        this.theInput = new MeasurementInputField(unitConverter, name, value, units);
 
         gc.gridx = 0;
         gc.gridy = 1;
@@ -33,7 +35,7 @@ public class SingleValueBox extends GenericAttributeBox {
         this.add(theInput, gc);
     }
 
-    public CustomNumericInputField getInput() {
+    public MeasurementInputField getInput() {
         return this.theInput;
     }
 }

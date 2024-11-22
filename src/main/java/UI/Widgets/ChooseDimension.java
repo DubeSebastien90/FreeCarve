@@ -1,7 +1,10 @@
 package UI.Widgets;
 
 import Common.Interfaces.IUnitConverter;
+import Common.Units;
 import UI.Display2D.Rendering2DWindow;
+import UI.UIConfig;
+import UI.UiUnits;
 
 
 import javax.swing.*;
@@ -19,10 +22,10 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
 
     private final Rendering2DWindow rend;
     private final boolean gridDisplayed;
-    private CustomNumericInputField xTextField;
-    private CustomNumericInputField yTextField;
-    private CustomNumericInputField gridPrecision;
-    private CustomNumericInputField magnetPrecision;
+    private MeasurementInputField xTextField;
+    private MeasurementInputField yTextField;
+    private MeasurementInputField gridPrecision;
+    private MeasurementInputField magnetPrecision;
 
     /**
      * Constructs a ChooseDimension panel for modifying the width and height of the specified Rendering2DWindow.
@@ -40,14 +43,14 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
     /**
      * @return The NumberTextfield for the width input
      */
-    public CustomNumericInputField getxTextField() {
+    public MeasurementInputField getxTextField() {
         return xTextField;
     }
 
     /**
      * @return The NumberTextfield for the height input
      */
-    public CustomNumericInputField getyTextField() {
+    public MeasurementInputField getyTextField() {
         return yTextField;
     }
 
@@ -57,12 +60,10 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
      */
     private void init() {
         IUnitConverter unitConverter = rend.getMainWindow().getController();
-        double displayWidth = Math.round(rend.getBoard().getWidth() * 100);
-        displayWidth = displayWidth / 100;
-        double displayHeight = Math.round(rend.getBoard().getHeight() * 100);
-        displayHeight = displayHeight / 100;
-        xTextField = new CustomNumericInputField(unitConverter, "Width", displayWidth, 0, rend.getMainWindow().getController().getPanelDTO().getMaxMMWidth());
-        yTextField = new CustomNumericInputField(unitConverter, "Height", displayHeight, 0, rend.getMainWindow().getController().getPanelDTO().getMaxMMHeight());
+        xTextField = new MeasurementInputField(unitConverter, "Width", UIConfig.INSTANCE.getDefaultBoardWidthMM(), UiUnits.MILLIMETERS);
+        yTextField = new MeasurementInputField(unitConverter, "Height", UIConfig.INSTANCE.getDefaultBoardHeightMM(), UiUnits.MILLIMETERS);
+        xTextField.setCurrentUnit(UiUnits.FEET);
+        yTextField.setCurrentUnit(UiUnits.FEET);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.weightx = 1.0;
@@ -75,8 +76,8 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
         add(yTextField, gbc);
 
         if (gridDisplayed) {
-            gridPrecision = new CustomNumericInputField(unitConverter, "Grid size", rend.getMainWindow().getController().getGrid().getSize(), 0, Double.POSITIVE_INFINITY);
-            magnetPrecision = new CustomNumericInputField(unitConverter, "Magnet Precision", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), 0, Double.POSITIVE_INFINITY);
+            gridPrecision = new MeasurementInputField(unitConverter, "Grid size", rend.getMainWindow().getController().getGrid().getSize(), UiUnits.MILLIMETERS);
+            magnetPrecision = new MeasurementInputField(unitConverter, "Magnet Precision", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), UiUnits.MILLIMETERS);
             gbc.gridy = 3;
             add(gridPrecision, gbc);
             gbc.gridy = 4;
@@ -89,7 +90,7 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
             rend.resizePanneau(xTextField.getMMValue(), rend.getBoard().getHeight());
         });
         yTextField.getNumericInput().addPropertyChangeListener("value", evt -> {
-            rend.resizePanneau(yTextField.getMMValue(), rend.getBoard().getHeight());
+            rend.resizePanneau(yTextField.getMMValue(), rend.getBoard().getWidth());
         });
         if (gridPrecision != null) {
             gridPrecision.getNumericInput().addPropertyChangeListener("value", evt -> {

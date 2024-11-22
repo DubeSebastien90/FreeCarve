@@ -11,6 +11,7 @@ import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
+import UI.UiUnits;
 import UI.UiUtil;
 import com.formdev.flatlaf.ui.FlatButtonBorder;
 
@@ -61,7 +62,6 @@ public class CutBox implements Attributable {
     BasicWindow attributeContainer;
     PointsBox pointsBox1;
     PointsBox pointsBox2;
-    SingleValueBox depthBox;
     BitChoiceBox bitChoiceBox;
     ChoiceBox cuttypeBox;
 
@@ -138,15 +138,10 @@ public class CutBox implements Attributable {
         gc.gridx = 0;
         gc.gridy = 2;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        attributeContainer.add(depthBox, gc);
-
-        gc.gridx = 0;
-        gc.gridy = 3;
-        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         attributeContainer.add(bitChoiceBox, gc);
 
         gc.gridx = 0;
-        gc.gridy = 4;
+        gc.gridy = 3;
         gc.insets = new Insets(0, 0, 0, 0);
         attributeContainer.add(cuttypeBox, gc);
 
@@ -296,7 +291,6 @@ public class CutBox implements Attributable {
     private void setupAttributeChangeEvents() {
         addEventListenerToPointBox(pointsBox1, 0);
         addEventListenerToPointBox(pointsBox2, 1);
-        addEventListenerToSingleValue(depthBox);
         addEventListenerToBitChoiceBox(bitChoiceBox);
         addEventListenerToChoiceBox(cuttypeBox);
     }
@@ -436,6 +430,19 @@ public class CutBox implements Attributable {
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
             }
         });
+        // Listen for changes in the Z field
+        pb.getzInput().addPropertyChangeListener("value", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                CutDTO c = CutBox.this.cut;
+                VertexDTO oldVertex = c.getPoints().get(index);
+                Number n = (Number) evt.getNewValue();
+                VertexDTO newVertex = new VertexDTO(oldVertex.getX(), oldVertex.getY(), n.doubleValue());
+                c.getPoints().set(index, newVertex);
+                mainWindow.getController().modifyCut(c);
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
+            }
+        });
     }
 
     /**
@@ -505,7 +512,6 @@ public class CutBox implements Attributable {
     private void init_attribute() {
         pointsBox1 = new PointsBox(mainWindow.getController(), true, "Point1", this.cut.getPoints().get(0));
         pointsBox2 = new PointsBox(mainWindow.getController(), true, "Point2", this.cut.getPoints().get(1));
-        depthBox = new SingleValueBox(mainWindow.getController(), true, "Profondeur", this.cut.getDepth());
 
         Map<Integer, BitDTO> configuredBitsMap = mainWindow.getMiddleContent().getConfiguredBitsMap();
 

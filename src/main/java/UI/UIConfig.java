@@ -1,5 +1,8 @@
 package UI;
 
+import Common.DTO.DimensionDTO;
+import Common.Units;
+
 /**
  * The {@code UIConfig} enum encapsulates a singleton instance of the configurations
  * and parameters of the UI
@@ -14,6 +17,8 @@ public enum UIConfig {
     private final String windowTitle = "FreeCarve";
     private final int defaultWindowWidth = 1200;
     private final int defaultWindowHeight = 800;
+    private double defaultBoardWidthMM = 1219.2;
+    private double defaultBoardHeightMM = 914.4;
     private final int toolIconSize = 20;
     private final int projectSelectionMenuButtonSize = 50;
     private final int cutBoxIconSize = 20;
@@ -80,4 +85,19 @@ public enum UIConfig {
 
     public int getMAX_NB_BITS() { return MAX_NB_BITS; }
 
+    public double getDefaultBoardWidthMM() {
+        return defaultBoardWidthMM;
+    }
+
+    public void setDefaultBoardWidthMM(double defaultBoardWidthMM) {
+        this.defaultBoardWidthMM = defaultBoardWidthMM;
+    }
+
+    public double getDefaultBoardHeightMM() {
+        return defaultBoardHeightMM;
+    }
+
+    public void setDefaultBoardHeightMM(double defaultBoardHeightMM) {
+        this.defaultBoardHeightMM = defaultBoardHeightMM;
+    }
 }

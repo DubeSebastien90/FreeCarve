@@ -2,6 +2,8 @@ package UI.Widgets;
 
 import Common.DTO.VertexDTO;
 import Common.Interfaces.IUnitConverter;
+import Common.Units;
+import UI.UiUnits;
 
 import java.awt.*;
 
@@ -14,8 +16,9 @@ import java.awt.*;
  */
 public class PointsBox extends GenericAttributeBox {
 
-    private CustomNumericInputField xInput;
-    private CustomNumericInputField yInput;
+    private MeasurementInputField xInput;
+    private MeasurementInputField yInput;
+    private MeasurementInputField zInput;
 
 
     public PointsBox(IUnitConverter unitConverter, boolean hasBackground, String name, VertexDTO vertexDTO) {
@@ -26,8 +29,9 @@ public class PointsBox extends GenericAttributeBox {
     private void init(IUnitConverter unitConverter, VertexDTO vertexDTO) {
         GridBagConstraints gc = new GridBagConstraints();
 
-        this.xInput = new CustomNumericInputField(unitConverter, "X", vertexDTO.getX());
-        this.yInput = new CustomNumericInputField(unitConverter, "Y", vertexDTO.getY());
+        this.xInput = new MeasurementInputField(unitConverter, "X", vertexDTO.getX(), UiUnits.MILLIMETERS);
+        this.yInput = new MeasurementInputField(unitConverter, "Y", vertexDTO.getY(), UiUnits.MILLIMETERS);
+        this.zInput = new MeasurementInputField(unitConverter, "Z", vertexDTO.getZ(), UiUnits.MILLIMETERS);
 
         gc.gridx = 0;
         gc.gridy = 1;
@@ -39,13 +43,22 @@ public class PointsBox extends GenericAttributeBox {
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 1;
         this.add(yInput, gc);
+        gc.gridx = 0;
+        gc.gridy = 3;
+        gc.fill = GridBagConstraints.NONE;
+        gc.weightx = 1;
+        this.add(zInput, gc);
     }
 
-    public CustomNumericInputField getxInput() {
+    public MeasurementInputField getxInput() {
         return this.xInput;
     }
 
-    public CustomNumericInputField getyInput() {
+    public MeasurementInputField getyInput() {
         return this.yInput;
+    }
+
+    public MeasurementInputField getzInput() {
+        return this.zInput;
     }
 }
