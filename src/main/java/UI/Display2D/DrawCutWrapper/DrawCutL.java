@@ -150,8 +150,7 @@ public class DrawCutL extends DrawCutWrapper{
         if(this.points.isEmpty()){ // First point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-            double threshold = 10;
-            threshold = renderer.scaleMMToPixel(threshold);
+            double threshold = renderer.scaleMMToPixel(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getPointNearIntersections(p1, threshold);
 
@@ -176,8 +175,7 @@ public class DrawCutL extends DrawCutWrapper{
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
             // For the snap area
-            double threshold = 10;
-            threshold = renderer.scaleMMToPixel(threshold);
+            double threshold = renderer.scaleMMToPixel(snapThreshold);
 
             // Get the possible closest point
             VertexDTO cursor = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);

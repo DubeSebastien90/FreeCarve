@@ -9,6 +9,8 @@ import UI.MainWindow;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
+import java.sql.Time;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,11 +72,10 @@ public class DrawCutStraight extends DrawCutWrapper{
     @Override
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
-
-        if(this.points.isEmpty()){ // First Horizontal point
+        if(this.points.isEmpty()){ // First point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-            double threshold = 10;
-            threshold = renderer.scaleMMToPixel(threshold);
+
+            double threshold = renderer.scaleMMToPixel(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
@@ -89,7 +90,7 @@ public class DrawCutStraight extends DrawCutWrapper{
                 p.setColor(Color.GREEN);
                 p.setValid(PersoPoint.Valid.VALID);
             }
-            else{// Second horizontal point
+            else{
 
                 p.setColor(Color.RED);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
@@ -99,11 +100,11 @@ public class DrawCutStraight extends DrawCutWrapper{
                 }
             }
         }
-        else{ // Second vertical point
+        else{ // Second point
 
             if(this.cut.getCutType() == CutType.LINE_VERTICAL){
                 double firstPointX = this.points.getFirst().getLocationX();
-                p.movePoint(firstPointX, renderer.getMmMousePt().getY()); // lock to X axis
+                p.movePoint(firstPointX, renderer.getMmMousePt().getY()); // lock to Y axis
             }
             else{
                 double firstPointY = this.points.getFirst().getLocationY();
@@ -112,14 +113,12 @@ public class DrawCutStraight extends DrawCutWrapper{
 
 
             // Get possible snap points
-            double threshold = 10;
-            threshold = renderer.scaleMMToPixel(threshold);
+            double threshold = renderer.scaleMMToPixel(snapThreshold);
             VertexDTO cursor = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             VertexDTO p1 = new VertexDTO(points.getFirst().getLocationX(), points.getFirst().getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridLineNearAllBorderAndCuts(p1,
                     cursor,threshold
             );
-
 
             // Snap
             if(closestPoint.isPresent()){

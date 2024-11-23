@@ -105,11 +105,10 @@ public class Grid {
             VertexDTO closestPoint = new VertexDTO((linePoint1.getX() + t * (linePoint2.getX() - linePoint1.getX())),
                     (linePoint1.getY() + t * (linePoint2.getY() - linePoint1.getY())), 0.0f);
 
-            double tolerance = 1e-6; // Adjust the tolerance value as needed to only proc when close values
             double distanceSquared = Math.pow(closestPoint.getX() - point.getX(), 2) +
                     Math.pow(closestPoint.getY() - point.getY(), 2);
 
-            if (distanceSquared <= tolerance * tolerance) {
+            if (distanceSquared <= VertexDTO.doubleTolerance * VertexDTO.doubleTolerance) {
                 return Optional.of(new Pair<>(closestPoint, t));
             }
         }
@@ -130,12 +129,13 @@ public class Grid {
     private Optional<VertexDTO> isLineIntersectCursor(VertexDTO p1, VertexDTO cursorPoint, VertexDTO p3, VertexDTO p4,
                                                       double threshold) {
 
-        VertexDTO initialCursorPoint = new VertexDTO(cursorPoint);
+        VertexDTO initialCursorPoint = new VertexDTO(cursorPoint); // keep copy of the cursor position
+        // offsets the cursor
         VertexDTO diff = cursorPoint.sub(p1);
         diff = diff.mul(1.0/diff.getDistance());
         diff = diff.mul(threshold);
-
         cursorPoint = cursorPoint.add(diff);
+
 
         double a1 = cursorPoint.getY() - p1.getY();
         double b1 = p1.getX() - cursorPoint.getX();
@@ -152,7 +152,7 @@ public class Grid {
             if (Math.min(p3.getX(), p4.getX()) <= cursorPoint.getX() &&
                     cursorPoint.getX() <= Math.max(p3.getX(), p4.getX())) {
                 // Point of the cursor is contained in the colinear line
-                return Optional.of(new VertexDTO(cursorPoint.getX(), cursorPoint.getY(), 0.0f));
+                return Optional.of(new VertexDTO(initialCursorPoint.getX(), initialCursorPoint.getY(), 0.0f));
             }
 
         } else if (det == 0) {
@@ -161,19 +161,20 @@ public class Grid {
 
         double x = (c1 * b2 - c2 * b1) / det;
         double y = (a1 * c2 - a2 * c1) / det;
-        if(Math.min(p1.getX(), cursorPoint.getX()) <= x && x <= Math.max(p1.getX(), cursorPoint.getX()) // The threshold addition and substraction is to allow the snap
-                && Math.min(p1.getY(), cursorPoint.getY()) <= y && y <= Math.max(p1.getY(), cursorPoint.getY())
-                && Math.min(p3.getX(), p4.getX()) <= x && x <= Math.max(p3.getX(), p4.getX())
-                && Math.min(p3.getY(), p4.getY()) <= y && y <= Math.max(p3.getY(), p4.getY())) {
-            VertexDTO outputIntersect = new VertexDTO(x, y, 0.0f);
-            if (outputIntersect.getDistance(initialCursorPoint) < threshold) { // check if the intersection is even close to the cursor
-                if (outputIntersect.getDistance(p1) != 0) { // check if the intersection isn't on the first point of the cut
+        VertexDTO outputIntersect = new VertexDTO(0, 0, 0);
+
+        if(Math.min(p1.getX(), cursorPoint.getX()) <= x + VertexDTO.doubleTolerance && x - VertexDTO.doubleTolerance <= Math.max(p1.getX(), cursorPoint.getX()) // The threshold addition and substraction is to allow the snap
+                && Math.min(p1.getY(), cursorPoint.getY()) <= y + VertexDTO.doubleTolerance && y - VertexDTO.doubleTolerance <= Math.max(p1.getY(), cursorPoint.getY())
+                && Math.min(p3.getX(), p4.getX()) <= x + VertexDTO.doubleTolerance && x - VertexDTO.doubleTolerance <= Math.max(p3.getX(), p4.getX())
+                && Math.min(p3.getY(), p4.getY()) <= y + VertexDTO.doubleTolerance && y - VertexDTO.doubleTolerance <= Math.max(p3.getY(), p4.getY())) {
+            outputIntersect = new VertexDTO(x, y, 0.0f);
+            if (outputIntersect.getDistance(initialCursorPoint) <= threshold) { // check if the intersection is even close to the cursor
+                if (outputIntersect.getDistance(p1) > 0 + VertexDTO.doubleTolerance) { // check if the intersection isn't on the first point of the cut
                     return Optional.of(outputIntersect); // Intersection is true
                 }
             }
 
         }
-
         return Optional.empty();
     }
 
@@ -273,13 +274,17 @@ public class Grid {
      */
     public Optional<VertexDTO> getPointNearAllBorderAndCuts(VertexDTO point, PanelCNC board, double threshold) {
         Optional<VertexDTO> closestPoint = Optional.empty();
-
         closestPoint = this.getPointNearAllBorder(point, board, threshold, closestPoint);
         closestPoint = this.getPointNearAllCuts(point, board, threshold, closestPoint);
-
         return closestPoint;
     }
 
+    /**
+     * Test the borders of the panel to get the refs
+     * @param point point to test
+     * @param board ref to the board
+     * @return the list of the refs obtained
+     */
     public List<RefCutDTO> getRefBorderOnPoint(VertexDTO point, PanelCNC board){
         List<RefCutDTO> ref = new ArrayList<>();
 
@@ -301,6 +306,12 @@ public class Grid {
         return ref;
     }
 
+    /**
+     * Test the cuts to get the refs
+     * @param point point to test
+     * @param board ref to the board
+     * @return the list of the refs obtained
+     */
     public List<RefCutDTO> getRefCutsOnPoint(VertexDTO point, PanelCNC board){
         List<RefCutDTO> ref = new ArrayList<>();
 
@@ -319,46 +330,17 @@ public class Grid {
         return ref;
     }
 
+    /**
+     * Test the both the cuts and the borders of the board to get the refs
+     * @param point point to test
+     * @param board ref to the board
+     * @return the list of the refs obtained
+     */
     public List<RefCutDTO> getRefCutsAndBorderOnPoint(VertexDTO point, PanelCNC board){
         List<RefCutDTO> ref = new ArrayList<>();
         ref.addAll(getRefCutsOnPoint(point, board));
         ref.addAll(getRefBorderOnPoint(point, board));
         return ref;
-    }
-
-    /**
-     * Returns an optionnal closest line on  the cuts based on a reference point
-     *
-     * @param p1           initial point of the cut
-     * @param cursor       cursor position
-     * @param board        reference to the board
-     * @param threshold    threashold of the distance
-     * @param closestPoint initial closest point
-     * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
-     */
-    public Optional<VertexDTO> getLineNearAllCuts(VertexDTO p1, VertexDTO cursor, PanelCNC board, double threshold,
-                                                  Optional<VertexDTO> closestPoint) {
-
-        // Testing all of the cuts
-        for (CutDTO wrapper : board.getDTO().getCutsDTO()) {
-            List<VertexDTO> points = wrapper.getAbsolutePointsPosition();
-            if (points.size() > 1) {
-                for (int i = 0; i < points.size() - 1; i++) {
-                    Optional<VertexDTO> checkPoint = isLineIntersectCursor(p1, cursor, points.get(i), points.get(i + 1), threshold);
-                    if (checkPoint.isPresent()) {
-                        if (closestPoint.isEmpty()) {
-                            closestPoint = checkPoint;
-                        } else if (checkPoint.get().getDistance() < closestPoint.get().getDistance()) {
-
-                            closestPoint = checkPoint;
-                        }
-                    }
-                }
-            }
-        }
-
-        return closestPoint;
-
     }
 
     /**
@@ -425,6 +407,39 @@ public class Grid {
                 } else if (checkPoint.get().getDistance() < closestPoint.get().getDistance()) {
 
                     closestPoint = checkPoint;
+                }
+            }
+        }
+
+        return closestPoint;
+
+    }
+
+    /**
+     * Returns an optionnal closest line on  the cuts based on a reference point
+     *
+     * @param p1           initial point of the cut
+     * @param cursor       cursor position
+     * @param board        reference to the board
+     * @param threshold    threashold of the distance
+     * @param closestPoint initial closest point
+     * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
+     */
+    public Optional<VertexDTO> getLineNearAllCuts(VertexDTO p1, VertexDTO cursor, PanelCNC board, double threshold,
+                                                  Optional<VertexDTO> closestPoint) {
+
+        // Testing all of the cuts
+        for (CutDTO wrapper : board.getDTO().getCutsDTO()) {
+            List<VertexDTO> points = wrapper.getAbsolutePointsPosition();
+            for (int i = 0; i < points.size() - 1; i++) {
+                Optional<VertexDTO> checkPoint = isLineIntersectCursor(p1, cursor, points.get(i), points.get(i + 1), threshold);
+                if (checkPoint.isPresent()) {
+                    if (closestPoint.isEmpty()) {
+                        closestPoint = checkPoint;
+                    } else if (checkPoint.get().getDistance() < closestPoint.get().getDistance()) {
+
+                        closestPoint = checkPoint;
+                    }
                 }
             }
         }

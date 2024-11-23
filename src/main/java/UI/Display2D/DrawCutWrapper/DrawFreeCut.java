@@ -72,8 +72,7 @@ public class DrawFreeCut extends DrawCutWrapper {
         p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
         // For the snap area
-        double threshold = 10;
-        threshold = renderer.scaleMMToPixel(threshold);
+        double threshold = renderer.scaleMMToPixel(snapThreshold);
 
         // Get the possible closest point
         VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
