@@ -1,13 +1,14 @@
 package UI.Widgets;
 
 import Common.Exceptions.InvalidBitException;
-import Common.UiUtil;
+import Common.Units;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import Common.DTO.BitDTO;
 import UI.SubWindows.BitConfigurationPanel;
-import UI.SubWindows.BitSelectionPanel;
 import UI.UIConfig;
+import UI.UiUnits;
+import UI.UiUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +27,7 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     private JButton modifyButton;
     private JButton removeButton;
     private final BitConfigurationPanel bitConfigurationPanel;
-    private NumberTextField widthTextArea;
+    private MeasurementInputField widthTextArea;
     private JTextArea nameTextArea;
     private final MainWindow mainWindow;
 
@@ -35,7 +36,7 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
      *
      * @param bit               the BitDTO object containing information about the bit.
      * @param editable          a boolean indicating if the bit information can be edited.
-     * @param bitSelectionPanel the panel that displays the list of selectable bits.
+     * @param bitConfigurationPanel the panel that displays the list of selectable bits.
      */
     public BitInfoDisplay(BitDTO bit, boolean editable, BitConfigurationPanel bitConfigurationPanel, MainWindow mainWindow) {
         super(false);
@@ -54,9 +55,8 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     private void init() {
         JLabel displayTitle = new JLabel("Outil");
         displayTitle.setFont(displayTitle.getFont().deriveFont(20f));
-        widthTextArea = new NumberTextField(String.valueOf(bit.getDiameter()), diameter -> modifyBit(diameter.floatValue()));
+        widthTextArea = new MeasurementInputField(mainWindow, "Diamètre", bit.getDiameter(), UiUnits.MILLIMETERS);
 
-        JLabel widthLabel = new JLabel("Diamètre");
         nameTextArea = new JTextArea(bit.getName());
         JLabel nameLabel = new JLabel("Nom");
         modifyButton = new JButton("Modifier");
@@ -89,10 +89,6 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
         gbc.insets = new Insets(0, 10, 15, 10);
         gbc.gridx = 0;
         gbc.gridy = 2;
-        add(widthLabel, gbc);
-        gbc.insets = new Insets(0, 10, 15, 10);
-        gbc.gridx = 1;
-        gbc.gridy = 2;
         gbc.weightx = 1;
         add(widthTextArea, gbc);
 
@@ -117,7 +113,7 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     public void setEventHandlers() {
         modifyButton.addActionListener(e -> {
             if (editable) {
-                modifyBit(Float.parseFloat(widthTextArea.getText()));
+                modifyBit(widthTextArea.getMMValue());
             }
             bitConfigurationPanel.refresh();
         });
@@ -128,11 +124,11 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     }
 
     /**
-     * Updates the bit information using the Text in the text area for the name and a float value for the bit size
+     * Updates the bit information using the Text in the text area for the name and a double value for the bit size
      *
      * @param diameter The diameter of the bit
      */
-    private void modifyBit(float diameter) {
+    private void modifyBit(double diameter) {
         BitDTO newBit = new BitDTO(nameTextArea.getText(), diameter);
         if (editable) {
             mainWindow.getController().modifyBit(
@@ -148,7 +144,7 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     }
 
     private void removeBit(){
-        if(widthTextArea.getText().equals("0.0"))
+        if(widthTextArea.getMMValue() == 0.0)
             //Todo: Gérer message qui dit qu'on ne peut pas delete si aucun bit configuré
             return;
 
@@ -165,7 +161,7 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
         }
         mainWindow.getMiddleContent().getConfiguredBitsMap().remove(bitConfigurationPanel.getSelectedBit());
         nameTextArea.setText("Aucun outil assigné");
-        widthTextArea.setText("0.0");
+        widthTextArea.getNumericInput().setValue(0.0);
         bitConfigurationPanel.refresh();
     }
 

@@ -26,12 +26,12 @@ import java.util.List;
 public abstract class DrawCutWrapper {
 
     protected PersoPoint cursorPoint;
-    protected float cursorRadius = 25;
+    protected double cursorRadius = 25;
     protected double snapThreshold = 10;
     protected ArrayList<PersoPoint> points; // Stores the PersoPoint in MM - necessary to keep precision
     protected CutDTO cut;
     protected Color strokeColor = Color.BLACK;
-    protected float strokeWidth = 3.0f;
+    protected double strokeWidth = 3.0f;
     protected Stroke stroke;
     protected MainWindow mainWindow;
     protected List<RefCutDTO> refs;
@@ -109,8 +109,8 @@ public abstract class DrawCutWrapper {
      */
     public DrawCutWrapper(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow){
         this.cut = cut;
-        this.strokeWidth = mainWindow.getController().getBitsDTO()[cut.getBitIndex()].getDiameter() * (float) renderer.getZoom();
-        this.stroke = new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        this.strokeWidth = mainWindow.getController().getBitsDTO()[cut.getBitIndex()].getDiameter() * (double) renderer.getZoom();
+        this.stroke = new BasicStroke((float)strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         this.mainWindow = mainWindow;
         cursorPoint  = null;
         this.update(renderer);
@@ -131,12 +131,12 @@ public abstract class DrawCutWrapper {
         try{
             BitDTO bit = validateSelectedBit(selectedBit);
             this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, selectedBit, type, new ArrayList<VertexDTO>(), refs);
-            this.strokeWidth = mainWindow.getController().getBitsDTO()[cut.getBitIndex()].getDiameter() * (float) renderer.getZoom();
-            this.stroke = new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            this.strokeWidth = mainWindow.getController().getBitsDTO()[cut.getBitIndex()].getDiameter() * renderer.getZoom();
+            this.stroke = new BasicStroke((float)strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         } catch (BitNotSelectedException e) {
             e.printStackTrace(); // Est-ce qu'on veut une barre d'action ou on affiche les commandes a faire?
             this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>(), refs);
-            this.stroke = new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            this.stroke = new BasicStroke((float)strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         }
 
         this.mainWindow = mainWindow;
@@ -259,7 +259,7 @@ public abstract class DrawCutWrapper {
      * Validate the selected bit
      * @param selectedBit the selected bit
      * @return the bit information if it is valid
-     * @throws InvalidBitException when there's no bit selected
+     * @throws BitNotSelectedException when there's no bit selected
      */
     private BitDTO validateSelectedBit(int selectedBit) throws BitNotSelectedException {
         if (selectedBit == -1){

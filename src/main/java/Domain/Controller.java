@@ -284,7 +284,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param YAxisRotation The amount of rotation in rad to apply around the Y axis
      * @throws InvalidKeyException if the given id does not correspond to a transform
      */
-    public void panTransform(UUID transformId, float XAxisRotation, float YAxisRotation) throws InvalidKeyException {
+    public void panTransform(UUID transformId, double XAxisRotation, double YAxisRotation) throws InvalidKeyException {
         if (camera.getId() == transformId) {
             camera.pan(XAxisRotation, YAxisRotation);
         } else {
@@ -301,7 +301,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param scaleChange    The scale delta to apply to the scale
      * @throws InvalidKeyException if the given id does not correspond to a transform
      */
-    public void applyTransform(UUID transformId, VertexDTO positionChange, VertexDTO rotationChange, float scaleChange) throws InvalidKeyException {
+    public void applyTransform(UUID transformId, VertexDTO positionChange, VertexDTO rotationChange, double scaleChange) throws InvalidKeyException {
         scene.applyTransform(transformId, positionChange, rotationChange, scaleChange);
     }
 

@@ -9,9 +9,9 @@ package Common.DTO;
  */
 public class BitDTO {
     private String name;
-    private float diameter;
+    private double diameter;
 
-    public BitDTO(String name, float diameter) {
+    public BitDTO(String name, double diameter) {
         this.name = name;
         this.diameter = diameter;
     }
@@ -20,7 +20,7 @@ public class BitDTO {
         return name;
     }
 
-    public float getDiameter() {
+    public double getDiameter() {
         return diameter;
     }
 }

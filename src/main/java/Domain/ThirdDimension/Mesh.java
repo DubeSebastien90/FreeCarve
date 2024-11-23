@@ -33,7 +33,7 @@ public class Mesh extends Transform {
      * @param scale     - The scaling factor to apply to the triangles
      * @param triangles - The initial triangles of the mesh
      */
-    protected Mesh(Vertex position, float scale, Color color, List<Triangle> triangles) {
+    protected Mesh(Vertex position, double scale, Color color, List<Triangle> triangles) {
         super(position, scale, Vertex.zero());
         this.color = color;
         setLocalTriangles(triangles);
@@ -48,7 +48,7 @@ public class Mesh extends Transform {
      * @param stlFilePath - Absolute path of the file containing the triangles
      * @param scale       - The scaling factor to apply to the read triangles
      */
-    public Mesh(Vertex position, Color color, String stlFilePath, float scale) throws IOException {
+    public Mesh(Vertex position, Color color, String stlFilePath, double scale) throws IOException {
         this(position, scale, color, Arrays.asList(Triangle.fromParsedSTL(parseStlFile(stlFilePath), color)));
     }
 

@@ -14,12 +14,8 @@ import com.formdev.flatlaf.ui.FlatRoundBorder;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.NumberFormatter;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.*;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 /**
  * Small widget class that offers an interface for inputting measurements

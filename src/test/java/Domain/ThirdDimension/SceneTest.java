@@ -38,7 +38,7 @@ class SceneTest {
         // Arrange
         VertexDTO positionChange = new VertexDTO(1,1,1);
         VertexDTO rotationChange = new VertexDTO(-1,-1,1);
-        float scaleChange = 1;
+        double scaleChange = 1;
 
         Mesh mesh = Mesh.createBox(new Vertex(1,1,1), 1, 1, 1, Color.RED);
         Scene scene = new Scene(List.of(mesh));

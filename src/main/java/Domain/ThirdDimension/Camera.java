@@ -104,13 +104,13 @@ public class Camera extends Transform {
         Vertex normal = triangle.getNormal();
         Color color = triangle.getColor();
         Vertex lightDirection = new Vertex(0, 0, 1);
-        float darker = (float) ((lightDirection.getX() * normal.getX() + lightDirection.getY() * normal.getY() + lightDirection.getZ() * normal.getZ()) / lightDirection.length());
+        double darker = (lightDirection.getX() * normal.getX() + lightDirection.getY() * normal.getY() + lightDirection.getZ() * normal.getZ()) / lightDirection.length();
         if (darker < MIN_LIGHTING){
             darker = MIN_LIGHTING;
         }
         float[] component = color.getRGBColorComponents(null);
         try {
-            return new Color(component[0] * darker, component[1] * darker, component[2] * darker);
+            return new Color((float)(component[0] * darker), (float)(component[1] * darker), (float)(component[2] * darker));
         } catch (Exception ignored) {
             return color;
         }

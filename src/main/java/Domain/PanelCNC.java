@@ -25,7 +25,7 @@ class PanelCNC {
     private final List<ClampZone> clamps;
     private VertexDTO panelDimension;
     private Cut borderCut; // This is to generalise the concept of reference cut, the panelCNC has a rectangular Cut that represents it's borders. When the panel is resized, you need to resize the cut as well
-    private float depth;
+    private double depth;
     private final IMemorizer memorizer;
     private static final int MAX_FEET_WIDTH = 10;
     private static final int MAX_FEET_HEIGHT = 5;
@@ -36,7 +36,7 @@ class PanelCNC {
      * @param panelDimension dimensions of the board
      * @param depth          depth of the board
      */
-    PanelCNC(VertexDTO panelDimension, float depth, IMemorizer memorizer) {
+    PanelCNC(VertexDTO panelDimension, double depth, IMemorizer memorizer) {
         this.cutList = new ArrayList<>();
         this.clamps = new ArrayList<>();
         this.panelDimension = panelDimension;
@@ -50,7 +50,7 @@ class PanelCNC {
         return new PanelDTO(cutList.stream().map(Cut::getDTO).collect(Collectors.toList()), panelDimension, MAX_FEET_WIDTH, MAX_FEET_HEIGHT, borderCut.getId());
     }
 
-    public float getDepth() {
+    public double getDepth() {
         return depth;
     }
 
@@ -62,7 +62,7 @@ class PanelCNC {
         return MAX_FEET_HEIGHT;
     }
 
-    public void setDepth(float depth) {
+    public void setDepth(double depth) {
         this.depth = depth;
     }
 

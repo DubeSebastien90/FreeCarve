@@ -69,7 +69,7 @@ public class Scene {
      * @param scaleChange delta fo the scale change
      * @throws InvalidKeyException if the mesh with that id doesn't exist in the scene
      */
-    public void applyTransform(UUID transformId, VertexDTO positionChange, VertexDTO rotationChange, float scaleChange) throws InvalidKeyException {
+    public void applyTransform(UUID transformId, VertexDTO positionChange, VertexDTO rotationChange, double scaleChange) throws InvalidKeyException {
         Mesh mesh = getMesh(transformId);
         mesh.getPosition().add(new Vertex(positionChange));
         mesh.setRotationEuler(Vertex.add(mesh.getRotationEuler(), new Vertex(rotationChange)));

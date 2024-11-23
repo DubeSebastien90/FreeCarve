@@ -20,7 +20,7 @@ public abstract class Transform {
     /**
      * Scale of the object
      */
-    private float scale;
+    private double scale;
     /**
      * Vector representing the rotation of the object.
      * The value of X is the rotation around the X axis in radians, the same goes for Y and Z
@@ -31,7 +31,7 @@ public abstract class Transform {
      */
     private Quaternion rotationQuaternion;
 
-    Transform(Vertex position, float scale, Vertex rotationEuler) {
+    Transform(Vertex position, double scale, Vertex rotationEuler) {
         this.position = position;
         this.scale = scale;
        setRotationEuler(rotationEuler);
@@ -62,11 +62,11 @@ public abstract class Transform {
         this.position = position;
     }
 
-    public float getScale() {
+    public double getScale() {
         return scale;
     }
 
-    public void setScale(float scale) {
+    public void setScale(double scale) {
         this.scale = scale;
     }
 
@@ -94,7 +94,7 @@ public abstract class Transform {
      * @param xAxisRotation The amount of rotation in rad to apply around the X axis
      * @param yAxisRotation The amount of rotation in rad to apply around the Y axis
      */
-    public void pan(float xAxisRotation, float yAxisRotation){
+    public void pan(double xAxisRotation, double yAxisRotation){
         position.rotate(Quaternion.fromEulerAngles(new Vertex(xAxisRotation, yAxisRotation, 0)));
         rotationEuler.add(new Vertex(xAxisRotation, yAxisRotation, 0));
         rotationQuaternion = Quaternion.fromEulerAngles(rotationEuler);

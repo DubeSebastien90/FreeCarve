@@ -196,7 +196,7 @@ class Vertex {
      *
      * @param number the number that get multiplied to the current {@code Vertex}
      */
-    public static Vertex multiply(Vertex vertex, float number) {
+    public static Vertex multiply(Vertex vertex, double number) {
         return new Vertex(vertex.getX() * number, vertex.getY() * number, vertex.getZ() * number);
     }
 
@@ -205,8 +205,8 @@ class Vertex {
      *
      * @return the length of the vector
      */
-    public float length() {
-        return (float) Math.sqrt(x * x + y * y + z * z);
+    public double length() {
+        return Math.sqrt(x * x + y * y + z * z);
     }
 
     /**

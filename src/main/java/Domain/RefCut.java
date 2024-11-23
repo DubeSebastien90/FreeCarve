@@ -64,11 +64,6 @@ public class RefCut {
         return absoluteVertex.get(index+1);
     }
 
-    public RefCut(RefCutDTO refCutDTO){
-        this.cut = new Cut(refCutDTO.getCut()); // TODO should be the actual cut that exists not a copy ::: select it with UUID
-        this.index = refCutDTO.getIndex();
-    }
-
     RefCutDTO getDTO(){
         return new RefCutDTO(cut.getDTO(), this.index, interpolation);
     }

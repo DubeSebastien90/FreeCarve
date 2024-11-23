@@ -17,9 +17,9 @@ public class MeshManipulator implements KeyListener, MouseListener {
     private final Rendering3DWindow rendering3DWindow;
     private final Controller controller;
 
-    private static final float GIMBAL_ROTATION = 0.1f;
-    private static final float MESH_TRANSLATION = 3;
-    private static final float MESH_ROTATION = 0.1f;
+    private static final double GIMBAL_ROTATION = 0.1f;
+    private static final double MESH_TRANSLATION = 3;
+    private static final double MESH_ROTATION = 0.1f;
 
     private enum MovementType {TRANSLATION, ROTATION, NO_MESH}
 

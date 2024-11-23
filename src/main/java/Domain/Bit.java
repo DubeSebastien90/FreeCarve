@@ -11,7 +11,7 @@ import Common.DTO.BitDTO;
  */
 class Bit {
     private String name;
-    private float diameter;
+    private double diameter;
 
     /**
      * Constructs a {@code Bit} with all of it's attributes
@@ -19,7 +19,7 @@ class Bit {
      * @param name     the name of the tool (bit)
      * @param diameter The diameter of the {@code Bit}
      */
-    public Bit(String name, float diameter) {
+    public Bit(String name, double diameter) {
         if (diameter <= 0) {
             throw new IllegalArgumentException("Le diametre doit être plus grand que 0");
         }
@@ -60,7 +60,7 @@ class Bit {
     /**
      * @return the diameter of the {@code Bit}
      */
-    public float getDiameter() {
+    public double getDiameter() {
         return diameter;
     }
 
@@ -69,7 +69,7 @@ class Bit {
      *
      * @param diameter the diameter of the {@code Bit}
      */
-    public void setDiameter(float diameter) {
+    public void setDiameter(double diameter) {
         if (diameter <= 0) {
             throw new IllegalArgumentException("Le diametre doit être plus grand que 0");
         }
