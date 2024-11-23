@@ -510,8 +510,8 @@ public class CutBox implements Attributable {
      * Initialize variables relevant to the Attribute Panel
      */
     private void init_attribute() {
-        pointsBox1 = new PointsBox(mainWindow.getController(), true, "Point1", this.cut.getPoints().get(0));
-        pointsBox2 = new PointsBox(mainWindow.getController(), true, "Point2", this.cut.getPoints().get(1));
+        pointsBox1 = new PointsBox(mainWindow, true, "Point1", this.cut.getPoints().get(0));
+        pointsBox2 = new PointsBox(mainWindow, true, "Point2", this.cut.getPoints().get(1));
 
         Map<Integer, BitDTO> configuredBitsMap = mainWindow.getMiddleContent().getConfiguredBitsMap();
 

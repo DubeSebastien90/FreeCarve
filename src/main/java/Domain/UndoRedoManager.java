@@ -4,7 +4,7 @@ import Common.Interfaces.IDoAction;
 import Common.Interfaces.IRefreshable;
 import Common.Interfaces.IUndoAction;
 import Common.Exceptions.NullActionException;
-import Domain.Interfaces.IMemorizer;
+import Common.Interfaces.IMemorizer;
 
 import java.util.*;
 

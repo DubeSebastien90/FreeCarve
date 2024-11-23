@@ -1,7 +1,4 @@
-package Domain.Interfaces;
-
-import Common.Interfaces.IDoAction;
-import Common.Interfaces.IUndoAction;
+package Common.Interfaces;
 
 public interface IMemorizer {
     void executeAndMemorize(IDoAction doAction, IUndoAction undoAction);

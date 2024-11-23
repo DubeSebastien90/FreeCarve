@@ -3,6 +3,7 @@ package UI.Widgets;
 import Common.DTO.VertexDTO;
 import Common.Interfaces.IUnitConverter;
 import Common.Units;
+import UI.MainWindow;
 import UI.UiUnits;
 
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.awt.*;
  * The {@code PointsBox} class is a UI class that encapsulate the Points editor
  *
  * @author Louis-Etienne Messier
- * @version 0.1
+ * @author Kamran Charles Nayebi
  * @since 2024-10-23
  */
 public class PointsBox extends GenericAttributeBox {
@@ -21,17 +22,17 @@ public class PointsBox extends GenericAttributeBox {
     private MeasurementInputField zInput;
 
 
-    public PointsBox(IUnitConverter unitConverter, boolean hasBackground, String name, VertexDTO vertexDTO) {
+    public PointsBox(MainWindow mainWindow, boolean hasBackground, String name, VertexDTO vertexDTO) {
         super(hasBackground, name);
-        this.init(unitConverter, vertexDTO);
+        this.init(mainWindow, vertexDTO);
     }
 
-    private void init(IUnitConverter unitConverter, VertexDTO vertexDTO) {
+    private void init(MainWindow mainWindow, VertexDTO vertexDTO) {
         GridBagConstraints gc = new GridBagConstraints();
 
-        this.xInput = new MeasurementInputField(unitConverter, "X", vertexDTO.getX(), UiUnits.MILLIMETERS);
-        this.yInput = new MeasurementInputField(unitConverter, "Y", vertexDTO.getY(), UiUnits.MILLIMETERS);
-        this.zInput = new MeasurementInputField(unitConverter, "Z", vertexDTO.getZ(), UiUnits.MILLIMETERS);
+        this.xInput = new MeasurementInputField(mainWindow, "X", vertexDTO.getX(), UiUnits.MILLIMETERS);
+        this.yInput = new MeasurementInputField(mainWindow, "Y", vertexDTO.getY(), UiUnits.MILLIMETERS);
+        this.zInput = new MeasurementInputField(mainWindow, "Z", vertexDTO.getZ(), UiUnits.MILLIMETERS);
 
         gc.gridx = 0;
         gc.gridy = 1;

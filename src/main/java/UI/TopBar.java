@@ -43,8 +43,6 @@ public class TopBar extends JMenuBar {
         JMenuItem exit = new JMenuItem("Fermer l'application");
         JMenuItem settings = new JMenuItem("Paramètres");
         JMenuItem contact = new JMenuItem("Contactez nous");
-        JMenuItem undo = new JMenuItem("Undo");
-        JMenuItem redo = new JMenuItem("redo");
         JMenuItem attributionLink = new JMenuItem("Icon Source");
 
         settings.addActionListener(e -> mainWindow.showOptionWindow());
@@ -58,8 +56,6 @@ public class TopBar extends JMenuBar {
         fichier.add(chargerRecent);
         fichier.add(recharger);
 
-        option.add(undo);
-        option.add(redo);
         option.add(settings);
         option.add(exit);
 

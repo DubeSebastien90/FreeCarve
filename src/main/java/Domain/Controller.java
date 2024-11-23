@@ -1,6 +1,9 @@
 package Domain;
 
 import Common.DTO.*;
+import Common.Interfaces.*;
+import Common.Units;
+import Domain.ThirdDimension.*;
 import Common.Exceptions.InvalidBitException;
 import Common.Interfaces.IDoAction;
 import Common.Interfaces.IRefreshable;
@@ -24,7 +27,7 @@ import java.util.UUID;
  * @version 1.0
  * @since 2024-10-20
  */
-public class Controller {
+public class Controller implements IUnitConverter, IMemorizer {
     private final UndoRedoManager undoRedoManager;
     private final ProjectState currentProjectState;
     private Grid grid;
@@ -328,23 +331,25 @@ public class Controller {
 
     /**
      * Returns an optionnal closest point to all intersections on the board
+     *
      * @param point     reference point
      * @param threshold threshold of the distance
      * @return Optional<VertexDTO> : null if no intersection nearby, the closest Point if point nearby
      */
-    public Optional<VertexDTO> getPointNearIntersections(VertexDTO point, double threshold){
+    public Optional<VertexDTO> getPointNearIntersections(VertexDTO point, double threshold) {
         return this.grid.isPointNearIntersections(point, threshold);
     }
 
     /**
      * Computes all of the intersection points  on the board, stores them in the grid class
      */
-    public void computeGridIntersections(){
+    public void computeGridIntersections() {
         this.grid.computeIntersectionPointList(this.currentProjectState.getPanel());
     }
 
     /**
      * Return the list of the reference Cut that are touching the input point
+     *
      * @param point point position to analyse
      * @return list of reference Cut touching the point
      */
@@ -393,6 +398,10 @@ public class Controller {
      */
     public Map<Integer, BitDTO> refreshConfiguredBitMaps(){
         return currentProjectState.getConfiguredBits();
+    }
+
+    public DimensionDTO convertUnit(DimensionDTO toConvert, Units targetUnit) {
+        return new DimensionDTO((toConvert.value() * toConvert.unit().getRatio()) / targetUnit.getRatio(), targetUnit);
     }
 }
 

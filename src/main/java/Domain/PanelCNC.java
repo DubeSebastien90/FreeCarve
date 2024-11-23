@@ -5,7 +5,7 @@ import Common.DTO.CutDTO;
 import Common.DTO.PanelDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
-import Domain.Interfaces.IMemorizer;
+import Common.Interfaces.IMemorizer;
 
 import java.util.ArrayList;
 import java.util.List;

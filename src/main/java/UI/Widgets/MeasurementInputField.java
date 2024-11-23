@@ -1,8 +1,10 @@
 package UI.Widgets;
 
 import Common.DTO.DimensionDTO;
+import Common.Interfaces.IMemorizer;
 import Common.Interfaces.IUnitConverter;
 import Common.Units;
+import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import UI.UIConfig;
 import UI.UiUnits;
@@ -32,17 +34,19 @@ public class MeasurementInputField extends BasicWindow {
     private DimensionDTO maxDimension;
     private DimensionDTO minDimension;
     private IUnitConverter unitConverter;
+    private IMemorizer memorizer;
     private UiUnits currentUnit;
 
-    MeasurementInputField(IUnitConverter unitConverter, String nameOfInput, double value, UiUnits unit) {
-        this(unitConverter, nameOfInput, value, 0, unitConverter.convertUnit(new DimensionDTO(15, Units.FEET), unit.getUnit()).value(), unit);
+    public MeasurementInputField(MainWindow mainWindow, String nameOfInput, double value, UiUnits unit) {
+        this(mainWindow, nameOfInput, value, 0, mainWindow.getController().convertUnit(new DimensionDTO(15, Units.FEET), unit.getUnit()).value(), unit);
     }
 
-    MeasurementInputField(IUnitConverter unitConverter, String nameOfInput, double value, double minimumValue, double maximumValue, UiUnits unit) {
+    public MeasurementInputField(MainWindow mainWindow, String nameOfInput, double value, double minimumValue, double maximumValue, UiUnits unit) {
         super(false);
         this.setBackground(null);
         this.setOpaque(false);
-        this.unitConverter = unitConverter;
+        this.unitConverter = mainWindow.getController();
+        this.memorizer = mainWindow.getController();
         this.currentUnit = unit;
         this.minDimension = new DimensionDTO(minimumValue, unit.getUnit());
         this.maxDimension = new DimensionDTO(maximumValue, unit.getUnit());
@@ -89,7 +93,8 @@ public class MeasurementInputField extends BasicWindow {
         public void itemStateChanged(ItemEvent event) {
             if (event.getStateChange() == ItemEvent.SELECTED) {
                 UiUnits newUnit = (UiUnits) event.getItem();
-                setCurrentUnit(newUnit);
+                UiUnits oldUnit = currentUnit; // Make explicit copy for undo redo
+                memorizer.executeAndMemorize(()->setCurrentUnit(newUnit), ()->setCurrentUnit(oldUnit));
             }
         }
     }

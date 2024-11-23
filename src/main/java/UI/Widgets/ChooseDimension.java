@@ -1,7 +1,5 @@
 package UI.Widgets;
 
-import Common.Interfaces.IUnitConverter;
-import Common.Units;
 import UI.Display2D.Rendering2DWindow;
 import UI.UIConfig;
 import UI.UiUnits;
@@ -59,9 +57,8 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
      * with real-time resizing functionality.
      */
     private void init() {
-        IUnitConverter unitConverter = rend.getMainWindow().getController();
-        xTextField = new MeasurementInputField(unitConverter, "Width", UIConfig.INSTANCE.getDefaultBoardWidthMM(), UiUnits.MILLIMETERS);
-        yTextField = new MeasurementInputField(unitConverter, "Height", UIConfig.INSTANCE.getDefaultBoardHeightMM(), UiUnits.MILLIMETERS);
+        xTextField = new MeasurementInputField(rend.getMainWindow(), "Width", UIConfig.INSTANCE.getDefaultBoardWidthMM(), UiUnits.MILLIMETERS);
+        yTextField = new MeasurementInputField(rend.getMainWindow(), "Height", UIConfig.INSTANCE.getDefaultBoardHeightMM(), UiUnits.MILLIMETERS);
         xTextField.setCurrentUnit(UiUnits.FEET);
         yTextField.setCurrentUnit(UiUnits.FEET);
 
@@ -76,8 +73,8 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
         add(yTextField, gbc);
 
         if (gridDisplayed) {
-            gridPrecision = new MeasurementInputField(unitConverter, "Grid size", rend.getMainWindow().getController().getGrid().getSize(), UiUnits.MILLIMETERS);
-            magnetPrecision = new MeasurementInputField(unitConverter, "Magnet Precision", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), UiUnits.MILLIMETERS);
+            gridPrecision = new MeasurementInputField(rend.getMainWindow(), "Grid size", rend.getMainWindow().getController().getGrid().getSize(), UiUnits.MILLIMETERS);
+            magnetPrecision = new MeasurementInputField(rend.getMainWindow(), "Magnet Precision", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), UiUnits.MILLIMETERS);
             gbc.gridy = 3;
             add(gridPrecision, gbc);
             gbc.gridy = 4;
@@ -90,7 +87,7 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
             rend.resizePanneau(xTextField.getMMValue(), rend.getBoard().getHeight());
         });
         yTextField.getNumericInput().addPropertyChangeListener("value", evt -> {
-            rend.resizePanneau(yTextField.getMMValue(), rend.getBoard().getWidth());
+            rend.resizePanneau(rend.getBoard().getWidth(), yTextField.getMMValue());
         });
         if (gridPrecision != null) {
             gridPrecision.getNumericInput().addPropertyChangeListener("value", evt -> {
