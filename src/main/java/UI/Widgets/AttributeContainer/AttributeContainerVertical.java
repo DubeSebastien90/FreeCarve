@@ -3,14 +3,14 @@ package UI.Widgets.AttributeContainer;
 import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
 import Common.DTO.VertexDTO;
-import Common.UiUtil;
 import Domain.CutType;
 import UI.Events.ChangeAttributeEvent;
 import UI.MainWindow;
 import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
+import UI.UiUnits;
 import UI.Widgets.*;
-
+import UI.UiUtil;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -75,10 +75,10 @@ public class AttributeContainerVertical extends AttributeContainer {
      */
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO) {
 
-        distanceFromEdgeToEdge = new SingleValueBox(true, "Distance relative de la sous-pièce", "X", edgeEdgeX());
-        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(true, "Taille de la sous-pièce", "X", Math.abs(edgeEdgeX()));
-        distanceCenterToCenter = new SingleValueBoxNotEditable(true, "Distance des coupes centrales (GCODE)", "X", centerCenterX());
-        depthBox = new SingleValueBox(true, "Profondeur", "Profondeur", cutDTO.getDepth());
+        distanceFromEdgeToEdge = new SingleValueBox(mainWindow, true, "Distance relative de la sous-pièce", "X", edgeEdgeX(), UiUnits.MILLIMETERS);
+        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow, true, "Taille de la sous-pièce", "X", Math.abs(edgeEdgeX()), UiUnits.MILLIMETERS);
+        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distance des coupes centrales (GCODE)", "X", centerCenterX(), UiUnits.MILLIMETERS);
+        depthBox = new SingleValueBox(mainWindow, true, "Profondeur", "Profondeur", cutDTO.getDepth(), UiUnits.MILLIMETERS);
 
         Map<Integer, BitDTO> configuredBitsMap = mainWindow.getMiddleContent().getConfiguredBitsMap();
 

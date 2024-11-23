@@ -57,8 +57,7 @@ public class MeasurementInputField extends BasicWindow {
         this.setLayout(layout);
 
         JLabel nameLabel = new JLabel(nameOfInput);
-        nameLabel.setOpaque(true);
-        nameLabel.setBackground(UIManager.getColor("SubWindow.lightBackground1"));
+        nameLabel.setOpaque(false);
         nameLabel.setBorder(new FlatEmptyBorder());
         nameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         nameLabel.setBorder(new EmptyBorder(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding()));

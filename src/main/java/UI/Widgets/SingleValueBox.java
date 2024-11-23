@@ -20,7 +20,7 @@ public class SingleValueBox extends GenericAttributeBox {
 
     private MeasurementInputField theInput;
 
-    public SingleValueBox(MainWIndow mainWIndow, boolean haveBackground, String name, String inputName, double value) {
+    public SingleValueBox(MainWindow mainWindow, boolean haveBackground, String name, String inputName, double value, UiUnits units) {
         super(haveBackground, name);
         this.init(mainWindow, inputName, value, units);
     }

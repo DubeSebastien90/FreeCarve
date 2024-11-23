@@ -13,7 +13,6 @@ import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
 import UI.UiUnits;
 import UI.UiUtil;
-import Common.UiUtil;
 import UI.Widgets.AttributeContainer.AttributeContainer;
 import UI.Widgets.AttributeContainer.AttributeContainerFactory;
 import UI.Widgets.AttributeContainer.AttributeContainerVertical;
