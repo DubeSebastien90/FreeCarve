@@ -126,23 +126,22 @@ public abstract class DrawCutWrapper {
     public DrawCutWrapper(CutType type, Rendering2DWindow renderer, MainWindow mainWindow){
         if(mainWindow.getMiddleContent() == null)
             return;
-
+        this.refs = new ArrayList<>();
         int selectedBit = mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().getSelectedBit();
         try{
             BitDTO bit = validateSelectedBit(selectedBit);
-            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, selectedBit, type, new ArrayList<VertexDTO>());
+            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, selectedBit, type, new ArrayList<VertexDTO>(), refs);
             this.strokeWidth = mainWindow.getController().getBitsDTO()[cut.getBitIndex()].getDiameter() * (float) renderer.getZoom();
             this.stroke = new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         } catch (BitNotSelectedException e) {
             e.printStackTrace(); // Est-ce qu'on veut une barre d'action ou on affiche les commandes a faire?
-            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>());
+            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>(), refs);
             this.stroke = new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         }
 
         this.mainWindow = mainWindow;
         cursorPoint  = null;
         this.update(renderer);
-        this.refs = new ArrayList<>();
     }
 
     /**
