@@ -20,14 +20,14 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class AttributeContainerVertical extends AttributeContainer {
+public class AttributeContainerHorizontal extends AttributeContainer {
     SingleValueBox distanceFromEdgeToEdge;
     SingleValueBox absoluteDistanceFromEdgeToEdge;
     SingleValueBox distanceCenterToCenter;
     SingleValueBox depthBox;
     BitChoiceBox bitChoiceBox;
 
-    public AttributeContainerVertical(MainWindow mainWindow, CutListPanel cutListPanel, CutDTO cutDTO, CutBox cutBox) {
+    public AttributeContainerHorizontal(MainWindow mainWindow, CutListPanel cutListPanel, CutDTO cutDTO, CutBox cutBox) {
         super(mainWindow, cutListPanel, cutDTO, cutBox);
         init_attribute(mainWindow, cutDTO);
         init_layout();
@@ -75,9 +75,9 @@ public class AttributeContainerVertical extends AttributeContainer {
      */
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO) {
 
-        distanceFromEdgeToEdge = new SingleValueBox(true, "Distance relative de la sous-pièce", "X", edgeEdgeX());
-        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(true, "Taille de la sous-pièce", "X", Math.abs(edgeEdgeX()));
-        distanceCenterToCenter = new SingleValueBoxNotEditable(true, "Distance des coupes centrales (GCODE)", "X", centerCenterX());
+        distanceFromEdgeToEdge = new SingleValueBox(true, "Distance relative de la sous-pièce", "Y", edgeEdgeY());
+        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(true, "Taille de la sous-pièce", "Y", Math.abs(edgeEdgeY()));
+        distanceCenterToCenter = new SingleValueBoxNotEditable(true, "Distance des coupes centrales (GCODE)", "Y", centerCenterY());
         depthBox = new SingleValueBox(true, "Profondeur", "Profondeur", cutDTO.getDepth());
 
         Map<Integer, BitDTO> configuredBitsMap = mainWindow.getMiddleContent().getConfiguredBitsMap();
@@ -144,7 +144,7 @@ public class AttributeContainerVertical extends AttributeContainer {
                 double centerCenterN = edgeEdgeToCenterCenter(n.doubleValue());
                 for(int i =0; i < c.getPoints().size(); i++){
                     VertexDTO oldVertex = c.getPoints().get(i);
-                    VertexDTO newVertex = new VertexDTO(centerCenterN, oldVertex.getY(), oldVertex.getZ());
+                    VertexDTO newVertex = new VertexDTO(oldVertex.getX(), centerCenterN, oldVertex.getZ());
                     c.getPoints().set(i, newVertex);
                 }
                 mainWindow.getController().modifyCut(c);
@@ -153,4 +153,8 @@ public class AttributeContainerVertical extends AttributeContainer {
         });
     }
 
+
+
+
 }
+

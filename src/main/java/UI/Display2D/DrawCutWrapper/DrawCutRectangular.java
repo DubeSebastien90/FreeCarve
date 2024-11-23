@@ -56,7 +56,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
     }
 
     @Override
-    public boolean addPoint(Rendering2DWindow renderer, PersoPoint pointInMM) {
+    public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
         List<VertexDTO> newPoints = this.cut.getPoints();
 
         if(newPoints.isEmpty()){ // premier point a ajouter

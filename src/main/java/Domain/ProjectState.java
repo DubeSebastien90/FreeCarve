@@ -1,6 +1,7 @@
 package Domain;
 
 import Common.DTO.BitDTO;
+import Common.DTO.CutDTO;
 import Common.DTO.ProjectStateDTO;
 import Common.DTO.VertexDTO;
 import Common.Exceptions.InvalidBitException;
@@ -114,5 +115,28 @@ class ProjectState {
                 configuredBits.put(i, new BitDTO(bitList[i].getName(), bitList[i].getDiameter()));
         }
         return configuredBits;
+    }
+
+    public double getBitDiameter(int bitIndex){
+        if (bitIndex < 0 || bitIndex > 11){
+            return 0; // This is an invalid index, so it means it is a border reference
+        }
+        else{
+            return bitList[bitIndex].getDiameter();
+        }
+    }
+
+    public double edgeEdgeToCenterCenter(double edgeEdge, int bitIndex1, int bitIndex2){
+
+        double bitDiameter1 = getBitDiameter(bitIndex1);
+        double bitDiameter2 = getBitDiameter(bitIndex2);
+
+        if(edgeEdge < 0){
+            return edgeEdge - bitDiameter1 -bitDiameter2;
+        }
+        else{
+            return edgeEdge + bitDiameter1 + bitDiameter2;
+        }
+
     }
 }

@@ -403,5 +403,26 @@ public class Controller implements IUnitConverter, IMemorizer {
     public DimensionDTO convertUnit(DimensionDTO toConvert, Units targetUnit) {
         return new DimensionDTO((toConvert.value() * toConvert.unit().getRatio()) / targetUnit.getRatio(), targetUnit);
     }
+
+
+    /**
+     * Returns the bit diameter if index is valid. If index not valid, returns 0
+     * @param bitIndex index
+     * @return diameter of the bit
+     */
+    public double getBitDiameter(int bitIndex){
+        return this.currentProjectState.getBitDiameter(bitIndex);
+    }
+
+    /**
+     * Transform a edge-edge distance of a cut into a center-center distance
+     * @param edge edge-edge distance
+     * @param bitIndex1 bit index of the first point
+     * @param bitIndex2 bit index of the reference point
+     * @return the converted center-center distance
+     */
+    public double edgeEdgeToCenterCenter(double edge, int bitIndex1, int bitIndex2){
+        return this.currentProjectState.edgeEdgeToCenterCenter(edge, bitIndex1, bitIndex2);
+    }
 }
 

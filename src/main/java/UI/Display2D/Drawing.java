@@ -109,7 +109,7 @@ public class Drawing {
                     }
                     else // Cut valid
                     {
-                        boolean isOver = currentDrawingCut.addPoint(renderer, new PersoPoint(currentDrawingCut.getCursorPoint()));
+                        boolean isOver = currentDrawingCut.addPoint(Drawing.this, renderer, new PersoPoint(currentDrawingCut.getCursorPoint()));
                         if(isOver){
                             Optional<UUID> id = currentDrawingCut.end();
                             if(id.isPresent()){

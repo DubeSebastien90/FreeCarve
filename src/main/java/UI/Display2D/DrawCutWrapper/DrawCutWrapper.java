@@ -79,7 +79,7 @@ public abstract class DrawCutWrapper {
      * @param pointInMM point in MM to add
      * @return boolean : True if done, False is not done
      */
-    public abstract boolean addPoint(Rendering2DWindow renderer, PersoPoint pointInMM);
+    public abstract boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM);
 
     /**
      * triggers when cut is over

@@ -244,7 +244,9 @@ class PanelCNC {
             borderPoints.add(new VertexDTO(panelDimension.getX(), panelDimension.getY(), 0 ));
             borderPoints.add(new VertexDTO(panelDimension.getX(), 0,0 ));
             borderPoints.add(new VertexDTO(0, 0,0 ));
-            this.borderCut = new Cut(new VertexDTO(0,0,0), CutType.RECTANGULAR, borderPoints, 0, this.depth);
+
+            // Deliberately setting the bixIndex to -1, so that the borderCut has a recognizable bit, that has it's own property
+            this.borderCut = new Cut(new VertexDTO(0,0,0), CutType.RECTANGULAR, borderPoints, -1, this.depth);
         }
         else{
             ArrayList<VertexDTO> borderPoints = new ArrayList<>();

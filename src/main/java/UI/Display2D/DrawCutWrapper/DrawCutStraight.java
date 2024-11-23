@@ -47,18 +47,31 @@ public class DrawCutStraight extends DrawCutWrapper{
             point.drawMM(graphics2D, renderer);
         }
 
+        if (!refs.isEmpty()){ // drawing the first anchor point
+            VertexDTO offset = refs.getFirst().getAbsoluteOffset();
+            PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
+            referenceAnchorPoint.setColor(Color.BLACK);
+            referenceAnchorPoint.drawMM(graphics2D, renderer);
+        }
+
     }
 
     @Override
-    public boolean addPoint(Rendering2DWindow renderer, PersoPoint pointInMM) {
-        List<VertexDTO> newPoints = this.cut.getPoints();
+    public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
 
-
-        VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
-        VertexDTO offset = refs.getFirst().getAbsoluteOffset();
-        newPoint = newPoint.sub(offset);
-        newPoints.add(newPoint);
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
+        if (refs.isEmpty()){
+            VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
+            refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+            drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
+        }
+        else{
+            List<VertexDTO> newPoints = this.cut.getPoints();
+            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
+            VertexDTO offset = refs.getFirst().getAbsoluteOffset();
+            newPoint = newPoint.sub(offset);
+            newPoints.add(newPoint);
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
+        }
 
         return this.cut.getPoints().size() >= 2; // returns true if all the points are added
     }
@@ -72,7 +85,26 @@ public class DrawCutStraight extends DrawCutWrapper{
     @Override
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
-        if(this.points.isEmpty()){ // First point
+
+        if(refs.isEmpty()){ // Get the reference point
+            p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
+
+            double threshold = renderer.scaleMMToPixel(snapThreshold);
+            VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+
+            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
+
+            if(closestPoint.isPresent()){
+                p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
+                p.setColor(Color.GREEN);
+                p.setValid(PersoPoint.Valid.VALID);
+            }
+            else{
+                p.setColor(Color.RED);
+                p.setValid(PersoPoint.Valid.NOT_VALID);
+            }
+        }
+        else if(this.points.isEmpty()){ // First point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
             double threshold = renderer.scaleMMToPixel(snapThreshold);
@@ -83,10 +115,6 @@ public class DrawCutStraight extends DrawCutWrapper{
             if(closestPoint.isPresent()){
 
                 p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
-                p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-                refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
-                drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
-
                 p.setColor(Color.GREEN);
                 p.setValid(PersoPoint.Valid.VALID);
             }
