@@ -19,8 +19,7 @@ public class PanelCNCTest {
     @BeforeEach
     void SetUp(){
         boardDimension = new VertexDTO(1,2,3);
-        depth = 13.0f;
-        panelCNC = new PanelCNC(boardDimension, depth, new UndoRedoManager());
+        panelCNC = new PanelCNC(boardDimension, new UndoRedoManager());
     }
 
     @Test

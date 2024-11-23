@@ -110,10 +110,10 @@ public class AttributeContainerVertical extends AttributeContainer {
     @Override
     public void updatePanel(CutDTO newCutDTO) {
         cutDTO = newCutDTO;
-        distanceFromEdgeToEdge.getInput().setValueInMM(edgeEdgeX());
-        absoluteDistanceFromEdgeToEdge.getInput().setValueInMM(Math.abs(edgeEdgeX()));
-        distanceCenterToCenter.getInput().setValueInMM( centerCenterX());
-        depthBox.getInput().setValueInMM(cutDTO.getDepth());
+        distanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(edgeEdgeX());
+        absoluteDistanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(edgeEdgeX()));
+        distanceCenterToCenter.getInput().setValueInMMWithoutTrigerringListeners( centerCenterX());
+        depthBox.getInput().setValueInMMWithoutTrigerringListeners(cutDTO.getDepth());
         revalidate();
         repaint();
     }
@@ -153,6 +153,8 @@ public class AttributeContainerVertical extends AttributeContainer {
                 double centerCenterN = edgeEdgeToCenterCenter(sb.getInput().getMMValue());
                 for(int i =0; i < c.getPoints().size(); i++){
                     VertexDTO oldVertex = c.getPoints().get(i);
+
+                    if(centerCenterN == oldVertex.getY()){return;}
                     VertexDTO newVertex = new VertexDTO(centerCenterN, oldVertex.getY(), oldVertex.getZ());
                     c.getPoints().set(i, newVertex);
                 }

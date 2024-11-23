@@ -251,7 +251,7 @@ public abstract class DrawCutWrapper {
      * @return {@code Optional<UUID>} UUID if the cut is valid, null if the cut is invalid
      */
     protected Optional<UUID> createCut() {
-        RequestCutDTO rq = new RequestCutDTO(this.cut.getPoints(), this.cut.getCutType(), this.cut.getBitIndex(), this.cut.getDepth(), refs);
+        RequestCutDTO rq = new RequestCutDTO(this.cut.getPoints(), this.cut.getCutType(), this.cut.getBitIndex(), mainWindow.getController().getPanelDTO().getDepth(), refs);
         return mainWindow.getController().requestCut(rq);
     }
 

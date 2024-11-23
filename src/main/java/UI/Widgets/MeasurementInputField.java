@@ -15,6 +15,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.NumberFormatter;
 import java.awt.event.*;
+import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
 /**
@@ -77,10 +78,28 @@ public class MeasurementInputField extends BasicWindow {
         this.add(this.unitComboBox);
     }
 
-    public void setValueInMM(double valueInMM){
+    /**
+     * Change the value of the numeric input field without triggering the listeners, otherwise i could create and infinite loop
+     * @param valueInMM the new value in MM
+     */
+    public void setValueInMMWithoutTrigerringListeners(double valueInMM){
         DimensionDTO dValueInMM = new DimensionDTO(valueInMM, Units.MM);
         DimensionDTO valueInGoodUnit = unitConverter.convertUnit(dValueInMM, currentUnit.getUnit());
+
+        PropertyChangeListener[] listeners = numericInput.getPropertyChangeListeners("value");
+
+        // Temporarily remove the listeners
+        for (PropertyChangeListener listener : listeners) {
+            numericInput.removePropertyChangeListener("value", listener);
+        }
+
+
         this.numericInput.setValue(valueInGoodUnit.value());
+
+        // Reattach the listeners
+        for (PropertyChangeListener listener : listeners) {
+            numericInput.addPropertyChangeListener("value", listener);
+        }
     }
 
     public JFormattedTextField getNumericInput() {

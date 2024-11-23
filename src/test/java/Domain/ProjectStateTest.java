@@ -20,7 +20,7 @@ public class ProjectStateTest {
     @BeforeEach
     void setUp() {
         Bit[] bitList = new Bit[12];
-        PanelCNC board = new PanelCNC(new VertexDTO(15.0, 15.0, 0.0), 5, new UndoRedoManager());
+        PanelCNC board = new PanelCNC(new VertexDTO(15.0, 15.0, 0.0),  new UndoRedoManager());
         stateTest = new ProjectState(bitList, board, new UndoRedoManager());
     }
 
@@ -80,7 +80,7 @@ public class ProjectStateTest {
     @Test
     void valid_board() {
         // Arrange
-        PanelCNC panelCNC = new PanelCNC(new VertexDTO(12, 13, 0), 5.0f, new UndoRedoManager());
+        PanelCNC panelCNC = new PanelCNC(new VertexDTO(12, 13, 0), new UndoRedoManager());
         Bit[] bitList = new Bit[12];
 
         // Act

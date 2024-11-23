@@ -21,8 +21,7 @@ import java.util.Map;
 class ProjectState {
     private final Bit[] bitList;
     private PanelCNC panel;
-    private static final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 0); // dimension in mm
-    private static final double defaultPanelDepth = 1.0f; // depth in mm
+    private static final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 5); // dimension in mm
     private final IMemorizer memorizer;
     private Map<Integer, BitDTO> configuredBits;
 
@@ -30,7 +29,7 @@ class ProjectState {
      * Constructs a default new {@code ProjectState}.
      */
     ProjectState(IMemorizer memorizer) {
-        this(Arrays.stream(new Bit[12]).map(bit -> new Bit()).toList().toArray(Bit[]::new), new PanelCNC(defaultPanelDimension, defaultPanelDepth, memorizer), memorizer);
+        this(Arrays.stream(new Bit[12]).map(bit -> new Bit()).toList().toArray(Bit[]::new), new PanelCNC(defaultPanelDimension, memorizer), memorizer);
     }
 
     /**

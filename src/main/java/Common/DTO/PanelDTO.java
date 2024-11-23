@@ -40,6 +40,8 @@ public class PanelDTO {
         return cutList;
     }
 
+    public double getDepth(){return panelDimension.getZ();}
+
     public VertexDTO getPanelDimension() {
         return panelDimension;
     }
