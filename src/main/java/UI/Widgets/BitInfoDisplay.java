@@ -1,7 +1,6 @@
 package UI.Widgets;
 
 import Common.Exceptions.InvalidBitException;
-import Common.Units;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import Common.DTO.BitDTO;
@@ -55,7 +54,7 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     private void init() {
         JLabel displayTitle = new JLabel("Outil");
         displayTitle.setFont(displayTitle.getFont().deriveFont(20f));
-        widthTextArea = new MeasurementInputField(mainWindow, "Diamètre", bit.getDiameter(), UiUnits.MILLIMETERS);
+        widthTextArea = new MeasurementInputField(mainWindow, "Diamètre", bit.getDiameter(), 0, 300, UiUnits.MILLIMETERS);
 
         nameTextArea = new JTextArea(bit.getName());
         JLabel nameLabel = new JLabel("Nom");

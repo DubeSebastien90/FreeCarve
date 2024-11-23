@@ -19,6 +19,7 @@ public enum UIConfig {
     private final int defaultWindowHeight = 800;
     private double defaultBoardWidthMM = 1219.2;
     private double defaultBoardHeightMM = 914.4;
+    private UiUnits defaultUnit = UiUnits.MILLIMETERS;
     private final int toolIconSize = 20;
     private final int projectSelectionMenuButtonSize = 50;
     private final int cutBoxIconSize = 20;
@@ -99,5 +100,13 @@ public enum UIConfig {
 
     public void setDefaultBoardHeightMM(double defaultBoardHeightMM) {
         this.defaultBoardHeightMM = defaultBoardHeightMM;
+    }
+
+    public UiUnits getDefaultUnit() {
+        return defaultUnit;
+    }
+
+    public void setDefaultUnit(UiUnits defaultUnit) {
+        this.defaultUnit = defaultUnit;
     }
 }

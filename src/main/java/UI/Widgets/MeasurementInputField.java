@@ -49,7 +49,7 @@ public class MeasurementInputField extends BasicWindow {
         this.minDimension = new DimensionDTO(minimumValue, unit.getUnit());
         this.maxDimension = new DimensionDTO(maximumValue, unit.getUnit());
         this.init(nameOfInput, value);
-        setCurrentUnit(unit);
+        setCurrentUnit(UIConfig.INSTANCE.getDefaultUnit());
     }
 
     private void init(String nameOfInput, double value) {

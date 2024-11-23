@@ -20,7 +20,7 @@ public class OptionWindow extends JPanel {
         defaultPanelWidth.getNumericInput().addPropertyChangeListener("value", evt -> {
             UIConfig.INSTANCE.setDefaultBoardWidthMM(defaultPanelWidth.getMMValue());
         });
-        defaultPanelWidth.setMaximumSize(new Dimension(800, 50));
+        defaultPanelWidth.setMaximumSize(new Dimension(1200, 50));
         add(defaultPanelWidth);
 
         MeasurementInputField defaultPanelHeight = new MeasurementInputField(mainWindow, "Hauteur par défaut", UIConfig.INSTANCE.getDefaultBoardHeightMM(), UiUnits.MILLIMETERS);
@@ -28,8 +28,17 @@ public class OptionWindow extends JPanel {
         defaultPanelHeight.getNumericInput().addPropertyChangeListener("value", evt -> {
             UIConfig.INSTANCE.setDefaultBoardHeightMM(defaultPanelHeight.getMMValue());
         });
-        defaultPanelHeight.setMaximumSize(new Dimension(800, 50));
+        defaultPanelHeight.setMaximumSize(new Dimension(1200, 50));
         add(defaultPanelHeight);
+
+        JComboBox<UiUnits> unit = new JComboBox<>(UiUnits.values());
+        unit.setSelectedItem(UIConfig.INSTANCE.getDefaultUnit());
+        unit.addItemListener(event -> {
+            UIConfig.INSTANCE.setDefaultUnit((UiUnits) event.getItem());
+            System.out.println(UIConfig.INSTANCE.getDefaultUnit());
+        });
+        unit.setMaximumSize(new Dimension(1200, 50));
+        add(unit);
 
         JButton returnButton = new JButton("Revenir à l'application principale");
         returnButton.addActionListener(e -> mainWindow.showTrueMode());
