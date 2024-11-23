@@ -1,6 +1,7 @@
 package UI;
 
 import Common.DTO.BitDTO;
+import Common.DTO.CutDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutEvent;
@@ -113,27 +114,16 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     }
 
     /**
-     * One attribute got modified
+     * One attribute got modified ::
+     * needs to change the cutbox appropriately
+     * needs to change the 2d renderer
      * @param event
      */
     @Override
     public void modifiedAttributeEventOccured(ChangeAttributeEvent event){
         this.rendering2DWindow.updateCuts();
 
-        if (event.getAttribute() instanceof  CutBox){
-            CutBox eventCasted = (CutBox) event.getAttribute();
-            UUID id = eventCasted.getCutUUID();
-            this.cutListPanel.update();
-
-            Optional<CutBox> newCutBox = cutListPanel.getCutBoxWithId(id);
-            if(newCutBox.isPresent()){
-                this.selectedAttributable = newCutBox.get();
-                this.attributePanel.updateAttribute(this.selectedAttributable);
-                this.rendering2DWindow.getDrawing().changeNotSelectedWrapperById(id);
-                newCutBox.get().setState(CutBox.CutBoxState.SELECTED);
-            }
-
-        }
+        System.out.println(event);
 
     }
 

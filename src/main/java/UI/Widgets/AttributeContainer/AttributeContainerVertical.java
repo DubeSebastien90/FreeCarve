@@ -75,10 +75,10 @@ public class AttributeContainerVertical extends AttributeContainer {
      */
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO) {
 
-        distanceFromEdgeToEdge = new SingleValueBox(mainWindow, true, "Distance relative de la sous-pièce", "X", edgeEdgeX(), UiUnits.MILLIMETERS);
-        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow, true, "Taille de la sous-pièce", "X", Math.abs(edgeEdgeX()), UiUnits.MILLIMETERS);
-        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distance des coupes centrales (GCODE)", "X", centerCenterX(), UiUnits.MILLIMETERS);
-        depthBox = new SingleValueBox(mainWindow, true, "Profondeur", "Profondeur", cutDTO.getDepth(), UiUnits.MILLIMETERS);
+        distanceFromEdgeToEdge = new SingleValueBox(mainWindow, true, "Distance relative de la sous-pièce", "X", edgeEdgeX(), UIConfig.INSTANCE.getDefaultUnit());
+        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow, true, "Taille de la sous-pièce", "X", Math.abs(edgeEdgeX()), UIConfig.INSTANCE.getDefaultUnit());
+        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distance des coupes centrales (GCODE)", "X", centerCenterX(), UIConfig.INSTANCE.getDefaultUnit());
+        depthBox = new SingleValueBox(mainWindow, true, "Profondeur", "Profondeur", cutDTO.getDepth(), UIConfig.INSTANCE.getDefaultUnit());
 
         Map<Integer, BitDTO> configuredBitsMap = mainWindow.getMiddleContent().getConfiguredBitsMap();
 
@@ -119,8 +119,7 @@ public class AttributeContainerVertical extends AttributeContainer {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = new CutDTO(cutDTO);
-                Number n = (Number) evt.getNewValue();
-                c = new CutDTO(c.getId(), n.doubleValue(), c.getBitIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
+                c = new CutDTO(c.getId(), sb.getInput().getMMValue(), c.getBitIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, cutBox));
             }
@@ -141,7 +140,7 @@ public class AttributeContainerVertical extends AttributeContainer {
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = new CutDTO(cutDTO);
                 Number n = (Number) evt.getNewValue();
-                double centerCenterN = edgeEdgeToCenterCenter(n.doubleValue());
+                double centerCenterN = edgeEdgeToCenterCenter(sb.getInput().getMMValue());
                 for(int i =0; i < c.getPoints().size(); i++){
                     VertexDTO oldVertex = c.getPoints().get(i);
                     VertexDTO newVertex = new VertexDTO(centerCenterN, oldVertex.getY(), oldVertex.getZ());

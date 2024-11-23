@@ -75,10 +75,10 @@ public class AttributeContainerHorizontal extends AttributeContainer {
      */
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO) {
 
-        distanceFromEdgeToEdge = new SingleValueBox(mainWindow,true, "Distance relative de la sous-pièce", "Y", edgeEdgeY(), UiUnits.MILLIMETERS);
-        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow,true, "Taille de la sous-pièce", "Y", Math.abs(edgeEdgeY()), UiUnits.MILLIMETERS);
-        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distance des coupes centrales (GCODE)", "Y", centerCenterY(), UiUnits.MILLIMETERS);
-        depthBox = new SingleValueBox(mainWindow,true, "Profondeur", "Profondeur", cutDTO.getDepth(), UiUnits.MILLIMETERS);
+        distanceFromEdgeToEdge = new SingleValueBox(mainWindow,true, "Distance relative de la sous-pièce", "Y", edgeEdgeY(), UIConfig.INSTANCE.getDefaultUnit());
+        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow,true, "Taille de la sous-pièce", "Y", Math.abs(edgeEdgeY()), UIConfig.INSTANCE.getDefaultUnit());
+        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distance des coupes centrales (GCODE)", "Y", centerCenterY(), UIConfig.INSTANCE.getDefaultUnit());
+        depthBox = new SingleValueBox(mainWindow,true, "Profondeur", "Profondeur", cutDTO.getDepth(), UIConfig.INSTANCE.getDefaultUnit());
 
         Map<Integer, BitDTO> configuredBitsMap = mainWindow.getMiddleContent().getConfiguredBitsMap();
 

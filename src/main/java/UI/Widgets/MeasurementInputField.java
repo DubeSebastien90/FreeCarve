@@ -77,6 +77,8 @@ public class MeasurementInputField extends BasicWindow {
         this.add(this.unitComboBox);
     }
 
+
+
     public JFormattedTextField getNumericInput() {
         return this.numericInput;
     }
