@@ -68,7 +68,7 @@ public class BitSelectionPanel extends BasicWindow {
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(UIConfig.INSTANCE.getScrollbarSpeed());
 
-        this.setupHeader("Sélection des bits", scrollPane);
+        this.setupHeader("Sélection de l'outil", scrollPane);
         scrollPane.setAlignmentX(0);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);

@@ -294,13 +294,14 @@ public class Rendering2DWindow extends JPanel {
         UiUtil.makeJPanelRoundCorner(this, graphics2D);
         super.paintComponent(graphics2D);
         afficheur.drawRectangle(graphics2D);
-        afficheur.drawMousePos(graphics2D);
         afficheur.drawPoints(graphics2D);
         afficheur.drawCuts(graphics2D, this, drawing);
         if (mainWindow.getController().getGrid().isActive()) {
             afficheur.drawGrid(graphics2D);
         }
         afficheur.drawMask(graphics2D);
+        afficheur.drawMousePos(graphics2D);
+        
     }
 
     /**
