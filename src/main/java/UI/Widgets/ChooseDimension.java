@@ -1,5 +1,6 @@
 package UI.Widgets;
 
+import Common.DTO.VertexDTO;
 import UI.Display2D.Rendering2DWindow;
 import UI.UIConfig;
 import UI.UiUnits;
@@ -22,6 +23,7 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
     private final boolean gridDisplayed;
     private MeasurementInputField xTextField;
     private MeasurementInputField yTextField;
+    private MeasurementInputField zTextField;
     private MeasurementInputField gridPrecision;
     private MeasurementInputField magnetPrecision;
 
@@ -53,14 +55,24 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
     }
 
     /**
+     * @return The NumberTextfield for the height input
+     */
+    public MeasurementInputField getzTextField() {
+        return zTextField;
+    }
+
+    /**
      * Initializes the dimension setting UI with labels and input fields for width (x) and height (y),
      * with real-time resizing functionality.
      */
     private void init() {
-        xTextField = new MeasurementInputField(rend.getMainWindow(), "Width", UIConfig.INSTANCE.getDefaultBoardWidthMM(), UiUnits.MILLIMETERS);
-        yTextField = new MeasurementInputField(rend.getMainWindow(), "Height", UIConfig.INSTANCE.getDefaultBoardHeightMM(), UiUnits.MILLIMETERS);
+        VertexDTO panelSize = rend.getMainWindow().getController().getPanelDTO().getPanelDimension();
+        xTextField = new MeasurementInputField(rend.getMainWindow(), "Largeur   ", panelSize.getX(), UiUnits.MILLIMETERS);
+        yTextField = new MeasurementInputField(rend.getMainWindow(), "Hauteur   ", panelSize.getY(), UiUnits.MILLIMETERS);
+        zTextField = new MeasurementInputField(rend.getMainWindow(), "Épaisseur", panelSize.getZ(), UiUnits.MILLIMETERS);
         xTextField.setCurrentUnit(UiUnits.FEET);
         yTextField.setCurrentUnit(UiUnits.FEET);
+        zTextField.setCurrentUnit(UiUnits.FEET);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.weightx = 1.0;
@@ -71,13 +83,15 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
         add(xTextField, gbc);
         gbc.gridy = 2;
         add(yTextField, gbc);
+        gbc.gridy = 3;
+        add(zTextField, gbc);
 
         if (gridDisplayed) {
-            gridPrecision = new MeasurementInputField(rend.getMainWindow(), "Grid size", rend.getMainWindow().getController().getGrid().getSize(), UiUnits.MILLIMETERS);
-            magnetPrecision = new MeasurementInputField(rend.getMainWindow(), "Magnet Precision", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), UiUnits.MILLIMETERS);
-            gbc.gridy = 3;
-            add(gridPrecision, gbc);
+            gridPrecision = new MeasurementInputField(rend.getMainWindow(), "Taille grille", rend.getMainWindow().getController().getGrid().getSize(), UiUnits.MILLIMETERS);
+            magnetPrecision = new MeasurementInputField(rend.getMainWindow(), "Précision aimant", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), UiUnits.MILLIMETERS);
             gbc.gridy = 4;
+            add(gridPrecision, gbc);
+            gbc.gridy = 5;
             add(magnetPrecision, gbc);
         }
     }

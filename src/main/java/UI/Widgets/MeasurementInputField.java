@@ -16,6 +16,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.NumberFormatter;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -23,18 +25,18 @@ import java.text.NumberFormat;
  * Small widget class that offers an interface for inputting measurements
  *
  * @author Louis-Etienne Messier
- * @author Kamran Charles Nayebi\
+ * @author Kamran Charles Nayebi
  * @since 2024-11-21
  */
 public class MeasurementInputField extends BasicWindow {
-    private JLabel nameOfInput;
     private JFormattedTextField numericInput;
     private JComboBox<UiUnits> unitComboBox;
-    private BoxLayout layout;
+
     private DimensionDTO maxDimension;
     private DimensionDTO minDimension;
-    private IUnitConverter unitConverter;
-    private IMemorizer memorizer;
+    private final IUnitConverter unitConverter;
+    private final IMemorizer memorizer;
+
     private UiUnits currentUnit;
 
     public MeasurementInputField(MainWindow mainWindow, String nameOfInput, double value, UiUnits unit) {
@@ -55,15 +57,15 @@ public class MeasurementInputField extends BasicWindow {
     }
 
     private void init(String nameOfInput, double value) {
-        layout = new BoxLayout(this, BoxLayout.X_AXIS);
+        BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
         this.setLayout(layout);
 
-        this.nameOfInput = new JLabel(nameOfInput);
-        this.nameOfInput.setOpaque(true);
-        this.nameOfInput.setBackground(UIManager.getColor("SubWindow.lightBackground1"));
-        this.nameOfInput.setBorder(new FlatEmptyBorder());
-        this.nameOfInput.setHorizontalAlignment(SwingConstants.RIGHT);
-        this.nameOfInput.setBorder(new EmptyBorder(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding()));
+        JLabel nameLabel = new JLabel(nameOfInput);
+        nameLabel.setOpaque(true);
+        nameLabel.setBackground(UIManager.getColor("SubWindow.lightBackground1"));
+        nameLabel.setBorder(new FlatEmptyBorder());
+        nameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        nameLabel.setBorder(new EmptyBorder(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding()));
 
         this.unitComboBox = new JComboBox<>(UiUnits.values());
         this.unitComboBox.setSelectedItem(currentUnit);
@@ -75,7 +77,7 @@ public class MeasurementInputField extends BasicWindow {
         this.numericInput.setValue(value);
         this.numericInput.setBackground(UIManager.getColor("SubWindow.lightBackground2"));
 
-        this.add(this.nameOfInput);
+        this.add(nameLabel);
         this.add(this.numericInput);
         this.add(this.unitComboBox);
     }
@@ -86,17 +88,6 @@ public class MeasurementInputField extends BasicWindow {
 
     public double getMMValue() {
         return unitConverter.convertUnit(new DimensionDTO(((Number)numericInput.getValue()).doubleValue(), currentUnit.getUnit()), Units.MM).value();
-    }
-
-    private class UnitChangeListener implements ItemListener {
-        @Override
-        public void itemStateChanged(ItemEvent event) {
-            if (event.getStateChange() == ItemEvent.SELECTED) {
-                UiUnits newUnit = (UiUnits) event.getItem();
-                UiUnits oldUnit = currentUnit; // Make explicit copy for undo redo
-                memorizer.executeAndMemorize(()->setCurrentUnit(newUnit), ()->setCurrentUnit(oldUnit));
-            }
-        }
     }
 
     public DimensionDTO getMaxDimension() {
@@ -130,5 +121,15 @@ public class MeasurementInputField extends BasicWindow {
         numericInput.setValue(result.value());
         setMaxDimension(maxDimension);
         setMinDimension(minDimension);
+    }
+    private class UnitChangeListener implements ItemListener {
+        @Override
+        public void itemStateChanged(ItemEvent event) {
+            if (event.getStateChange() == ItemEvent.SELECTED) {
+                UiUnits newUnit = (UiUnits) event.getItem();
+                UiUnits oldUnit = currentUnit; // Make explicit copy for undo redo
+                memorizer.executeAndMemorize(()->setCurrentUnit(newUnit), ()->setCurrentUnit(oldUnit));
+            }
+        }
     }
 }
