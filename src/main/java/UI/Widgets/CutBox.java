@@ -13,6 +13,10 @@ import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
 import UI.UiUnits;
 import UI.UiUtil;
+import Common.UiUtil;
+import UI.Widgets.AttributeContainer.AttributeContainer;
+import UI.Widgets.AttributeContainer.AttributeContainerFactory;
+import UI.Widgets.AttributeContainer.AttributeContainerVertical;
 import com.formdev.flatlaf.ui.FlatButtonBorder;
 
 import javax.swing.*;
@@ -51,6 +55,7 @@ public class CutBox implements Attributable {
     private JButton moveDownButton;
     private CutBoxState cutBoxState = CutBoxState.NOT_SELECTED;
     private CutListPanel cutListPanel;
+    private AttributeContainer attributeContainer;
 
     public enum CutBoxState {
         SELECTED,
@@ -58,12 +63,6 @@ public class CutBox implements Attributable {
         HOVER,
     }
 
-    // Attributes variables
-    BasicWindow attributeContainer;
-    PointsBox pointsBox1;
-    PointsBox pointsBox2;
-    BitChoiceBox bitChoiceBox;
-    ChoiceBox cuttypeBox;
 
     /**
      * Basic constructor of {@code CutBox}, initiates all the UI values and get a reference to the CutList parent
@@ -89,11 +88,12 @@ public class CutBox implements Attributable {
         this.cutListener = cutListener;
         this.cutListPanel = cutListPanel;
         this.init();
-        this.init_attribute();
+        this.attributeContainer = AttributeContainerFactory.create(mainWindow, cutListPanel, cutDTO, this);
+        this.attributeContainer.setupEventListeners();
         this.setBackgroundToIndex();
         this.updatePanel(this.cut);
         this.setupMouseEvents();
-        this.setupAttributeChangeEvents();
+
     }
 
     /**
@@ -117,34 +117,6 @@ public class CutBox implements Attributable {
      */
     @Override
     public JPanel showAttribute() {
-        attributeContainer = new BasicWindow(true);
-        attributeContainer.setBackground(null);
-        attributeContainer.setOpaque(false);
-        GridBagLayout layout = new GridBagLayout();
-        GridBagConstraints gc = new GridBagConstraints();
-        attributeContainer.setLayout(layout);
-        gc.gridx = 0;
-        gc.gridy = 0;
-        gc.weightx = 1;
-        gc.weighty = 1;
-        gc.fill = GridBagConstraints.HORIZONTAL;
-        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        attributeContainer.add(pointsBox1, gc);
-        gc.gridx = 0;
-        gc.gridy = 1;
-        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        attributeContainer.add(pointsBox2, gc);
-
-        gc.gridx = 0;
-        gc.gridy = 2;
-        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        attributeContainer.add(bitChoiceBox, gc);
-
-        gc.gridx = 0;
-        gc.gridy = 3;
-        gc.insets = new Insets(0, 0, 0, 0);
-        attributeContainer.add(cuttypeBox, gc);
-
         return attributeContainer;
     }
 
@@ -285,15 +257,6 @@ public class CutBox implements Attributable {
         });
     }
 
-    /**
-     * Initialize the events of the Attributable properties that can be changed
-     */
-    private void setupAttributeChangeEvents() {
-        addEventListenerToPointBox(pointsBox1, 0);
-        addEventListenerToPointBox(pointsBox2, 1);
-        addEventListenerToBitChoiceBox(bitChoiceBox);
-        addEventListenerToChoiceBox(cuttypeBox);
-    }
 
     /**
      * Initialize the UI components
@@ -392,147 +355,6 @@ public class CutBox implements Attributable {
         gc.weighty = 0.0f;
         gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding() / 2);
         panel.add(deleteButton, gc);
-
     }
-
-    /**
-     * Adding the custom event listeners to PointBox objects. The goal is to make
-     * the Point attribute react to change events
-     *
-     * @param pb    {@code PointBox object}
-     * @param index index of the PointBox
-     */
-    private void addEventListenerToPointBox(PointsBox pb, int index) {
-
-        // Listen for changes in the X field
-        pb.getxInput().addPropertyChangeListener("value", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                CutDTO c = CutBox.this.cut;
-                VertexDTO oldVertex = c.getPoints().get(index);
-                Number n = (Number) evt.getNewValue();
-                VertexDTO newVertex = new VertexDTO(n.doubleValue(), oldVertex.getY(), oldVertex.getZ());
-                c.getPoints().set(index, newVertex);
-                mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
-            }
-        });
-        // Listen for changes in the Y field
-        pb.getyInput().addPropertyChangeListener("value", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                CutDTO c = CutBox.this.cut;
-                VertexDTO oldVertex = c.getPoints().get(index);
-                Number n = (Number) evt.getNewValue();
-                VertexDTO newVertex = new VertexDTO(oldVertex.getX(), n.doubleValue(), oldVertex.getZ());
-                c.getPoints().set(index, newVertex);
-                mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
-            }
-        });
-        // Listen for changes in the Z field
-        pb.getzInput().addPropertyChangeListener("value", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                CutDTO c = CutBox.this.cut;
-                VertexDTO oldVertex = c.getPoints().get(index);
-                Number n = (Number) evt.getNewValue();
-                VertexDTO newVertex = new VertexDTO(oldVertex.getX(), oldVertex.getY(), n.doubleValue());
-                c.getPoints().set(index, newVertex);
-                mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
-            }
-        });
-    }
-
-    /**
-     * Adding the custom event listeners to SingleValueBox objects. The goal is to make
-     * the Value attribute react to change events
-     *
-     * @param sb {@code SingleValueBox object}
-     */
-    private void addEventListenerToSingleValue(SingleValueBox sb) {
-        sb.getInput().addPropertyChangeListener("value", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                CutDTO c = CutBox.this.cut;
-                Number n = (Number) evt.getNewValue();
-                c = new CutDTO(c.getId(), n.doubleValue(), c.getBitIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
-                mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
-            }
-        });
-    }
-
-    /**
-     * Adding the custom event listeners to ChoiceBox objects. The goal is to make
-     * the ComboBox attribute react to change events
-     *
-     * @param cb {@code ChoiceBox object}
-     */
-    private void addEventListenerToChoiceBox(ChoiceBox cb) {
-        cb.getComboBox().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JComboBox comboBox = (JComboBox) e.getSource();
-                CutDTO c = CutBox.this.cut;
-                CutType chosenCutType = CutType.values()[comboBox.getSelectedIndex()];
-                c = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), chosenCutType, c.getPoints(), c.getRefsDTO());
-                mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
-            }
-        });
-    }
-
-    /**
-     * Adding the custom event listeners to BitChoiceBox objects. The goal is to make
-     * the ComboBox attribute react to change events
-     * <p>
-     * Called when the user selects a new bit in the BitChoiceBox
-     *
-     * @param cb {@code BitChoiceBox object} The combo box containing the bits informations
-     */
-    private void addEventListenerToBitChoiceBox(BitChoiceBox cb) {
-        cb.getComboBox().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JComboBox comboBox = (JComboBox) e.getSource();
-                CutDTO c = CutBox.this.cut;
-                ComboBitItem chosenBit = (ComboBitItem) comboBox.getModel().getSelectedItem();
-                c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
-                mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, CutBox.this));
-            }
-        });
-    }
-
-    /**
-     * Initialize variables relevant to the Attribute Panel
-     */
-    private void init_attribute() {
-        pointsBox1 = new PointsBox(mainWindow, true, "Point1", this.cut.getPoints().get(0));
-        pointsBox2 = new PointsBox(mainWindow, true, "Point2", this.cut.getPoints().get(1));
-
-        Map<Integer, BitDTO> configuredBitsMap = mainWindow.getMiddleContent().getConfiguredBitsMap();
-
-        int index = 0;
-        for (Map.Entry<Integer, BitDTO> entry : configuredBitsMap.entrySet()) {
-            if (entry.getKey().equals(this.cut.getBitIndex())) {
-                break;
-            }
-            index++;
-        }
-        bitChoiceBox = new BitChoiceBox(true, "Outil", configuredBitsMap, index);
-
-        ArrayList<JLabel> labelList = new ArrayList<>();
-        for (CutType t : CutType.values()) {
-            JLabel l = new JLabel(UiUtil.getIcon(UiUtil.getIconFileName(t), UIConfig.INSTANCE.getCutBoxIconSize(),
-                    UIManager.getColor("button.Foreground")));
-            l.setText(UiUtil.getIconName(t));
-            labelList.add(l);
-        }
-        cuttypeBox = new ChoiceBox(true, "Type de coupe", labelList, this.cut.getCutType().ordinal());
-    }
-
 
 }
