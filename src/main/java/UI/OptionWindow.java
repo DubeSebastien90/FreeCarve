@@ -11,6 +11,7 @@ public class OptionWindow extends JPanel {
     }
 
     private void init(MainWindow mainWindow) {
+        //TODO implement undo redo for settings
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(new JLabel("Ceci est le panneau à options"));
 
