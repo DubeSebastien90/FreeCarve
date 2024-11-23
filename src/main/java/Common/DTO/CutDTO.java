@@ -85,15 +85,6 @@ public class CutDTO {
         return this.refs;
     }
 
-    public CutDTO getCopy(){
-        List<VertexDTO> newPoints = new ArrayList<>();
-        for(VertexDTO point : this.points){
-            newPoints.add(new VertexDTO(point.getX(),
-                    point.getY(), point.getZ()));
-        }
-        return new CutDTO(this.idCut, this.depth, this.bitIndex, this.type, newPoints, refs);
-    }
-
     public CutDTO addOffsetToPoints(VertexDTO offset){
         List<VertexDTO> newPoints = new ArrayList<>();
         for(VertexDTO point : this.points){

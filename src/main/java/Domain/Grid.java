@@ -205,7 +205,7 @@ public class Grid {
     }
 
     /**
-     * Returns an optionnal closest point to the cut lines based on a reference point
+     * Returns an optional closest point to the cut lines based on a reference point
      *
      * @param point     reference point
      * @param board     reference to the board
