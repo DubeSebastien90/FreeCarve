@@ -154,4 +154,13 @@ class ProjectState {
             return centerCenter + bitDiameter1 + bitDiameter2;
         }
     }
+
+    public void resetPanelCNC(){
+        PanelCNC copy = this.panel;
+        memorizer.executeAndMemorize(() -> {
+            this.panel = new PanelCNC(defaultPanelDimension, defaultPanelDepth, memorizer);
+        }, () -> {
+            this.panel = copy;
+        });
+    }
 }

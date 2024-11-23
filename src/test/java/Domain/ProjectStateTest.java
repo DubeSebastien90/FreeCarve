@@ -8,6 +8,7 @@ import Common.Exceptions.InvalidBitException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -173,5 +174,26 @@ public class ProjectStateTest {
         // Assert
         Assertions.assertEquals(configuredBits.size(), 2);
         Assertions.assertEquals(configuredBits.get(1).getDiameter(), 0.2f);
+    }
+
+    @Test
+    void resetPanelCNC_WhenCalled_ResetsPanel() throws Exception {
+        // Arrange
+        stateTest.setBit(new Bit("Test", 0.2f), 1);
+
+        ArrayList<VertexDTO> pointList = new ArrayList<>();
+        pointList.add(new VertexDTO(13, 14, 15));
+        pointList.add(new VertexDTO(16, 17, 18));
+
+        stateTest.getPanel().requestCut(new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 0.0f, new ArrayList<RefCutDTO>()));
+        Assertions.assertEquals(0.2f, stateTest.getBitList()[1].getDiameter());
+        Assertions.assertEquals(1, stateTest.getPanel().getCutList().size());
+
+        // Act
+        stateTest.resetPanelCNC();
+
+        // Assert
+        Assertions.assertEquals(0.2f, stateTest.getBitList()[1].getDiameter());
+        Assertions.assertEquals(0, stateTest.getPanel().getCutList().size());
     }
 }

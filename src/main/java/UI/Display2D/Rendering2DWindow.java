@@ -301,7 +301,7 @@ public class Rendering2DWindow extends JPanel {
         }
         afficheur.drawMask(graphics2D);
         afficheur.drawMousePos(graphics2D);
-        
+
     }
 
     /**
