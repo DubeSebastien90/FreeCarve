@@ -15,6 +15,7 @@ import UI.Widgets.Attributable;
 import UI.Widgets.CutBox;
 
 import javax.swing.*;
+import javax.swing.text.html.Option;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -123,8 +124,15 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     public void modifiedAttributeEventOccured(ChangeAttributeEvent event){
         this.rendering2DWindow.updateCuts();
 
-        System.out.println(event);
+        if(event.getAttribute() instanceof CutBox){
+            CutBox c = (CutBox) event.getAttribute();
+            UUID cutId = c.getCutUUID();
+            Optional<CutDTO> cutDTO = mainWindow.getController().findSpecificCut(cutId);
+            if(cutDTO.isPresent()){
+                c.updateAttributeContainerPanel(cutDTO.get());
+            }
 
+        }
     }
 
     @Override
@@ -142,8 +150,6 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
             JScrollBar scrollBar = this.cutListPanel.getScrollPane().getVerticalScrollBar();
             scrollBar.setValue(scrollBar.getMaximum());
         });
-
-
     }
 
     @Override
@@ -152,7 +158,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         if (event.getSource() == this.selectedAttributable) {// this means it's the same object, so the attributable will be deleted
             this.attributePanel.updateAttribute(null);
         }
-        this.cutListPanel.update();
+        this.cutListPanel.remove(event.getCutId());
         this.rendering2DWindow.updateCuts();
     }
 

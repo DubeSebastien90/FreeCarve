@@ -65,6 +65,26 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
     }
 
     /**
+     * Removes a cutbox based on it's UUID
+     * @param cutBoxId uuid of the cutbox to remove
+     */
+    public void remove(UUID cutBoxId){
+        for(int i =0; i < cutBoxes.size(); i++){
+            if(cutBoxes.get(i).getCutUUID() == cutBoxId){
+                cutBoxes.remove(i);
+            }
+        }
+
+        panel.removeAll();
+        for (CutBox cutBox : this.cutBoxes) {
+            this.panel.add(cutBox.getPanel());
+        }
+
+        this.revalidate();
+        this.repaint();
+    }
+
+    /**
      * Deselect all CutBox(es)
      */
     public void refreshSelectedCutBox() {

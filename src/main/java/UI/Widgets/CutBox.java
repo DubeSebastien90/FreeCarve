@@ -141,6 +141,15 @@ public class CutBox implements Attributable {
     }
 
     /**
+     * Modify all of the attributes and UI values of the AttributeContainer based on a new CutDTO
+     *
+     * @param newCutDTO new CutDTO to modify the CutBox with
+     */
+    public void updateAttributeContainerPanel(CutDTO newCutDTO){
+        this.attributeContainer.updatePanel(newCutDTO);
+    }
+
+    /**
      * @return {@code JPanel} of the CutBox
      */
     public JPanel getPanel() {

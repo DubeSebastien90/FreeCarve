@@ -30,7 +30,7 @@ public abstract class AttributeContainer extends BasicWindow {
     }
 
     public abstract void setupEventListeners();
-
+    public abstract void updatePanel(CutDTO newCutDTO);
 
     protected double edgeEdgeX(){
         int currentBitIndex = cutDTO.getBitIndex();
@@ -97,7 +97,7 @@ public abstract class AttributeContainer extends BasicWindow {
                 ComboBitItem chosenBit = (ComboBitItem) comboBox.getModel().getSelectedItem();
                 c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
                 mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, cutBox));
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutDTO, cutBox));
             }
         });
     }

@@ -77,7 +77,11 @@ public class MeasurementInputField extends BasicWindow {
         this.add(this.unitComboBox);
     }
 
-
+    public void setValueInMM(double valueInMM){
+        DimensionDTO dValueInMM = new DimensionDTO(valueInMM, Units.MM);
+        DimensionDTO valueInGoodUnit = unitConverter.convertUnit(dValueInMM, currentUnit.getUnit());
+        this.numericInput.setValue(valueInGoodUnit.value());
+    }
 
     public JFormattedTextField getNumericInput() {
         return this.numericInput;

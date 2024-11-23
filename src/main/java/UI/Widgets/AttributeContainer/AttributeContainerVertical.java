@@ -107,6 +107,17 @@ public class AttributeContainerVertical extends AttributeContainer {
         addEventListenerToBitChoiceBox(bitChoiceBox);
     }
 
+    @Override
+    public void updatePanel(CutDTO newCutDTO) {
+        cutDTO = newCutDTO;
+        distanceFromEdgeToEdge.getInput().setValueInMM(edgeEdgeX());
+        absoluteDistanceFromEdgeToEdge.getInput().setValueInMM(Math.abs(edgeEdgeX()));
+        distanceCenterToCenter.getInput().setValueInMM( centerCenterX());
+        depthBox.getInput().setValueInMM(cutDTO.getDepth());
+        revalidate();
+        repaint();
+    }
+
 
     /**
      * Adding the custom event listeners to SingleValueBox objects. The goal is to make
@@ -121,7 +132,7 @@ public class AttributeContainerVertical extends AttributeContainer {
                 CutDTO c = new CutDTO(cutDTO);
                 c = new CutDTO(c.getId(), sb.getInput().getMMValue(), c.getBitIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
                 mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, cutBox));
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });
     }
@@ -139,7 +150,6 @@ public class AttributeContainerVertical extends AttributeContainer {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = new CutDTO(cutDTO);
-                Number n = (Number) evt.getNewValue();
                 double centerCenterN = edgeEdgeToCenterCenter(sb.getInput().getMMValue());
                 for(int i =0; i < c.getPoints().size(); i++){
                     VertexDTO oldVertex = c.getPoints().get(i);
@@ -147,7 +157,7 @@ public class AttributeContainerVertical extends AttributeContainer {
                     c.getPoints().set(i, newVertex);
                 }
                 mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(this, cutBox));
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });
     }

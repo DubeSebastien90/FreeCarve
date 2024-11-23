@@ -27,8 +27,7 @@ public class SingleValueBox extends GenericAttributeBox {
 
     private void init(MainWindow mainWindow, String name, double value, UiUnits units) {
         GridBagConstraints gc = new GridBagConstraints();
-        this.theInput = new MeasurementInputField(mainWindow, name, value, Double.MIN_VALUE, Double.MAX_VALUE, units);
-
+        this.theInput = new MeasurementInputField(mainWindow, name, value, -Double.MAX_VALUE, Double.MAX_VALUE, units);
         gc.gridx = 0;
         gc.gridy = 1;
         gc.fill = GridBagConstraints.NONE;
