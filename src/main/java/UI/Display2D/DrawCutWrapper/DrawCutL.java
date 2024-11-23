@@ -12,6 +12,7 @@ import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
 import UI.Widgets.PersoPoint;
 
+import javax.swing.text.html.Option;
 import java.awt.*;
 import java.sql.Ref;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class DrawCutL extends DrawCutWrapper{
         if(!this.points.isEmpty()){
             boolean isPointValid  = setRefsInterpolationToCursor(new VertexDTO(cursor.getLocationX(), cursor.getLocationY(), 0));
 
-            if(isPointValid){
+            if(isPointValid && this.cursorPoint.getValid() != PersoPoint.Valid.NOT_VALID){
                 this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), this.cut.getPoints(), refs);
             }
         }
@@ -107,6 +108,7 @@ public class DrawCutL extends DrawCutWrapper{
         Optional<VertexDTO> intersection1 = VertexDTO.isLineIntersectNoLimitation(l1p1, l1p2, p1a, p1b);
         Optional<VertexDTO> intersection2 = VertexDTO.isLineIntersectNoLimitation(l2p1, l2p2, p2a, p2b);
 
+
         if(intersection1.isPresent() && intersection2.isPresent()){
 
             VertexDTO p1 = intersection1.get();
@@ -121,7 +123,6 @@ public class DrawCutL extends DrawCutWrapper{
             double t1 = numerator1.getDistance() / denominator1.getDistance();
             double t2 = numerator2.getDistance() / denominator2.getDistance();
 
-
             if(t1 >= 0 && t1 <= 1 && t2 >=0 && t2 <= 1){
                 RefCutDTO newRef1 = new RefCutDTO(refs.getFirst().getCut(), refs.getFirst().getIndex(), t1);
                 RefCutDTO newRef2 = new RefCutDTO(refs.get(1).getCut(), refs.get(1).getIndex(), t2);
@@ -132,9 +133,7 @@ public class DrawCutL extends DrawCutWrapper{
             }
 
         }
-        else{
 
-        }
         return false;
     }
 

@@ -176,11 +176,7 @@ public class VertexDTO {
         double c2 = a2 * p3.getX() + b2 * p3.getY();
 
         double det = a1 * b2 - a2 * b1;
-        if ((cursorPoint.getY() - p1.getY()) * (p3.getX() - cursorPoint.getX())
-                == (p3.getY() - cursorPoint.getY()) * (cursorPoint.getX() - p1.getX())) {
-            return Optional.empty(); // Parrallel lines or colinear
-
-        } else if (det == 0) {
+        if (det == 0) {
             return Optional.empty(); // Parrallel lines or colinear
         }
 

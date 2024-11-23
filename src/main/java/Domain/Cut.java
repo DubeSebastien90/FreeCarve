@@ -180,8 +180,8 @@ class Cut {
      * Get the copied absolute points of the cut, based on it's references
      * @return List<VertexDTO> of the copied absolute points
      */
-    public List<VertexDTO> getAbsolutePointsPosition(){
-        // 4 possibilies :
+    public List<VertexDTO> getAbsolutePointsPosition() {
+        // 3 possibilies :
         // 1 : CutType = Rectangular, or Line_Vertical or Line_Horizontal or Free_Line : get first ref and use it as anchor point
         // 2 : CutType = L : get 2 ref points and use them as position of the L cut
         // 3 : ref list is empty : just return the points
@@ -189,21 +189,26 @@ class Cut {
             return this.getCopyPoints();
         }
         if (type == CutType.LINE_HORIZONTAL || type==CutType.LINE_VERTICAL || type==CutType.RECTANGULAR || type== CutType.LINE_FREE){
-            if(refs.size() != 1){throw new AssertionError(type + " needs a single ref, it has " + refs.size());}
             return  this.getCopyPointsWithOffset(refs.getFirst().getAbsoluteOffset());
         }
         if(type == CutType.L_SHAPE){
-            if(refs.size() != 2){throw new AssertionError(type + " needs two refs, it has " + refs.size());}
+            if(refs.size() < 2){throw new AssertionError(type + " needs two refs, it has " + refs.size());}
 
             ArrayList<VertexDTO> outputPoints = new ArrayList<>();
 
             // Needs to calculate the absolute two points
             VertexDTO p1a = refs.getFirst().getAbsoluteOffset();
             VertexDTO p1b = refs.getFirst().getAbsoluteFirstPoint();
+            if(p1b.getDistance(p1a) < VertexDTO.doubleTolerance){
+                p1b = refs.getFirst().getAbsoluteSecondPoint();// Changing the other ref point to prevent accidental colinearity
+            }
 
             // Get the first absolute reference point
             VertexDTO p2a = refs.get(1).getAbsoluteOffset();
             VertexDTO p2b = refs.get(1).getAbsoluteFirstPoint();
+            if(p2b.getDistance(p2a) < VertexDTO.doubleTolerance){
+                p2b = refs.get(1).getAbsoluteSecondPoint();// Changing the other ref point to prevent accidental colinearity
+            }
 
             // Needs to find the absolute corner point of the L-cut
             // 1. Find the perpendicular lines of the two refs
@@ -211,21 +216,16 @@ class Cut {
 
             Pair<VertexDTO, VertexDTO> paPerpendicular = VertexDTO.perpendicularPointsAroundP1(p1a, p1b);
             Pair<VertexDTO, VertexDTO> pbPerpendicular = VertexDTO.perpendicularPointsAroundP1(p2a, p2b);
-
-
             Optional<VertexDTO> intersectionPoint = VertexDTO.isLineIntersectNoLimitation(paPerpendicular.getFirst(),
                     paPerpendicular.getSecond(), pbPerpendicular.getFirst(), pbPerpendicular.getSecond());
 
             if(intersectionPoint.isEmpty()) {
-                // Lines are colinear or perpendicular
-                System.out.println("Colinear");
-                VertexDTO midpoint = p1a.add(p1b).mul(0.5);
+                VertexDTO midpoint1 = p1a.add(p2a).mul(0.5);
                 outputPoints.add(p1a);
-                outputPoints.add(midpoint);
+                outputPoints.add(midpoint1);
                 outputPoints.add(p2a);
             }
             else{
-                System.out.println("Non-colinear");
                 outputPoints.add(p1a);
                 outputPoints.add(intersectionPoint.get());
                 outputPoints.add(p2a);

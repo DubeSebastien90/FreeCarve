@@ -56,6 +56,11 @@ public class RefCut {
         return absoluteVertex.get(index);
     }
 
+    public VertexDTO getAbsoluteSecondPoint(){
+        List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition();
+        return absoluteVertex.get(index+1);
+    }
+
     RefCutDTO getDTO(){
         return new RefCutDTO(cut.getDTO(), this.index, interpolation);
     }
