@@ -13,6 +13,7 @@ import UI.SubWindows.CutListPanel;
 import UI.Display2D.Rendering2DWindow;
 import UI.Widgets.Attributable;
 import UI.Widgets.CutBox;
+import org.w3c.dom.Attr;
 
 import javax.swing.*;
 import javax.swing.text.html.Option;
@@ -173,7 +174,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         bitSelectionPanel = new BitSelectionPanel(true, this, mainWindow, configuredBitsMap);
         bitPanel = bitSelectionPanel;
 
-        attributePanel = new AttributePanel(true);
+        attributePanel = new AttributePanel(true, mainWindow);
         panel2 = attributePanel;
 
         cutListPanel = new CutListPanel(true, this, this, mainWindow);
@@ -195,4 +196,10 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         return bitSelectionPanel;
     }
 
+    /**
+     * @return the {@code CutListPanel} of the {@code CutWindow}
+     */
+    public AttributePanel getAttributePanel() {
+        return attributePanel;
+    }
 }

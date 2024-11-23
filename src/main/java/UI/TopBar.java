@@ -1,5 +1,8 @@
 package UI;
 
+import UI.Events.ChangeAttributeEvent;
+import UI.Events.ChangeCutEvent;
+
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 
@@ -44,9 +47,16 @@ public class TopBar extends JMenuBar {
         JMenuItem settings = new JMenuItem("Paramètres");
         JMenuItem contact = new JMenuItem("Contactez nous");
         JMenuItem attributionLink = new JMenuItem("Icon Source");
+        JMenuItem reset_panel = new JMenuItem("Recréer le panneau");
 
         settings.addActionListener(e -> mainWindow.showOptionWindow());
         exit.addActionListener(e -> mainWindow.getFrame().dispatchEvent(new WindowEvent(mainWindow.getFrame(), WindowEvent.WINDOW_CLOSING)));
+        reset_panel.addActionListener(e -> {
+            mainWindow.getController().resetPanelCNC();
+            mainWindow.getMiddleContent().getCutWindow().deleteCutEventOccured(
+                    new ChangeCutEvent(mainWindow.getMiddleContent().getCutWindow(), null));
+            mainWindow.getMiddleContent().getCutWindow().getAttributePanel().clearPanel();
+        });
 
         fichier.add(nouveau);
         fichier.add(enregistrer);
@@ -57,6 +67,7 @@ public class TopBar extends JMenuBar {
         fichier.add(recharger);
 
         option.add(settings);
+        option.add(reset_panel);
         option.add(exit);
 
         aide.add(contact);

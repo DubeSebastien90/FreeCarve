@@ -7,6 +7,7 @@ import java.util.Map;
 
 import Common.DTO.BitDTO;
 import UI.Display2D.Rendering2DWindow;
+import UI.Events.ChangeCutEvent;
 import UI.LeftBar.ToolBar.Tool;
 
 /**
