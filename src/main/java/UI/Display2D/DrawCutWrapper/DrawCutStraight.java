@@ -50,7 +50,7 @@ public class DrawCutStraight extends DrawCutWrapper{
         if (!refs.isEmpty()){ // drawing the first anchor point
             VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
             PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
-            referenceAnchorPoint.setColor(Color.BLACK);
+            referenceAnchorPoint.setColor(ANCHOR_COLOR);
             referenceAnchorPoint.drawMM(graphics2D, renderer);
         }
 
@@ -62,7 +62,6 @@ public class DrawCutStraight extends DrawCutWrapper{
         if (refs.isEmpty()){
             VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
             refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
-            drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
         }
         else{
             List<VertexDTO> newPoints = this.cut.getPoints();
@@ -70,7 +69,7 @@ public class DrawCutStraight extends DrawCutWrapper{
             VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
             newPoint = newPoint.sub(offset);
             newPoints.add(newPoint);
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs, this.cut.getState());
         }
 
         return this.cut.getPoints().size() >= 2; // returns true if all the points are added
@@ -96,11 +95,11 @@ public class DrawCutStraight extends DrawCutWrapper{
 
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
-                p.setColor(Color.GREEN);
+                p.setColor(ANCHOR_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
             }
             else{
-                p.setColor(Color.RED);
+                p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
         }
@@ -115,17 +114,12 @@ public class DrawCutStraight extends DrawCutWrapper{
             if(closestPoint.isPresent()){
 
                 p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
-                p.setColor(Color.GREEN);
+                p.setColor(VALID_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
             }
             else{
-
-                p.setColor(Color.RED);
+                p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
-
-                if(!refs.isEmpty()){
-                    drawing.changeGoBackWrapperById(refs.getFirst().getCut().getId());
-                }
             }
         }
         else{ // Second point
@@ -151,7 +145,7 @@ public class DrawCutStraight extends DrawCutWrapper{
             // Snap
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
-                p.setColor(Color.YELLOW);
+                p.setColor(SNAP_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
                 return;
             }
@@ -159,12 +153,12 @@ public class DrawCutStraight extends DrawCutWrapper{
             VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             if(mainWindow.getController().isPointOnPanel(pointDTO)){
                 // Inside of the board
-                p.setColor(Color.GREEN);
+                p.setColor(VALID_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
             }
             else{
                 // Outside of the board
-                p.setColor(Color.RED);
+                p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
         }

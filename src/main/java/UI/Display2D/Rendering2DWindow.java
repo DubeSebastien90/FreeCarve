@@ -277,7 +277,6 @@ public class Rendering2DWindow extends JPanel {
             offsetX = (mousePt.getX() - (mmMousePt.getX() * zoom)) / zoom;
             offsetY = ((-1 * (mousePt.getY() - getHeight())) - (mmMousePt.getY() * zoom)) / zoom;
             points.clear();
-            drawing.updateCuts();
             repaint();
         });
     }

@@ -1,34 +1,24 @@
 package UI.Widgets;
 
-import Common.DTO.BitDTO;
+import Common.CutState;
 import Common.DTO.CutDTO;
 import Domain.CutType;
-import Common.DTO.VertexDTO;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
 import UI.MainWindow;
-import UI.SubWindows.BasicWindow;
 import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
-import UI.UiUnits;
 import UI.UiUtil;
 import UI.Widgets.AttributeContainer.AttributeContainer;
+import UI.Widgets.AttributeContainer.AttributeContainerError;
 import UI.Widgets.AttributeContainer.AttributeContainerFactory;
-import UI.Widgets.AttributeContainer.AttributeContainerVertical;
 import com.formdev.flatlaf.ui.FlatButtonBorder;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Map;
+import java.awt.event.*;
 import java.util.UUID;
 
 /**
@@ -52,7 +42,8 @@ public class CutBox implements Attributable {
     private JButton deleteButton;
     private JButton moveUpButton;
     private JButton moveDownButton;
-    private CutBoxState cutBoxState = CutBoxState.NOT_SELECTED;
+    private CutBoxState tempState = CutBoxState.NOT_SELECTED;
+    private CutBoxState realState = CutBoxState.NOT_SELECTED;
     private CutListPanel cutListPanel;
     private AttributeContainer attributeContainer;
 
@@ -60,6 +51,7 @@ public class CutBox implements Attributable {
         SELECTED,
         NOT_SELECTED,
         HOVER,
+        NOT_VALID,
     }
 
 
@@ -116,7 +108,12 @@ public class CutBox implements Attributable {
      */
     @Override
     public JPanel showAttribute() {
-        return attributeContainer;
+        if(this.cut.getState() == CutState.VALID){
+            return attributeContainer;
+        }
+        else{
+            return new AttributeContainerError(mainWindow, cutListPanel, cut, this);
+        }
     }
 
     /**
@@ -138,6 +135,10 @@ public class CutBox implements Attributable {
         String iconName = UiUtil.getIconFileName(type);
         imageLabel.setIcon(UiUtil.getIcon(iconName, UIConfig.INSTANCE.getCutBoxIconSize(),
                 UIManager.getColor("button.Foreground")));
+
+        if(this.cut.getState() == CutState.NOT_VALID){
+            setState(CutBoxState.NOT_VALID);
+        }
     }
 
     /**
@@ -156,11 +157,28 @@ public class CutBox implements Attributable {
         return this.panel;
     }
 
+
+    /**
+     * Set the CutBox as non-selected
+     */
+    public void deselect() {
+        setState(CutBoxState.NOT_SELECTED);
+    }
+
     /**
      * Select this CutBox
      */
     public void select() {
         setState(CutBoxState.SELECTED);
+
+    }
+
+    /**
+     * Go back one previous state
+     */
+    public void goBackState(){
+        tempState = realState;
+        setState(realState);
     }
 
     /**
@@ -170,37 +188,79 @@ public class CutBox implements Attributable {
      */
     public void setState(CutBoxState state) {
 
-        if (state == CutBoxState.NOT_SELECTED) {
-            cutBoxState = state;
-            ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
-            this.cutListPanel.changeAttributeEventOccurred(event);
-            setBackgroundToIndex();
-        } else if (state == CutBoxState.SELECTED) {
+        if(state == CutBoxState.SELECTED){
             this.cutListPanel.refreshSelectedCutBox();
-            cutBoxState = state;
+            tempState = state;
+            realState = state;
             ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
             this.cutListPanel.changeAttributeEventOccurred(event);
             panel.setBackground(UIManager.getColor("Button.green"));
-        } else if (state == CutBoxState.HOVER) {
-            cutBoxState = state;
+        }
+        else if(state == CutBoxState.HOVER){
+            tempState = state;
             ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
             this.cutListPanel.changeAttributeEventOccurred(event);
             panel.setBackground(UIManager.getColor("Button.blue"));
         }
+        else if(state == CutBoxState.NOT_SELECTED){
+
+            if(cut.getState() == CutState.NOT_VALID){
+                tempState = CutBoxState.NOT_VALID;
+                realState = CutBoxState.NOT_VALID;
+                panel.setBackground(UIManager.getColor("Button.red"));
+            }
+            else{
+                tempState = state;
+                realState = state;
+                setBackgroundToIndex();
+            }
+
+            ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
+            this.cutListPanel.changeAttributeEventOccurred(event);
+        }
+        else if (state == CutBoxState.NOT_VALID){
+            if(cut.getState() == CutState.NOT_VALID){
+
+                if(getState() == CutBoxState.SELECTED && getTempState() == CutBoxState.SELECTED) // if selected, stay that way
+                {
+                    cutListPanel.refreshSelectedCutBox();
+                    tempState = CutBoxState.SELECTED;
+                    realState = CutBoxState.SELECTED;
+                    panel.setBackground(UIManager.getColor("Button.green"));
+                }
+                else{
+                    tempState = CutBoxState.NOT_VALID;
+                    realState = CutBoxState.NOT_VALID;
+                    panel.setBackground(UIManager.getColor("Button.red"));
+                }
+
+                ChangeAttributeEvent event = new ChangeAttributeEvent(CutBox.this, CutBox.this);
+                this.cutListPanel.changeAttributeEventOccurred(event);
+            }
+        }
+    }
+
+    private void mouseEnteredPanel(){
+        setState(CutBoxState.HOVER);
+    }
+
+    private void mouseExitedPanel(){
+        goBackState();
     }
 
     /**
      * @return the current state of the CutBox
      */
     public CutBoxState getState() {
-        return this.cutBoxState;
+        return this.realState;
     }
 
     /**
-     * Set the CutBox as non-selected
+     * returns the temporary state of the cutbox : hover
+     * @return the temp state
      */
-    public void deselect() {
-        setState(CutBoxState.NOT_SELECTED);
+    public CutBoxState getTempState(){
+        return this.tempState;
     }
 
     /**
@@ -231,7 +291,7 @@ public class CutBox implements Attributable {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (getState() != CutBoxState.SELECTED) {
+                if (tempState != CutBoxState.SELECTED && realState != CutBoxState.SELECTED) {
                     select();
                 } else {
                     deselect();
@@ -251,16 +311,12 @@ public class CutBox implements Attributable {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (getState() != CutBoxState.SELECTED) {
-                    setState(CutBoxState.HOVER);
-                }
+                mouseEnteredPanel();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (getState() != CutBoxState.SELECTED) {
-                    setState(CutBoxState.NOT_SELECTED);
-                }
+                mouseExitedPanel();
             }
         });
     }
@@ -302,6 +358,23 @@ public class CutBox implements Attributable {
         moveUpButton.setBorder(new FlatButtonBorder());
         moveDownButton.setBorder(new FlatButtonBorder());
 
+        MouseAdapter buttonHoverAdapter = new MouseAdapter() { // to transfer events to the CutBox class
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                mouseEnteredPanel();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                mouseExitedPanel();
+            }
+        };
+
+        deleteButton.addMouseListener(buttonHoverAdapter);
+        moveUpButton.addMouseListener(buttonHoverAdapter);
+        moveDownButton.addMouseListener(buttonHoverAdapter);
         gc.gridx = 0;
         gc.gridy = 0;
         gc.gridwidth = 1;

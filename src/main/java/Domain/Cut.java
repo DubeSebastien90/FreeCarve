@@ -1,5 +1,6 @@
 package Domain;
 
+import Common.CutState;
 import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
 import Common.DTO.RequestCutDTO;
@@ -27,8 +28,9 @@ class Cut {
     private int bitIndex;
     private double depth;
     private UUID id;
-    private boolean valid;
     private List<RefCut> refs;
+    private CutState cutState;
+
 
 
     public Cut(CutDTO uiCut, List<Cut> cutAndBorderList) {
@@ -37,11 +39,13 @@ class Cut {
         this.bitIndex = uiCut.getBitIndex();
         this.depth = uiCut.getDepth();
         this.id = uiCut.getId();
+        this.cutState = uiCut.getState();
 
         refs = new ArrayList<>();
         for(RefCutDTO ref : uiCut.getRefsDTO()){
             refs.add(new RefCut(ref, cutAndBorderList));
         }
+
 
     }
 
@@ -51,6 +55,7 @@ class Cut {
         this.bitIndex = uiCut.getBitIndex();
         this.depth = uiCut.getDepth();
         this.id = uiCut.getId();
+        this.cutState = uiCut.getState();
 
         refs = new ArrayList<>();
         for(RefCutDTO ref : uiCut.getRefsDTO()){
@@ -75,6 +80,7 @@ class Cut {
         this.depth = depth;
         this.id = UUID.randomUUID();
         this.refs = new ArrayList<>();
+        this.cutState = CutState.VALID;
     }
 
     /**
@@ -99,6 +105,7 @@ class Cut {
         this.depth = depth;
         this.id = UUID.randomUUID();
         this.refs = refCut;
+        this.cutState = CutState.VALID;
     }
 
     public Cut(RequestCutDTO requestCutDTO) {
@@ -106,7 +113,7 @@ class Cut {
     }
 
     public CutDTO getDTO() {
-        return new CutDTO(id, depth, bitIndex, type, points.stream().toList(), refs.stream().map(RefCut::getDTO).collect(Collectors.toList()));
+        return new CutDTO(id, depth, bitIndex, type, points.stream().toList(), refs.stream().map(RefCut::getDTO).collect(Collectors.toList()), cutState);
     }
 
     public List<VertexDTO> getPoints() {
@@ -133,6 +140,11 @@ class Cut {
         this.points = points;
     }
 
+    public void setInvalidAndNoRef(){
+        this.points = getAbsolutePointsPosition();
+        this.refs = new ArrayList<>();
+        this.cutState = CutState.NOT_VALID;
+    }
 
     public int getBitIndex() {
         return bitIndex;
@@ -163,6 +175,8 @@ class Cut {
     public void setRefs(List<RefCut> refs){
         this.refs = refs;
     }
+
+    public CutState getCutState(){return this.cutState;}
 
     public static List<VertexDTO> generateRectanglePoints(VertexDTO anchor, double width, double height){
         VertexDTO p1 = new VertexDTO(anchor);
@@ -247,8 +261,6 @@ class Cut {
         }
         if(type == CutType.RECTANGULAR){
 
-
-
             if(refs.size() < 2){throw new AssertionError(type + " needs two refs, it has " + refs.size());}
 
             // Needs to calculate the absolute two points
@@ -320,7 +332,6 @@ class Cut {
                     outputPoints.add(intersection2.get());
                 }
                 else{
-                    valid = false;
                     outputPoints.add(firstLineLineIntersect);
                     outputPoints.add(corner);
                     outputPoints.add(secondLineLineIntersect);

@@ -1,5 +1,6 @@
 package UI.Widgets.AttributeContainer;
 
+import Common.CutState;
 import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
 import Domain.CutType;
@@ -133,7 +134,7 @@ public abstract class AttributeContainer extends BasicWindow {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = new CutDTO(cutDTO);
-                c = new CutDTO(c.getId(), sb.getInput().getMMValue(), c.getBitIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
+                c = new CutDTO(c.getId(), sb.getInput().getMMValue(), c.getBitIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO(), c.getState());
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
@@ -156,7 +157,7 @@ public abstract class AttributeContainer extends BasicWindow {
                 JComboBox comboBox = (JComboBox) e.getSource();
                 CutDTO c = new CutDTO(cutDTO);
                 ComboBitItem chosenBit = (ComboBitItem) comboBox.getModel().getSelectedItem();
-                c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
+                c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO(), c.getState());
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutDTO, cutBox));
             }

@@ -1,5 +1,6 @@
 package UI.Display2D;
 
+import Common.CutState;
 import Domain.CutType;
 import UI.Display2D.DrawCutWrapper.DrawCutFactory;
 import UI.Events.ChangeCutEvent;
@@ -178,6 +179,22 @@ public class Drawing {
         for(DrawCutWrapper wrapper : cutWrappers){
             if(wrapper.getCutDTO().getId() == id){
                 wrapper.setState(DrawCutWrapper.DrawCutState.REF, renderer);
+            }
+        }
+    }
+
+    public void changeInvalidWrapperById(UUID id){
+        for(DrawCutWrapper wrapper : cutWrappers){
+            if(wrapper.getCutDTO().getId() == id){
+                wrapper.setState(DrawCutWrapper.DrawCutState.INVALID, renderer);
+            }
+        }
+    }
+
+    public void changeAllInvalid(){
+        for(DrawCutWrapper wrapper : cutWrappers){
+            if(wrapper.getCutDTO().getState() == CutState.NOT_VALID){
+                wrapper.setState(DrawCutWrapper.DrawCutState.INVALID, renderer);
             }
         }
     }

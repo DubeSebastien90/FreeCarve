@@ -43,7 +43,7 @@ public class DrawCutL extends DrawCutWrapper{
         graphics2D.setColor(cursor.getColor());
 
         if(!this.points.isEmpty()){
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(cursor), refs);
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(cursor), refs, this.cut.getState());
         }
 
         for (int i =0; i < points.size()-1; i++){
@@ -54,6 +54,13 @@ public class DrawCutL extends DrawCutWrapper{
             point.drawMM(graphics2D, renderer);
         }
 
+        if (!refs.isEmpty() && !points.isEmpty()){ // drawing the first anchor point
+            VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
+            PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
+            referenceAnchorPoint.setColor(ANCHOR_COLOR);
+            referenceAnchorPoint.drawMM(graphics2D, renderer);
+        }
+
     }
 
     @Override
@@ -61,12 +68,12 @@ public class DrawCutL extends DrawCutWrapper{
 
         if(points.isEmpty()){
             compute3Points(pointInMM);
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(pointInMM), refs);
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(pointInMM), refs, this.cut.getState());
             return false;
         }
         else if(refs.size() >= 2){
             compute3Points(pointInMM);
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(pointInMM), refs);
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(pointInMM), refs, this.cut.getState());
             return true;
         }
         else{
@@ -109,18 +116,16 @@ public class DrawCutL extends DrawCutWrapper{
                 refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
 
                 if (refs.size() >= 2){
-                    drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
-                    drawing.changeRefWrapperById(refs.get(1).getCut().getId());
-                    p.setColor(Color.GREEN);
+                    p.setColor(VALID_COLOR);
                     p.setValid(PersoPoint.Valid.VALID);
                 }
                 else{
-                    p.setColor(Color.RED);
+                    p.setColor(INVALID_COLOR);
                     p.setValid(PersoPoint.Valid.NOT_VALID);
                 }
             }
             else{
-                p.setColor(Color.RED);
+                p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
         }
@@ -136,7 +141,7 @@ public class DrawCutL extends DrawCutWrapper{
             // Snap
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
-                p.setColor(Color.YELLOW);
+                p.setColor(SNAP_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
                 return;
             }
@@ -145,12 +150,12 @@ public class DrawCutL extends DrawCutWrapper{
             VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             if(mainWindow.getController().isPointOnPanel(pointDTO)){
                 // Inside of the board
-                p.setColor(Color.GREEN);
+                p.setColor(VALID_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
             }
             else{
                 // Outside of the board
-                p.setColor(Color.RED);
+                p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
         }

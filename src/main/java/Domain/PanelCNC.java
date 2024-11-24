@@ -108,6 +108,7 @@ class PanelCNC {
         List<Cut> list = getCutList();
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId() == id) {
+                cleanupRemove(list.get(i));
                 list.remove(i);
                 //todo look for potential non removable cut
                 return true;
@@ -116,7 +117,24 @@ class PanelCNC {
         return false;
     }
 
-
+    /**
+     * Cleanup all the references of the parameter cut used by all of the other cuts, otherwise, there is references problem
+     * All the necessary cuts will become invalid and lose all of their references
+     *
+     * @param cut cut to cleanup in other cut
+     */
+    void cleanupRemove(Cut cut){
+        for(Cut c : cutList){
+            for(RefCut ref : c.getRefs()){
+                if(ref.getCut() == cut){
+                    c.setInvalidAndNoRef();
+                    System.out.println(cut.getId());
+                    cleanupRemove(c);
+                    break;
+                }
+            }
+        }
+    }
 
     /**
      * Finds a specific cut with id

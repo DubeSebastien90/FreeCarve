@@ -1,6 +1,7 @@
 package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
+import Common.DTO.RefCutDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import Domain.CutType;
@@ -56,7 +57,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
         if (!refs.isEmpty()){ // drawing the first anchor point
             VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
             PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
-            referenceAnchorPoint.setColor(Color.BLACK);
+            referenceAnchorPoint.setColor(ANCHOR_COLOR);
             referenceAnchorPoint.drawMM(graphics2D, renderer);
         }
 
@@ -69,10 +70,6 @@ public class DrawCutRectangular extends DrawCutWrapper{
         if (refs.isEmpty()){
             VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
             refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
-
-            if(refs.size() >= 2){ // refs must be at least 2 for the rectangle, because it follows the intersection
-                drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
-            }
 
         }
         else{
@@ -100,7 +97,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
             }
         }
 
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs, this.cut.getState());
         return this.cut.getPoints().size() >= 5;
     }
 
@@ -122,11 +119,20 @@ public class DrawCutRectangular extends DrawCutWrapper{
 
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
-                p.setColor(Color.GREEN);
-                p.setValid(PersoPoint.Valid.VALID);
+                p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+                List<RefCutDTO> refsDTO = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+
+                if (refsDTO.size() >= 2){
+                    p.setColor(ANCHOR_COLOR);
+                    p.setValid(PersoPoint.Valid.VALID);
+                }
+                else{
+                    p.setColor(INVALID_COLOR);
+                    p.setValid(PersoPoint.Valid.NOT_VALID);
+                }
             }
             else{
-                p.setColor(Color.RED);
+                p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
         }
@@ -139,10 +145,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
 
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
-
-                drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
-
-                p.setColor(Color.GREEN);
+                p.setColor(VALID_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
             }
         }
@@ -159,7 +162,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
             // Snap
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
-                p.setColor(Color.YELLOW);
+                p.setColor(SNAP_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
                 return;
             }
@@ -168,12 +171,12 @@ public class DrawCutRectangular extends DrawCutWrapper{
             VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             if(mainWindow.getController().isPointOnPanel(pointDTO)){
                 // Inside of the board
-                p.setColor(Color.GREEN);
+                p.setColor(VALID_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
             }
             else{
                 // Outside of the board
-                p.setColor(Color.RED);
+                p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
         }

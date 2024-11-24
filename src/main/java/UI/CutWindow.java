@@ -97,20 +97,28 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         if (event.getAttribute() instanceof  CutBox){
             CutBox eventCasted = (CutBox) event.getAttribute();
             UUID id = eventCasted.getCutUUID();
-
-            if(eventCasted.getState() == CutBox.CutBoxState.SELECTED){
+            if(eventCasted.getTempState() == CutBox.CutBoxState.HOVER){
+                this.rendering2DWindow.getDrawing().changeHoverWrapperById(id);
+            }
+            else if(eventCasted.getState() == CutBox.CutBoxState.SELECTED && eventCasted.getTempState() == CutBox.CutBoxState.SELECTED){
                 this.rendering2DWindow.getDrawing().changeSelectedWrapperById(id);
-                // Change attribute
                 this.selectedAttributable = event.getAttribute();
                 this.attributePanel.updateAttribute(this.selectedAttributable);
             }
-            else if(eventCasted.getState() == CutBox.CutBoxState.HOVER){
-                this.rendering2DWindow.getDrawing().changeHoverWrapperById(id);
+            else if(eventCasted.getState() == CutBox.CutBoxState.NOT_VALID && eventCasted.getTempState() == CutBox.CutBoxState.NOT_VALID){
+                this.rendering2DWindow.getDrawing().changeAllInvalid();
+                if(eventCasted == selectedAttributable){
+                    this.attributePanel.updateAttribute(null); // hide attribute panel if it was selected
+                    this.selectedAttributable = null;
+                }
             }
-            else if(eventCasted.getState() == CutBox.CutBoxState.NOT_SELECTED){
+            else{
                 this.rendering2DWindow.getDrawing().changeNotSelectedWrapperById(id);
+                if(eventCasted == selectedAttributable){
+                    this.attributePanel.updateAttribute(null); // hide attribute panel if it was selected
+                    this.selectedAttributable = null;
+                }
             }
-
         }
     }
 
@@ -155,11 +163,18 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     @Override
     public void deleteCutEventOccured(ChangeCutEvent event) {
         mainWindow.getController().removeCut(event.getCutId());
-        if (event.getSource() == this.selectedAttributable) {// this means it's the same object, so the attributable will be deleted
-            this.attributePanel.updateAttribute(null);
-        }
         this.cutListPanel.remove(event.getCutId());
         this.rendering2DWindow.updateCuts();
+        this.rendering2DWindow.getDrawing().changeAllInvalid();
+        if (event.getSource() == this.selectedAttributable) {// this means it's the same object, so the attributable will be deleted
+            this.attributePanel.updateAttribute(null);
+            this.selectedAttributable = null;
+        }
+        else{
+
+            this.attributePanel.updateAttribute(selectedAttributable); // if not the same object ,update the attribute panel with the new cutbox information
+        }
+
     }
 
     /**

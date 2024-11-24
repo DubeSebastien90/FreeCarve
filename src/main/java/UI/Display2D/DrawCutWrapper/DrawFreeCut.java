@@ -56,7 +56,7 @@ public class DrawFreeCut extends DrawCutWrapper {
         VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
         newPoint = newPoint.sub(offset);
         newPoints.add(newPoint);
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs, this.cut.getState());
 
         return this.cut.getPoints().size() >= 2; // returns true if all the points are added
     }
@@ -86,14 +86,13 @@ public class DrawFreeCut extends DrawCutWrapper {
             if(this.points.isEmpty()){ // If first point, set anchor
                 VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
                 refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
-                drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
             }
 
-            p.setColor(Color.GREEN);
+            p.setColor(SNAP_COLOR);
             p.setValid(PersoPoint.Valid.VALID);
         }
         else{
-            p.setColor(Color.RED);
+            p.setColor(INVALID_COLOR);
             p.setValid(PersoPoint.Valid.NOT_VALID);
         }
     }

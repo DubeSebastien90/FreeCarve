@@ -43,4 +43,8 @@ public class GenericAttributeBox extends BasicWindow {
     protected void setNotModifiable(){
         this.setBackground(UIManager.getColor("SubWindow.darkBackground1"));
     }
+
+    protected  void setError(){
+        this.setBackground(UIManager.getColor("Button.red"));
+    }
 }

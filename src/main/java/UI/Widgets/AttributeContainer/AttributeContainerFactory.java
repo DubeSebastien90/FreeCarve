@@ -1,5 +1,6 @@
 package UI.Widgets.AttributeContainer;
 
+import Common.CutState;
 import Common.DTO.CutDTO;
 import Domain.CutType;
 import UI.MainWindow;
@@ -9,7 +10,10 @@ import UI.Widgets.CutBox;
 public class AttributeContainerFactory {
 
     public static AttributeContainer create(MainWindow mainWindow, CutListPanel cutListPanel, CutDTO cutDTO, CutBox cutBox){
-        if(cutDTO.getCutType() == CutType.LINE_VERTICAL){
+        if(cutDTO.getState() == CutState.NOT_VALID){
+            return new AttributeContainerError(mainWindow, cutListPanel, cutDTO, cutBox);
+        }
+        else if(cutDTO.getCutType() == CutType.LINE_VERTICAL){
             return new AttributeContainerVertical(mainWindow, cutListPanel, cutDTO, cutBox);
         }
         else if(cutDTO.getCutType() == CutType.LINE_HORIZONTAL){

@@ -50,7 +50,7 @@ public class DrawCutBorder extends DrawCutWrapper{
                 newPoints.add(mainWindow.getController().getDefaultBorderPointCut());
                 newPoints.add(mainWindow.getController().getDefaultBorderPointCut()); // adds two points points size checking
             }
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs, this.cut.getState());
             return true;
         }
         return false;
@@ -77,12 +77,12 @@ public class DrawCutBorder extends DrawCutWrapper{
             refs = mainWindow.getController().getRefCutsAndBorderOnPoint(snapPoint);
 
             if(!refs.isEmpty()){
-                p.setColor(Color.GREEN);
+                p.setColor(VALID_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
             }
         }
         else{
-            p.setColor(Color.RED);
+            p.setColor(INVALID_COLOR);
             p.setValid(PersoPoint.Valid.NOT_VALID);
         }
     }

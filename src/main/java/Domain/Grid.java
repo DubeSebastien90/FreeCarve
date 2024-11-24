@@ -1,5 +1,6 @@
 package Domain;
 
+import Common.CutState;
 import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
@@ -217,6 +218,7 @@ public class Grid {
 
         // Testing all of the cuts
         for (Cut wrapper : board.getCutList()) {
+            if(wrapper.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
             List<VertexDTO> points = wrapper.getAbsolutePointsPosition();
             if (points.size() > 1) {
                 for (int i = 0; i < points.size() - 1; i++) {
@@ -318,7 +320,7 @@ public class Grid {
         List<Cut> allLineList = board.getCutList();
 
         for(Cut cut : allLineList){
-
+            if(cut.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
             List<VertexDTO> points = cut.getAbsolutePointsPosition();
             for(int i =0; i < points.size() - 1; i++){
                 Optional<Pair<VertexDTO, Double>> isPointOnLine = isPointOnLineGetRef(point, points.get(i), points.get(i+1));
@@ -360,10 +362,10 @@ public class Grid {
 
         for(Cut cuts : allLineList){
             List<VertexDTO> points = cuts.getAbsolutePointsPosition();
-
+            if(cuts.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
             if(points.size() > 1){
                 for(Cut cuts2 : allLineList){
-
+                    if(cuts2.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
                     List<VertexDTO> points2 = cuts2.getAbsolutePointsPosition();
                     if(points2.size() > 1){
                         for(int i =0; i < points.size()-1; i++){

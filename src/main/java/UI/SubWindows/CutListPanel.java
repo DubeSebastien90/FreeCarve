@@ -24,7 +24,6 @@ import java.util.UUID;
  */
 public class CutListPanel extends BasicWindow implements ChangeAttributeListener {
     private List<CutBox> cutBoxes;
-    private List<CutDTO> cuts;
     private JPanel panel;
     private BoxLayout layout;
     private JScrollPane scrollPane;
@@ -48,7 +47,7 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
      * Updates the UI of the CutList based on the stored CutDTO
      */
     public void update(){
-        this.cuts = mainWindow.getController().getCutListDTO();
+        List<CutDTO> cuts = mainWindow.getController().getCutListDTO();
         this.cutBoxes = new ArrayList<CutBox>();
         for (int i = 0; i < cuts.size(); i++) {
             CutDTO cut = cuts.get(i);
@@ -76,8 +75,10 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
         }
 
         panel.removeAll();
-        for (CutBox cutBox : this.cutBoxes) {
-            this.panel.add(cutBox.getPanel());
+        List<CutDTO> cuts = mainWindow.getController().getCutListDTO();
+        for (int i =0; i < cuts.size(); i++) {
+            cutBoxes.get(i).updatePanel(cuts.get(i));
+            this.panel.add(cutBoxes.get(i).getPanel());
         }
 
         this.revalidate();
@@ -99,7 +100,6 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
      * Initiates all of the {@code CutList} components
      */
     private void init() {
-        this.cuts = new ArrayList<CutDTO>();
         cutBoxes = new ArrayList<CutBox>();
         panel = new JPanel();
         layout = new BoxLayout(panel, BoxLayout.PAGE_AXIS);

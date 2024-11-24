@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import Common.CutState;
 import Common.Util;
 import Domain.CutType;
 
@@ -33,7 +34,7 @@ public class PanelDTO {
         borderPoints.add(new VertexDTO(panelDimension.getX(), panelDimension.getY(), 0 ));
         borderPoints.add(new VertexDTO(panelDimension.getX(), 0,0 ));
         borderPoints.add(new VertexDTO(0, 0,0 ));
-        this.borderCut = new CutDTO(borderUUID, panelDimension.getZ(), 0, CutType.RECTANGULAR, borderPoints, new ArrayList<RefCutDTO>());
+        this.borderCut = new CutDTO(borderUUID, panelDimension.getZ(), 0, CutType.RECTANGULAR, borderPoints, new ArrayList<RefCutDTO>(), CutState.VALID);
     }
 
     public List<CutDTO> getCutsDTO() {

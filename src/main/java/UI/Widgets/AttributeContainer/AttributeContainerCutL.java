@@ -49,11 +49,10 @@ public class AttributeContainerCutL extends AttributeContainer{
         super.init_attribute();
         offsetX = new SingleValueBox(mainWindow, true, "Largeur relative", "X",lEdgeEdgeX(), UIConfig.INSTANCE.getDefaultUnit());
         offsetY = new SingleValueBox(mainWindow, true, "Hauteur relative", "Y",lEdgeEdgeY(), UIConfig.INSTANCE.getDefaultUnit());
-        offsetXCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distances centrales (GCODE)", "X",Math.abs(lEdgeEdgeX()), UIConfig.INSTANCE.getDefaultUnit());
-        offsetYCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distances centrales (GCODE)", "Y",Math.abs(lEdgeEdgeY()), UIConfig.INSTANCE.getDefaultUnit());
-        absoluteOffsetX = new SingleValueBoxNotEditable(mainWindow, true, "Largeur absolue", "X",lCenterCenterX(), UIConfig.INSTANCE.getDefaultUnit());
-        absoluteOffsetY = new SingleValueBoxNotEditable(mainWindow, true, "Hauteur absolute", "Y",lCenterCenterY(), UIConfig.INSTANCE.getDefaultUnit());
-
+        absoluteOffsetX = new SingleValueBoxNotEditable(mainWindow, true, "Largeur absolue", "X",Math.abs(lEdgeEdgeX()), UIConfig.INSTANCE.getDefaultUnit());
+        absoluteOffsetY = new SingleValueBoxNotEditable(mainWindow, true, "Hauteur absolute", "Y",Math.abs(lEdgeEdgeY()), UIConfig.INSTANCE.getDefaultUnit());
+        offsetXCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distances centrales (GCODE)", "X",lCenterCenterX(), UIConfig.INSTANCE.getDefaultUnit());
+        offsetYCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distances centrales (GCODE)", "Y",lCenterCenterY(), UIConfig.INSTANCE.getDefaultUnit());
     }
 
     private void init_layout(){

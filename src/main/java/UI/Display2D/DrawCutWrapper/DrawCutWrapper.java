@@ -1,5 +1,6 @@
 package UI.Display2D.DrawCutWrapper;
 
+import Common.CutState;
 import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
@@ -42,7 +43,14 @@ public abstract class DrawCutWrapper {
         NOT_SELECTED,
         HOVER,
         REF,
+        INVALID,
     }
+
+    protected final Color INVALID_COLOR = Color.RED;
+    protected final Color ANCHOR_COLOR = Color.BLACK;
+    protected final Color SNAP_COLOR = Color.YELLOW;
+    protected final Color VALID_COLOR = Color.GREEN;
+    protected final Color HOVER_COLOR = Color.BLUE;
 
     /**
      * Draws the completed cut
@@ -115,6 +123,7 @@ public abstract class DrawCutWrapper {
         cursorPoint  = null;
         this.update(renderer);
         this.refs = new ArrayList<>();
+
     }
 
     /**
@@ -130,12 +139,13 @@ public abstract class DrawCutWrapper {
         int selectedBit = mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().getSelectedBit();
         try{
             BitDTO bit = validateSelectedBit(selectedBit);
-            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, selectedBit, type, new ArrayList<VertexDTO>(), refs);
+
+            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, selectedBit, type, new ArrayList<VertexDTO>(), refs, CutState.VALID);
             this.strokeWidth = mainWindow.getController().getBitsDTO()[cut.getBitIndex()].getDiameter() * renderer.getZoom();
             this.stroke = new BasicStroke((float)strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         } catch (BitNotSelectedException e) {
             e.printStackTrace(); // Est-ce qu'on veut une barre d'action ou on affiche les commandes a faire?
-            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>(), refs);
+            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>(), refs, CutState.VALID);
             this.stroke = new BasicStroke((float)strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         }
 
@@ -174,19 +184,22 @@ public abstract class DrawCutWrapper {
     {
         this.state = newState;
         if(newState == DrawCutState.SELECTED){
-            this.strokeColor = Color.YELLOW;
+            this.strokeColor = SNAP_COLOR;
             this.previousState = DrawCutState.SELECTED;
         }
         else if(newState == DrawCutState.HOVER){
-            this.strokeColor = Color.BLUE;
+            this.strokeColor = HOVER_COLOR;
             this.previousState = DrawCutState.HOVER;
         }
         else if(newState == DrawCutState.REF){
-            this.strokeColor = Color.GREEN;
+            this.strokeColor = VALID_COLOR;
             // No setting previous state because a temporary one
         }
+        else if(newState == DrawCutState.INVALID){
+            this.strokeColor = INVALID_COLOR;
+        }
         else{
-            this.strokeColor = Color.BLACK;
+            this.strokeColor = ANCHOR_COLOR;
             this.previousState = DrawCutState.NOT_SELECTED;
         }
 
@@ -217,7 +230,7 @@ public abstract class DrawCutWrapper {
      */
     public void createCursorPoint(Rendering2DWindow renderer){
         this.cursorPoint = new PersoPoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(),
-                cursorRadius, true, Color.RED);
+                cursorRadius, true, INVALID_COLOR);
     }
 
     /**
