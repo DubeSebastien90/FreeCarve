@@ -102,13 +102,13 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
         gbc.gridx = 0;
         gbc.weightx = 3;
         gbc.anchor = GridBagConstraints.CENTER;
-        add(modifyButton, gbc);
+        add(removeButton, gbc);
 
         gbc.insets = new Insets(0, 10, 15, 10);
         gbc.gridy = 3;
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.CENTER;
-        add(removeButton, gbc);
+        add(modifyButton, gbc);
     }
 
     /**
