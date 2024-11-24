@@ -126,7 +126,6 @@ public class DrawCutL extends DrawCutWrapper{
         }
         else{ // Second L cut point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-            System.out.println("SECOND");
             // For the snap area
             double threshold = renderer.scaleMMToPixel(snapThreshold);
 
