@@ -123,6 +123,7 @@ public class UiUtil {
                 case LINE_HORIZONTAL -> "horizontal";
                 case LINE_VERTICAL -> "vertical";
                 case LINE_FREE -> "modify";
+                case RETAILLER -> "retailler";
                 default -> "forbidden"; // default in case of bad name of icon
             };
     }
@@ -141,6 +142,7 @@ public class UiUtil {
             case LINE_HORIZONTAL -> iconName = "Ligne horizontale";
             case LINE_VERTICAL -> iconName = "Ligne verticale";
             case LINE_FREE -> iconName = "Coupe droite libre";
+            case RETAILLER -> iconName = "Bordure";
             default -> iconName = "Interdit"; // default in case of bad name of icon
         }
         return iconName;

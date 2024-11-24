@@ -75,7 +75,7 @@ public class AttributeContainerVertical extends AttributeContainer {
         super.init_attribute();
         distanceFromEdgeToEdge = new SingleValueBox(mainWindow, true, "Distance relative de la sous-pièce", "X", edgeEdgeX(), UIConfig.INSTANCE.getDefaultUnit());
         absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow, true, "Taille de la sous-pièce", "X", Math.abs(edgeEdgeX()), UIConfig.INSTANCE.getDefaultUnit());
-        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distance des coupes centrales (GCODE)", "X", centerCenterX(), UIConfig.INSTANCE.getDefaultUnit());
+        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distances centrales (GCODE)", "X", centerCenterX(), UIConfig.INSTANCE.getDefaultUnit());
     }
 
     @Override

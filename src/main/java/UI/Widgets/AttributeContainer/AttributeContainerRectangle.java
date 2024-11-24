@@ -179,6 +179,9 @@ public class AttributeContainerRectangle extends AttributeContainer{
         addEventListenerToResizeInternalWidth(widthOfRectangle);
         addEventListenerToResizeInternalHeight(heightOfRectangle);
         addEventListenerToMoveOffset(offsetOfRectangle);
+
+        addEventListenerToBitChoiceBox(bitChoiceBox);
+        addEventListenerToDepth(depthBox);
     }
 
     @Override
@@ -191,6 +194,7 @@ public class AttributeContainerRectangle extends AttributeContainer{
         heightOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(getRectangleEdgeEdgeY());
         absoluteWidthOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(getRectangleEdgeEdgeX()));
         absoluteHeightOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(getRectangleEdgeEdgeY()));
+
     }
 
     private void addEventListenerToResizeInternalWidth(SingleValueBox sb){

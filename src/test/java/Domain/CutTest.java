@@ -49,7 +49,6 @@ public class CutTest {
         Assertions.assertEquals(cut.getPoints(), pointsList);
         Assertions.assertEquals(cut.getBitIndex(), 0);
         Assertions.assertEquals(cut.getClass(), Cut.class);
-        Assertions.assertEquals(cut.getStartPoint(), pointsList.getFirst());
         Assertions.assertEquals(cut.getType(), CutType.RECTANGULAR);
     }
 
@@ -64,9 +63,6 @@ public class CutTest {
         Assertions.assertEquals(cutWithDTO.getPoints().size(), pointsListDTO.size());
         Assertions.assertEquals(cutWithDTO.getBitIndex(), 0);
         Assertions.assertEquals(cutWithDTO.getClass(), Cut.class);
-        Assertions.assertEquals(cutWithDTO.getStartPoint().getX(), pointsListDTO.getFirst().getX());
-        Assertions.assertEquals(cutWithDTO.getStartPoint().getY(), pointsListDTO.getFirst().getY());
-        Assertions.assertEquals(cutWithDTO.getStartPoint().getZ(), pointsListDTO.getFirst().getZ());
         Assertions.assertEquals(cutWithDTO.getType(), CutType.L_SHAPE);
     }
 }

@@ -18,6 +18,12 @@ public class AttributeContainerFactory {
         else if(cutDTO.getCutType() == CutType.RECTANGULAR){
             return  new AttributeContainerRectangle(mainWindow, cutListPanel, cutDTO, cutBox);
         }
+        else if(cutDTO.getCutType() == CutType.RETAILLER){
+            return new AttributeContainerBorder(mainWindow, cutListPanel, cutDTO, cutBox);
+        }
+        else if(cutDTO.getCutType() == CutType.L_SHAPE){
+            return new AttributeContainerCutL(mainWindow, cutListPanel, cutDTO, cutBox);
+        }
         else{
             return new AttributeContainerVertical(mainWindow, cutListPanel, cutDTO, cutBox);
         }

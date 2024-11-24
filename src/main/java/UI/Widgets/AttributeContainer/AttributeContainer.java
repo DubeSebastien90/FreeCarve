@@ -86,32 +86,16 @@ public abstract class AttributeContainer extends BasicWindow {
         return cutDTO.getPoints().getFirst().getY();
     }
 
+    protected double centerCenterToEdgeEdge(double edgeEdge){
+        int currentBitIndex = mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().getSelectedBit();
+        int refBitIndex = cutDTO.getRefsDTO().getFirst().getCut().getBitIndex();
+        return mainWindow.getController().centerCenterToEdgeEdge(edgeEdge, currentBitIndex, refBitIndex);
+    }
+
     protected double edgeEdgeToCenterCenter(double edgeEdge){
         int currentBitIndex = mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().getSelectedBit();
         int refBitIndex = cutDTO.getRefsDTO().getFirst().getCut().getBitIndex();
         return mainWindow.getController().edgeEdgeToCenterCenter(edgeEdge, currentBitIndex, refBitIndex);
-    }
-
-    /**
-     * Adding the custom event listeners to BitChoiceBox objects. The goal is to make
-     * the ComboBox attribute react to change events
-     *
-     * Called when the user selects a new bit in the BitChoiceBox
-     *
-     * @param cb {@code BitChoiceBox object} The combo box containing the bits informations
-     */
-    protected void addEventListenerToBitChoiceBox(BitChoiceBox cb) {
-        cb.getComboBox().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JComboBox comboBox = (JComboBox) e.getSource();
-                CutDTO c = new CutDTO(cutDTO);
-                ComboBitItem chosenBit = (ComboBitItem) comboBox.getModel().getSelectedItem();
-                c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
-                mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutDTO, cutBox));
-            }
-        });
     }
 
     protected void init_attribute(){
@@ -152,6 +136,29 @@ public abstract class AttributeContainer extends BasicWindow {
                 c = new CutDTO(c.getId(), sb.getInput().getMMValue(), c.getBitIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
+            }
+        });
+    }
+
+
+    /**
+     * Adding the custom event listeners to BitChoiceBox objects. The goal is to make
+     * the ComboBox attribute react to change events
+     *
+     * Called when the user selects a new bit in the BitChoiceBox
+     *
+     * @param cb {@code BitChoiceBox object} The combo box containing the bits informations
+     */
+    protected void addEventListenerToBitChoiceBox(BitChoiceBox cb) {
+        cb.getComboBox().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox comboBox = (JComboBox) e.getSource();
+                CutDTO c = new CutDTO(cutDTO);
+                ComboBitItem chosenBit = (ComboBitItem) comboBox.getModel().getSelectedItem();
+                c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
+                mainWindow.getController().modifyCut(c);
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutDTO, cutBox));
             }
         });
     }

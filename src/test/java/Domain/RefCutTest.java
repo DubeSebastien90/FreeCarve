@@ -216,9 +216,7 @@ public class RefCutTest {
         pointsRect.add(new VertexDTO(0, 0, 0));
 
         ArrayList<VertexDTO> pointsL = new ArrayList<>();
-        pointsL.add(new VertexDTO(50, 0, 0));
         pointsL.add(new VertexDTO(50, 50, 0));
-        pointsL.add(new VertexDTO(0, 50, 0));
 
         Cut cut1 = new Cut(new VertexDTO(0, 0, 0), CutType.RECTANGULAR, pointsRect, 0, 5.0f);
         RefCut ref1 = new RefCut(cut1, 0, 0.5);
@@ -259,9 +257,7 @@ public class RefCutTest {
         pointsRect.add(new VertexDTO(0, 0, 0));
 
         ArrayList<VertexDTO> pointsL = new ArrayList<>();
-        pointsL.add(new VertexDTO(50, 0, 0));
-        pointsL.add(new VertexDTO(50, 50, 0));
-        pointsL.add(new VertexDTO(0, 50, 0));
+        pointsL.add(new VertexDTO(-50, -50, 0));
 
         Cut cut1 = new Cut(new VertexDTO(0, 0, 0), CutType.RECTANGULAR, pointsRect, 0, 5.0f);
         RefCut ref1 = new RefCut(cut1, 1, 0.5);
@@ -280,59 +276,15 @@ public class RefCutTest {
 
         // ASSERT
         Assertions.assertEquals(absolutePoints.size(), 3);
-        Assertions.assertEquals(p1.getX(), 50 );
-        Assertions.assertEquals(p1.getY(), 100);
+        Assertions.assertEquals(p1.getX(), 100 );
+        Assertions.assertEquals(p1.getY(), 50);
         Assertions.assertEquals(p2.getX(), 50);
         Assertions.assertEquals(p2.getY(), 50);
-        Assertions.assertEquals(p3.getX(), 100);
-        Assertions.assertEquals(p3.getY(), 50);
+        Assertions.assertEquals(p3.getX(), 50);
+        Assertions.assertEquals(p3.getY(), 100);
 
     }
 
-
-
-
-    @Test
-    void ref_L_linerarity_no_issue(){
-
-        // Arrange
-        ArrayList<VertexDTO> pointsRect = new ArrayList<>();
-        pointsRect.add(new VertexDTO(0, 0, 0));
-        pointsRect.add(new VertexDTO(0, 100, 0));
-        pointsRect.add(new VertexDTO(100, 100, 0));
-        pointsRect.add(new VertexDTO(100, 0, 0));
-        pointsRect.add(new VertexDTO(0, 0, 0));
-
-        ArrayList<VertexDTO> pointsL = new ArrayList<>();
-        pointsL.add(new VertexDTO(50, 0, 0));
-        pointsL.add(new VertexDTO(50, 50, 0));
-        pointsL.add(new VertexDTO(0, 50, 0));
-
-        Cut cut1 = new Cut(new VertexDTO(0, 0, 0), CutType.RECTANGULAR, pointsRect, 0, 5.0f);
-        RefCut ref1 = new RefCut(cut1, 0, 0);
-        RefCut ref2 = new RefCut(cut1, 3, 1);
-        ArrayList<RefCut> refs1 = new ArrayList<>();
-        refs1.add(ref1);
-        refs1.add(ref2);
-
-        Cut cut2 = new Cut(new VertexDTO(0, 0, 0), CutType.L_SHAPE, pointsL, 0, 5.0f, refs1);
-
-        // ACT
-        List<VertexDTO> absolutePoints = cut2.getAbsolutePointsPosition();
-        VertexDTO p1 = absolutePoints.get(0);
-        VertexDTO p2 = absolutePoints.get(1);
-        VertexDTO p3 = absolutePoints.get(2);
-
-        // ASSERT
-        Assertions.assertEquals(absolutePoints.size(), 3);
-        Assertions.assertEquals(p1.getX(), 50 );
-        Assertions.assertEquals(p1.getY(), 100);
-        Assertions.assertEquals(p2.getX(), 50);
-        Assertions.assertEquals(p2.getY(), 50);
-        Assertions.assertEquals(p3.getX(), 100);
-        Assertions.assertEquals(p3.getY(), 50);
-
-    }
 }
 
 

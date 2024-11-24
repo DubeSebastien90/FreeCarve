@@ -36,18 +36,15 @@ public class DrawCutL extends DrawCutWrapper{
 
     @Override
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
+
         this.update(renderer);
-
-        if(!this.points.isEmpty()){
-            boolean isPointValid  = setRefsInterpolationToCursor(new VertexDTO(cursor.getLocationX(), cursor.getLocationY(), 0));
-
-            if(isPointValid && this.cursorPoint.getValid() != PersoPoint.Valid.NOT_VALID){
-                this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), this.cut.getPoints(), refs);
-            }
-        }
 
         graphics2D.setStroke(stroke);
         graphics2D.setColor(cursor.getColor());
+
+        if(!this.points.isEmpty()){
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(cursor), refs);
+        }
 
         for (int i =0; i < points.size()-1; i++){
             points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), this.strokeWidth);
@@ -61,80 +58,33 @@ public class DrawCutL extends DrawCutWrapper{
 
     @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
-        List<VertexDTO> newPoints = this.cut.getPoints();
 
-        if(newPoints.isEmpty()){
-            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
-            newPoints.add(newPoint);
-            newPoints.add(new VertexDTO(newPoint));
-            newPoints.add(new VertexDTO(newPoint));
-
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
+        if(points.isEmpty()){
+            compute3Points(pointInMM);
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(pointInMM), refs);
             return false;
         }
-        else{
-
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
+        else if(refs.size() >= 2){
+            compute3Points(pointInMM);
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(pointInMM), refs);
             return true;
+        }
+        else{
+            return false;
         }
     }
 
-    private boolean setRefsInterpolationToCursor(VertexDTO cursor){
-        List<VertexDTO> out = new ArrayList<>();
+    private List<VertexDTO> compute3Points(PersoPoint cursor){
+        List<VertexDTO> newPoints = new ArrayList<>();
+        VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
+        VertexDTO p1 = new VertexDTO(cursor.getLocationX(), cursor.getLocationY(), 0.0f);
+        p1 = p1.sub(offset);
 
-        if(refs.size() < 2){
-            return false; // can't compute the perpendicularPoints of the ref
-        }
-
-        VertexDTO p1a = refs.getFirst().getAbsoluteFirstPoint(mainWindow.getController());
-        VertexDTO p1b = refs.getFirst().getAbsoluteSecondPoint(mainWindow.getController());
-
-        VertexDTO p2a = refs.get(1).getAbsoluteFirstPoint(mainWindow.getController());
-        VertexDTO p2b = refs.get(1).getAbsoluteSecondPoint(mainWindow.getController());
-
-        Pair<VertexDTO, VertexDTO> pair1 = VertexDTO.perpendicularPointsAroundP1(p1a, p1b);
-        Pair<VertexDTO, VertexDTO> pair2= VertexDTO.perpendicularPointsAroundP1(p2a, p2b);
-
-        VertexDTO v1 = pair1.getSecond().sub(pair1.getFirst());
-        VertexDTO v2 = pair2.getSecond().sub(pair2.getFirst());
-
-
-        VertexDTO l1p1 = cursor;
-        VertexDTO l1p2 = cursor.add(v1);
-
-        VertexDTO l2p1 = cursor;
-        VertexDTO l2p2 = cursor.add(v2);
-
-        Optional<VertexDTO> intersection1 = VertexDTO.isLineIntersectNoLimitation(l1p1, l1p2, p1a, p1b);
-        Optional<VertexDTO> intersection2 = VertexDTO.isLineIntersectNoLimitation(l2p1, l2p2, p2a, p2b);
-
-
-        if(intersection1.isPresent() && intersection2.isPresent()){
-
-            VertexDTO p1 = intersection1.get();
-            VertexDTO p2 = intersection2.get();
-
-            VertexDTO numerator1 = p1.sub(p1a);
-            VertexDTO numerator2 = p2.sub(p2a);
-
-            VertexDTO denominator1 = p1b.sub(p1a);
-            VertexDTO denominator2 = p2b.sub(p2a);
-
-            double t1 = numerator1.getDistance() / denominator1.getDistance();
-            double t2 = numerator2.getDistance() / denominator2.getDistance();
-
-            if(t1 >= 0 && t1 <= 1 && t2 >=0 && t2 <= 1){
-                RefCutDTO newRef1 = new RefCutDTO(refs.getFirst().getCut(), refs.getFirst().getIndex(), t1);
-                RefCutDTO newRef2 = new RefCutDTO(refs.get(1).getCut(), refs.get(1).getIndex(), t2);
-                this.refs = new ArrayList<>();
-                refs.add(newRef1);
-                refs.add(newRef2);
-                return true;
-            }
-
-        }
-
-        return false;
+        VertexDTO newPoint = new VertexDTO(p1.getX(), p1.getY(),  this.cut.getDepth());
+        newPoints.add(newPoint);
+        newPoints.add(newPoint);
+        newPoints.add(newPoint); // add 3 to prevent amount of points error
+        return newPoints;
     }
 
     @Override
@@ -146,7 +96,7 @@ public class DrawCutL extends DrawCutWrapper{
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing){
         PersoPoint p = this.cursorPoint;
 
-        if(this.points.isEmpty()){ // First point
+        if(points.isEmpty()){ // First point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
             double threshold = renderer.scaleMMToPixel(snapThreshold);
@@ -164,6 +114,10 @@ public class DrawCutL extends DrawCutWrapper{
                     p.setColor(Color.GREEN);
                     p.setValid(PersoPoint.Valid.VALID);
                 }
+                else{
+                    p.setColor(Color.RED);
+                    p.setValid(PersoPoint.Valid.NOT_VALID);
+                }
             }
             else{
                 p.setColor(Color.RED);
@@ -172,7 +126,7 @@ public class DrawCutL extends DrawCutWrapper{
         }
         else{ // Second L cut point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-
+            System.out.println("SECOND");
             // For the snap area
             double threshold = renderer.scaleMMToPixel(snapThreshold);
 

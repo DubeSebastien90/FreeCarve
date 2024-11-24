@@ -75,10 +75,8 @@ class PanelCNC {
     public Optional<UUID> requestCut(RequestCutDTO cut) {
         //todo tester si la coupe est bonne ou non!!
         UUID newUUID = UUID.randomUUID();
-        System.out.println(getCutList().size());
         CutDTO cutDTO = new CutDTO(newUUID, cut);
         memorizer.executeAndMemorize(()->this.cutList.add(createPanelCut(cutDTO)), ()->this.cutList.removeIf(e->e.getId() == newUUID));
-        System.out.println(getCutList().size());
         return Optional.of(newUUID);
     }
 

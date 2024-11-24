@@ -79,7 +79,7 @@ public class AttributeContainerHorizontal extends AttributeContainer {
         super.init_attribute();
         distanceFromEdgeToEdge = new SingleValueBox(mainWindow,true, "Distance relative de la sous-pièce", "Y", edgeEdgeY(), UIConfig.INSTANCE.getDefaultUnit());
         absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow,true, "Taille de la sous-pièce", "Y", Math.abs(edgeEdgeY()), UIConfig.INSTANCE.getDefaultUnit());
-        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distance des coupes centrales (GCODE)", "Y", centerCenterY(), UIConfig.INSTANCE.getDefaultUnit());
+        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distances centrales (GCODE)", "Y", centerCenterY(), UIConfig.INSTANCE.getDefaultUnit());
     }
 
     @Override
@@ -104,7 +104,7 @@ public class AttributeContainerHorizontal extends AttributeContainer {
      * Adding the custom event listeners to SingleValueBox objects. The goal is to make
      * the Value attribute react to change events
      *
-     * Changes the X offset of the vertical cut
+     * Changes the Y offset of the horizontal cut
      *
      * @param sb {@code SingleValueBox object}
      */
@@ -124,9 +124,6 @@ public class AttributeContainerHorizontal extends AttributeContainer {
             }
         });
     }
-
-
-
 
 }
 

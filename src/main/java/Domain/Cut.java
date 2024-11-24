@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
  * @since 2024-09-21
  */
 class Cut {
+
     private CutType type;
     private List<VertexDTO> points; // IMPORTANT : For rectangular cuts, there is always 5 points, i.e 2 times the first point to comeback to the original place
     private int bitIndex;
@@ -178,21 +179,76 @@ class Cut {
     }
 
     /**
+     * Returns a valid bordercut point, based on a margin
+     * @param margin
+     * @return
+     */
+    public static VertexDTO getBorderPointCut(double margin){
+        return new VertexDTO(margin, 0, 0);// The border margin is stored in the X axis
+    }
+
+    public static VertexDTO getBorderPointCutDefaultMargins(){
+        double defaultMargins = 50;
+        return new VertexDTO(defaultMargins, 0, 0); // The border margin is stored in the X axis
+    }
+
+    /**
      * Get the copied absolute points of the cut, based on it's references
      * @return List<VertexDTO> of the copied absolute points
      */
     public List<VertexDTO> getAbsolutePointsPosition() {
-        // 3 possibilies :
-        // 1 : CutType = Rectangular, or Line_Vertical or Line_Horizontal or Free_Line : get first ref and use it as anchor point
-        // 2 : CutType = L : get 2 ref points and use them as position of the L cut
-        // 3 : ref list is empty : just return the points
+        // 5 possibilies :
+
+        // 1 : ref list is empty : just return the points
+
+        // 2 : CutType = RETAILLER :    -number of refs : >=1
+        //                              -number of relative points : 2 - twice the same, they are empty except for the margin contained in the X axis
+        //                              -how absolute points are computed : based on it's single reference point (the first border ref), returns the same border cut but shifted by the margin of the relative point
+
+        // 3 : CutType = Line_Vertical or Line_Horizontal or Free_Line :
+        //                              -number of refs : >=1
+        //                              -number of relative points : 2
+        //                              -how absolute points are computed : based on it's first reference point, returns the shifted relative points by the ref offset
+
+        // 4 : CutType = L :            -number of refs : >=2
+        //                              -number of relative points : 1
+        //                              -how absolute points are computed : gets the intersection points of it's first two references, and offset the relative point by this offset. Then the first, third points are found by looking for the intersection of the rectangular lines to the ref
+
+        // 5 : CutType = Rectangular ;  -number of refs : >=2
+        //                              -number of relative points : 5 - twice the anchor point at position 0 and 4 + 3 other points of rect
+        //                              -how absolute points are computed : gets the intersection points of it's first two references, and offset the relative point by this offset.
+
         if (refs.isEmpty()){
             return this.getCopyPoints();
+        }
+        if(type == CutType.RETAILLER){
+            for(int i =0 ; i < refs.size(); i++){ // There could be references that are not the border of the pannel
+                if(refs.get(i).getCut().getBitIndex() == -1){ // This is indeed a border reference if bitIndex == -1
+                    ArrayList<VertexDTO> outputList = new ArrayList<>();
+                    RefCut ref = refs.getFirst();
+
+                    VertexDTO ap1 = ref.getAbsoluteFirstPoint();
+                    VertexDTO ap2 = ref.getAbsoluteSecondPoint();
+
+                    VertexDTO v = ap2.sub(ap1);
+                    Pair<VertexDTO, VertexDTO> rotated = VertexDTO.perpendicularPointsAroundP1(VertexDTO.zero(), v);
+                    VertexDTO diff = rotated.getSecond().normalize().mul(-points.get(i).getX());
+                    VertexDTO p1 = ap1.add(diff);
+                    VertexDTO p2 = ap2.add(diff);
+                    outputList.add(p1);
+                    outputList.add(p2);
+                    return outputList;
+                }
+            }
+            return getCopyPoints();
         }
         if (type == CutType.LINE_HORIZONTAL || type==CutType.LINE_VERTICAL || type== CutType.LINE_FREE){
             return  this.getCopyPointsWithOffset(refs.getFirst().getAbsoluteOffset());
         }
         if(type == CutType.RECTANGULAR){
+
+
+
             if(refs.size() < 2){throw new AssertionError(type + " needs two refs, it has " + refs.size());}
 
             // Needs to calculate the absolute two points
@@ -239,24 +295,41 @@ class Cut {
                 p2b = refs.get(1).getAbsoluteSecondPoint();// Changing the other ref point to prevent accidental colinearity
             }
 
-            // Needs to find the absolute corner point of the L-cut
-            // 1. Find the perpendicular lines of the two refs
-            // 2. Find the intersection of those 2 slopes
+            Optional<VertexDTO> intersectionPoint = VertexDTO.isLineIntersectNoLimitation(p1a,
+                    p1b, p2a, p2b);
 
-            Pair<VertexDTO, VertexDTO> paPerpendicular = VertexDTO.perpendicularPointsAroundP1(p1a, p1b);
-            Pair<VertexDTO, VertexDTO> pbPerpendicular = VertexDTO.perpendicularPointsAroundP1(p2a, p2b);
-            Optional<VertexDTO> intersectionPoint = VertexDTO.isLineIntersectNoLimitation(paPerpendicular.getFirst(),
-                    paPerpendicular.getSecond(), pbPerpendicular.getFirst(), pbPerpendicular.getSecond());
 
-            if(intersectionPoint.isEmpty()) {
+            if(intersectionPoint.isPresent()){
+
+                VertexDTO anchor = intersectionPoint.get();
+                VertexDTO corner = anchor.add(points.getFirst());
+
+                VertexDTO vToAnchor = anchor.sub(corner);
+
+                VertexDTO firstLineLineIntersect = new VertexDTO(vToAnchor.getX(), 0 ,0);
+                firstLineLineIntersect = firstLineLineIntersect.add(corner);
+                VertexDTO secondLineLineIntersect = new VertexDTO(0, vToAnchor.getY(), 0);
+                secondLineLineIntersect = secondLineLineIntersect.add(corner);
+
+                Optional<VertexDTO> intersection1 = VertexDTO.isLineIntersectNoLimitation(corner, firstLineLineIntersect, p1a, p1b);
+                Optional<VertexDTO> intersection2 = VertexDTO.isLineIntersectNoLimitation(corner, secondLineLineIntersect, p2a, p2b);
+
+                if(intersection1.isPresent() && intersection2.isPresent()){
+                    outputPoints.add(intersection1.get());
+                    outputPoints.add(corner);
+                    outputPoints.add(intersection2.get());
+                }
+                else{
+                    valid = false;
+                    outputPoints.add(firstLineLineIntersect);
+                    outputPoints.add(corner);
+                    outputPoints.add(secondLineLineIntersect);
+                }
+            }
+            else{
                 VertexDTO midpoint1 = p1a.add(p2a).mul(0.5);
                 outputPoints.add(p1a);
                 outputPoints.add(midpoint1);
-                outputPoints.add(p2a);
-            }
-            else{
-                outputPoints.add(p1a);
-                outputPoints.add(intersectionPoint.get());
                 outputPoints.add(p2a);
             }
 

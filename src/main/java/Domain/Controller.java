@@ -330,6 +330,19 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
+     * Returns an optionnal closest point to the board outlines based on a reference point
+     *
+     * @param point     reference point
+     * @param threshold threshold of the distance
+     * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
+     */
+    public Optional<VertexDTO> getGridPointNearBorder(VertexDTO point, double threshold) {
+        return this.grid.getPointNearAllBorder(point, this.currentProjectState.getPanel(), threshold, Optional.empty());
+    }
+
+
+
+    /**
      * Returns an optionnal closest point to all intersections on the board
      *
      * @param point     reference point
@@ -426,6 +439,17 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
+     * Transform a center-center distance of a cut into a edge-edge distance
+     * @param center center-center distance
+     * @param bitIndex1 bit index of the first point
+     * @param bitIndex2 bit index of the reference point
+     * @return the converted edge-edge distance
+     */
+    public double centerCenterToEdgeEdge(double center, int bitIndex1, int bitIndex2){
+        return this.currentProjectState.centerCenterToEdgeEdge(center, bitIndex1, bitIndex2);
+    }
+
+    /**
      * Generate a fixed list of points used by the rectangle cut according to an anchor point, a width and a height
      * @param anchor
      * @param width
@@ -436,8 +460,21 @@ public class Controller implements IUnitConverter, IMemorizer {
         return Cut.generateRectanglePoints(anchor, width, height);
     }
 
+    /**
+     * From a cut DTO queries the corresponding Cut Object to get it's absolute position
+     * @param cutDTO cutDto to query
+     * @return the list of absolute points
+     */
     public List<VertexDTO> getAbsolutePointsPosition(CutDTO cutDTO){
         return Cut.getAbsolutePointsPositionOfCutDTO(cutDTO, this.currentProjectState.getPanel());
+    }
+
+    public VertexDTO getBorderPointCut(double margin){
+        return Cut.getBorderPointCut(margin);
+    }
+
+    public VertexDTO getDefaultBorderPointCut(){
+        return Cut.getBorderPointCutDefaultMargins();
     }
 }
 

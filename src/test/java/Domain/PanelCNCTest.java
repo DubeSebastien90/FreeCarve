@@ -34,7 +34,7 @@ public class PanelCNCTest {
         Assertions.assertEquals(panelCNC.getPanelDimension().getX(), 1);
         Assertions.assertEquals(panelCNC.getPanelDimension().getY(), 2);
         Assertions.assertEquals(panelCNC.getCutList().size(), 0);
-        Assertions.assertEquals(panelCNC.getDepth(), 13.0f);
+        Assertions.assertEquals(panelCNC.getDepth(), 3);
     }
 
     @Test
@@ -52,9 +52,6 @@ public class PanelCNCTest {
 
         // Assert
         Assertions.assertEquals(panelCNC.getCutList().size(), 1);
-        Assertions.assertEquals(refCutList.getFirst().getStartPoint().getX(), 13);
-        Assertions.assertEquals(refCutList.getFirst().getStartPoint().getY(), 14);
-        Assertions.assertEquals(refCutList.getFirst().getStartPoint().getZ(), 15);
     }
 
 

@@ -69,6 +69,10 @@ class ProjectState {
         return panel;
     }
 
+    public VertexDTO getDefaultPanelDimension(){
+        return new VertexDTO(defaultPanelDimension);
+    }
+
     void setPanel(PanelCNC panel) {
         this.panel = panel;
     }
@@ -137,5 +141,17 @@ class ProjectState {
             return edgeEdge + bitDiameter1 + bitDiameter2;
         }
 
+    }
+
+    public double centerCenterToEdgeEdge(double centerCenter, int bitIndex1, int bitIndex2){
+        double bitDiameter1 = getBitDiameter(bitIndex1);
+        double bitDiameter2 = getBitDiameter(bitIndex2);
+
+        if(centerCenter > 0){
+            return centerCenter - bitDiameter1 -bitDiameter2;
+        }
+        else{
+            return centerCenter + bitDiameter1 + bitDiameter2;
+        }
     }
 }
