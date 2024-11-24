@@ -1,11 +1,9 @@
 package UI;
 
 import UI.SubWindows.BasicWindow;
-import UI.Widgets.BigButton;
 import UI.SubWindows.Rendering3DWindow;
-import com.sun.tools.javac.Main;
+import UI.Widgets.BigButton;
 
-import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -32,6 +30,7 @@ public class SimulationWindow extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
 
         rendering3DWindow = (new Rendering3DWindow(mainWindow.getController().getCameraId(), mainWindow));
+        mainWindow.getController().setScene();
         gbc.insets = new Insets(0, 0, 0, 10);
 
         gbc.gridx = 0;

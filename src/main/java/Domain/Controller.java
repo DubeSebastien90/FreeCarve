@@ -1,16 +1,13 @@
 package Domain;
 
 import Common.DTO.*;
+import Common.Exceptions.InvalidBitException;
 import Common.Interfaces.*;
 import Common.Units;
-import Domain.ThirdDimension.*;
-import Common.Exceptions.InvalidBitException;
-import Common.Interfaces.IDoAction;
-import Common.Interfaces.IRefreshable;
-import Common.Interfaces.IUndoAction;
 import Domain.IO.GcodeGenerator;
 import Domain.IO.ProjectFileManager;
 import Domain.ThirdDimension.Camera;
+import Domain.ThirdDimension.Mesh;
 import Domain.ThirdDimension.Scene;
 
 import java.awt.image.BufferedImage;
@@ -33,7 +30,7 @@ public class Controller implements IUnitConverter, IMemorizer {
     private Grid grid;
     private final int defaultGridPrecision = 5;
     private final int defaultMagnetPrecision = 5;
-    private final Scene scene;
+    private Scene scene;
     private final Camera camera;
 
     Controller(UndoRedoManager undoRedoManager, ProjectState projectState, Scene scene) {
@@ -47,6 +44,11 @@ public class Controller implements IUnitConverter, IMemorizer {
     public static Controller initialize() {
         UndoRedoManager undoRedoManager = new UndoRedoManager();
         return new Controller(undoRedoManager, new ProjectState(undoRedoManager), new Scene());
+    }
+
+    public void setScene() {
+        this.scene = new Scene(Mesh.PanelToMesh(getPanelDTO()));
+        this.camera.setScene(this.scene);
     }
 
     /**
@@ -366,7 +368,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param point point position to analyse
      * @return list of reference Cut touching the point
      */
-    public List<RefCutDTO> getRefCutsAndBorderOnPoint(VertexDTO point){
+    public List<RefCutDTO> getRefCutsAndBorderOnPoint(VertexDTO point) {
         return this.grid.getRefCutsAndBorderOnPoint(point, this.currentProjectState.getPanel());
     }
 
@@ -407,9 +409,10 @@ public class Controller implements IUnitConverter, IMemorizer {
 
     /**
      * Returns a Map of the Bits as (Position of the bit, BitDTO) to know what bit has a value
+     *
      * @return Map containing Position of the bit, BitDTO
      */
-    public Map<Integer, BitDTO> refreshConfiguredBitMaps(){
+    public Map<Integer, BitDTO> refreshConfiguredBitMaps() {
         return currentProjectState.getConfiguredBits();
     }
 

@@ -3,10 +3,11 @@ package Domain.ThirdDimension;
 import Common.DTO.VertexDTO;
 
 import java.awt.*;
-import java.io.IOException;
 import java.security.InvalidKeyException;
-import java.util.*;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -23,6 +24,7 @@ public class Scene {
 
     /**
      * Constructs scene with a list of meshes
+     *
      * @param meshes list of meshes
      */
     public Scene(List<Mesh> meshes) {
@@ -32,42 +34,45 @@ public class Scene {
     /**
      * Default constructor with temporary code
      */
-    public Scene(){
+    public Scene() {
         // Sets the default scene, the car for now
         try {
-            Mesh car = new Mesh(Vertex.zero(), Color.GRAY, getClass().getResourceAsStream("car.stl"), 100);
-            car.setRotationEuler(new Vertex(0, Math.PI/4, 0));
-            setMeshes(List.of(car));
-        } catch (Exception e){
-            System.out.println("Error within scene creation");
+            Mesh car = new Mesh(Vertex.zero(), Color.GRAY, getClass().getResource("car.stl").getPath(), 100);
+            car.setRotationEuler(new Vertex(0, Math.PI / 4, 0));
+        } catch (Exception e) {
+            System.out.println("File not found");
         }
     }
 
-    public Collection<Mesh> getMeshes(){
+    public Collection<Mesh> getMeshes() {
         return meshes.values();
     }
 
     /**
      * Retrieves a mesh with an id
+     *
      * @param uuid id of the mesh
      * @return the mesh
      * @throws InvalidKeyException if there is no mesh associated with that id
      */
     public Mesh getMesh(UUID uuid) throws InvalidKeyException {
-        if (!meshes.containsKey(uuid)) {throw new InvalidKeyException("Mesh with that id does not exist in the scene");}
+        if (!meshes.containsKey(uuid)) {
+            throw new InvalidKeyException("Mesh with that id does not exist in the scene");
+        }
         return meshes.get(uuid);
     }
 
-    public void setMeshes(List<Mesh> meshes){
+    public void setMeshes(List<Mesh> meshes) {
         this.meshes = meshes.stream().collect(Collectors.toMap(Mesh::getId, mesh -> mesh));
     }
 
     /**
      * Applies a transform to a mesh in the scene
-     * @param transformId id of the mesh
+     *
+     * @param transformId    id of the mesh
      * @param positionChange delta of the position change
      * @param rotationChange delta of the rotation change
-     * @param scaleChange delta fo the scale change
+     * @param scaleChange    delta fo the scale change
      * @throws InvalidKeyException if the mesh with that id doesn't exist in the scene
      */
     public void applyTransform(UUID transformId, VertexDTO positionChange, VertexDTO rotationChange, double scaleChange) throws InvalidKeyException {
