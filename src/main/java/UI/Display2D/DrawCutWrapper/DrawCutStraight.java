@@ -48,7 +48,7 @@ public class DrawCutStraight extends DrawCutWrapper{
         }
 
         if (!refs.isEmpty()){ // drawing the first anchor point
-            VertexDTO offset = refs.getFirst().getAbsoluteOffset();
+            VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
             PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
             referenceAnchorPoint.setColor(Color.BLACK);
             referenceAnchorPoint.drawMM(graphics2D, renderer);
@@ -67,7 +67,7 @@ public class DrawCutStraight extends DrawCutWrapper{
         else{
             List<VertexDTO> newPoints = this.cut.getPoints();
             VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
-            VertexDTO offset = refs.getFirst().getAbsoluteOffset();
+            VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
             newPoint = newPoint.sub(offset);
             newPoints.add(newPoint);
             this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);

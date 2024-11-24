@@ -435,5 +435,9 @@ public class Controller implements IUnitConverter, IMemorizer {
     public List<VertexDTO> generateRectanglePoints(VertexDTO anchor, double width, double height){
         return Cut.generateRectanglePoints(anchor, width, height);
     }
+
+    public List<VertexDTO> getAbsolutePointsPosition(CutDTO cutDTO){
+        return Cut.getAbsolutePointsPositionOfCutDTO(cutDTO, this.currentProjectState.getPanel());
+    }
 }
 

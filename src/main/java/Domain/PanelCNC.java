@@ -33,7 +33,6 @@ class PanelCNC {
      * Constructs a new {@code PanelCNC} with no {@code Cut} or {@code ClampZone} on it. The dimensions of the board are determined by the {@code VertexDTO} passed as parameter.
      *
      * @param panelDimension dimensions of the board
-     * @param depth          depth of the board
      */
     PanelCNC(VertexDTO panelDimension, IMemorizer memorizer) {
         this.cutList = new ArrayList<>();
@@ -76,8 +75,10 @@ class PanelCNC {
     public Optional<UUID> requestCut(RequestCutDTO cut) {
         //todo tester si la coupe est bonne ou non!!
         UUID newUUID = UUID.randomUUID();
+        System.out.println(getCutList().size());
         CutDTO cutDTO = new CutDTO(newUUID, cut);
         memorizer.executeAndMemorize(()->this.cutList.add(createPanelCut(cutDTO)), ()->this.cutList.removeIf(e->e.getId() == newUUID));
+        System.out.println(getCutList().size());
         return Optional.of(newUUID);
     }
 

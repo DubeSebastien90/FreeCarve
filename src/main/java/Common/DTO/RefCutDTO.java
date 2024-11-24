@@ -1,6 +1,9 @@
 package Common.DTO;
 
 
+import Domain.Controller;
+
+import javax.naming.ldap.Control;
 import java.util.List;
 
 /**
@@ -36,8 +39,8 @@ public class RefCutDTO {
         this.interpolation = refCutDTO.getInterpolation();
     }
 
-    public VertexDTO getAbsoluteOffset(){
-        List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition();
+    public VertexDTO getAbsoluteOffset(Controller controller){
+        List<VertexDTO> absoluteVertex = controller.getAbsolutePointsPosition(cut);
 
         VertexDTO p1 = absoluteVertex.get(index);
         VertexDTO p2 = absoluteVertex.get(index+1);
@@ -45,13 +48,13 @@ public class RefCutDTO {
         return p1.interpolation(p2, interpolation);
     }
 
-    public VertexDTO getAbsoluteFirstPoint(){
-        List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition();
+    public VertexDTO getAbsoluteFirstPoint(Controller controller){
+        List<VertexDTO> absoluteVertex = controller.getAbsolutePointsPosition(cut);
         return absoluteVertex.get(index);
     }
 
-    public VertexDTO getAbsoluteSecondPoint(){
-        List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition();
+    public VertexDTO getAbsoluteSecondPoint(Controller controller){
+        List<VertexDTO> absoluteVertex = controller.getAbsolutePointsPosition(cut);
         return absoluteVertex.get(index+1);
     }
 

@@ -26,8 +26,8 @@ public class CreateCutTest {
         VertexDTO p2 = new VertexDTO(100, 200, 0);
         List<RefCutDTO> refs = controller.getRefCutsAndBorderOnPoint(p1);
 
-        p1 = p1.sub(refs.getFirst().getAbsoluteOffset());
-        p2 = p2.sub(refs.getFirst().getAbsoluteOffset());
+        p1 = p1.sub(refs.getFirst().getAbsoluteOffset(controller));
+        p2 = p2.sub(refs.getFirst().getAbsoluteOffset(controller));
         points.add(p1);
         points.add(p2);
         RequestCutDTO request = new RequestCutDTO(points, CutType.LINE_VERTICAL, 0, 0, refs);
@@ -44,10 +44,10 @@ public class CreateCutTest {
         Assertions.assertEquals(0, cuts.getFirst().getPoints().get(1).getX());
         Assertions.assertEquals(200, cuts.getFirst().getPoints().get(1).getY());
 
-        Assertions.assertEquals(100, cuts.getFirst().getAbsolutePointsPosition().getFirst().getX());
-        Assertions.assertEquals(0, cuts.getFirst().getAbsolutePointsPosition().getFirst().getY());
-        Assertions.assertEquals(100, cuts.getFirst().getAbsolutePointsPosition().get(1).getX());
-        Assertions.assertEquals(200, cuts.getFirst().getAbsolutePointsPosition().get(1).getY());
+        Assertions.assertEquals(100, controller.getAbsolutePointsPosition(cuts.getFirst()).getFirst().getX());
+        Assertions.assertEquals(0, controller.getAbsolutePointsPosition(cuts.getFirst()).getFirst().getY());
+        Assertions.assertEquals(100, controller.getAbsolutePointsPosition(cuts.getFirst()).get(1).getX());
+        Assertions.assertEquals(200, controller.getAbsolutePointsPosition(cuts.getFirst()).get(1).getY());
     }
 
 
@@ -60,8 +60,8 @@ public class CreateCutTest {
         VertexDTO p2 = new VertexDTO(100, 200, 0);
         List<RefCutDTO> refs = controller.getRefCutsAndBorderOnPoint(p1);
 
-        p1 = p1.sub(refs.getFirst().getAbsoluteOffset());
-        p2 = p2.sub(refs.getFirst().getAbsoluteOffset());
+        p1 = p1.sub(refs.getFirst().getAbsoluteOffset(controller));
+        p2 = p2.sub(refs.getFirst().getAbsoluteOffset(controller));
         points.add(p1);
         points.add(p2);
         RequestCutDTO request = new RequestCutDTO(points, CutType.LINE_VERTICAL, 0, 0, refs);
@@ -72,8 +72,8 @@ public class CreateCutTest {
         p1 = new VertexDTO(100, 20, 0);
         p2 = new VertexDTO(150, 20, 0);
         refs = controller.getRefCutsAndBorderOnPoint(p1);
-        p1 = p1.sub(refs.getFirst().getAbsoluteOffset());
-        p2 = p2.sub(refs.getFirst().getAbsoluteOffset());
+        p1 = p1.sub(refs.getFirst().getAbsoluteOffset(controller));
+        p2 = p2.sub(refs.getFirst().getAbsoluteOffset(controller));
         points.add(p1);
         points.add(p2);
         request = new RequestCutDTO(points, CutType.LINE_HORIZONTAL, 0, 0, refs);
@@ -91,10 +91,10 @@ public class CreateCutTest {
         Assertions.assertEquals(0, cuts.getFirst().getPoints().get(1).getX());
         Assertions.assertEquals(200, cuts.getFirst().getPoints().get(1).getY());
 
-        Assertions.assertEquals(100, cuts.getFirst().getAbsolutePointsPosition().getFirst().getX());
-        Assertions.assertEquals(0, cuts.getFirst().getAbsolutePointsPosition().getFirst().getY());
-        Assertions.assertEquals(100, cuts.getFirst().getAbsolutePointsPosition().get(1).getX());
-        Assertions.assertEquals(200, cuts.getFirst().getAbsolutePointsPosition().get(1).getY());
+        Assertions.assertEquals(100, controller.getAbsolutePointsPosition(cuts.getFirst()).getFirst().getX());
+        Assertions.assertEquals(0, controller.getAbsolutePointsPosition(cuts.getFirst()).getFirst().getY());
+        Assertions.assertEquals(100, controller.getAbsolutePointsPosition(cuts.getFirst()).get(1).getX());
+        Assertions.assertEquals(200, controller.getAbsolutePointsPosition(cuts.getFirst()).get(1).getY());
 
 
         Assertions.assertEquals(0, cuts.get(1).getPoints().getFirst().getX());
@@ -102,10 +102,10 @@ public class CreateCutTest {
         Assertions.assertEquals(50, cuts.get(1).getPoints().get(1).getX());
         Assertions.assertEquals(0, cuts.get(1).getPoints().get(1).getY());
 
-        Assertions.assertEquals(100, cuts.get(1).getAbsolutePointsPosition().getFirst().getX());
-        Assertions.assertEquals(20, cuts.get(1).getAbsolutePointsPosition().getFirst().getY());
-        Assertions.assertEquals(150, cuts.get(1).getAbsolutePointsPosition().get(1).getX());
-        Assertions.assertEquals(20, cuts.get(1).getAbsolutePointsPosition().get(1).getY());
+        Assertions.assertEquals(100, controller.getAbsolutePointsPosition(cuts.get(1)).getFirst().getX());
+        Assertions.assertEquals(20, controller.getAbsolutePointsPosition(cuts.get(1)).getFirst().getY());
+        Assertions.assertEquals(150, controller.getAbsolutePointsPosition(cuts.get(1)).get(1).getX());
+        Assertions.assertEquals(20, controller.getAbsolutePointsPosition(cuts.get(1)).get(1).getY());
 
 
         // Act 2
@@ -127,10 +127,10 @@ public class CreateCutTest {
         Assertions.assertEquals(0+ offset, cuts.getFirst().getPoints().get(1).getX());
         Assertions.assertEquals(200 + offset, cuts.getFirst().getPoints().get(1).getY());
 
-        Assertions.assertEquals(100 + offset, cuts.getFirst().getAbsolutePointsPosition().getFirst().getX());
-        Assertions.assertEquals(0 + offset, cuts.getFirst().getAbsolutePointsPosition().getFirst().getY());
-        Assertions.assertEquals(100 + offset, cuts.getFirst().getAbsolutePointsPosition().get(1).getX());
-        Assertions.assertEquals(200 + offset, cuts.getFirst().getAbsolutePointsPosition().get(1).getY());
+        Assertions.assertEquals(100 + offset, controller.getAbsolutePointsPosition(cuts.getFirst()).getFirst().getX());
+        Assertions.assertEquals(0 + offset, controller.getAbsolutePointsPosition(cuts.getFirst()).getFirst().getY());
+        Assertions.assertEquals(100 + offset, controller.getAbsolutePointsPosition(cuts.getFirst()).get(1).getX());
+        Assertions.assertEquals(200 + offset, controller.getAbsolutePointsPosition(cuts.getFirst()).get(1).getY());
 
 
         // No offset because those positions should be relative
@@ -139,10 +139,10 @@ public class CreateCutTest {
         Assertions.assertEquals(50, cuts.get(1).getPoints().get(1).getX());
         Assertions.assertEquals(0, cuts.get(1).getPoints().get(1).getY());
 
-        Assertions.assertEquals(100 + offset, cuts.get(1).getAbsolutePointsPosition().getFirst().getX());
-        Assertions.assertEquals(20 + offset, cuts.get(1).getAbsolutePointsPosition().getFirst().getY());
-        Assertions.assertEquals(150 + offset, cuts.get(1).getAbsolutePointsPosition().get(1).getX());
-        Assertions.assertEquals(20 + offset, cuts.get(1).getAbsolutePointsPosition().get(1).getY());
+        Assertions.assertEquals(100 + offset, controller.getAbsolutePointsPosition(cuts.get(1)).getFirst().getX());
+        Assertions.assertEquals(20 + offset, controller.getAbsolutePointsPosition(cuts.get(1)).getFirst().getY());
+        Assertions.assertEquals(150 + offset, controller.getAbsolutePointsPosition(cuts.get(1)).get(1).getX());
+        Assertions.assertEquals(20 + offset, controller.getAbsolutePointsPosition(cuts.get(1)).get(1).getY());
     }
 
 }

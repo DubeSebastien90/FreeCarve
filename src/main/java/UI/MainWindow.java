@@ -91,6 +91,8 @@ public class MainWindow {
         mainInsidePanel.add(downBar.getDownBar(), BorderLayout.SOUTH);
         frame.add(mainInsidePanel);
         frame.setFocusable(true);
+
+
     }
 
     /**

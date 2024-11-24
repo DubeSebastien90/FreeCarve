@@ -92,9 +92,9 @@ public class AttributeContainerHorizontal extends AttributeContainer {
     @Override
     public void updatePanel(CutDTO newCutDTO) {
         cutDTO = newCutDTO;
-        distanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(edgeEdgeX());
-        absoluteDistanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(edgeEdgeX()));
-        distanceCenterToCenter.getInput().setValueInMMWithoutTrigerringListeners( centerCenterX());
+        distanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(edgeEdgeY());
+        absoluteDistanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(edgeEdgeY()));
+        distanceCenterToCenter.getInput().setValueInMMWithoutTrigerringListeners( centerCenterY());
         depthBox.getInput().setValueInMMWithoutTrigerringListeners(cutDTO.getDepth());
         revalidate();
         repaint();

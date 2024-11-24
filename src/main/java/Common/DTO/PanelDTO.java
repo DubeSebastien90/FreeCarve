@@ -54,16 +54,4 @@ public class PanelDTO {
         return Util.feet_to_mm(maxFeetHeight);
     }
 
-
-    /**
-     * Gets a list of the four points that represent the borders of the board
-     * @return List<VertexDTO> of the four points of the board
-     */
-    public List<VertexDTO> getListBoardPointsDTO(){
-        return this.borderCut.getPoints();
-    }
-
-    public CutDTO getBorderCut(){
-        return this.borderCut;
-    }
 }

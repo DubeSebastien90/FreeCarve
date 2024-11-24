@@ -53,7 +53,7 @@ public class DrawFreeCut extends DrawCutWrapper {
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
         List<VertexDTO> newPoints = this.cut.getPoints();
         VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
-        VertexDTO offset = refs.getFirst().getAbsoluteOffset();
+        VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
         newPoint = newPoint.sub(offset);
         newPoints.add(newPoint);
         this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);

@@ -86,11 +86,11 @@ public class DrawCutL extends DrawCutWrapper{
             return false; // can't compute the perpendicularPoints of the ref
         }
 
-        VertexDTO p1a = refs.getFirst().getAbsoluteFirstPoint();
-        VertexDTO p1b = refs.getFirst().getAbsoluteSecondPoint();
+        VertexDTO p1a = refs.getFirst().getAbsoluteFirstPoint(mainWindow.getController());
+        VertexDTO p1b = refs.getFirst().getAbsoluteSecondPoint(mainWindow.getController());
 
-        VertexDTO p2a = refs.get(1).getAbsoluteFirstPoint();
-        VertexDTO p2b = refs.get(1).getAbsoluteSecondPoint();
+        VertexDTO p2a = refs.get(1).getAbsoluteFirstPoint(mainWindow.getController());
+        VertexDTO p2b = refs.get(1).getAbsoluteSecondPoint(mainWindow.getController());
 
         Pair<VertexDTO, VertexDTO> pair1 = VertexDTO.perpendicularPointsAroundP1(p1a, p1b);
         Pair<VertexDTO, VertexDTO> pair2= VertexDTO.perpendicularPointsAroundP1(p2a, p2b);

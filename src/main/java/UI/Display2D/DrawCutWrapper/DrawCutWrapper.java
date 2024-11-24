@@ -59,7 +59,7 @@ public abstract class DrawCutWrapper {
         }
 
         for (RefCutDTO ref : cut.getRefsDTO()) {
-            VertexDTO absPoints = ref.getAbsoluteOffset();
+            VertexDTO absPoints = ref.getAbsoluteOffset(mainWindow.getController());
             PersoPoint p = new PersoPoint(absPoints.getX(), absPoints.getY(), this.cursorRadius, true);
             p.drawMM(graphics2D, renderer);
         }
@@ -240,7 +240,7 @@ public abstract class DrawCutWrapper {
      */
     protected void update(Rendering2DWindow renderer){
         this.points = new ArrayList<>();
-        for (VertexDTO point : cut.getAbsolutePointsPosition()){
+        for (VertexDTO point : mainWindow.getController().getAbsolutePointsPosition(cut)){
             PersoPoint p1 = new PersoPoint(point.getX(), point.getY(), 10.0f, true, strokeColor);
             points.add(p1);
         }

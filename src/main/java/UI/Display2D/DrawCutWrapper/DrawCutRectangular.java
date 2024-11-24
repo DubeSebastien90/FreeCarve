@@ -53,42 +53,54 @@ public class DrawCutRectangular extends DrawCutWrapper{
             point.drawMM(graphics2D, renderer);
         }
 
+        if (!refs.isEmpty()){ // drawing the first anchor point
+            VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
+            PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
+            referenceAnchorPoint.setColor(Color.BLACK);
+            referenceAnchorPoint.drawMM(graphics2D, renderer);
+        }
+
     }
 
     @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
         List<VertexDTO> newPoints = this.cut.getPoints();
 
-        if(newPoints.isEmpty()){ // premier point a ajouter
-            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
-            VertexDTO offset = refs.getFirst().getAbsoluteOffset();
-            newPoint = newPoint.sub(offset);
-            newPoints.add(newPoint);
+        if (refs.isEmpty()){
+            VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
+            refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+
+            if(refs.size() >= 2){ // refs must be at least 2 for the rectangle, because it follows the intersection
+                drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
+            }
+
         }
         else{
-            // Dans le cas contraire, c'est le dernier point, donc ajoute les 4 points finauxx:
-            //  3 - 2*
-            //  |   |
-            //  4 - 1
-            VertexDTO offset = refs.getFirst().getAbsoluteOffset();
-            VertexDTO p1 = newPoints.getFirst().add(offset);
-            VertexDTO p2 = new VertexDTO(pointInMM.getLocationX(),p1.getY(),  this.cut.getDepth());
-            VertexDTO p3 = new VertexDTO(p1.getX(),pointInMM.getLocationY(),  this.cut.getDepth());
-            VertexDTO p4 = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
-            VertexDTO p5 = new VertexDTO(p1.getX(), p1.getY(),  this.cut.getDepth());
+            if(newPoints.isEmpty()){ // premier point a ajouter
+                VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
+                VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
+                newPoint = newPoint.sub(offset);
+                newPoints.add(newPoint);
+            }
+            else{
+                // Dans le cas contraire, c'est le dernier point, donc ajoute les 4 points finaux:
+                //  3 - 2*
+                //  |   |
+                //  4 - 1
+                VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
+                VertexDTO p1 = newPoints.getFirst().add(offset);
+                VertexDTO mouseDTO = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), p1.getZ());
+                double width =  mouseDTO.sub(p1).getX();
+                double height = mouseDTO.sub(p1).getY();
 
-            p2 = p2.sub(offset);
-            p3 = p3.sub(offset);
-            p4 = p4.sub(offset);
-            p5 = p5.sub(offset);
-            newPoints.add(p2);
-            newPoints.add(p3);
-            newPoints.add(2, p4);
-            newPoints.add(p5);
+                newPoints = mainWindow.getController().generateRectanglePoints(p1, width, height);
+                for(int i =0; i <newPoints.size(); i++){
+                    newPoints.set(i, newPoints.get(i).sub(offset)); // Substraction du offset pour retourner en relativeSpace
+                }
+            }
         }
 
         this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs);
-
         return this.cut.getPoints().size() >= 5;
     }
 
@@ -100,31 +112,38 @@ public class DrawCutRectangular extends DrawCutWrapper{
     @Override
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing){
         PersoPoint p = this.cursorPoint;
-
-        if(this.points.isEmpty()){ // First point
+        if(refs.isEmpty()){
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
             double threshold = renderer.scaleMMToPixel(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+
             Optional<VertexDTO> closestPoint = mainWindow.getController().getPointNearIntersections(p1, threshold);
 
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
-
-                p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-                refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
-                drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
-
                 p.setColor(Color.GREEN);
                 p.setValid(PersoPoint.Valid.VALID);
             }
             else{
                 p.setColor(Color.RED);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
+            }
+        }
+        else if(this.points.isEmpty()){ // First point after anchor
+            p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-                if(!refs.isEmpty()){
-                    drawing.changeGoBackWrapperById(refs.getFirst().getCut().getId());
-                }
+            double threshold = renderer.scaleMMToPixel(snapThreshold);
+            VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
+
+            if(closestPoint.isPresent()){
+                p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
+
+                drawing.changeRefWrapperById(refs.getFirst().getCut().getId());
+
+                p.setColor(Color.GREEN);
+                p.setValid(PersoPoint.Valid.VALID);
             }
         }
         else{ // Rest of the rectangle points

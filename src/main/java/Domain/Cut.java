@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
  * @since 2024-09-21
  */
 class Cut {
-    private VertexDTO startPoint;
     private CutType type;
     private List<VertexDTO> points; // IMPORTANT : For rectangular cuts, there is always 5 points, i.e 2 times the first point to comeback to the original place
     private int bitIndex;
@@ -32,7 +31,6 @@ class Cut {
 
 
     public Cut(CutDTO uiCut, List<Cut> cutAndBorderList) {
-        this.startPoint = uiCut.getPoints().getFirst();
         this.type = uiCut.getCutType();
         this.points = uiCut.getPoints();
         this.bitIndex = uiCut.getBitIndex();
@@ -47,7 +45,6 @@ class Cut {
     }
 
     public void modifyCut(CutDTO uiCut, List<Cut> cutAndBorderList){
-        this.startPoint = uiCut.getPoints().getFirst();
         this.type = uiCut.getCutType();
         this.points = uiCut.getPoints();
         this.bitIndex = uiCut.getBitIndex();
@@ -71,7 +68,6 @@ class Cut {
      * @param depth      the depth of the cut
      */
     public Cut(VertexDTO startPoint, CutType type, List<VertexDTO> points, int bitIndex, double depth) {
-        this.startPoint = startPoint;
         this.type = type;
         this.points = points;
         this.bitIndex = bitIndex;
@@ -91,7 +87,6 @@ class Cut {
      * @param refCut        reference to the anchor point of the cut
      */
     public Cut(VertexDTO startPoint, CutType type, List<VertexDTO> points, int bitIndex, double depth, ArrayList<RefCut> refCut) {
-        this.startPoint = startPoint;
         this.type = type;
 
         this.points = new ArrayList<>();
@@ -111,14 +106,6 @@ class Cut {
 
     public CutDTO getDTO() {
         return new CutDTO(id, depth, bitIndex, type, points.stream().toList(), refs.stream().map(RefCut::getDTO).collect(Collectors.toList()));
-    }
-
-    public VertexDTO getStartPoint() {
-        return startPoint;
-    }
-
-    public void setStartPoint(VertexDTO startPoint) {
-        this.startPoint = startPoint;
     }
 
     public List<VertexDTO> getPoints() {
@@ -185,6 +172,11 @@ class Cut {
         return new ArrayList<>(List.of(p1,p2,p3,p4,p5));
     }
 
+    public static List<VertexDTO> getAbsolutePointsPositionOfCutDTO(CutDTO cutDTO, PanelCNC panelCNC){
+        Cut c = panelCNC.createPanelCut(cutDTO);
+        return c.getAbsolutePointsPosition();
+    }
+
     /**
      * Get the copied absolute points of the cut, based on it's references
      * @return List<VertexDTO> of the copied absolute points
@@ -197,8 +189,36 @@ class Cut {
         if (refs.isEmpty()){
             return this.getCopyPoints();
         }
-        if (type == CutType.LINE_HORIZONTAL || type==CutType.LINE_VERTICAL || type==CutType.RECTANGULAR || type== CutType.LINE_FREE){
+        if (type == CutType.LINE_HORIZONTAL || type==CutType.LINE_VERTICAL || type== CutType.LINE_FREE){
             return  this.getCopyPointsWithOffset(refs.getFirst().getAbsoluteOffset());
+        }
+        if(type == CutType.RECTANGULAR){
+            if(refs.size() < 2){throw new AssertionError(type + " needs two refs, it has " + refs.size());}
+
+            // Needs to calculate the absolute two points
+            VertexDTO p1a = refs.getFirst().getAbsoluteOffset();
+            VertexDTO p1b = refs.getFirst().getAbsoluteFirstPoint();
+            if(p1b.getDistance(p1a) < VertexDTO.doubleTolerance){
+                p1b = refs.getFirst().getAbsoluteSecondPoint();// Changing the other ref point to prevent accidental colinearity
+            }
+
+            // Get the first absolute reference point
+            VertexDTO p2a = refs.get(1).getAbsoluteOffset();
+            VertexDTO p2b = refs.get(1).getAbsoluteFirstPoint();
+            if(p2b.getDistance(p2a) < VertexDTO.doubleTolerance){
+                p2b = refs.get(1).getAbsoluteSecondPoint();// Changing the other ref point to prevent accidental colinearity
+            }
+
+            Optional<VertexDTO> intersectionPoint = VertexDTO.isLineIntersectNoLimitation(p1a,
+                    p1b, p2a, p2b);
+
+            if(intersectionPoint.isPresent()){
+                return  this.getCopyPointsWithOffset(intersectionPoint.get());
+            }
+            else{
+                return this.getCopyPoints();
+            }
+
         }
         if(type == CutType.L_SHAPE){
             if(refs.size() < 2){throw new AssertionError(type + " needs two refs, it has " + refs.size());}
