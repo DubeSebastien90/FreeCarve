@@ -128,7 +128,7 @@ public class CutBox implements Attributable {
         bitnameLabel.setText("Outil : " + (mainWindow.getController().getBitsDTO()[newCutDTO.getBitIndex()].getName()));
 
         // Setting the index of the cut
-        numberLabel.setText(String.valueOf(this.index));
+        numberLabel.setText(String.valueOf(this.index + 1));
 
         // Setting the image of the cutbox
         CutType type = this.cut.getCutType();

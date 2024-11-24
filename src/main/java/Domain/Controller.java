@@ -417,6 +417,10 @@ public class Controller implements IUnitConverter, IMemorizer {
         return new DimensionDTO((toConvert.value() * toConvert.unit().getRatio()) / targetUnit.getRatio(), targetUnit);
     }
 
+    public void resetPanelCNC(){
+        currentProjectState.resetPanelCNC();
+    }
+
 
     /**
      * Returns the bit diameter if index is valid. If index not valid, returns 0

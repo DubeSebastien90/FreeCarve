@@ -1,6 +1,8 @@
 package UI.SubWindows;
 
 import Common.DTO.CutDTO;
+import Common.Interfaces.IPanelObserver;
+import Common.Interfaces.IRefreshable;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
@@ -22,7 +24,7 @@ import java.util.UUID;
  * @version 0.1
  * @since 2024-09-21
  */
-public class CutListPanel extends BasicWindow implements ChangeAttributeListener {
+public class CutListPanel extends BasicWindow implements ChangeAttributeListener, IPanelObserver {
     private List<CutBox> cutBoxes;
     private JPanel panel;
     private BoxLayout layout;
@@ -116,6 +118,7 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
         panel.setAlignmentX(0);
         scrollPane.setAlignmentX(0);
         update();
+        addRefreshListener();
     }
 
     /**
@@ -160,5 +163,12 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
      */
     public JScrollPane getScrollPane(){
         return this.scrollPane;
+    }
+
+    /**
+     * Called when we want to undo related to the cut or when we undo the clear board
+     */
+    public void addRefreshListener(){
+        this.mainWindow.getController().addRefreshListener(this::update);
     }
 }

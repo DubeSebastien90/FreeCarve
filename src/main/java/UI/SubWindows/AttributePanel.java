@@ -1,5 +1,8 @@
 package UI.SubWindows;
 
+import Common.Interfaces.IPanelObserver;
+import Common.Interfaces.IRefreshable;
+import UI.MainWindow;
 import UI.UIConfig;
 import UI.Widgets.Attributable;
 
@@ -15,15 +18,17 @@ import java.awt.*;
  * @since 2024-10-23
  */
 
-public class AttributePanel extends BasicWindow {
+public class AttributePanel extends BasicWindow implements IPanelObserver {
     private JPanel panel;
+    private MainWindow mainWindow;
 
     /**
      * Constructor of the parent {@code BasicWindow}
      * @param haveBackground
      */
-    public AttributePanel(boolean haveBackground){
+    public AttributePanel(boolean haveBackground, MainWindow mainWindow) {
         super(haveBackground);
+        this.mainWindow = mainWindow;
         this.init();
     }
 
@@ -79,8 +84,35 @@ public class AttributePanel extends BasicWindow {
         scrollPane.getVerticalScrollBar().setUnitIncrement(UIConfig.INSTANCE.getScrollbarSpeed());
         panel.setAlignmentX(0);
         scrollPane.setAlignmentX(0);
+
+        addRefreshListener();
+
         revalidate();
         repaint();
     }
 
+    /**
+     * Adds a refresh listener to the {@code AttributePanel}
+     * This is used to update the attributes of the {@Attributable}
+     * When the board is updated, we also want to update the attributes
+     */
+    public void addRefreshListener(){
+        this.mainWindow.getController().addRefreshListener(new IRefreshable() {
+            @Override
+            public void refresh() {
+                updateAttribute(null);
+            }
+        });
+    }
+
+    /**
+     * Clears the panel
+     * Called when the panel is cleared
+     */
+    @Override
+    public void update() {
+        this.panel.removeAll();
+        this.panel.revalidate();
+        this.panel.repaint();
+    }
 }
