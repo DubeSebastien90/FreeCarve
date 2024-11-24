@@ -30,9 +30,9 @@ public class PointsBox extends GenericAttributeBox {
     private void init(MainWindow mainWindow, VertexDTO vertexDTO) {
         GridBagConstraints gc = new GridBagConstraints();
 
-        this.xInput = new MeasurementInputField(mainWindow, "X", vertexDTO.getX(), UiUnits.MILLIMETERS);
-        this.yInput = new MeasurementInputField(mainWindow, "Y", vertexDTO.getY(), UiUnits.MILLIMETERS);
-        this.zInput = new MeasurementInputField(mainWindow, "Z", vertexDTO.getZ(), UiUnits.MILLIMETERS);
+        this.xInput = new MeasurementInputField(mainWindow, "X", vertexDTO.getX(), -Double.MAX_VALUE, Double.MAX_VALUE, UiUnits.MILLIMETERS);
+        this.yInput = new MeasurementInputField(mainWindow, "Y", vertexDTO.getY(), -Double.MAX_VALUE, Double.MAX_VALUE, UiUnits.MILLIMETERS);
+        this.zInput = new MeasurementInputField(mainWindow, "Z", vertexDTO.getZ(), -Double.MAX_VALUE, Double.MAX_VALUE, UiUnits.MILLIMETERS);
 
         gc.gridx = 0;
         gc.gridy = 1;

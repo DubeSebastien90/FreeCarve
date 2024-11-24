@@ -424,5 +424,16 @@ public class Controller implements IUnitConverter, IMemorizer {
     public double edgeEdgeToCenterCenter(double edge, int bitIndex1, int bitIndex2){
         return this.currentProjectState.edgeEdgeToCenterCenter(edge, bitIndex1, bitIndex2);
     }
+
+    /**
+     * Generate a fixed list of points used by the rectangle cut according to an anchor point, a width and a height
+     * @param anchor
+     * @param width
+     * @param height
+     * @return
+     */
+    public List<VertexDTO> generateRectanglePoints(VertexDTO anchor, double width, double height){
+        return Cut.generateRectanglePoints(anchor, width, height);
+    }
 }
 

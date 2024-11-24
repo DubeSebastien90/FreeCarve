@@ -1,17 +1,26 @@
 package UI.Widgets.AttributeContainer;
 
+import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
+import Domain.CutType;
 import UI.Events.ChangeAttributeEvent;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.CutListPanel;
+import UI.UIConfig;
+import UI.UiUtil;
 import UI.Widgets.BitChoiceBox;
 import UI.Widgets.ComboBitItem;
 import UI.Widgets.CutBox;
+import UI.Widgets.SingleValueBox;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Map;
 
 public abstract class AttributeContainer extends BasicWindow {
 
@@ -19,6 +28,9 @@ public abstract class AttributeContainer extends BasicWindow {
     protected CutListPanel cutListPanel;
     protected CutDTO cutDTO;
     protected CutBox cutBox;
+
+    SingleValueBox depthBox;
+    BitChoiceBox bitChoiceBox;
 
 
     public AttributeContainer(MainWindow mainWindow, CutListPanel cutListPanel, CutDTO cutDTO, CutBox cutBox) {
@@ -98,6 +110,48 @@ public abstract class AttributeContainer extends BasicWindow {
                 c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutDTO, cutBox));
+            }
+        });
+    }
+
+    protected void init_attribute(){
+
+        depthBox = new SingleValueBox(mainWindow, true, "Profondeur", "Profondeur", cutDTO.getDepth(), UIConfig.INSTANCE.getDefaultUnit());
+
+        Map<Integer, BitDTO> configuredBitsMap = mainWindow.getMiddleContent().getConfiguredBitsMap();
+
+        int index = 0;
+        for(Map.Entry<Integer, BitDTO> entry : configuredBitsMap.entrySet()){
+            if(entry.getKey().equals(cutDTO.getBitIndex())){
+                break;
+            }
+            index++;
+        }
+        bitChoiceBox = new BitChoiceBox(true, "Outil", configuredBitsMap, index);
+
+        ArrayList<JLabel> labelList = new ArrayList<>();
+        for (CutType t : CutType.values()) {
+            JLabel l = new JLabel(UiUtil.getIcon(UiUtil.getIconFileName(t), UIConfig.INSTANCE.getCutBoxIconSize(),
+                    UIManager.getColor("button.Foreground")));
+            l.setText(UiUtil.getIconName(t));
+            labelList.add(l);
+        }
+    }
+
+    /**
+     * Adding the custom event listeners to SingleValueBox objects. The goal is to make
+     * the Value attribute react to change events
+     *
+     * @param sb {@code SingleValueBox object}
+     */
+    protected void addEventListenerToDepth(SingleValueBox sb) {
+        sb.getInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                CutDTO c = new CutDTO(cutDTO);
+                c = new CutDTO(c.getId(), sb.getInput().getMMValue(), c.getBitIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
+                mainWindow.getController().modifyCut(c);
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });
     }

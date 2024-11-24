@@ -15,6 +15,9 @@ public class AttributeContainerFactory {
         else if(cutDTO.getCutType() == CutType.LINE_HORIZONTAL){
             return new AttributeContainerHorizontal(mainWindow, cutListPanel, cutDTO, cutBox);
         }
+        else if(cutDTO.getCutType() == CutType.RECTANGULAR){
+            return  new AttributeContainerRectangle(mainWindow, cutListPanel, cutDTO, cutBox);
+        }
         else{
             return new AttributeContainerVertical(mainWindow, cutListPanel, cutDTO, cutBox);
         }

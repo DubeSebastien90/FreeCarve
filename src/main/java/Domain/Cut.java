@@ -176,6 +176,15 @@ class Cut {
         this.refs = refs;
     }
 
+    public static List<VertexDTO> generateRectanglePoints(VertexDTO anchor, double width, double height){
+        VertexDTO p1 = new VertexDTO(anchor);
+        VertexDTO p2 = new VertexDTO(anchor.getX() + width, anchor.getY(), anchor.getZ());
+        VertexDTO p3 = new VertexDTO(anchor.getX() + width, anchor.getY()  + height, anchor.getZ());
+        VertexDTO p4 = new VertexDTO(anchor.getX(), anchor.getY()  + height, anchor.getZ());
+        VertexDTO p5 = new VertexDTO(anchor);
+        return new ArrayList<>(List.of(p1,p2,p3,p4,p5));
+    }
+
     /**
      * Get the copied absolute points of the cut, based on it's references
      * @return List<VertexDTO> of the copied absolute points

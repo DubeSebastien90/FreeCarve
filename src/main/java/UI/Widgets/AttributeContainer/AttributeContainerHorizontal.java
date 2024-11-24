@@ -24,8 +24,7 @@ public class AttributeContainerHorizontal extends AttributeContainer {
     SingleValueBox distanceFromEdgeToEdge;
     SingleValueBox absoluteDistanceFromEdgeToEdge;
     SingleValueBox distanceCenterToCenter;
-    SingleValueBox depthBox;
-    BitChoiceBox bitChoiceBox;
+
 
     public AttributeContainerHorizontal(MainWindow mainWindow, CutListPanel cutListPanel, CutDTO cutDTO, CutBox cutBox) {
         super(mainWindow, cutListPanel, cutDTO, cutBox);
@@ -34,6 +33,9 @@ public class AttributeContainerHorizontal extends AttributeContainer {
 
     }
 
+    /**
+     * Initializes all the components of the Attribute Container
+     */
     private void init_layout(){
         setBackground(null);
         setOpaque(false);
@@ -74,30 +76,10 @@ public class AttributeContainerHorizontal extends AttributeContainer {
      * Initialize variables relevant to the Attribute Panel
      */
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO) {
-
+        super.init_attribute();
         distanceFromEdgeToEdge = new SingleValueBox(mainWindow,true, "Distance relative de la sous-pièce", "Y", edgeEdgeY(), UIConfig.INSTANCE.getDefaultUnit());
         absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow,true, "Taille de la sous-pièce", "Y", Math.abs(edgeEdgeY()), UIConfig.INSTANCE.getDefaultUnit());
         distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distance des coupes centrales (GCODE)", "Y", centerCenterY(), UIConfig.INSTANCE.getDefaultUnit());
-        depthBox = new SingleValueBox(mainWindow,true, "Profondeur", "Profondeur", cutDTO.getDepth(), UIConfig.INSTANCE.getDefaultUnit());
-
-        Map<Integer, BitDTO> configuredBitsMap = mainWindow.getMiddleContent().getConfiguredBitsMap();
-
-        int index = 0;
-        for(Map.Entry<Integer, BitDTO> entry : configuredBitsMap.entrySet()){
-            if(entry.getKey().equals(cutDTO.getBitIndex())){
-                break;
-            }
-            index++;
-        }
-        bitChoiceBox = new BitChoiceBox(true, "Outil", configuredBitsMap, index);
-
-        ArrayList<JLabel> labelList = new ArrayList<>();
-        for (CutType t : CutType.values()) {
-            JLabel l = new JLabel(UiUtil.getIcon(UiUtil.getIconFileName(t), UIConfig.INSTANCE.getCutBoxIconSize(),
-                    UIManager.getColor("button.Foreground")));
-            l.setText(UiUtil.getIconName(t));
-            labelList.add(l);
-        }
     }
 
     @Override
@@ -109,31 +91,13 @@ public class AttributeContainerHorizontal extends AttributeContainer {
 
     @Override
     public void updatePanel(CutDTO newCutDTO) {
+        cutDTO = newCutDTO;
         distanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(edgeEdgeX());
         absoluteDistanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(edgeEdgeX()));
         distanceCenterToCenter.getInput().setValueInMMWithoutTrigerringListeners( centerCenterX());
         depthBox.getInput().setValueInMMWithoutTrigerringListeners(cutDTO.getDepth());
         revalidate();
         repaint();
-    }
-
-
-    /**
-     * Adding the custom event listeners to SingleValueBox objects. The goal is to make
-     * the Value attribute react to change events
-     *
-     * @param sb {@code SingleValueBox object}
-     */
-    private void addEventListenerToDepth(SingleValueBox sb) {
-        sb.getInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                CutDTO c = new CutDTO(cutDTO);
-                c = new CutDTO(c.getId(), sb.getInput().getMMValue(), c.getBitIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO());
-                mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
-            }
-        });
     }
 
     /**

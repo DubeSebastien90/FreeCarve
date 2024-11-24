@@ -19,6 +19,10 @@ public class VertexDTO {
     private final double y;
     private final double z;
 
+    public enum AXIS{
+        X,Y,Z
+    }
+
     public VertexDTO(double x, double y, double z) {
         this.x = x;
         this.y = y;
@@ -75,6 +79,11 @@ public class VertexDTO {
         return new VertexDTO(this.getX() * factor,
                 this.getY() * factor,
                 this.getZ() * factor);
+    }
+
+    public VertexDTO normalize(){
+        double distance = getDistance();
+        return new VertexDTO(this.getX()/distance, this.getY()/distance, this.getZ()/distance);
     }
 
     /**
