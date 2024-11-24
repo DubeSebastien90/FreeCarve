@@ -158,7 +158,7 @@ class ProjectState {
     public void resetPanelCNC(){
         PanelCNC copy = this.panel;
         memorizer.executeAndMemorize(() -> {
-            this.panel = new PanelCNC(defaultPanelDimension, defaultPanelDepth, memorizer);
+            this.panel = new PanelCNC(defaultPanelDimension, memorizer);
         }, () -> {
             this.panel = copy;
         });

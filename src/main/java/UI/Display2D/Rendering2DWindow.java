@@ -1,5 +1,6 @@
 package UI.Display2D;
 
+import Common.Interfaces.IPanelObserver;
 import Domain.CutType;
 
 import Common.DTO.GridDTO;
@@ -8,6 +9,7 @@ import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
 import UI.LeftBar;
 import UI.MainWindow;
+import UI.SubWindows.CutListPanel;
 import UI.Widgets.PersoPoint;
 import UI.UiUtil;
 
@@ -28,7 +30,7 @@ import java.util.ArrayList;
  * @version 1.2
  * @since 2024-10-22
  */
-public class Rendering2DWindow extends JPanel {
+public class Rendering2DWindow extends JPanel implements IPanelObserver {
 
     private Rectangle2D board = new Rectangle2D.Double(0, 0, 1219.2, 914.4); //board to render
     private Point2D mousePt; //pixel mouse point
@@ -484,6 +486,17 @@ public class Rendering2DWindow extends JPanel {
      */
     public Drawing getDrawing() {
         return this.drawing;
+    }
+
+    /**
+     * Updates the UI of the Rendering2DWindow based on the stored CutDTO
+     * Called when the component gets notified of a change
+     */
+    @Override
+    public void update() {
+        updateCuts();
+        this.revalidate();
+        this.repaint();
     }
 }
 

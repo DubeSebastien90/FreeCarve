@@ -53,9 +53,7 @@ public class TopBar extends JMenuBar {
         exit.addActionListener(e -> mainWindow.getFrame().dispatchEvent(new WindowEvent(mainWindow.getFrame(), WindowEvent.WINDOW_CLOSING)));
         reset_panel.addActionListener(e -> {
             mainWindow.getController().resetPanelCNC();
-            mainWindow.getMiddleContent().getCutWindow().deleteCutEventOccured(
-                    new ChangeCutEvent(mainWindow.getMiddleContent().getCutWindow(), null));
-            mainWindow.getMiddleContent().getCutWindow().getAttributePanel().clearPanel();
+            mainWindow.getMiddleContent().getCutWindow().notifyObservers();
         });
 
         fichier.add(nouveau);

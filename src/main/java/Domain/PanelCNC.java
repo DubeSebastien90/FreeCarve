@@ -46,7 +46,6 @@ class PanelCNC {
         this.cutList = other.cutList.stream().toList();
         this.clamps = other.clamps.stream().toList();
         this.panelDimension = other.panelDimension;
-        this.depth = other.depth;
         this.memorizer = other.memorizer;
         updateBorderCut();
     }

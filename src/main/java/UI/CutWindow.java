@@ -6,6 +6,7 @@ import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
+import UI.Listeners.PanelObservers;
 import UI.SubWindows.AttributePanel;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.BitSelectionPanel;
@@ -49,6 +50,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     private MainWindow mainWindow;
     private BitSelectionPanel bitSelectionPanel;
     private Map<Integer, BitDTO> configuredBitsMap;
+    private PanelObservers panelObservers;
 
     /**
      * Constructs a {@code CutWindow} instance initializing all of it's sub-panels
@@ -58,6 +60,11 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         this.mainWindow = mainWindow;
         this.configuredBitsMap = configuredBitsMap;
         this.init(mainWindow);
+        this.panelObservers = new PanelObservers();
+
+        this.panelObservers.addObserver(cutListPanel);
+        this.panelObservers.addObserver(attributePanel);
+        this.panelObservers.addObserver(rendering2DWindow);
 
         mainWindow.getController().addRefreshListener(()->this.rendering2DWindow.updateCuts());
     }
@@ -201,5 +208,12 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
      */
     public AttributePanel getAttributePanel() {
         return attributePanel;
+    }
+
+    /**
+     * Calls all the {@code PanelObservers} to update their respective panels
+     */
+    public void notifyObservers(){
+        this.panelObservers.notifyObservers();
     }
 }
