@@ -54,9 +54,11 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
     private void init() {
         JLabel displayTitle = new JLabel("Outil");
         displayTitle.setFont(displayTitle.getFont().deriveFont(20f));
-        widthTextArea = new MeasurementInputField(mainWindow, "Diamètre", bit.getDiameter(), 0, 300, UiUnits.MILLIMETERS);
+        widthTextArea = new MeasurementInputField(mainWindow, "", bit.getDiameter(), 0, 300, UiUnits.MILLIMETERS);
 
+        JLabel widthLabel = new JLabel("Diamètre");
         nameTextArea = new JTextArea(bit.getName());
+        nameTextArea.setBackground(UIManager.getColor("SubWindow.lightBackground2"));
         JLabel nameLabel = new JLabel("Nom");
         modifyButton = new JButton("Modifier");
         removeButton = UiUtil.createSVGButton("trash", true, UIConfig.INSTANCE.getToolIconSize(), Color.RED);
@@ -87,6 +89,10 @@ public class BitInfoDisplay extends BasicWindow implements Attributable {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 10, 15, 10);
         gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(widthLabel, gbc);
+        gbc.insets = new Insets(0, 10, 15, 10);
+        gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.weightx = 1;
         add(widthTextArea, gbc);
