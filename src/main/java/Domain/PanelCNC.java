@@ -135,7 +135,6 @@ class PanelCNC {
             for(RefCut ref : c.getRefs()){
                 if(ref.getCut() == cut){
                     c.setInvalidAndNoRef();
-                    System.out.println(cut.getId());
                     cleanupRemove(c);
                     break;
                 }

@@ -93,7 +93,6 @@ public class DrawCutRectangular extends DrawCutWrapper{
                 newPoints = mainWindow.getController().generateRectanglePoints(centerAnchorPoint, width, height);
                 for(int i =0; i <newPoints.size(); i++){
                     newPoints.set(i, newPoints.get(i).sub(offset)); // Substraction du offset pour retourner en relativeSpace
-                    System.out.println(newPoints.get(i));
                 }
             }
         }
