@@ -205,7 +205,7 @@ class PanelCNC {
     void resize(double width, double height) {
         double newWidth = Math.min(Math.max(0, width), Util.feet_to_mm(MAX_FEET_WIDTH));
         double newHeight = Math.min(Math.max(0, height), Util.feet_to_mm(MAX_FEET_HEIGHT));
-        editCutsOnResize(null, new double[]{newWidth, newHeight});
+        //editCutsOnResize(null, new double[]{newWidth, newHeight});
         panelDimension = new VertexDTO(newWidth, newHeight, 0);
         updateBorderCut();
     }
@@ -222,7 +222,7 @@ class PanelCNC {
                 List<VertexDTO> listPoints = new ArrayList<>();
                 boolean edited = false;
                 for (int j = 0; j < cut.getPoints().size(); j++) {
-                    VertexDTO point = cut.getPoints().get(j);
+                    VertexDTO point = cut.getAbsolutePointsPosition().get(j);
                     if (modifiedCut == null) {
                         //look if point is on border
                         if (point.getX() == panelDimension.getX()) {
@@ -232,7 +232,7 @@ class PanelCNC {
                             listPoints.add(new VertexDTO(point.getX(), border[1], point.getZ())); //stick to border
                             edited = true;
                         } else {
-                            listPoints.add(new VertexDTO(point.getX(), point.getY(), point.getZ())); //dont modify
+                            listPoints.add(new VertexDTO(point.getX(), point.getY(), point.getZ())); //dont edit
                         }
                     } else {
                         System.out.println("À implementer - coupes");
@@ -270,65 +270,6 @@ class PanelCNC {
         }
     }
 
-    /**
-     * Edits the cuts which have points referenced to the modified cut
-     *
-     * @param modifiedCut - the modified cut whih can be a reference for another cut, null if a border is modified
-     * @param border      - the dimentions of the new pannel
-     */
-    void editCutsOnResize(Cut modifiedCut, double[] border) {
-        for (Cut cut : this.cutList) {
-            if (cut != modifiedCut) {
-                List<VertexDTO> listPoints = new ArrayList<>();
-                boolean edited = false;
-                for (int j = 0; j < cut.getPoints().size(); j++) {
-                    VertexDTO point = cut.getPoints().get(j);
-                    if (modifiedCut == null) {
-                        //look if point is on border
-                        if (point.getX() == panelDimension.getX()) {
-                            listPoints.add(new VertexDTO(border[0], point.getY(), point.getZ())); //stick to border
-                            edited = true;
-                        } else if (point.getY() == panelDimension.getY()) {
-                            listPoints.add(new VertexDTO(point.getX(), border[1], point.getZ())); //stick to border
-                            edited = true;
-                        } else {
-                            listPoints.add(new VertexDTO(point.getX(), point.getY(), point.getZ())); //dont modify
-                        }
-                    } else {
-                        System.out.println("À implementer - coupes");
-                    }
-                }
-                //edit the points
-                if (edited) {
-                    cut.setPoints(listPoints);
-                }
-                List<VertexDTO> listPoints2 = new ArrayList<>();
-                boolean editedRef = false;
-                for (int j = 0; j < cut.getPoints().size(); j++) {
-                    VertexDTO point = cut.getPoints().get(j);
-                    //look if border is reference
-                    if (cut.getType() == CutType.LINE_VERTICAL && modifiedCut == null) {
-                        //par défaut pour l'instant, ref = côté droit
-                        listPoints2.add(new VertexDTO(point.getX() + (border[0] - getWidth()), point.getY(), point.getZ()));
-                        editedRef = true;
-                    } else if (cut.getType() == CutType.LINE_HORIZONTAL && modifiedCut == null) {
-                        //par défaut pour l'instant, ref = côté haut
-                        listPoints2.add(new VertexDTO(point.getX(), point.getY() + (border[1] - getHeight()), point.getZ()));
-                        editedRef = true;
-                    }
-                }
-                //edit the points
-                if (editedRef) {
-                    cut.setPoints(listPoints2);
-                }
-
-                //call other cuts
-                if (editedRef || edited) {
-                    editCutsOnResize(cut, border);
-                }
-            }
-        }
-    }
 
     /**
      * Computeds all meeting point on the grid that cover the board.
