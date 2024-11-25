@@ -157,6 +157,9 @@ public class CutBox implements Attributable {
         return this.panel;
     }
 
+    public AttributeContainer getAttributeContainer(){
+        return this.attributeContainer;
+    }
 
     /**
      * Set the CutBox as non-selected

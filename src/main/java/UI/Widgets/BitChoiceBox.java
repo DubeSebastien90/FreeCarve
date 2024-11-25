@@ -55,6 +55,17 @@ public class BitChoiceBox extends GenericAttributeBox {
         this.add(comboBox, gc);
     }
 
+    public void refresh(Map<Integer, BitDTO> bitList, int index){
+        DefaultComboBoxModel<ComboBitItem> model = new DefaultComboBoxModel<ComboBitItem>();
+
+        for(Map.Entry<Integer, BitDTO> entry : bitList.entrySet()){
+            model.addElement(new ComboBitItem(entry.getKey(), entry.getValue().getName()));
+        }
+
+        comboBox.setModel(model);
+        comboBox.setSelectedIndex(index);
+    }
+
     /**
      * Returns the JComboBox of the BitChoiceBox
      *

@@ -209,7 +209,6 @@ public class AttributeContainerRectangle extends AttributeContainer{
         heightOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(getHeightEdgeEdge());
         widthOfRectangleCenterCenter.getInput().setValueInMMWithoutTrigerringListeners(getWidthCenterCenter());
         heightOfRectangleCenterCenter.getInput().setValueInMMWithoutTrigerringListeners(getHeightCenterCenter());
-
     }
 
     @Override

@@ -133,9 +133,13 @@ public class BitSelectionPanel extends BasicWindow {
                 panel.repaint();
             }
 
+            /**
+             * Called when a bit is deleted
+             */
             @Override
             public void ancestorRemoved(AncestorEvent event) {
-
+                selectedBit = 0;
+                enableLastSelectedBit();
             }
 
             @Override

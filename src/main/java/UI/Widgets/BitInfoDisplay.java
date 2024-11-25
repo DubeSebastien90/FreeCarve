@@ -214,6 +214,7 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
                 newBit
         );
         bitConfigurationPanel.refresh();
+        mainWindow.getMiddleContent().getCutWindow().getCutListPanel().refreshAttributeContainer();
     }
 
     private void removeBit() {
@@ -236,6 +237,7 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
         nameTextArea.setText("Aucun outil assigné");
         widthTextArea.getNumericInput().setValue(0.0);
         bitConfigurationPanel.refresh();
+        mainWindow.getMiddleContent().getCutWindow().getCutListPanel().refreshAttributeContainer();
     }
 
     /**

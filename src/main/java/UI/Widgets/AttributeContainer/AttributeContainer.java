@@ -1,5 +1,6 @@
 package UI.Widgets.AttributeContainer;
 
+import Common.CutState;
 import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
 import Domain.CutType;
@@ -50,6 +51,24 @@ public abstract class AttributeContainer extends BasicWindow {
      * @return a CutDto with the modified relative points
      */
     protected abstract CutDTO recomputePointsAfterBitChange(CutDTO c);
+
+    /**
+     * Change the combox with the new bits, deals with invalid bit indexes
+     */
+    public void refreshBits(){
+        int previousBitIndex = bitChoiceBox.getComboBox().getSelectedIndex();
+        Map<Integer, BitDTO> bitMap = mainWindow.getController().refreshConfiguredBitMaps();
+        if(!bitMap.containsKey(previousBitIndex)){
+            // Set cut invalid if using an invalid bit
+            CutDTO c = new CutDTO(cutDTO.getId(), cutDTO.getDepth(), cutDTO.getBitIndex(), cutDTO.getCutType(), cutDTO.getPoints(), cutDTO.getRefsDTO(), CutState.NOT_VALID);
+            mainWindow.getController().modifyCut(c);
+            cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
+        }
+        else{
+            // Otherwise refresh the combo box appropriately
+            bitChoiceBox.refresh(bitMap, previousBitIndex);
+        }
+    }
 
     protected double edgeEdgeX(){
         int currentBitIndex = cutDTO.getBitIndex();
