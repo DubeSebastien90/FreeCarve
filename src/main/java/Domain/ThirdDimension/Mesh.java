@@ -9,11 +9,12 @@ import Domain.IO.ParsedSTL;
 import Domain.IO.STLParser;
 
 import java.awt.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The Mesh class allows complex solids made out of triangles to be rendered and modified in the scene.
@@ -158,7 +159,12 @@ public class Mesh extends Transform {
 
 
     /**
-     * Faire toutes les droites en premier, puis traiter les rectangles et les coupe en L
+     * trouver les 4 points de la coupe,
+     * trouver les impacted mesh
+     * trouver les points d'intersection avec chaque mesh si les points de la coupe dépassent le mesh
+     * faire les formes M1-C1-C2-M2, M2-C2-C3-M3, M3-C3-C4-M4, M4-C4-C1-M1
+     * traiter l'intérieur des coupes rectangles et en L
+     * traiter la profondeur de chaque coupe
      *
      * @param panel
      * @return
@@ -173,10 +179,59 @@ public class Mesh extends Transform {
             for (Vertex[] imp : impacted_meshes) {
                 meshes.remove(imp);
             }
-            List<Vertex[]> new_mesh = cutMesh(impacted_meshes, cut, bits[cut.getBitIndex()]);
+            List<Vertex[]> new_mesh = cutMesh(impacted_meshes, pointsOfCut(cut, bits[cut.getBitIndex()]));
             meshes.addAll(new_mesh);
         }
         return transformListVertexToMeshes(meshes, 10);
+    }
+
+    public static List<Vertex> pointsOfCut(CutDTO cut, BitDTO bit) {
+        List<Vertex> points = new ArrayList<>();
+        if (cut.getCutType() == CutType.LINE_VERTICAL) {
+            double wichMin = Math.min((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
+            double wichMax = Math.max((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
+            Vertex v0 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMin, cut.getAbsolutePointsPosition().get(0).getZ());
+            Vertex v1 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMax, cut.getAbsolutePointsPosition().get(0).getZ());
+            points.add(Vertex.add(v0, new Vertex(-bit.getDiameter() / 2, 0, 0)));
+            points.add(Vertex.add(v1, new Vertex(-bit.getDiameter() / 2, 0, 0)));
+            points.add(Vertex.add(v1, new Vertex(bit.getDiameter() / 2, 0, 0)));
+            points.add(Vertex.add(v0, new Vertex(bit.getDiameter() / 2, 0, 0)));
+        } else if (cut.getCutType() == CutType.RECTANGULAR) {
+
+            points.add(new Vertex(cut.getAbsolutePointsPosition().get(0)));
+            points.add(new Vertex(cut.getAbsolutePointsPosition().get(1)));
+            points.add(new Vertex(cut.getAbsolutePointsPosition().get(2)));
+            points.add(new Vertex(cut.getAbsolutePointsPosition().get(3)));
+        } else if (cut.getCutType() == CutType.L_SHAPE) {
+
+        }
+        return ordonnerPoints(points);
+    }
+
+    private static List<Vertex> ordonnerPoints(List<Vertex> list) {
+        List<Vertex> points = new ArrayList<>();
+        Vertex v0 = list.stream()
+                .min(Comparator.comparingDouble(Vertex::getY)
+                        .thenComparingDouble(Vertex::getX))
+                .orElseThrow();
+        Vertex v2 = list.stream()
+                .max(Comparator.comparingDouble(Vertex::getY)
+                        .thenComparingDouble(Vertex::getX))
+                .orElseThrow();
+        Vertex v1 = list.stream()
+                .filter(p -> p.getX() <= v2.getX())
+                .max(Comparator.comparingDouble(Vertex::getY))
+                .orElseThrow();
+        Vertex v3 = list.stream()
+                .filter(p -> !p.equals(v0) && !p.equals(v1) && !p.equals(v2))
+                .findFirst()
+                .orElseThrow();
+        points.add(v0);
+        points.add(v1);
+        points.add(v2);
+        points.add(v3);
+        System.out.println(points);
+        return points;
     }
 
     private static List<Mesh> transformListVertexToMeshes(List<Vertex[]> vertices, double depth) {
@@ -201,19 +256,27 @@ public class Mesh extends Transform {
         return meshes;
     }
 
-    private static List<Vertex[]> cutMesh(List<Vertex[]> meshes, CutDTO cut, BitDTO bit) {
+    private static List<Vertex[]> cutMesh(List<Vertex[]> meshes, List<Vertex> points) {
         List<Vertex[]> cutMeshes = new ArrayList<>();
-        if (cut.getCutType() == CutType.LINE_VERTICAL) {
-            for (Vertex[] vertices : meshes) {
-                double wichMin = Math.min((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
-                double wichMax = Math.max((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
-                Vertex v1 = new Vertex(vertices[0]);
-                Vertex v2 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMin, cut.getAbsolutePointsPosition().get(0).getZ());
-                Vertex v3 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMax, cut.getAbsolutePointsPosition().get(0).getZ());
-                Vertex v4 = new Vertex(vertices[1]);
-                cutMeshes.add(new Vertex[]{v1, v4, Vertex.add(v3, new Vertex(-bit.getDiameter()/2, 0, 0)), Vertex.add(v2, new Vertex(-bit.getDiameter()/2, 0, 0))});
-                cutMeshes.add(new Vertex[]{Vertex.add(v2, new Vertex(bit.getDiameter()/2, 0, 0)), Vertex.add(v3, new Vertex(bit.getDiameter()/2, 0, 0)), new Vertex(vertices[2]), new Vertex(vertices[3])});
-            }
+//        if (cut.getCutType() == CutType.LINE_VERTICAL) {
+//            for (Vertex[] vertices : meshes) {
+//                double wichMin = Math.min((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
+//                double wichMax = Math.max((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
+//                if (wichMin == vertices[0].getY() && wichMax == vertices[1].getX()) {
+//                    Vertex v1 = new Vertex(vertices[0]);
+//                    Vertex v2 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMin, cut.getAbsolutePointsPosition().get(0).getZ());
+//                    Vertex v3 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMax, cut.getAbsolutePointsPosition().get(0).getZ());
+//                    Vertex v4 = new Vertex(vertices[1]);
+//                    cutMeshes.add(new Vertex[]{v1, v4, Vertex.add(v3, new Vertex(-bit.getDiameter() / 2, 0, 0)), Vertex.add(v2, new Vertex(-bit.getDiameter() / 2, 0, 0))});
+//                    cutMeshes.add(new Vertex[]{Vertex.add(v2, new Vertex(bit.getDiameter() / 2, 0, 0)), Vertex.add(v3, new Vertex(bit.getDiameter() / 2, 0, 0)), new Vertex(vertices[2]), new Vertex(vertices[3])});
+//                }
+//            }
+//        }
+        for (Vertex[] vertices : meshes) {
+            cutMeshes.add(new Vertex[]{vertices[0], vertices[1], points.get(1), points.get(0)});
+            cutMeshes.add(new Vertex[]{points.get(1), vertices[1], vertices[2], points.get(2)});
+            cutMeshes.add(new Vertex[]{points.get(3), points.get(2), vertices[2], vertices[3]});
+            cutMeshes.add(new Vertex[]{vertices[0], points.get(0), points.get(3), vertices[3]});
         }
         return cutMeshes;
     }
@@ -233,6 +296,55 @@ public class Mesh extends Transform {
             }
         }
         return impacted;
+    }
+
+    /**
+     * Calcule la pente (m) de la ligne passant par deux points.
+     *
+     * @param x1 Coordonnée x du premier point.
+     * @param y1 Coordonnée y du premier point.
+     * @param x2 Coordonnée x du second point.
+     * @param y2 Coordonnée y du second point.
+     * @return La pente m de la ligne.
+     */
+    public static Double calculerPente(double x1, double y1, double x2, double y2) {
+        if (x1 == x2) {
+            return null;
+        }
+        return (y2 - y1) / (x2 - x1);
+    }
+
+    /**
+     * Calcule l'ordonnée à l'origine (c) de la ligne y = mx + c.
+     *
+     * @param x Coordonnée x d'un point.
+     * @param y Coordonnée y d'un point.
+     * @param m Pente de la ligne.
+     * @return L'ordonnée à l'origine c.
+     */
+    public static double calculerOrdonneeALOrigine(double x, double y, double m) {
+        return y - m * x;
+    }
+
+    /**
+     * Détermine la position d'un point par rapport à une fonction linéaire y = mx + c.
+     *
+     * @param x Coordonnée x du point.
+     * @param y Coordonnée y du point.
+     * @param m Pente de la ligne.
+     * @param c Ordonnée à l'origine de la ligne.
+     * @return Un int
+     */
+    public static int positionParRapportALigne(double x, double y, double m, double c) {
+        double yLigne = m * x + c;
+
+        if (y > yLigne) {
+            return 1;
+        } else if (y < yLigne) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 
     private static double area(Vertex a, Vertex b, Vertex c) {
