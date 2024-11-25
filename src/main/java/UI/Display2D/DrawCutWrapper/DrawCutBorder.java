@@ -57,6 +57,11 @@ public class DrawCutBorder extends DrawCutWrapper{
     }
 
     @Override
+    public boolean areRefsValid() {
+        return !refs.isEmpty() && !areRefsPointinToItself();
+    }
+
+    @Override
     public Optional<UUID> end() {
         return createCut();
     }
@@ -67,7 +72,7 @@ public class DrawCutBorder extends DrawCutWrapper{
 
         p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-        double threshold = renderer.scaleMMToPixel(snapThreshold);
+        double threshold = renderer.scalePixelToMM(snapThreshold);
         VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
         Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearBorder(p1, threshold);
 

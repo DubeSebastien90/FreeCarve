@@ -63,6 +63,11 @@ public class AttributeContainerBorder extends AttributeContainer{
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         add(bitChoiceBox, gc);
 
+        gc.gridx = 0;
+        gc.gridy = 4;
+        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
+        add(modifyAnchorBox, gc);
+
 
     }
 
@@ -79,6 +84,7 @@ public class AttributeContainerBorder extends AttributeContainer{
         addEventListenerToEdgeEdge(marginEdgeToEdge);
         addEventListenerToBitChoiceBox(bitChoiceBox);
         addEventListenerToDepth(depthBox);
+        addEventListenerModifyAnchor(modifyAnchorBox);
     }
 
     @Override

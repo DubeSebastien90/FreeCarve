@@ -103,6 +103,11 @@ public class AttributeContainerCutL extends AttributeContainer{
         gc.gridy = 7;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         add(bitChoiceBox, gc);
+
+        gc.gridx = 0;
+        gc.gridy = 8;
+        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
+        add(modifyAnchorBox, gc);
     }
 
     @Override
@@ -112,6 +117,7 @@ public class AttributeContainerCutL extends AttributeContainer{
 
         addEventListenerToBitChoiceBox(bitChoiceBox);
         addEventListenerToDepth(depthBox);
+        addEventListenerModifyAnchor(modifyAnchorBox);
     }
 
     @Override

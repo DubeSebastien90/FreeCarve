@@ -1,11 +1,16 @@
 package UI.Display2D;
 
 import Common.CutState;
+import Common.DTO.CutDTO;
+import Common.DTO.RefCutDTO;
 import Domain.CutType;
 import UI.Display2D.DrawCutWrapper.DrawCutFactory;
+import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeCutEvent;
 import UI.MainWindow;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
+import UI.SubWindows.CutListPanel;
+import UI.Widgets.CutBox;
 import UI.Widgets.PersoPoint;
 
 import java.awt.event.MouseAdapter;
@@ -21,12 +26,22 @@ import java.util.UUID;
  * @author Louis-Etienne Messier
  */
 public class Drawing {
-    private MouseMotionListener cutListener;
-    private MouseListener cutMouseClickListener;
+    private MouseMotionListener createCutMoveListener;
+    private MouseListener createCutActionListener;
+    private MouseMotionListener modifyAnchorMoveListener;
+    private MouseListener modifyAnchorActionListener;
     private List<DrawCutWrapper> cutWrappers; //todo change to map so that you can retrieve them with ID - for faster usage
     private DrawCutWrapper currentDrawingCut;
+    private DrawCutWrapper currentModifiedCut;
     private final Rendering2DWindow renderer;
     private final MainWindow mainWindow;
+    private DrawingState state;
+
+    public enum DrawingState{
+        CREATE_CUT,
+        IDLE,
+        MODIFY_ANCHOR,
+    }
 
     /**
      * Create the {@code Drawing} utility class
@@ -45,9 +60,10 @@ public class Drawing {
      * @param type type of the cut
      */
     public void initCut(CutType type){
-        deactivateCutListener();
+        deactivateCreateCutListener();
+        setState(DrawingState.CREATE_CUT);
         currentDrawingCut = DrawCutFactory.createEmptyWrapper(type, renderer, mainWindow);
-        activateCutListener();
+        activateCreateCutListener();
     }
 
     /**
@@ -68,9 +84,15 @@ public class Drawing {
     /**
      * @return the cursor {@code PersoPoint}
      */
-    public PersoPoint getCursorPoint(){
+    public PersoPoint getCreateCursorPoint(){
         return this.currentDrawingCut.getCursorPoint();
     }
+
+    public PersoPoint getModifyingAnchorCursorPoint(){
+        return this.currentModifiedCut.getCursorPoint();
+    }
+
+    public DrawingState getState() {return this.state;}
 
     /**
      *
@@ -80,11 +102,13 @@ public class Drawing {
         return  this.currentDrawingCut;
     }
 
+    public DrawCutWrapper getCurrentModifiedCut(){return this.currentModifiedCut;}
+
     /**
      * Initialize all of the mouse listeners : both MouseAdapter(s)
      */
     private void initCutMouseListener(){
-        cutListener = new MouseAdapter() {
+        createCutMoveListener = new MouseAdapter() {
 
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -100,13 +124,13 @@ public class Drawing {
             }
         };
 
-        cutMouseClickListener = new MouseAdapter() {
+        createCutActionListener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (currentDrawingCut.getCursorPoint() != null) {
                     if (currentDrawingCut.getCursorPoint().getValid() == PersoPoint.Valid.NOT_VALID)  // Cut invalid
                     {
-                        deactivateCutListener();
+                        deactivateCreateCutListener();
                     }
                     else // Cut valid
                     {
@@ -123,24 +147,105 @@ public class Drawing {
                 }
             }
         };
+
+        modifyAnchorMoveListener = new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+                if(currentModifiedCut.getCursorPoint() != null){
+                    currentModifiedCut.cursorUpdate(renderer, Drawing.this);
+                    renderer.repaint();
+                }
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e){
+            }
+        };
+
+        modifyAnchorActionListener = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (currentModifiedCut.getCursorPoint() != null) {
+                    if (currentModifiedCut.getCursorPoint().getValid() == PersoPoint.Valid.NOT_VALID)  // Cut invalid
+                    {
+                        deactivateModifyAnchorCutListener();
+                    }
+                    else // Cut valid
+                    {
+                        currentModifiedCut.addPoint(Drawing.this, renderer, new PersoPoint(currentModifiedCut.getCursorPoint()));
+                        if (currentModifiedCut.areRefsValid()){
+                            CutDTO c = currentModifiedCut.getCutDTO();
+                            List<RefCutDTO> newRefs = currentModifiedCut.getRefs();
+                            c = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), c.getPoints(), newRefs, c.getState());
+                            CutListPanel cutListPanel = mainWindow.getMiddleContent().getCutWindow().getCutListPanel();
+                            mainWindow.getController().modifyCut(c);
+
+                            Optional<CutBox> cutBox = cutListPanel.getCutBoxWithId(c.getId());
+                            if(cutBox.isPresent()){
+                                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(c, cutBox.get()));
+                            }
+
+                            deactivateModifyAnchorCutListener();
+                        }
+                        else{
+                            deactivateModifyAnchorCutListener();
+                        }
+                    }
+                }
+            }
+        };
+
+    }
+
+    public void initModifyAnchor(CutDTO cutToChangeAnchor){
+        Optional<DrawCutWrapper> modifiedCut = getWrapperById(cutToChangeAnchor.getId());
+
+        if(modifiedCut.isPresent()){
+            currentModifiedCut = modifiedCut.get();
+            deactivateModifyAnchorCutListener();;
+            currentModifiedCut.emptyRefs();
+            setState(DrawingState.MODIFY_ANCHOR);
+            activateModifyAnchorCutListener();
+        }
+
+    }
+
+    public void setState(DrawingState state){
+        this.state = state;
     }
 
     /**
      * Activates the cutListener so that the board reacts when a cut is being made
      */
-    private void activateCutListener(){
-        renderer.addMouseMotionListener(cutListener);
-        renderer.addMouseListener(cutMouseClickListener);
+    private void activateCreateCutListener(){
+        renderer.addMouseMotionListener(createCutMoveListener);
+        renderer.addMouseListener(createCutActionListener);
         currentDrawingCut.createCursorPoint(this.renderer);
+    }
+
+    private void activateModifyAnchorCutListener(){
+        renderer.addMouseMotionListener(modifyAnchorMoveListener);
+        renderer.addMouseListener(modifyAnchorActionListener);
+        currentModifiedCut.createCursorPoint(this.renderer);
     }
 
     /**
      * Deactivate the cutListener
      */
-    private void deactivateCutListener(){
-        renderer.removeMouseMotionListener(cutListener);
-        renderer.removeMouseListener(cutMouseClickListener);
+    private void deactivateCreateCutListener(){
+        renderer.removeMouseMotionListener(createCutMoveListener);
+        renderer.removeMouseListener(createCutActionListener);
         currentDrawingCut.destroyCursorPoint();
+        setState(DrawingState.IDLE);
+        renderer.repaint();
+    }
+
+    private void deactivateModifyAnchorCutListener(){
+        renderer.removeMouseMotionListener(modifyAnchorMoveListener);
+        renderer.removeMouseListener(modifyAnchorActionListener);
+        currentModifiedCut.destroyCursorPoint();
+        setState(DrawingState.IDLE);
         renderer.repaint();
     }
 

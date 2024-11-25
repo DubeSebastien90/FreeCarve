@@ -108,6 +108,11 @@ public class AttributeContainerRectangle extends AttributeContainer{
         gc.gridy = 6;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         add(bitChoiceBox, gc);
+
+        gc.gridx = 0;
+        gc.gridy = 7;
+        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
+        add(modifyAnchorBox, gc);
     }
 
     private CutDTO pointsWidthResizeCenterCenter(double newWidth){
@@ -182,6 +187,7 @@ public class AttributeContainerRectangle extends AttributeContainer{
 
         addEventListenerToBitChoiceBox(bitChoiceBox);
         addEventListenerToDepth(depthBox);
+        addEventListenerModifyAnchor(modifyAnchorBox);
     }
 
     @Override

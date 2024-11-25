@@ -31,7 +31,7 @@ public class LineIntersectionTest {
         VertexDTO cursor8 = new VertexDTO(120, 50, 0);
 
         double threshold = 10;
-        threshold =  mainWindow.getMiddleContent().getCutWindow().getRenderer().scaleMMToPixel(threshold);
+        threshold =  mainWindow.getMiddleContent().getCutWindow().getRenderer().scalePixelToMM(threshold);
 
         // Act
         mainWindow.getController().resizePanel(100, 100);

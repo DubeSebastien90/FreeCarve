@@ -62,6 +62,11 @@ public class AttributeContainerHorizontal extends AttributeContainer {
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         add(bitChoiceBox, gc);
 
+        gc.gridx = 0;
+        gc.gridy = 5;
+        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
+        add(modifyAnchorBox, gc);
+
     }
 
     /**
@@ -79,6 +84,7 @@ public class AttributeContainerHorizontal extends AttributeContainer {
         addEventListenerToEdgeEdge(distanceFromEdgeToEdge);
         addEventListenerToDepth(depthBox);
         addEventListenerToBitChoiceBox(bitChoiceBox);
+        addEventListenerModifyAnchor(modifyAnchorBox);
     }
 
     @Override

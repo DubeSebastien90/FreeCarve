@@ -2,7 +2,6 @@ package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
-import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import Domain.CutType;
 import UI.Display2D.Drawing;
@@ -102,6 +101,11 @@ public class DrawCutRectangular extends DrawCutWrapper{
     }
 
     @Override
+    public boolean areRefsValid() {
+        return refs.size() >= 2 && !areRefsPointinToItself();
+    }
+
+    @Override
     public Optional<UUID> end() {
         return createCut();
     }
@@ -112,7 +116,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
         if(refs.isEmpty()){
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-            double threshold = renderer.scaleMMToPixel(snapThreshold);
+            double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
             Optional<VertexDTO> closestPoint = mainWindow.getController().getPointNearIntersections(p1, threshold);
@@ -139,7 +143,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
         else if(this.points.isEmpty()){ // First point after anchor
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-            double threshold = renderer.scaleMMToPixel(snapThreshold);
+            double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
 
@@ -153,7 +157,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
             // For the snap area
-            double threshold = renderer.scaleMMToPixel(snapThreshold);
+            double threshold = renderer.scalePixelToMM(snapThreshold);
 
             // Get the possible closest point
             VertexDTO cursor = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);

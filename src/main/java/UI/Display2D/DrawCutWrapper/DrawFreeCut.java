@@ -1,8 +1,8 @@
 package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
+import Common.DTO.RefCutDTO;
 import Domain.CutType;
-import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import UI.Display2D.Drawing;
 import UI.MainWindow;
@@ -62,6 +62,11 @@ public class DrawFreeCut extends DrawCutWrapper {
     }
 
     @Override
+    public boolean areRefsValid() {
+        return !refs.isEmpty() && !areRefsPointinToItself();
+    }
+
+    @Override
     public Optional<UUID> end() {
         return createCut();
     }
@@ -72,7 +77,7 @@ public class DrawFreeCut extends DrawCutWrapper {
         p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
         // For the snap area
-        double threshold = renderer.scaleMMToPixel(snapThreshold);
+        double threshold = renderer.scalePixelToMM(snapThreshold);
 
         // Get the possible closest point
         VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);

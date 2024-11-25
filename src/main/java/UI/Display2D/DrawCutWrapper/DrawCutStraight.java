@@ -1,6 +1,7 @@
 package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
+import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
 import Domain.CutType;
 import UI.Display2D.Drawing;
@@ -9,8 +10,6 @@ import UI.MainWindow;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
-import java.sql.Time;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -76,6 +75,12 @@ public class DrawCutStraight extends DrawCutWrapper{
     }
 
     @Override
+    public boolean areRefsValid() {
+
+        return !refs.isEmpty() && !areRefsPointinToItself();
+    }
+
+    @Override
     public Optional<UUID> end() {
         return createCut();
     }
@@ -88,7 +93,7 @@ public class DrawCutStraight extends DrawCutWrapper{
         if(refs.isEmpty()){ // Get the reference point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-            double threshold = renderer.scaleMMToPixel(snapThreshold);
+            double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
@@ -106,7 +111,7 @@ public class DrawCutStraight extends DrawCutWrapper{
         else if(this.points.isEmpty()){ // First point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-            double threshold = renderer.scaleMMToPixel(snapThreshold);
+            double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
@@ -135,7 +140,7 @@ public class DrawCutStraight extends DrawCutWrapper{
 
 
             // Get possible snap points
-            double threshold = renderer.scaleMMToPixel(snapThreshold);
+            double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO cursor = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             VertexDTO p1 = new VertexDTO(points.getFirst().getLocationX(), points.getFirst().getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridLineNearAllBorderAndCuts(p1,

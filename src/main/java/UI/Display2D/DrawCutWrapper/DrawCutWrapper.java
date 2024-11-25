@@ -8,7 +8,6 @@ import Common.DTO.RefCutDTO;
 import Common.DTO.*;
 import Common.Exceptions.BitNotSelectedException;
 import Domain.CutType;
-import Domain.RefCut;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
@@ -52,62 +51,6 @@ public abstract class DrawCutWrapper {
     protected final Color VALID_COLOR = Color.GREEN;
     protected final Color HOVER_COLOR = Color.BLUE;
 
-    /**
-     * Draws the completed cut
-     * @param graphics2D reference to grahics
-     * @param renderer reference to renderer instance
-     */
-    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer){
-        this.update(renderer);
-        graphics2D.setStroke(stroke);
-        graphics2D.setColor(this.strokeColor);
-
-        for(int i =0; i  < points.size() - 1; i++){
-            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), this.strokeWidth);
-        }
-
-        for (RefCutDTO ref : cut.getRefsDTO()) {
-            VertexDTO absPoints = ref.getAbsoluteOffset(mainWindow.getController());
-            PersoPoint p = new PersoPoint(absPoints.getX(), absPoints.getY(), this.cursorRadius, true);
-            p.drawMM(graphics2D, renderer);
-        }
-    }
-
-    /**
-     * Draw the cut that is still being created
-     * @param graphics2D reference to graphics
-     * @param renderer reference to renderer instance
-     * @param cursor cursor to draw
-     */
-    public abstract void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor);
-
-    /**
-     * Add point to the cut being done
-     * @param renderer reference to the renderer instance
-     * @param pointInMM point in MM to add
-     * @return boolean : True if done, False is not done
-     */
-    public abstract boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM);
-
-    /**
-     * triggers when cut is over
-     * @return
-     */
-    public abstract Optional<UUID> end();
-
-    /**
-     * Updates the cursor for this specific type of DrawCutWrapper
-     * @param renderer reference to the renderer
-     * @param drawing reference to the drawing
-     */
-    public abstract void cursorUpdate(Rendering2DWindow renderer, Drawing drawing);
-
-    /**
-     * @return all the {@code PersoPoint} in the wrapper
-     */
-    public ArrayList<PersoPoint> getPersoPoints(){
-        return this.points;
-    }
 
     /**
      * Basic constructor with CutDTO
@@ -142,16 +85,92 @@ public abstract class DrawCutWrapper {
 
             this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, selectedBit, type, new ArrayList<VertexDTO>(), refs, CutState.VALID);
             this.strokeWidth = mainWindow.getController().getBitsDTO()[cut.getBitIndex()].getDiameter() * renderer.getZoom();
-            this.stroke = new BasicStroke((float)strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            this.stroke = new BasicStroke((float)renderer.scalePixelToMM(strokeWidth), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         } catch (BitNotSelectedException e) {
             e.printStackTrace(); // Est-ce qu'on veut une barre d'action ou on affiche les commandes a faire?
             this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>(), refs, CutState.VALID);
-            this.stroke = new BasicStroke((float)strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            this.stroke = new BasicStroke((float)renderer.scalePixelToMM(strokeWidth), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         }
 
         this.mainWindow = mainWindow;
         cursorPoint  = null;
         this.update(renderer);
+    }
+
+    /**
+     * Draws the completed cut
+     * @param graphics2D reference to grahics
+     * @param renderer reference to renderer instance
+     */
+    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer){
+        this.update(renderer);
+        graphics2D.setStroke(stroke);
+        graphics2D.setColor(this.strokeColor);
+
+        for(int i =0; i  < points.size() - 1; i++){
+            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), this.strokeWidth);
+        }
+
+        for (RefCutDTO ref : cut.getRefsDTO()) {
+            VertexDTO absPoints = ref.getAbsoluteOffset(mainWindow.getController());
+            PersoPoint p = new PersoPoint(absPoints.getX(), absPoints.getY(), this.cursorRadius, true);
+            p.drawMM(graphics2D, renderer);
+        }
+    }
+
+    /**
+     * Draw the cut that is still being created
+     * @param graphics2D reference to graphics
+     * @param renderer reference to renderer instance
+     * @param cursor cursor to draw
+     */
+    public abstract void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor);
+
+    public void drawWhileModifyingAnchor(Graphics graphics, Rendering2DWindow rendering2DWindow, PersoPoint cursorPoint){
+        System.out.println("TEST");
+    }
+
+    /**
+     * Add point to the cut being done
+     * @param renderer reference to the renderer instance
+     * @param pointInMM point in MM to add
+     * @return boolean : True if done, False is not done
+     */
+    public abstract boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM);
+
+    public abstract boolean areRefsValid();
+
+    /**
+     * triggers when cut is over
+     * @return
+     */
+    public abstract Optional<UUID> end();
+
+    /**
+     * Updates the cursor for this specific type of DrawCutWrapper
+     * @param renderer reference to the renderer
+     * @param drawing reference to the drawing
+     */
+    public abstract void cursorUpdate(Rendering2DWindow renderer, Drawing drawing);
+
+    /**
+     * @return all the {@code PersoPoint} in the wrapper
+     */
+    public ArrayList<PersoPoint> getPersoPoints(){
+        return this.points;
+    }
+
+    public void emptyRefs(){
+        this.refs = new ArrayList<>();
+    }
+
+    protected boolean areRefsPointinToItself(){
+        for (RefCutDTO ref : refs) {
+            if (ref.getCut().getId() == cut.getId()) {
+                return true; // NOT VALID IF THE REFERENCE IS THE CUT ITSELF
+            }
+        }
+        return false;
     }
 
     /**
@@ -166,6 +185,10 @@ public abstract class DrawCutWrapper {
      */
     public Color getStrokeColor() {
         return strokeColor;
+    }
+
+    public void setStrokeSize(double newSize){
+        this.stroke = new BasicStroke((float) newSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
     }
 
     /**
@@ -222,6 +245,10 @@ public abstract class DrawCutWrapper {
      */
     public PersoPoint getCursorPoint(){
         return this.cursorPoint;
+    }
+
+    public List<RefCutDTO> getRefs(){
+        return refs;
     }
 
     /**

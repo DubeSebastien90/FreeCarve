@@ -10,6 +10,7 @@ import UI.Display2D.Rendering2DWindow;
 import UI.Events.ChangeCutEvent;
 import UI.LeftBar.ToolBar.Tool;
 import UI.Listeners.PanelObservers;
+import UI.SubWindows.CutListPanel;
 
 /**
  * The {@code MiddleContent} class encapsulates the UI container of the middle

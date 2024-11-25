@@ -1,6 +1,5 @@
 package UI.Widgets;
 
-import Domain.CutType;
 import UI.Display2D.Rendering2DWindow;
 
 import java.awt.*;
@@ -91,7 +90,7 @@ public class PersoPoint {
      */
     public void drawMM(Graphics2D graphics2D, Rendering2DWindow renderer){
         Point2D temp = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
-        double radiusPixel = renderer.scaleMMToPixel(this.radius);
+        double radiusPixel = renderer.scalePixelToMM(this.radius);
         graphics2D.setColor(this.color);
         graphics2D.fillOval((int) (temp.getX()  - this.getRadius()/2.0), ((int) (temp.getY() - this.getRadius()/2.0)),
                 ((int) this.getRadius()), ((int) this.getRadius()));

@@ -9,7 +9,6 @@ import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
 import UI.LeftBar;
 import UI.MainWindow;
-import UI.SubWindows.CutListPanel;
 import UI.Widgets.PersoPoint;
 import UI.UiUtil;
 
@@ -296,7 +295,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         super.paintComponent(graphics2D);
         afficheur.drawRectangle(graphics2D);
         afficheur.drawPoints(graphics2D);
-        afficheur.drawCuts(graphics2D, this, drawing);
+        afficheur.drawCuts(graphics2D, this, drawing, mainWindow);
         if (mainWindow.getController().getGrid().isActive()) {
             afficheur.drawGrid(graphics2D);
         }
@@ -361,13 +360,23 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
     }
 
     /**
+     * Scales a pixel measure into a mm according to the zoom
+     *
+     * @param px measure
+     * @return mm measure with zoom
+     */
+    public double scalePixelToMM(double px) {
+        return px / zoom;
+    }
+
+    /**
      * Scales a mm measure into pixel according to the zoom
      *
      * @param mm measure
      * @return pixel measure with zoom
      */
     public double scaleMMToPixel(double mm) {
-        return mm / zoom;
+        return mm * zoom;
     }
 
     /**

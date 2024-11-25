@@ -1,6 +1,7 @@
 package UI.Display2D;
 
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
+import UI.MainWindow;
 import UI.Widgets.PersoPoint;
 
 import javax.swing.*;
@@ -65,17 +66,22 @@ public class Afficheur {
     /**
      * Draws the cuts of on the board
      */
-    void drawCuts(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing) {
+    void drawCuts(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing, MainWindow mainWindow) {
         for (DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
+            double diameter = mainWindow.getController().getBitDiameter(cutWrapper.getCutDTO().getBitIndex());
+            double scaledStroke = renderer.scaleMMToPixel(diameter);
+            cutWrapper.setStrokeSize(scaledStroke);
             cutWrapper.draw(graphics2D, renderer);
         }
 
-        if (drawing.getCursorPoint() != null) {
-            drawing.getCursorPoint().drawMM(graphics2D, renderer);
+        if (drawing.getState() == Drawing.DrawingState.CREATE_CUT) {
+            drawing.getCurrentDrawingCut().drawWhileChanging(graphics2D, renderer, drawing.getCreateCursorPoint());
+            drawing.getCreateCursorPoint().drawMM(graphics2D, renderer);
         }
 
-        if (drawing.getCurrentDrawingCut() != null && drawing.getCursorPoint() != null) {
-            drawing.getCurrentDrawingCut().drawWhileChanging(graphics2D, renderer, drawing.getCursorPoint());
+        if (drawing.getState() == Drawing.DrawingState.MODIFY_ANCHOR){
+            drawing.getCurrentModifiedCut().drawWhileModifyingAnchor(graphics2D, renderer, drawing.getCreateCursorPoint());
+            drawing.getModifyingAnchorCursorPoint().drawMM(graphics2D, renderer);
         }
     }
 

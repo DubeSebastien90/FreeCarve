@@ -80,6 +80,10 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         return mainSplitPane;
     }
 
+    public CutListPanel getCutListPanel(){
+        return this.cutListPanel;
+    }
+
     /**
      * @return the {@code Rendering2DWindow} present in the {@code CutWIndo}
      */

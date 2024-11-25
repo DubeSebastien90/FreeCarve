@@ -3,16 +3,14 @@ package UI.Widgets.AttributeContainer;
 import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
 import Domain.CutType;
+import UI.Display2D.Drawing;
 import UI.Events.ChangeAttributeEvent;
 import UI.MainWindow;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
 import UI.UiUtil;
-import UI.Widgets.BitChoiceBox;
-import UI.Widgets.ComboBitItem;
-import UI.Widgets.CutBox;
-import UI.Widgets.SingleValueBox;
+import UI.Widgets.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -28,9 +26,11 @@ public abstract class AttributeContainer extends BasicWindow {
     protected CutListPanel cutListPanel;
     protected CutDTO cutDTO;
     protected CutBox cutBox;
+    protected Drawing drawing;
 
     SingleValueBox depthBox;
     BitChoiceBox bitChoiceBox;
+    ButtonBox modifyAnchorBox;
 
 
     public AttributeContainer(MainWindow mainWindow, CutListPanel cutListPanel, CutDTO cutDTO, CutBox cutBox) {
@@ -107,6 +107,8 @@ public abstract class AttributeContainer extends BasicWindow {
             l.setText(UiUtil.getIconName(t));
             labelList.add(l);
         }
+
+        modifyAnchorBox = new ButtonBox(mainWindow, true, "Modifier le point de référence", "Sélectionner le nouveau point");
     }
 
     /**
@@ -148,6 +150,17 @@ public abstract class AttributeContainer extends BasicWindow {
                 c = recomputePointsAfterBitChange(c);
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutDTO, cutBox));
+            }
+        });
+    }
+
+    protected  void addEventListenerModifyAnchor(ButtonBox bb){
+        bb.getInput().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getDrawing().initModifyAnchor(cutDTO);
+                System.out.println("CLICKED");
             }
         });
     }
