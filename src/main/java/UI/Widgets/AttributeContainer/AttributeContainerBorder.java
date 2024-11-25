@@ -9,6 +9,7 @@ import UI.UIConfig;
 import UI.Widgets.CutBox;
 import UI.Widgets.SingleValueBox;
 import UI.Widgets.SingleValueBoxNotEditable;
+import com.sun.jdi.event.StepEvent;
 
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
@@ -51,6 +52,18 @@ public class AttributeContainerBorder extends AttributeContainer{
         gc.gridy = 1;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         add(marginCenterToCenter, gc);
+
+        gc.gridx = 0;
+        gc.gridy = 2;
+        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
+        add(depthBox, gc);
+
+        gc.gridx = 0;
+        gc.gridy = 3;
+        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
+        add(bitChoiceBox, gc);
+
+
     }
 
     private double borderCenterCenter(){
@@ -58,26 +71,38 @@ public class AttributeContainerBorder extends AttributeContainer{
     }
 
     private double borderEdgeEdge(){
-
         return centerCenterToEdgeEdge(borderCenterCenter());
     }
 
     @Override
     public void setupEventListeners() {
         addEventListenerToEdgeEdge(marginEdgeToEdge);
-
         addEventListenerToBitChoiceBox(bitChoiceBox);
         addEventListenerToDepth(depthBox);
     }
 
     @Override
     public void updatePanel(CutDTO newCutDTO) {
-        cutDTO = newCutDTO;
+        cutDTO = new CutDTO(newCutDTO);
         marginEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(borderEdgeEdge());
         marginCenterToCenter.getInput().setValueInMMWithoutTrigerringListeners(borderCenterCenter());
         revalidate();
         repaint();
     }
+
+    @Override
+    protected CutDTO recomputePointsAfterBitChange(CutDTO c) {
+        cutDTO = new CutDTO(c);
+        double centerCenterN = edgeEdgeToCenterCenter(marginEdgeToEdge.getInput().getMMValue());
+
+        for(int i =0; i < c.getPoints().size(); i++){
+            VertexDTO oldVertex = c.getPoints().get(i);
+            VertexDTO newVertex = new VertexDTO(centerCenterN, oldVertex.getY(), oldVertex.getZ());
+            c.getPoints().set(i, newVertex);
+        }
+        return c;
+    }
+
 
     /**
      * Adding the custom event listeners to SingleValueBox objects. The goal is to make
@@ -92,7 +117,8 @@ public class AttributeContainerBorder extends AttributeContainer{
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = new CutDTO(cutDTO);
-                double centerCenterN = edgeEdgeToCenterCenter(sb.getInput().getMMValue());
+                double centerCenterN = edgeEdgeToCenterCenter(marginEdgeToEdge.getInput().getMMValue());
+
                 for(int i =0; i < c.getPoints().size(); i++){
                     VertexDTO oldVertex = c.getPoints().get(i);
                     VertexDTO newVertex = new VertexDTO(centerCenterN, oldVertex.getY(), oldVertex.getZ());

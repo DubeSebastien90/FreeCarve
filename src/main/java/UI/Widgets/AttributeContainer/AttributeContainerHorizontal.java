@@ -1,24 +1,16 @@
 package UI.Widgets.AttributeContainer;
 
-import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
 import Common.DTO.VertexDTO;
-import Domain.CutType;
 import UI.Events.ChangeAttributeEvent;
 import UI.MainWindow;
 import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
-import UI.UiUnits;
 import UI.Widgets.*;
-import UI.UiUtil;
-import javax.swing.*;
+
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Map;
 
 public class AttributeContainerHorizontal extends AttributeContainer {
     SingleValueBox distanceFromEdgeToEdge;
@@ -98,6 +90,18 @@ public class AttributeContainerHorizontal extends AttributeContainer {
         depthBox.getInput().setValueInMMWithoutTrigerringListeners(cutDTO.getDepth());
         revalidate();
         repaint();
+    }
+
+    @Override
+    protected CutDTO recomputePointsAfterBitChange(CutDTO c) {
+        cutDTO = new CutDTO(c);
+        double centerCenterN = edgeEdgeToCenterCenter(distanceFromEdgeToEdge.getInput().getMMValue());
+        for(int i =0; i < c.getPoints().size(); i++){
+            VertexDTO oldVertex = c.getPoints().get(i);
+            VertexDTO newVertex = new VertexDTO(oldVertex.getX(), centerCenterN, oldVertex.getZ());
+            c.getPoints().set(i, newVertex);
+        }
+        return c;
     }
 
     /**

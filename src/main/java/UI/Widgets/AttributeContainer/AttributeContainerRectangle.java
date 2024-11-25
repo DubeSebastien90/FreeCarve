@@ -197,6 +197,11 @@ public class AttributeContainerRectangle extends AttributeContainer{
 
     }
 
+    @Override
+    protected CutDTO recomputePointsAfterBitChange(CutDTO c) {
+        return c;
+    }
+
     private void addEventListenerToResizeInternalWidth(SingleValueBox sb){
         sb.getInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
             @Override

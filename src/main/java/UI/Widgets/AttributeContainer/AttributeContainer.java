@@ -1,6 +1,5 @@
 package UI.Widgets.AttributeContainer;
 
-import Common.CutState;
 import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
 import Domain.CutType;
@@ -45,38 +44,25 @@ public abstract class AttributeContainer extends BasicWindow {
     public abstract void setupEventListeners();
     public abstract void updatePanel(CutDTO newCutDTO);
 
+    /**
+     * Action to perform when changing the bit, in order to keep the wanted property : i.e the internal with of a rectangle
+     * @param c CutDTO with the new bit
+     * @return a CutDto with the modified relative points
+     */
+    protected abstract CutDTO recomputePointsAfterBitChange(CutDTO c);
+
     protected double edgeEdgeX(){
         int currentBitIndex = cutDTO.getBitIndex();
         int refBitIndex = cutDTO.getRefsDTO().getFirst().getCut().getBitIndex();
 
-        double currentBitDiameter = mainWindow.getController().getBitDiameter(currentBitIndex);
-        double refBitDiameter = mainWindow.getController().getBitDiameter(refBitIndex);
-
-        double centerDistance = cutDTO.getPoints().getFirst().getX();
-        double edgeToEdgeDistance = centerDistance - currentBitDiameter - refBitDiameter;
-
-        if (centerDistance < 0){
-            edgeToEdgeDistance = centerDistance + currentBitDiameter + refBitDiameter;
-        }
-
-        return edgeToEdgeDistance;
+        return mainWindow.getController().centerCenterToEdgeEdge(cutDTO.getPoints().getFirst().getX(), currentBitIndex, refBitIndex);
     }
 
     protected double edgeEdgeY(){
         int currentBitIndex = cutDTO.getBitIndex();
         int refBitIndex = cutDTO.getRefsDTO().getFirst().getCut().getBitIndex();
 
-        double currentBitDiameter = mainWindow.getController().getBitDiameter(currentBitIndex);
-        double refBitDiameter = mainWindow.getController().getBitDiameter(refBitIndex);
-
-        double centerDistance = cutDTO.getPoints().getFirst().getY();
-        double edgeToEdgeDistance = centerDistance - currentBitDiameter - refBitDiameter;
-
-        if (centerDistance < 0){
-            edgeToEdgeDistance = centerDistance + currentBitDiameter + refBitDiameter;
-        }
-
-        return edgeToEdgeDistance;
+        return mainWindow.getController().centerCenterToEdgeEdge(cutDTO.getPoints().getFirst().getY(), currentBitIndex, refBitIndex);
     }
 
     protected double centerCenterX(){
@@ -87,14 +73,14 @@ public abstract class AttributeContainer extends BasicWindow {
         return cutDTO.getPoints().getFirst().getY();
     }
 
-    protected double centerCenterToEdgeEdge(double edgeEdge){
-        int currentBitIndex = mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().getSelectedBit();
+    protected double centerCenterToEdgeEdge(double centerCenter){
+        int currentBitIndex = cutDTO.getBitIndex();
         int refBitIndex = cutDTO.getRefsDTO().getFirst().getCut().getBitIndex();
-        return mainWindow.getController().centerCenterToEdgeEdge(edgeEdge, currentBitIndex, refBitIndex);
+        return mainWindow.getController().centerCenterToEdgeEdge(centerCenter, currentBitIndex, refBitIndex);
     }
 
     protected double edgeEdgeToCenterCenter(double edgeEdge){
-        int currentBitIndex = mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().getSelectedBit();
+        int currentBitIndex = cutDTO.getBitIndex();
         int refBitIndex = cutDTO.getRefsDTO().getFirst().getCut().getBitIndex();
         return mainWindow.getController().edgeEdgeToCenterCenter(edgeEdge, currentBitIndex, refBitIndex);
     }
@@ -155,9 +141,11 @@ public abstract class AttributeContainer extends BasicWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JComboBox comboBox = (JComboBox) e.getSource();
+
                 CutDTO c = new CutDTO(cutDTO);
                 ComboBitItem chosenBit = (ComboBitItem) comboBox.getModel().getSelectedItem();
                 c = new CutDTO(c.getId(), c.getDepth(), chosenBit.getIndex(), c.getCutType(), c.getPoints(), c.getRefsDTO(), c.getState());
+                c = recomputePointsAfterBitChange(c);
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutDTO, cutBox));
             }

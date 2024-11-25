@@ -133,12 +133,11 @@ class ProjectState {
 
         double bitDiameter1 = getBitDiameter(bitIndex1);
         double bitDiameter2 = getBitDiameter(bitIndex2);
-
         if(edgeEdge < 0){
-            return edgeEdge - bitDiameter1 -bitDiameter2;
+            return edgeEdge - bitDiameter1/2 -bitDiameter2/2;
         }
         else{
-            return edgeEdge + bitDiameter1 + bitDiameter2;
+            return edgeEdge + bitDiameter1/2 + bitDiameter2/2;
         }
 
     }
@@ -148,10 +147,10 @@ class ProjectState {
         double bitDiameter2 = getBitDiameter(bitIndex2);
 
         if(centerCenter > 0){
-            return centerCenter - bitDiameter1 -bitDiameter2;
+            return centerCenter - bitDiameter1/2 -bitDiameter2/2;
         }
         else{
-            return centerCenter + bitDiameter1 + bitDiameter2;
+            return centerCenter + bitDiameter1/2 + bitDiameter2 /2;
         }
     }
 

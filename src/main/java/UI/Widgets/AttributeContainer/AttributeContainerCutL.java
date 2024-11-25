@@ -93,6 +93,16 @@ public class AttributeContainerCutL extends AttributeContainer{
         gc.gridy = 5;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         add(offsetYCenterCenter, gc);
+
+        gc.gridx = 0;
+        gc.gridy = 6;
+        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
+        add(depthBox, gc);
+
+        gc.gridx = 0;
+        gc.gridy = 7;
+        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
+        add(bitChoiceBox, gc);
     }
 
     @Override
@@ -119,6 +129,25 @@ public class AttributeContainerCutL extends AttributeContainer{
         depthBox.getInput().setValueInMMWithoutTrigerringListeners(cutDTO.getDepth());
         revalidate();
         repaint();
+    }
+
+    @Override
+    protected CutDTO recomputePointsAfterBitChange(CutDTO c) {
+        // Recompute Width and Height
+        cutDTO = new CutDTO(c);
+        double centerCenterN = edgeEdgeToCenterCenter(offsetX.getInput().getMMValue());
+        for(int i =0; i < c.getPoints().size(); i++){
+            VertexDTO oldVertex = c.getPoints().get(i);
+            VertexDTO newVertex = new VertexDTO(centerCenterN, oldVertex.getY(), oldVertex.getZ());
+            c.getPoints().set(i, newVertex);
+        }
+        centerCenterN = edgeEdgeToCenterCenter(offsetY.getInput().getMMValue());
+        for(int i =0; i < c.getPoints().size(); i++){
+            VertexDTO oldVertex = c.getPoints().get(i);
+            VertexDTO newVertex = new VertexDTO(oldVertex.getX(), centerCenterN, oldVertex.getZ());
+            c.getPoints().set(i, newVertex);
+        }
+        return c;
     }
 
     /**
