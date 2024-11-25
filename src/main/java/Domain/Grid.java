@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * The {@code Grid} class regroup functions that are useful for putting a grid on a {@code PanelCNC}
  *
- * @author Adam Côté
+ * @author Louis-Étiene Messier
  * @version 1.0
  * @since 2024-10-20
  */
