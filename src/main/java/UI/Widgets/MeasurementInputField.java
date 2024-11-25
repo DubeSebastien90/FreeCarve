@@ -68,7 +68,7 @@ public class MeasurementInputField extends BasicWindow {
         this.unitComboBox.addItemListener(new UnitChangeListener());
 
         this.numericInput = new JFormattedTextField(DecimalFormat.getNumberInstance());
-        this.numericInput.setColumns(10);
+        this.numericInput.setColumns(5);
         this.numericInput.setBorder(new FlatRoundBorder());
         this.numericInput.setValue(value);
         this.numericInput.setBackground(UIManager.getColor("SubWindow.lightBackground2"));
