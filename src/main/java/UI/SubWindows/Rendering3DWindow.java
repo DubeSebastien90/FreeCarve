@@ -1,13 +1,14 @@
 package UI.SubWindows;
 
 import Common.DTO.VertexDTO;
-import UI.MainWindow;
 import UI.Listeners.MeshManipulator;
+import UI.MainWindow;
 import UI.UiUtil;
 
 import javax.swing.*;
-
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class Rendering3DWindow extends JPanel {
     private final MeshManipulator meshManipulator;
     private UUID cameraId;
     private final MainWindow mainWindow;
+    private final JLabel mouselabel;
 
     /**
      * @return the mouse position in pixels of the last click on the viewport
@@ -51,7 +53,16 @@ public class Rendering3DWindow extends JPanel {
         meshManipulator = new MeshManipulator(this, mainWindow);
         addKeyListener(meshManipulator);
         addMouseListener(meshManipulator);
-
+        mouselabel = new JLabel("0;0");
+        this.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+                mouselabel.setText(e.getX() + " ; " + e.getY());
+                Rendering3DWindow.this.remove(mouselabel);
+                Rendering3DWindow.this.add(mouselabel);
+            }
+        });
     }
 
     /**
@@ -71,7 +82,7 @@ public class Rendering3DWindow extends JPanel {
     @Override
     public void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = ((Graphics2D) graphics);
-        this.setBackground(Color.GRAY);
+        this.setBackground(UIManager.getColor("SubWindow.lightBackground1"));
         UiUtil.makeJPanelRoundCorner(this, graphics2D);
         super.paintComponent(graphics2D);
 

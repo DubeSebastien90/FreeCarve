@@ -47,8 +47,9 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     public void setScene() {
-        this.scene = new Scene(Mesh.PanelToMesh(getPanelDTO()));
+        this.scene = new Scene(Mesh.PanelToMesh(getPanelDTO(), getBitsDTO()));
         this.camera.setScene(this.scene);
+
     }
 
     /**

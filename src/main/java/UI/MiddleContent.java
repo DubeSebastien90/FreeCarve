@@ -1,16 +1,15 @@
 package UI;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-
 import Common.DTO.BitDTO;
 import UI.Display2D.Rendering2DWindow;
 import UI.Events.ChangeCutEvent;
 import UI.LeftBar.ToolBar.Tool;
 import UI.Listeners.PanelObservers;
 import UI.SubWindows.CutListPanel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Map;
 
 /**
  * The {@code MiddleContent} class encapsulates the UI container of the middle
@@ -152,12 +151,14 @@ public class MiddleContent {
             case SIMULATION -> {
                 ((CardLayout) panel.getLayout()).show(panel, "simulation");
                 current = MiddleWindowType.SIMULATION;
+                mainWindow.getController().setScene();
                 simulationWindow.getRenderer().requestFocusInWindow();
                 db.setButtonBlueToIndex(3);
             }
             case EXPORT -> {
                 ((CardLayout) panel.getLayout()).show(panel, "export");
                 current = MiddleWindowType.EXPORT;
+                mainWindow.getController().setScene();
                 exportWindow.calculateGcode();
                 exportWindow.getRenderer().requestFocusInWindow();
                 db.setButtonBlueToIndex(4);
@@ -181,7 +182,8 @@ public class MiddleContent {
     /**
      * Listener for the configured bits
      * Called when the user configures a bit in the ConfigChoiceWindow
-     * @param index The index of the bit in the list of bits
+     *
+     * @param index         The index of the bit in the list of bits
      * @param configuredBit The BitDTO of the configured bit
      */
     public void configuredBitsListener(int index, BitDTO configuredBit) {
@@ -190,6 +192,7 @@ public class MiddleContent {
 
     /**
      * The configuredBitsMap is a map containing the index of the in the list of bits and it's corresponding BitDTO
+     *
      * @return The configuredBitsMap of the project.
      */
     public Map<Integer, Common.DTO.BitDTO> getConfiguredBitsMap() {

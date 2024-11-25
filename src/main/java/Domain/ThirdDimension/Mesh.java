@@ -1,5 +1,6 @@
 package Domain.ThirdDimension;
 
+import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
 import Common.DTO.PanelDTO;
 import Common.DTO.VertexDTO;
@@ -133,12 +134,12 @@ public class Mesh extends Transform {
 
     private void setLocalTriangles(List<Triangle> list) {
         localTriangles = list;
-        Vertex translation = Vertex.multiply(calculateCenter(), -1);
-        for (Triangle t : getLocalTriangles()) {
-            for (Vertex v : t.getVertices()) {
-                v.add(translation);
-            }
-        }
+//        Vertex translation = Vertex.multiply(calculateCenter(), -1);
+//        for (Triangle t : getLocalTriangles()) {
+//            for (Vertex v : t.getVertices()) {
+//                v.add(translation);
+//            }
+//        }
     }
 
     /**
@@ -162,46 +163,56 @@ public class Mesh extends Transform {
      * @param panel
      * @return
      */
-    public static List<Mesh> PanelToMesh(PanelDTO panel) {
-        List<Vertex[]> meshes = new ArrayList<Vertex[]>();
+    public static List<Mesh> PanelToMesh(PanelDTO panel, BitDTO[] bits) {
+        List<Vertex[]> meshes = new ArrayList<>();
         meshes.add(new Vertex[]{new Vertex(0, 0, 0), new Vertex(0, panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), 0, 0)});
+
         for (CutDTO cut : panel.getCutsDTO()) {
-            meshes = cutMesh(meshes, cut);
+            List<Vertex[]> impacted_meshes = new ArrayList<>();
+            impacted_meshes = impactedMeshes(meshes, cut.getAbsolutePointsPosition());
+            for (Vertex[] imp : impacted_meshes) {
+                meshes.remove(imp);
+            }
+            List<Vertex[]> new_mesh = cutMesh(impacted_meshes, cut, bits[cut.getBitIndex()]);
+            meshes.addAll(new_mesh);
         }
-        return transformListVertexToMeshes(meshes, panel.getPanelDimension().getZ());
+        return transformListVertexToMeshes(meshes, 10);
     }
 
     private static List<Mesh> transformListVertexToMeshes(List<Vertex[]> vertices, double depth) {
         List<Mesh> meshes = new ArrayList<>();
         for (Vertex[] meshVertex : vertices) {
             List<Triangle> triangles = new ArrayList<>(List.of(
-                    new Triangle(meshVertex[0], new Vertex(meshVertex[1].getX(), meshVertex[1].getY(), depth), meshVertex[1], new Vertex(-1, 0, 0), Color.BLUE),
-                    new Triangle(meshVertex[0], new Vertex(meshVertex[0].getX(), meshVertex[0].getY(), depth), new Vertex(meshVertex[1].getX(), meshVertex[1].getY(), depth), new Vertex(-1, 0, 0), Color.BLUE),
-                    new Triangle(meshVertex[0], meshVertex[3], new Vertex(meshVertex[3].getX(), meshVertex[3].getY(), depth), new Vertex(0, -1, 0), Color.BLUE),
-                    new Triangle(meshVertex[0], new Vertex(meshVertex[3].getX(), meshVertex[3].getY(), depth), new Vertex(meshVertex[0].getX(), meshVertex[0].getY(), depth), new Vertex(0, -1, 0), Color.BLUE),
-                    new Triangle(meshVertex[0], meshVertex[2], meshVertex[1], new Vertex(0, 0, -1), Color.BLUE),
-                    new Triangle(meshVertex[0], meshVertex[3], meshVertex[2], new Vertex(0, 0, -1), Color.BLUE)
-//                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(width, 0, 0), new Vertex(width, 0, height), new Vertex(1, 0, 0), Color.BLUE),
-//                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(width, length, 0), new Vertex(width, 0, 0), new Vertex(1, 0, 0), Color.BLUE),
-//                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(0, 0, height), new Vertex(width, 0, height), new Vertex(0, 0, 1), Color.BLUE),
-//                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(0, length, height), new Vertex(0, 0, height), new Vertex(0, 0, 1), Color.BLUE),
-//                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(width, length, 0), new Vertex(0, length, 0), new Vertex(0, 1, 0), Color.BLUE),
-//                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(0, length, 0), new Vertex(0, length, height), new Vertex(0, 1, 0), Color.BLUE)
+                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[1].getX(), meshVertex[1].getY(), depth), new Vertex(meshVertex[1]), new Vertex(-1, 0, 0), Color.BLUE),
+                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[1].getX(), meshVertex[1].getY(), depth), new Vertex(meshVertex[0].getX(), meshVertex[0].getY(), depth), new Vertex(-1, 0, 0), Color.BLUE),
+                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[3]), new Vertex(meshVertex[3].getX(), meshVertex[3].getY(), depth), new Vertex(0, -1, 0), Color.BLUE),
+                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[3].getX(), meshVertex[3].getY(), depth), new Vertex(meshVertex[0].getX(), meshVertex[0].getY(), depth), new Vertex(0, -1, 0), Color.BLUE),
+                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[2]), new Vertex(meshVertex[1]), new Vertex(0, 0, -1), Color.BLUE),
+                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[3]), new Vertex(meshVertex[2]), new Vertex(0, 0, -1), Color.BLUE),
+                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[3]), new Vertex(meshVertex[3].getX(), meshVertex[3].getY(), depth), new Vertex(1, 0, 0), Color.BLUE),
+                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[2]), new Vertex(meshVertex[3]), new Vertex(1, 0, 0), Color.BLUE),
+                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[0].getX(), meshVertex[0].getY(), depth), new Vertex(meshVertex[3].getX(), meshVertex[3].getY(), depth), new Vertex(0, 0, 1), Color.BLUE),
+                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[1].getX(), meshVertex[1].getY(), depth), new Vertex(meshVertex[0].getX(), meshVertex[0].getY(), depth), new Vertex(0, 0, 1), Color.BLUE),
+                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[2]), new Vertex(meshVertex[1]), new Vertex(0, 1, 0), Color.BLUE),
+                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[1]), new Vertex(meshVertex[1].getX(), meshVertex[1].getY(), depth), new Vertex(0, 1, 0), Color.BLUE)
             ));
-            meshes.add(new Mesh(new Vertex(100, 100, 0), 0.3, Color.BLUE, triangles));
+            meshes.add(new Mesh(new Vertex(0, 0, 0), 0.3, Color.BLUE, triangles));
         }
         return meshes;
     }
 
-    private static List<Vertex[]> cutMesh(List<Vertex[]> meshes, CutDTO cut) {
+    private static List<Vertex[]> cutMesh(List<Vertex[]> meshes, CutDTO cut, BitDTO bit) {
         List<Vertex[]> cutMeshes = new ArrayList<>();
         if (cut.getCutType() == CutType.LINE_VERTICAL) {
             for (Vertex[] vertices : meshes) {
-                Vertex v1 = vertices[0];
-                Vertex v2 = new Vertex(cut.getPoints().get(0));
-                Vertex v3 = new Vertex(cut.getPoints().get(1));
-                Vertex v4 = new Vertex(meshes.get(0)[1]);
-                cutMeshes.add(new Vertex[]{v1, v4, v3, v2});
+                double wichMin = Math.min((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
+                double wichMax = Math.max((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
+                Vertex v1 = new Vertex(vertices[0]);
+                Vertex v2 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMin, cut.getAbsolutePointsPosition().get(0).getZ());
+                Vertex v3 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMax, cut.getAbsolutePointsPosition().get(0).getZ());
+                Vertex v4 = new Vertex(vertices[1]);
+                cutMeshes.add(new Vertex[]{v1, v4, Vertex.add(v3, new Vertex(-bit.getDiameter()/2, 0, 0)), Vertex.add(v2, new Vertex(-bit.getDiameter()/2, 0, 0))});
+                cutMeshes.add(new Vertex[]{Vertex.add(v2, new Vertex(bit.getDiameter()/2, 0, 0)), Vertex.add(v3, new Vertex(bit.getDiameter()/2, 0, 0)), new Vertex(vertices[2]), new Vertex(vertices[3])});
             }
         }
         return cutMeshes;

@@ -30,7 +30,6 @@ public class SimulationWindow extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
 
         rendering3DWindow = (new Rendering3DWindow(mainWindow.getController().getCameraId(), mainWindow));
-        mainWindow.getController().setScene();
         gbc.insets = new Insets(0, 0, 0, 10);
 
         gbc.gridx = 0;
