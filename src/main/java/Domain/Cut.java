@@ -178,12 +178,13 @@ class Cut {
 
     public CutState getCutState(){return this.cutState;}
 
-    public static List<VertexDTO> generateRectanglePoints(VertexDTO anchor, double width, double height){
-        VertexDTO p1 = new VertexDTO(anchor);
-        VertexDTO p2 = new VertexDTO(anchor.getX() + width, anchor.getY(), anchor.getZ());
-        VertexDTO p3 = new VertexDTO(anchor.getX() + width, anchor.getY()  + height, anchor.getZ());
-        VertexDTO p4 = new VertexDTO(anchor.getX(), anchor.getY()  + height, anchor.getZ());
-        VertexDTO p5 = new VertexDTO(anchor);
+    public static List<VertexDTO> generateRectanglePoints(VertexDTO centerAnchor, double width, double height){
+
+        VertexDTO p1 = new VertexDTO(centerAnchor.getX() - width/2, centerAnchor.getY() - height/2, centerAnchor.getZ());
+        VertexDTO p2 = new VertexDTO(centerAnchor.getX() - width/2, centerAnchor.getY()  + height/2, centerAnchor.getZ());
+        VertexDTO p3 = new VertexDTO(centerAnchor.getX() + width/2, centerAnchor.getY()  + height/2, centerAnchor.getZ());
+        VertexDTO p4 = new VertexDTO(centerAnchor.getX() + width/2, centerAnchor.getY()  - height/2, centerAnchor.getZ());
+        VertexDTO p5 = new VertexDTO(p1);
         return new ArrayList<>(List.of(p1,p2,p3,p4,p5));
     }
 
@@ -230,7 +231,9 @@ class Cut {
 
         // 5 : CutType = Rectangular ;  -number of refs : >=2
         //                              -number of relative points : 5 - twice the anchor point at position 0 and 4 + 3 other points of rect
+
         //                              -how absolute points are computed : gets the intersection points of it's first two references, and offset the relative point by this offset.
+                                        //                                  The relative points are stored with centercenter witdh and height
 
         if (refs.isEmpty()){
             return this.getCopyPoints();

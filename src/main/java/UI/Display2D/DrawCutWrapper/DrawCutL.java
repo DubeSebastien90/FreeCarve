@@ -77,7 +77,7 @@ public class DrawCutL extends DrawCutWrapper{
 
     @Override
     public boolean areRefsValid() {
-        return refs.size() >= 2 && !areRefsPointinToItself();
+        return refs.size() >= 2 && areRefsNotCircular();
     }
 
     private List<VertexDTO> compute3Points(PersoPoint cursor){

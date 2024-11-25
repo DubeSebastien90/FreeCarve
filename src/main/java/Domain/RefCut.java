@@ -70,4 +70,14 @@ public class RefCut {
 
     Cut getCut() {return this.cut;}
 
+    public static boolean isRefCircular(RefCutDTO refsCutDTO, CutDTO cutToTest){
+        boolean out = false;
+        out = refsCutDTO.getCut().getId() == cutToTest.getId();
+        List<RefCutDTO> refsOfRef = refsCutDTO.getCut().getRefsDTO();
+        for(RefCutDTO ref : refsOfRef){
+            out = out | isRefCircular(ref, cutToTest);
+        }
+        return out;
+    }
+
 }

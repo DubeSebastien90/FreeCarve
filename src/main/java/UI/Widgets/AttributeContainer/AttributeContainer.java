@@ -160,7 +160,6 @@ public abstract class AttributeContainer extends BasicWindow {
             public void actionPerformed(ActionEvent e) {
 
                 mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getDrawing().initModifyAnchor(cutDTO);
-                System.out.println("CLICKED");
             }
         });
     }

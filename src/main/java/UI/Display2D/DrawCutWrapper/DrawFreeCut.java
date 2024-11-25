@@ -1,7 +1,6 @@
 package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
-import Common.DTO.RefCutDTO;
 import Domain.CutType;
 import Common.DTO.VertexDTO;
 import UI.Display2D.Drawing;
@@ -63,7 +62,7 @@ public class DrawFreeCut extends DrawCutWrapper {
 
     @Override
     public boolean areRefsValid() {
-        return !refs.isEmpty() && !areRefsPointinToItself();
+        return !refs.isEmpty() && areRefsNotCircular();
     }
 
     @Override

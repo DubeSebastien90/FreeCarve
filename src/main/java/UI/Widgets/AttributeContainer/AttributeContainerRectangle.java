@@ -17,9 +17,9 @@ public class AttributeContainerRectangle extends AttributeContainer{
 
     PointsBox offsetOfRectangle;
     SingleValueBox widthOfRectangle;
-    SingleValueBox absoluteWidthOfRectangle;
+    SingleValueBox widthOfRectangleCenterCenter;
     SingleValueBox heightOfRectangle;
-    SingleValueBox absoluteHeightOfRectangle;
+    SingleValueBox heightOfRectangleCenterCenter;
 
     public AttributeContainerRectangle(MainWindow mainWindow, CutListPanel cutListPanel, CutDTO cutDTO, CutBox cutBox) {
         super(mainWindow, cutListPanel, cutDTO, cutBox);
@@ -29,40 +29,51 @@ public class AttributeContainerRectangle extends AttributeContainer{
 
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO){
         super.init_attribute();
-        offsetOfRectangle = new PointsBox(mainWindow, true, "Distance relative du rectangle", cutDTO.getPoints().getFirst());
-        widthOfRectangle = new SingleValueBox(mainWindow, true, "Largeur interne relative", "X", getRectangleEdgeEdgeX(), UIConfig.INSTANCE.getDefaultUnit());
-        heightOfRectangle = new SingleValueBox(mainWindow, true, "Hauteur interne relative", "Y", getRectangleEdgeEdgeY(), UIConfig.INSTANCE.getDefaultUnit());
-        absoluteWidthOfRectangle = new SingleValueBoxNotEditable(mainWindow, true, "Largeur interne absolue", "X", Math.abs(getRectangleEdgeEdgeX()), UIConfig.INSTANCE.getDefaultUnit());
-        absoluteHeightOfRectangle = new SingleValueBoxNotEditable(mainWindow, true, "Hauteur interne absolue", "Y", Math.abs(getRectangleEdgeEdgeY()), UIConfig.INSTANCE.getDefaultUnit());
+        offsetOfRectangle = new PointsBox(mainWindow, true, "Distance relative du rectangle", getAnchorCenterPoint());
+        widthOfRectangle = new SingleValueBox(mainWindow, true, "Largeur interne", "X", getWidthEdgeEdge(), UIConfig.INSTANCE.getDefaultUnit());
+        heightOfRectangle = new SingleValueBox(mainWindow, true, "Hauteur interne", "Y", getHeightEdgeEdge(), UIConfig.INSTANCE.getDefaultUnit());
+        widthOfRectangleCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Largeur centrale (GCODE)", "X", getWidthCenterCenter(), UIConfig.INSTANCE.getDefaultUnit());
+        heightOfRectangleCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Hauteur centrale (GCODE)", "Y", getHeightCenterCenter(), UIConfig.INSTANCE.getDefaultUnit());
+    }
+    private VertexDTO getAnchorCenterPoint(){
+        VertexDTO p1 = cutDTO.getPoints().getFirst();
+        VertexDTO p3 = cutDTO.getPoints().get(2);
+        VertexDTO centerAnchorPoint = p3.sub(p1).mul(0.5).add(p1);
+        return centerAnchorPoint;
     }
 
-    private double getRectangleCenterCenterX(){
+    private double getWidthCenterCenter(){
         VertexDTO p1 = cutDTO.getPoints().getFirst();
         VertexDTO p3 = cutDTO.getPoints().get(2);
         VertexDTO diff = p3.sub(p1);
         return diff.getX();
     }
 
-    private double getRectangleCenterCenterY(){
+    private double getHeightCenterCenter(){
         VertexDTO p1 = cutDTO.getPoints().getFirst();
         VertexDTO p3 = cutDTO.getPoints().get(2);
         VertexDTO diff = p3.sub(p1);
         return diff.getY();
     }
 
-    private double getRectangleEdgeEdgeX(){
-        double diameter = mainWindow.getController().getBitDiameter(cutDTO.getBitIndex());
-        return getRectangleCenterCenterX() - diameter;
+    private double getWidthEdgeEdge(){
+        double centerCenterWidth = getWidthCenterCenter();
+        return getRectangleCenterCenterToEdgeEdge(centerCenterWidth);
     }
 
-    private double getRectangleEdgeEdgeY(){
-        double diameter = mainWindow.getController().getBitDiameter(cutDTO.getBitIndex());
-        return getRectangleCenterCenterY() - diameter;
+    private double getHeightEdgeEdge(){
+        double centerCenterHeight = getHeightCenterCenter();
+        return getRectangleCenterCenterToEdgeEdge(centerCenterHeight);
     }
 
     private double getRectangleEdgeEdgeToCenterCenter(double edgeEdgeValue){
         double diameter = mainWindow.getController().getBitDiameter(cutDTO.getBitIndex());
         return edgeEdgeValue + diameter;
+    }
+
+    private double getRectangleCenterCenterToEdgeEdge(double centerCenterValue){
+        double diameter = mainWindow.getController().getBitDiameter(cutDTO.getBitIndex());
+        return centerCenterValue - diameter;
     }
 
     private void init_layout(){
@@ -92,12 +103,12 @@ public class AttributeContainerRectangle extends AttributeContainer{
         gc.gridx = 0;
         gc.gridy = 3;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        add(absoluteWidthOfRectangle, gc);
+        add(widthOfRectangleCenterCenter, gc);
 
         gc.gridx = 0;
         gc.gridy = 4;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        add(absoluteHeightOfRectangle, gc);
+        add(heightOfRectangleCenterCenter, gc);
 
         gc.gridx = 0;
         gc.gridy = 5;
@@ -115,39 +126,36 @@ public class AttributeContainerRectangle extends AttributeContainer{
         add(modifyAnchorBox, gc);
     }
 
-    private CutDTO pointsWidthResizeCenterCenter(double newWidth){
+    private CutDTO pointsWidthResizeCenterCenter(double newWidthEdgeEdge){
         CutDTO c = new CutDTO(cutDTO);
-
-        VertexDTO p1 = c.getPoints().getFirst();
-        VertexDTO p3 = c.getPoints().get(2);
-
-        double width = newWidth;
-        double height = p3.sub(p1).getY();
-
-        List<VertexDTO> newPoints = mainWindow.getController().generateRectanglePoints(p1, width, height);
-
+        double height = getWidthCenterCenter();
+        double width = getRectangleEdgeEdgeToCenterCenter(newWidthEdgeEdge);
+        List<VertexDTO> newPoints = mainWindow.getController().generateRectanglePoints(getAnchorCenterPoint(), width, height);
         for(int i=0; i < c.getPoints().size(); i++){
             c.getPoints().set(i, newPoints.get(i));
         }
-
         return c;
     }
 
-    private CutDTO pointsHeightResizeCenterCenter(double newHeight){
+    private CutDTO pointsHeightResizeCenterCenter(double newHeightEdgeEdge){
         CutDTO c = new CutDTO(cutDTO);
-
-        VertexDTO p1 = c.getPoints().getFirst();
-        VertexDTO p3 = c.getPoints().get(2);
-
-        double width = p3.sub(p1).getX();;
-        double height = newHeight;
-
-        List<VertexDTO> newPoints = mainWindow.getController().generateRectanglePoints(p1, width, height);
-
+        double width = getWidthCenterCenter();
+        double height = getRectangleEdgeEdgeToCenterCenter(newHeightEdgeEdge);
+        List<VertexDTO> newPoints = mainWindow.getController().generateRectanglePoints(getAnchorCenterPoint(), width, height);
         for(int i=0; i < c.getPoints().size(); i++){
             c.getPoints().set(i, newPoints.get(i));
         }
+        return c;
+    }
 
+    private CutDTO pointsWidthAndHeightResizeCenterCenter(double newWidthEdgeEdge, double newHeightEdgeEdge){
+        CutDTO c = new CutDTO(cutDTO);
+        double width = getRectangleEdgeEdgeToCenterCenter(newWidthEdgeEdge);
+        double height = getRectangleEdgeEdgeToCenterCenter(newHeightEdgeEdge);
+        List<VertexDTO> newPoints = mainWindow.getController().generateRectanglePoints(getAnchorCenterPoint(), width, height);
+        for(int i=0; i < c.getPoints().size(); i++){
+            c.getPoints().set(i, newPoints.get(i));
+        }
         return c;
     }
 
@@ -157,18 +165,19 @@ public class AttributeContainerRectangle extends AttributeContainer{
         VertexDTO p1 = c.getPoints().getFirst();
         VertexDTO p3 = c.getPoints().get(2);
 
+        VertexDTO centerAnchorPoint = getAnchorCenterPoint();
         double width = p3.sub(p1).getX();;
         double height = p3.sub(p1).getY();
 
         VertexDTO anchor = VertexDTO.zero();
         if(axis == VertexDTO.AXIS.X){
-            anchor = new VertexDTO(newValue, p1.getY(), p1.getZ());
+            anchor = new VertexDTO(newValue, centerAnchorPoint.getY(), centerAnchorPoint.getZ());
         }
         else if(axis == VertexDTO.AXIS.Y){
-            anchor = new VertexDTO(p1.getX(), newValue, p1.getZ());
+            anchor = new VertexDTO(centerAnchorPoint.getX(), newValue, centerAnchorPoint.getZ());
         }
         else if(axis == VertexDTO.AXIS.Z){
-            anchor = new VertexDTO(p1.getX(), p1.getY(), newValue);
+            anchor = new VertexDTO(centerAnchorPoint.getX(), centerAnchorPoint.getY(), newValue);
         }
         List<VertexDTO> newPoints = mainWindow.getController().generateRectanglePoints(anchor, width, height);
 
@@ -193,27 +202,30 @@ public class AttributeContainerRectangle extends AttributeContainer{
     @Override
     public void updatePanel(CutDTO newCutDTO) {
         cutDTO = newCutDTO;
-        offsetOfRectangle.getxInput().setValueInMMWithoutTrigerringListeners(cutDTO.getPoints().getFirst().getX());
-        offsetOfRectangle.getyInput().setValueInMMWithoutTrigerringListeners(cutDTO.getPoints().getFirst().getY());
-        offsetOfRectangle.getzInput().setValueInMMWithoutTrigerringListeners(cutDTO.getPoints().getFirst().getZ());
-        widthOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(getRectangleEdgeEdgeX());
-        heightOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(getRectangleEdgeEdgeY());
-        absoluteWidthOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(getRectangleEdgeEdgeX()));
-        absoluteHeightOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(getRectangleEdgeEdgeY()));
+        offsetOfRectangle.getxInput().setValueInMMWithoutTrigerringListeners(getAnchorCenterPoint().getX());
+        offsetOfRectangle.getyInput().setValueInMMWithoutTrigerringListeners(getAnchorCenterPoint().getY());
+        offsetOfRectangle.getzInput().setValueInMMWithoutTrigerringListeners(getAnchorCenterPoint().getZ());
+        widthOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(getWidthEdgeEdge());
+        heightOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(getHeightEdgeEdge());
+        widthOfRectangleCenterCenter.getInput().setValueInMMWithoutTrigerringListeners(getWidthCenterCenter());
+        heightOfRectangleCenterCenter.getInput().setValueInMMWithoutTrigerringListeners(getHeightCenterCenter());
 
     }
 
     @Override
     protected CutDTO recomputePointsAfterBitChange(CutDTO c) {
-        return c;
+        double oldWidthEdgeEdge = getWidthEdgeEdge();
+        double oldHeighEdgeEdge = getHeightEdgeEdge();
+        cutDTO = new CutDTO(c);
+        return pointsWidthAndHeightResizeCenterCenter(oldWidthEdgeEdge, oldHeighEdgeEdge);
     }
 
     private void addEventListenerToResizeInternalWidth(SingleValueBox sb){
         sb.getInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                double centerCenterN = getRectangleEdgeEdgeToCenterCenter(sb.getInput().getMMValue());
-                CutDTO c = pointsWidthResizeCenterCenter(centerCenterN);
+                double n = sb.getInput().getMMValue();
+                CutDTO c = pointsWidthResizeCenterCenter(n);
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
@@ -224,8 +236,8 @@ public class AttributeContainerRectangle extends AttributeContainer{
         sb.getInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                double centerCenterN = getRectangleEdgeEdgeToCenterCenter(sb.getInput().getMMValue());
-                CutDTO c = pointsHeightResizeCenterCenter(centerCenterN);
+                double n = sb.getInput().getMMValue();
+                CutDTO c = pointsHeightResizeCenterCenter(n);
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }

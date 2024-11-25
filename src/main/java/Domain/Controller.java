@@ -480,5 +480,9 @@ public class Controller implements IUnitConverter, IMemorizer {
     public VertexDTO getDefaultBorderPointCut(){
         return Cut.getBorderPointCutDefaultMargins();
     }
+
+    public boolean isRefCircular(RefCutDTO refCutDTO, CutDTO cutToTest){
+        return RefCut.isRefCircular(refCutDTO, cutToTest);
+    }
 }
 

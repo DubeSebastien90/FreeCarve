@@ -127,7 +127,7 @@ public abstract class DrawCutWrapper {
     public abstract void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor);
 
     public void drawWhileModifyingAnchor(Graphics graphics, Rendering2DWindow rendering2DWindow, PersoPoint cursorPoint){
-        System.out.println("TEST");
+        System.out.println("MODIFIE POINT DE REF");
     }
 
     /**
@@ -164,13 +164,13 @@ public abstract class DrawCutWrapper {
         this.refs = new ArrayList<>();
     }
 
-    protected boolean areRefsPointinToItself(){
-        for (RefCutDTO ref : refs) {
-            if (ref.getCut().getId() == cut.getId()) {
-                return true; // NOT VALID IF THE REFERENCE IS THE CUT ITSELF
+    protected boolean areRefsNotCircular(){
+        for(RefCutDTO ref : refs){
+            if(mainWindow.getController().isRefCircular(ref, cut)){
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**

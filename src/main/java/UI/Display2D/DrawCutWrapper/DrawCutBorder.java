@@ -58,7 +58,7 @@ public class DrawCutBorder extends DrawCutWrapper{
 
     @Override
     public boolean areRefsValid() {
-        return !refs.isEmpty() && !areRefsPointinToItself();
+        return !refs.isEmpty() && areRefsNotCircular();
     }
 
     @Override

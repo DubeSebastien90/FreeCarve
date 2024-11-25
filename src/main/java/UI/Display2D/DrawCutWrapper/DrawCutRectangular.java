@@ -86,12 +86,14 @@ public class DrawCutRectangular extends DrawCutWrapper{
                 VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
                 VertexDTO p1 = newPoints.getFirst().add(offset);
                 VertexDTO mouseDTO = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), p1.getZ());
+                VertexDTO centerAnchorPoint = mouseDTO.sub(p1).mul(0.5).add(p1); // Compute the diagonal of the rec and find center
                 double width =  mouseDTO.sub(p1).getX();
                 double height = mouseDTO.sub(p1).getY();
 
-                newPoints = mainWindow.getController().generateRectanglePoints(p1, width, height);
+                newPoints = mainWindow.getController().generateRectanglePoints(centerAnchorPoint, width, height);
                 for(int i =0; i <newPoints.size(); i++){
                     newPoints.set(i, newPoints.get(i).sub(offset)); // Substraction du offset pour retourner en relativeSpace
+                    System.out.println(newPoints.get(i));
                 }
             }
         }
@@ -102,7 +104,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
 
     @Override
     public boolean areRefsValid() {
-        return refs.size() >= 2 && !areRefsPointinToItself();
+        return refs.size() >= 2 && areRefsNotCircular();
     }
 
     @Override
