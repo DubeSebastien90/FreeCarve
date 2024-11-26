@@ -75,6 +75,10 @@ public class Afficheur {
         }
 
         if (drawing.getState() == Drawing.DrawingState.CREATE_CUT) {
+            double diameter = mainWindow.getController().getBitDiameter(drawing.getCurrentDrawingCut().getCutDTO().getBitIndex());
+            double scaledStroke = renderer.scaleMMToPixel(diameter);
+            drawing.getCurrentDrawingCut().setStrokeSize(scaledStroke);
+
             drawing.getCurrentDrawingCut().drawWhileChanging(graphics2D, renderer, drawing.getCreateCursorPoint());
             drawing.getCreateCursorPoint().drawMM(graphics2D, renderer);
         }

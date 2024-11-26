@@ -3,6 +3,7 @@ package Domain.ThirdDimension;
 import Common.DTO.VertexDTO;
 
 import java.awt.*;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.util.*;
 import java.util.List;
@@ -34,11 +35,11 @@ public class Scene {
     public Scene(){
         // Sets the default scene, the car for now
         try {
-            Mesh car = new Mesh(Vertex.zero(), Color.GRAY, getClass().getResource("car.stl").getPath(), 100);
+            Mesh car = new Mesh(Vertex.zero(), Color.GRAY, getClass().getResourceAsStream("car.stl"), 100);
             car.setRotationEuler(new Vertex(0, Math.PI/4, 0));
             setMeshes(List.of(car));
         } catch (Exception e){
-            System.out.println("File not found");
+            System.out.println("Error within scene creation");
         }
     }
 

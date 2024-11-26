@@ -4,10 +4,7 @@ import Domain.IO.ParsedSTL;
 import Domain.IO.STLParser;
 
 import java.awt.*;
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,11 +42,11 @@ public class Mesh extends Transform {
      *
      * @param position    - the position of the mesh in the scene
      * @param color       - the color of the mesh
-     * @param stlFilePath - Absolute path of the file containing the triangles
+     * @param stlInputStream - Input stream to the file containing the triangles
      * @param scale       - The scaling factor to apply to the read triangles
      */
-    public Mesh(Vertex position, Color color, String stlFilePath, double scale) throws IOException {
-        this(position, scale, color, Arrays.asList(Triangle.fromParsedSTL(parseStlFile(stlFilePath), color)));
+    public Mesh(Vertex position, Color color, InputStream stlInputStream, double scale) throws IOException {
+        this(position, scale, color, Arrays.asList(Triangle.fromParsedSTL(STLParser.parse(stlInputStream), color)));
     }
 
     /**
@@ -137,16 +134,6 @@ public class Mesh extends Transform {
             for (Vertex v : t.getVertices()) {
                 v.add(translation);
             }
-        }
-    }
-
-    private static ParsedSTL parseStlFile(String path) throws IOException {
-        DataInputStream dis = null;
-        try {
-            dis = new DataInputStream(new BufferedInputStream(new FileInputStream(path)));
-            return STLParser.parse(dis);
-        } finally {
-            dis.close();
         }
     }
 

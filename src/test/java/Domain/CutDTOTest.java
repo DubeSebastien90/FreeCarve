@@ -1,5 +1,6 @@
 package Domain;
 
+import Common.CutState;
 import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
@@ -24,7 +25,7 @@ public class CutDTOTest {
         pointsList.add(temp1);
         pointsList.add(temp2);
         cut = new CutDTO(new UUID(10000, 10000), 5.0f, 0,
-                CutType.BORDER, pointsList, new ArrayList<RefCutDTO>());
+                CutType.BORDER, pointsList, new ArrayList<RefCutDTO>(), CutState.VALID);
 
         VertexDTO temp3 = new VertexDTO(1, 2, 3);
         VertexDTO temp4 = new VertexDTO(4, 5, 6);
