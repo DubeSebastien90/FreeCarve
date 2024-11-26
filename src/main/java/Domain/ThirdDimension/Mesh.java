@@ -3,7 +3,6 @@ package Domain.ThirdDimension;
 import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
 import Common.DTO.PanelDTO;
-import Common.DTO.VertexDTO;
 import Domain.CutType;
 import Domain.IO.ParsedSTL;
 import Domain.IO.STLParser;
@@ -174,13 +173,14 @@ public class Mesh extends Transform {
         meshes.add(new Vertex[]{new Vertex(0, 0, 0), new Vertex(0, panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), 0, 0)});
 
         for (CutDTO cut : panel.getCutsDTO()) {
-            List<Vertex[]> impacted_meshes = new ArrayList<>();
-            impacted_meshes = impactedMeshes(meshes, cut.getAbsolutePointsPosition());
+            List<Vertex> pointCut = pointsOfCut(cut, bits[cut.getBitIndex()]);
+            List<Vertex[]> impacted_meshes = impactedMeshes(meshes, pointCut);
             for (Vertex[] imp : impacted_meshes) {
                 meshes.remove(imp);
             }
-            List<Vertex[]> new_mesh = cutMesh(impacted_meshes, pointsOfCut(cut, bits[cut.getBitIndex()]));
+            List<Vertex[]> new_mesh = cutMesh(impacted_meshes, pointCut);
             meshes.addAll(new_mesh);
+            meshes = cleanMeshes(meshes);
         }
         return transformListVertexToMeshes(meshes, 10);
     }
@@ -197,13 +197,21 @@ public class Mesh extends Transform {
             points.add(Vertex.add(v1, new Vertex(bit.getDiameter() / 2, 0, 0)));
             points.add(Vertex.add(v0, new Vertex(bit.getDiameter() / 2, 0, 0)));
         } else if (cut.getCutType() == CutType.RECTANGULAR) {
-
             points.add(new Vertex(cut.getAbsolutePointsPosition().get(0)));
             points.add(new Vertex(cut.getAbsolutePointsPosition().get(1)));
             points.add(new Vertex(cut.getAbsolutePointsPosition().get(2)));
             points.add(new Vertex(cut.getAbsolutePointsPosition().get(3)));
         } else if (cut.getCutType() == CutType.L_SHAPE) {
 
+        } else if (cut.getCutType() == CutType.LINE_HORIZONTAL) {
+            double wichMin = Math.min((cut.getAbsolutePointsPosition().get(0).getX()), cut.getAbsolutePointsPosition().get(1).getX());
+            double wichMax = Math.max((cut.getAbsolutePointsPosition().get(0).getX()), cut.getAbsolutePointsPosition().get(1).getX());
+            Vertex v0 = new Vertex(wichMin, cut.getAbsolutePointsPosition().get(0).getY(), cut.getAbsolutePointsPosition().get(0).getZ());
+            Vertex v1 = new Vertex(wichMax, cut.getAbsolutePointsPosition().get(0).getY(), cut.getAbsolutePointsPosition().get(0).getZ());
+            points.add(Vertex.add(v0, new Vertex(0, -bit.getDiameter() / 2, 0)));
+            points.add(Vertex.add(v1, new Vertex(0, -bit.getDiameter() / 2, 0)));
+            points.add(Vertex.add(v1, new Vertex(0, bit.getDiameter() / 2, 0)));
+            points.add(Vertex.add(v0, new Vertex(0, bit.getDiameter() / 2, 0)));
         }
         return ordonnerPoints(points);
     }
@@ -214,10 +222,12 @@ public class Mesh extends Transform {
                 .min(Comparator.comparingDouble(Vertex::getY)
                         .thenComparingDouble(Vertex::getX))
                 .orElseThrow();
+        list.remove(v0);
         Vertex v2 = list.stream()
                 .max(Comparator.comparingDouble(Vertex::getY)
                         .thenComparingDouble(Vertex::getX))
                 .orElseThrow();
+        list.remove(v2);
         Vertex v1 = list.stream()
                 .filter(p -> p.getX() <= v2.getX())
                 .max(Comparator.comparingDouble(Vertex::getY))
@@ -232,6 +242,18 @@ public class Mesh extends Transform {
         points.add(v3);
         System.out.println(points);
         return points;
+    }
+
+    private static List<Vertex[]> cleanMeshes(List<Vertex[]> meshes) {
+        List<Vertex[]> cleaned = new ArrayList<>();
+        for (Vertex[] vertices : meshes) {
+            if (vertices[0].getX() != vertices[1].getX() || vertices[0].getX() != vertices[2].getX() || vertices[0].getX() != vertices[3].getX()) {
+                if (vertices[0].getY() != vertices[1].getY() || vertices[0].getY() != vertices[2].getY() || vertices[0].getY() != vertices[3].getY()) {
+                    cleaned.add(vertices);
+                }
+            }
+        }
+        return cleaned;
     }
 
     private static List<Mesh> transformListVertexToMeshes(List<Vertex[]> vertices, double depth) {
@@ -258,21 +280,28 @@ public class Mesh extends Transform {
 
     private static List<Vertex[]> cutMesh(List<Vertex[]> meshes, List<Vertex> points) {
         List<Vertex[]> cutMeshes = new ArrayList<>();
-//        if (cut.getCutType() == CutType.LINE_VERTICAL) {
-//            for (Vertex[] vertices : meshes) {
-//                double wichMin = Math.min((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
-//                double wichMax = Math.max((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
-//                if (wichMin == vertices[0].getY() && wichMax == vertices[1].getX()) {
-//                    Vertex v1 = new Vertex(vertices[0]);
-//                    Vertex v2 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMin, cut.getAbsolutePointsPosition().get(0).getZ());
-//                    Vertex v3 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMax, cut.getAbsolutePointsPosition().get(0).getZ());
-//                    Vertex v4 = new Vertex(vertices[1]);
-//                    cutMeshes.add(new Vertex[]{v1, v4, Vertex.add(v3, new Vertex(-bit.getDiameter() / 2, 0, 0)), Vertex.add(v2, new Vertex(-bit.getDiameter() / 2, 0, 0))});
-//                    cutMeshes.add(new Vertex[]{Vertex.add(v2, new Vertex(bit.getDiameter() / 2, 0, 0)), Vertex.add(v3, new Vertex(bit.getDiameter() / 2, 0, 0)), new Vertex(vertices[2]), new Vertex(vertices[3])});
-//                }
-//            }
-//        }
+        List<Vertex[]> impactedMeshes = new ArrayList<>();
+        List<Vertex[]> intersections = new ArrayList<>();
         for (Vertex[] vertices : meshes) {
+            Vertex i0 = points.get(0);
+            Vertex i1 = points.get(1);
+            Vertex i2 = points.get(2);
+            Vertex i3 = points.get(3);
+            List<double[]> equations = equationsMesh(vertices);
+            Vertex[] cutButList = new Vertex[points.size()];
+            for (int i = 0; i < points.size(); i++) {
+                cutButList[i] = points.get(i);
+            }
+            List<double[]> cutEquations = equationsMesh(cutButList);
+            List<Vertex> intersect = new ArrayList<>();
+            for (double[] eq : equations) {
+                double[] intersect1 = trouverIntersection(eq[0], eq[1], cutEquations.get(0)[0], cutEquations.get(0)[1]);
+                if (intersect1 != null) {
+                    if (intersect1[0] < points.get(1).getX() && intersect1[0] > points.get(0).getX() && intersect1[1] < points.get(1).getY() && intersect1[1] > points.get(0).getY()) {
+
+                    }
+                }
+            }
             cutMeshes.add(new Vertex[]{vertices[0], vertices[1], points.get(1), points.get(0)});
             cutMeshes.add(new Vertex[]{points.get(1), vertices[1], vertices[2], points.get(2)});
             cutMeshes.add(new Vertex[]{points.get(3), points.get(2), vertices[2], vertices[3]});
@@ -281,10 +310,11 @@ public class Mesh extends Transform {
         return cutMeshes;
     }
 
-    private static List<Vertex[]> impactedMeshes(List<Vertex[]> meshes, List<VertexDTO> points) {
+    private static List<Vertex[]> impactedMeshes(List<Vertex[]> meshes, List<Vertex> points) {
         List<Vertex[]> impacted = new ArrayList<>();
-        for (VertexDTO singlePoint : points) {
+        for (Vertex singlePoint : points) {
             for (Vertex[] singleMesh : meshes) {
+                List<double[]> equations = equationsMesh(singleMesh);
                 double totalArea = area(singleMesh[0], singleMesh[1], singleMesh[2]) + area(singleMesh[0], singleMesh[2], singleMesh[3]);
                 double area1 = area(new Vertex(singlePoint), singleMesh[0], singleMesh[1]);
                 double area2 = area(new Vertex(singlePoint), singleMesh[1], singleMesh[2]);
@@ -296,6 +326,35 @@ public class Mesh extends Transform {
             }
         }
         return impacted;
+    }
+
+    private static List<double[]> equationsMesh(Vertex[] mesh) {
+        List<double[]> equation = new ArrayList<>();
+        Double pente1 = calculerPente(mesh[0].getX(), mesh[0].getY(), mesh[1].getX(), mesh[1].getY());
+        if (pente1 != null) {
+            equation.add(new double[]{pente1, calculerOrdonneeALOrigine(mesh[0].getX(), mesh[0].getY(), pente1)});
+        } else {
+            equation.add(new double[]{mesh[0].getX()});
+        }
+        Double pente2 = calculerPente(mesh[1].getX(), mesh[1].getY(), mesh[2].getX(), mesh[2].getY());
+        if (pente2 != null) {
+            equation.add(new double[]{pente2, calculerOrdonneeALOrigine(mesh[1].getX(), mesh[1].getY(), pente2)});
+        } else {
+            equation.add(new double[]{mesh[1].getX()});
+        }
+        Double pente3 = calculerPente(mesh[2].getX(), mesh[2].getY(), mesh[3].getX(), mesh[3].getY());
+        if (pente3 != null) {
+            equation.add(new double[]{pente3, calculerOrdonneeALOrigine(mesh[2].getX(), mesh[2].getY(), pente3)});
+        } else {
+            equation.add(new double[]{mesh[2].getX()});
+        }
+        Double pente4 = calculerPente(mesh[0].getX(), mesh[0].getY(), mesh[3].getX(), mesh[3].getY());
+        if (pente4 != null) {
+            equation.add(new double[]{pente4, calculerOrdonneeALOrigine(mesh[0].getX(), mesh[0].getY(), pente4)});
+        } else {
+            equation.add(new double[]{mesh[0].getX()});
+        }
+        return equation;
     }
 
     /**
@@ -345,6 +404,25 @@ public class Mesh extends Transform {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * Calcule le point d'intersection entre deux fonctions linéaires y = m1*x + c1 et y = m2*x + c2.
+     *
+     * @param m1 Pente de la première fonction.
+     * @param c1 Ordonnée à l'origine de la première fonction.
+     * @param m2 Pente de la deuxième fonction.
+     * @param c2 Ordonnée à l'origine de la deuxième fonction.
+     * @return Un tableau contenant les coordonnées [x, y] du point d'intersection, ou null si les lignes sont parallèles.
+     */
+    public static double[] trouverIntersection(double m1, double c1, double m2, double c2) {
+        if (m1 == m2) {
+            return null;
+        }
+        double x = (c2 - c1) / (m1 - m2);
+        double y = m1 * x + c1;
+
+        return new double[]{x, y};
     }
 
     private static double area(Vertex a, Vertex b, Vertex c) {
