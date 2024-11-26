@@ -187,4 +187,11 @@ public class BitSelectionPanel extends BasicWindow {
             }
         }
     }
+
+    /**
+     * Sets the selected bit index
+     */
+    public void setSelectedBit(int selectedBit) {
+        this.selectedBit = selectedBit;
+    }
 }

@@ -15,6 +15,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Map;
 
 /**
  * Represents a display panel that shows and allows editing of bit information.
@@ -229,11 +230,14 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
 
         try {
             mainWindow.getController().removeBit(bitConfigurationPanel.getSelectedBit());
+            mainWindow.getMiddleContent().getConfiguredBitsMap().remove(bitConfigurationPanel.getSelectedBit());
+            this.mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().setSelectedBit(
+                    (Integer) this.mainWindow.getMiddleContent().getConfiguredBitsMap().keySet().toArray()[0]
+            );
         } catch (InvalidBitException e) {
             //Todo: Gérer le message d'erreur, might never happen
             return;
         }
-        mainWindow.getMiddleContent().getConfiguredBitsMap().remove(bitConfigurationPanel.getSelectedBit());
         nameTextArea.setText("Aucun outil assigné");
         widthTextArea.getNumericInput().setValue(0.0);
         bitConfigurationPanel.refresh();
