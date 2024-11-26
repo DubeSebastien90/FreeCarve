@@ -138,8 +138,7 @@ public class BitSelectionPanel extends BasicWindow {
              */
             @Override
             public void ancestorRemoved(AncestorEvent event) {
-                selectedBit = 0;
-                enableLastSelectedBit();
+
             }
 
             @Override
