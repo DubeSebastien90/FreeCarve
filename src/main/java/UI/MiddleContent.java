@@ -25,7 +25,7 @@ public class MiddleContent {
      * Enumeration used to represent one of the different window that can be displayed
      */
     public enum MiddleWindowType {
-        FOLDER, CONFIG, CUT, SIMULATION, EXPORT
+         CONFIG, CUT, SIMULATION, EXPORT
     }
 
     private final JPanel panel;
@@ -86,13 +86,13 @@ public class MiddleContent {
 
 
         this.panel.setLayout(new CardLayout());
-        panel.add(projectWindow, "folder");
+        //panel.add(projectWindow, "folder");
         panel.add(configChoiceWindow, "config");
         panel.add(cutWindow.getCutWindow(), "cut");
         panel.add(simulationWindow, "simulation");
         panel.add(exportWindow, "export");
 
-        current = MiddleWindowType.FOLDER;
+        current = MiddleWindowType.CONFIG;
     }
 
     /**
@@ -124,18 +124,18 @@ public class MiddleContent {
         DownBar db = mainWindow.getDownBar();
         LeftBar lb = mainWindow.getLeftBar();
         switch (type) {
-            case FOLDER -> {
-                ((CardLayout) panel.getLayout()).show(panel, "folder");
-                current = MiddleWindowType.FOLDER;
-                projectWindow.requestFocusInWindow();
-                db.setButtonBlueToIndex(0);
-            }
+//            case FOLDER -> {
+//                ((CardLayout) panel.getLayout()).show(panel, "folder");
+//                current = MiddleWindowType.FOLDER;
+//                projectWindow.requestFocusInWindow();
+//                db.setButtonBlueToIndex(0);
+//            }
             case CONFIG -> {
                 ((CardLayout) panel.getLayout()).show(panel, "config");
                 current = MiddleWindowType.CONFIG;
                 configChoiceWindow.getRendering2DWindow().setAll(cutWindow.getRenderer());
                 configChoiceWindow.requestFocusInWindow();
-                db.setButtonBlueToIndex(1);
+                db.setButtonBlueToIndex(0);
                 lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.SCALE, Tool.FORBIDDEN, Tool.MAGNET, Tool.GRID});
                 lb.getToolBar().disableTools(new Tool[]{Tool.COUPEL, Tool.FREE_LINE, Tool.VERTICAL, Tool.HORIZONTAL, Tool.RECTANGLE, Tool.TRASH, Tool.RETAILLER});
             }
@@ -144,7 +144,7 @@ public class MiddleContent {
                 current = MiddleWindowType.CUT;
                 cutWindow.getRenderer().setAll(configChoiceWindow.getRendering2DWindow());
                 cutWindow.getScreen(1).requestFocusInWindow();
-                db.setButtonBlueToIndex(2);
+                db.setButtonBlueToIndex(1);
                 lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.COUPEL, Tool.GRID, Tool.MAGNET, Tool.FREE_LINE, Tool.VERTICAL, Tool.HORIZONTAL, Tool.RECTANGLE, Tool.RETAILLER});
                 lb.getToolBar().disableTools(new Tool[]{Tool.SCALE, Tool.FORBIDDEN, Tool.TRASH});
             }
@@ -153,7 +153,7 @@ public class MiddleContent {
                 current = MiddleWindowType.SIMULATION;
                 mainWindow.getController().setScene();
                 simulationWindow.getRenderer().requestFocusInWindow();
-                db.setButtonBlueToIndex(3);
+                db.setButtonBlueToIndex(2);
             }
             case EXPORT -> {
                 ((CardLayout) panel.getLayout()).show(panel, "export");
@@ -161,7 +161,7 @@ public class MiddleContent {
                 mainWindow.getController().setScene();
                 exportWindow.calculateGcode();
                 exportWindow.getRenderer().requestFocusInWindow();
-                db.setButtonBlueToIndex(4);
+                db.setButtonBlueToIndex(3);
             }
         }
     }

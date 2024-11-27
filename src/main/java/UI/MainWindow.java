@@ -3,15 +3,12 @@ package UI;
 import Domain.Controller;
 import UI.Listeners.UndoRedoDispatcher;
 import com.formdev.flatlaf.FlatDarkLaf;
-
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
-
 import com.formdev.flatlaf.FlatLaf;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 /**
  * This {@code MainWindow} class encapsulates the main frame of the application.
@@ -91,7 +88,7 @@ public class MainWindow {
         mainInsidePanel.add(downBar.getDownBar(), BorderLayout.SOUTH);
         frame.add(mainInsidePanel);
         frame.setFocusable(true);
-
+        showFileSelectionWindow();
 
     }
 
@@ -144,12 +141,31 @@ public class MainWindow {
         frame.revalidate();
     }
 
+    public void showAttributionWindow() {
+        frame.setContentPane(new AttributionWindow(this));
+        frame.revalidate();
+    }
+
+    /**
+     * Displays the File selection/ project selection window with an instance of {@link FolderWindow }
+     */
+    public void showFileSelectionWindow() {
+        frame.setSize(700, 700);
+        frame.setLocationRelativeTo(null);
+        frame.setContentPane(new FolderWindow(this));
+        getController().resetPanelCNC();
+        getMiddleContent().getCutWindow().notifyObservers();
+        frame.revalidate();
+    }
+
     /**
      * Restores the main content of the application by setting the content
      * pane back to the main inside panel.
      */
     public void showTrueMode() {
         frame.setContentPane(mainInsidePanel);
+        frame.setSize(uiConfig.getDefaultWindowWidth(), uiConfig.getDefaultWindowHeight());
+        frame.setLocationRelativeTo(null);
         frame.revalidate();
     }
 

@@ -13,5 +13,8 @@
         <module name="Expresso" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Expresso" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>

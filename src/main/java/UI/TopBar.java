@@ -1,8 +1,5 @@
 package UI;
 
-import UI.Events.ChangeAttributeEvent;
-import UI.Events.ChangeCutEvent;
-
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 
@@ -46,15 +43,18 @@ public class TopBar extends JMenuBar {
         JMenuItem exit = new JMenuItem("Fermer l'application");
         JMenuItem settings = new JMenuItem("Paramètres");
         JMenuItem contact = new JMenuItem("Contactez nous");
-        JMenuItem attributionLink = new JMenuItem("Icon Source");
-        JMenuItem reset_panel = new JMenuItem("Recréer le panneau");
+        /***/JMenuItem attributionLink = new JMenuItem("À propos");
+        /***/JMenuItem reset_panel = new JMenuItem("Recréer le panneau");
+        /***/JMenuItem close_project = new JMenuItem("Fermer le projet");
 
+        attributionLink.addActionListener(e -> mainWindow.showAttributionWindow());
         settings.addActionListener(e -> mainWindow.showOptionWindow());
         exit.addActionListener(e -> mainWindow.getFrame().dispatchEvent(new WindowEvent(mainWindow.getFrame(), WindowEvent.WINDOW_CLOSING)));
         reset_panel.addActionListener(e -> {
             mainWindow.getController().resetPanelCNC();
             mainWindow.getMiddleContent().getCutWindow().notifyObservers();
         });
+        close_project.addActionListener(e -> mainWindow.showFileSelectionWindow());
 
         fichier.add(nouveau);
         fichier.add(enregistrer);
@@ -63,48 +63,18 @@ public class TopBar extends JMenuBar {
         fichier.add(exporter);
         fichier.add(chargerRecent);
         fichier.add(recharger);
+        fichier.add(close_project);
 
         option.add(settings);
         option.add(reset_panel);
         option.add(exit);
 
         aide.add(contact);
-
-        // Je vais marquer les liens ici, on est obligé de les mettre a quelque part dans l'application finale,
-        // je pensais peut-être faire un pdf avec tous les liens dedans que quand tu cliques sur cet item dans le menu ca t'ouvre le pdf
-        // https://www.svgrepo.com/svg/525834/diskette
-        // https://www.svgrepo.com/svg/525562/undo-left-round
-        // https://www.svgrepo.com/svg/525566/undo-right-round
-        // https://www.svgrepo.com/svg/526331/structure
-        // https://www.svgrepo.com/svg/525420/magnet
-        // https://www.svgrepo.com/svg/525558/trash-bin-trash
-        // https://www.svgrepo.com/svg/525496/scale
-        // https://www.svgrepo.com/svg/526006/magnifer-zoom-in
-        // https://www.svgrepo.com/svg/526007/magnifer-zoom-out
-        // https://www.svgrepo.com/svg/526081/pen
-        // https://www.svgrepo.com/svg/526221/settings
-        // https://www.svgrepo.com/svg/525346/forbidden-circle
-        // https://www.svgrepo.com/svg/526012/map-arrow-right
-        // https://www.svgrepo.com/svg/526011/map-arrow-left
-        // https://www.svgrepo.com/svg/525896/folder-open
-        //
-        // ALL can be found in this portfolio
-        // https://www.svgrepo.com/collection/solar-bold-icons/
-
-
-        // https://www.svgrepo.com/svg/379356/border-all
-        // https://www.svgrepo.com/svg/379093/border-horizontal
-        // https://www.svgrepo.com/svg/379254/select-all
-        // https://www.svgrepo.com/svg/379153/flip-to-front
-        // https://www.svgrepo.com/svg/379154/flip-to-back
-        // https://www.svgrepo.com/svg/379149/file-add
-        //
-        // ceux juste en haut font partie du portfolio suivant :
-        // https://www.svgrepo.com/collection/tetrisly-interface-icons/
         aide.add(attributionLink);
 
         this.add(fichier);
         this.add(option);
         this.add(aide);
     }
+
 }

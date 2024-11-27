@@ -3,14 +3,14 @@ package UI;
 
 import UI.Widgets.ColoredBox;
 
-import static UI.UiUtil.createSVGButton;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
+import static UI.UiUtil.createSVGButton;
 
 /**
  * The {@code DownBar} class encapsulates the UI elements of the navigation bar
@@ -61,19 +61,15 @@ public class DownBar {
      */
     public void setButtonBlueToIndex(int index) {
         index = Math.max(Math.min(index, buttons.size()), 0);
-        for (int i = 0; i < index; i++) {
-            buttons.get(i).setBackground(seenColor);
-            if (i > 0) {
-                components.get(i * 2 - 1).setBackground(seenColor);
-            }
+        for (int i = 0; i < index * 2 - 1; i++) {
+            components.get(i).setBackground(seenColor);
         }
         if (index * 2 - 1 > 0) {
             components.get(index * 2 - 1).setBackground(currentColor);
         }
         buttons.get(index).setBackground(currentColor);
-        for (int i = index + 1; i < buttons.size(); i++) {
-            buttons.get(i).setBackground(notSeenColor);
-            components.get(i * 2 - 1).setBackground(notSeenColor);
+        for (int i = index*2+1; i < components.size(); i++) {
+            components.get(i).setBackground(notSeenColor);
         }
     }
 
@@ -84,12 +80,9 @@ public class DownBar {
         for (int i = 0; i < buttons.size(); i++) {
             JButton button = buttons.get(i);
             int finalI = i;
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    setButtonBlueToIndex(finalI);
-                    mainWindow.getMiddleContent().changePanel(MiddleContent.MiddleWindowType.values()[finalI]);
-                }
+            button.addActionListener(e -> {
+                setButtonBlueToIndex(finalI);
+                mainWindow.getMiddleContent().changePanel(MiddleContent.MiddleWindowType.values()[finalI]);
             });
         }
 
@@ -119,8 +112,8 @@ public class DownBar {
         Dimension coloredBoxDimension = new Dimension(20, 10);
         Color coloredBoxColor = UIManager.getColor("Button.background");
 
-        JButton folderButton = new JButton("Fichier");
-        folderButton.setToolTipText("Menu fichier");
+//        JButton folderButton = new JButton("Fichier");
+//        folderButton.setToolTipText("Menu fichier");
         JButton bitsButton = new JButton("Configuration");
         bitsButton.setToolTipText("Menu configuration");
         JButton cutButton = new JButton("Coupes");
@@ -137,7 +130,7 @@ public class DownBar {
         arrowRight.putClientProperty("JButton.buttonType", "toolBarButton");
 
         buttons = new ArrayList<JButton>();
-        buttons.add(folderButton);
+        //buttons.add(folderButton);
         buttons.add(bitsButton);
         buttons.add(cutButton);
         buttons.add(simulationButton);

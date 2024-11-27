@@ -1,10 +1,10 @@
 package UI;
 
-import static UI.UiUtil.createSVGButton;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+
+import static UI.UiUtil.createSVGButton;
 
 /**
  * This UI class is used to display the first window the user uses when he enters the application.
@@ -71,7 +71,7 @@ public class FolderWindow extends JPanel {
 
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-        gbc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding()*2, 0);
+        gbc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() * 2, 0);
         newButton.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
                 UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding()));
         westPanel.add(newButton, gbc);
@@ -151,6 +151,6 @@ public class FolderWindow extends JPanel {
      * it triggers the action to proceed to the next window in the main interface.
      */
     private void setButtonActionListener() {
-        newButton.addActionListener(e -> mainWindow.getMiddleContent().nextWindow());
+        newButton.addActionListener(e -> mainWindow.showTrueMode());
     }
 }
