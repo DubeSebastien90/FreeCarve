@@ -6,6 +6,8 @@ import Common.DTO.PanelDTO;
 import Domain.CutType;
 import Domain.IO.ParsedSTL;
 import Domain.IO.STLParser;
+import eu.mihosoft.jcsg.CSG;
+import eu.mihosoft.jcsg.Cube;
 
 import java.awt.*;
 import java.io.BufferedInputStream;
@@ -329,6 +331,7 @@ public class Mesh extends Transform {
     }
 
     private static List<double[]> equationsMesh(Vertex[] mesh) {
+        CSG cube = new Cube(2).toCSG();
         List<double[]> equation = new ArrayList<>();
         Double pente1 = calculerPente(mesh[0].getX(), mesh[0].getY(), mesh[1].getX(), mesh[1].getY());
         if (pente1 != null) {
