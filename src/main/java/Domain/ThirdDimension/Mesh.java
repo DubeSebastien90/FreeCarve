@@ -8,12 +8,14 @@ import Domain.IO.ParsedSTL;
 import Domain.IO.STLParser;
 import eu.mihosoft.jcsg.CSG;
 import eu.mihosoft.jcsg.Cube;
+import eu.mihosoft.jcsg.FileUtil;
 
 import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.*;
 
@@ -173,18 +175,31 @@ public class Mesh extends Transform {
     public static List<Mesh> PanelToMesh(PanelDTO panel, BitDTO[] bits) {
         List<Vertex[]> meshes = new ArrayList<>();
         meshes.add(new Vertex[]{new Vertex(0, 0, 0), new Vertex(0, panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), 0, 0)});
+        CSG panneau = new Cube(panel.getPanelDimension().getX(), panel.getPanelDimension().getY(), panel.getPanelDimension().getZ()).toCSG();
 
-        for (CutDTO cut : panel.getCutsDTO()) {
-            List<Vertex> pointCut = pointsOfCut(cut, bits[cut.getBitIndex()]);
-            List<Vertex[]> impacted_meshes = impactedMeshes(meshes, pointCut);
-            for (Vertex[] imp : impacted_meshes) {
-                meshes.remove(imp);
-            }
-            List<Vertex[]> new_mesh = cutMesh(impacted_meshes, pointCut);
-            meshes.addAll(new_mesh);
-            meshes = cleanMeshes(meshes);
+        try {
+            FileUtil.write(
+                    Paths.get("sample.stl"),
+                    panneau.toStlString()
+            );
+            Mesh panelFinal = new Mesh(Vertex.zero(), Color.GRAY, Objects.requireNonNull(Mesh.class.getResource("sample.stl")).getPath(), 100);
+            List<Mesh> arr = new ArrayList<>();
+            arr.add(panelFinal);
+            return arr;
+        } catch (IOException ex) {
+            return new ArrayList<>();
         }
-        return transformListVertexToMeshes(meshes, 10);
+
+//        for (CutDTO cut : panel.getCutsDTO()) {
+//            List<Vertex> pointCut = pointsOfCut(cut, bits[cut.getBitIndex()]);
+//            List<Vertex[]> impacted_meshes = impactedMeshes(meshes, pointCut);
+//            for (Vertex[] imp : impacted_meshes) {
+//                meshes.remove(imp);
+//            }
+//            List<Vertex[]> new_mesh = cutMesh(impacted_meshes, pointCut);
+//            meshes.addAll(new_mesh);
+//            meshes = cleanMeshes(meshes);
+//        }
     }
 
     public static List<Vertex> pointsOfCut(CutDTO cut, BitDTO bit) {
