@@ -2,10 +2,11 @@ package UI;
 
 import Common.DTO.BitDTO;
 import UI.Display2D.Rendering2DWindow;
-import UI.Events.ChangeCutEvent;
 import UI.LeftBar.ToolBar.Tool;
-import UI.Listeners.PanelObservers;
-import UI.SubWindows.CutListPanel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Map;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +26,7 @@ public class MiddleContent {
      * Enumeration used to represent one of the different window that can be displayed
      */
     public enum MiddleWindowType {
-         CONFIG, CUT, SIMULATION, EXPORT
+        CONFIG, CUT, EXPORT
     }
 
     private final JPanel panel;
@@ -89,7 +90,7 @@ public class MiddleContent {
         //panel.add(projectWindow, "folder");
         panel.add(configChoiceWindow, "config");
         panel.add(cutWindow.getCutWindow(), "cut");
-        panel.add(simulationWindow, "simulation");
+        //panel.add(simulationWindow, "simulation");
         panel.add(exportWindow, "export");
 
         current = MiddleWindowType.CONFIG;
@@ -148,20 +149,19 @@ public class MiddleContent {
                 lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.COUPEL, Tool.GRID, Tool.MAGNET, Tool.FREE_LINE, Tool.VERTICAL, Tool.HORIZONTAL, Tool.RECTANGLE, Tool.RETAILLER});
                 lb.getToolBar().disableTools(new Tool[]{Tool.SCALE, Tool.FORBIDDEN, Tool.TRASH});
             }
-            case SIMULATION -> {
-                ((CardLayout) panel.getLayout()).show(panel, "simulation");
-                current = MiddleWindowType.SIMULATION;
-                mainWindow.getController().setScene();
-                simulationWindow.getRenderer().requestFocusInWindow();
-                db.setButtonBlueToIndex(2);
-            }
+//            case SIMULATION -> {
+//                ((CardLayout) panel.getLayout()).show(panel, "simulation");
+//                current = MiddleWindowType.SIMULATION;
+//                simulationWindow.getRenderer().requestFocusInWindow();
+//                db.setButtonBlueToIndex(2);
+//            }
             case EXPORT -> {
                 ((CardLayout) panel.getLayout()).show(panel, "export");
                 current = MiddleWindowType.EXPORT;
                 mainWindow.getController().setScene();
                 exportWindow.calculateGcode();
                 exportWindow.getRenderer().requestFocusInWindow();
-                db.setButtonBlueToIndex(3);
+                db.setButtonBlueToIndex(2);
             }
         }
     }

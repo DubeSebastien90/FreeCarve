@@ -1,7 +1,11 @@
 package UI;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowEvent;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * The {@code TopBar} class creates a menu at the top of the application which contains various functionality and support to the user
@@ -38,15 +42,26 @@ public class TopBar extends JMenuBar {
         JMenuItem enregistrerSous = new JMenuItem("Enregistrer Sous");
         JMenuItem charger = new JMenuItem("Charger");
         JMenuItem chargerRecent = new JMenuItem("Charger récent");
-        JMenuItem exporter = new JMenuItem("Exporter GCODE");
+
+        /***/JMenuItem exporter = new JMenuItem("Exporter GCODE");
+
         JMenuItem recharger = new JMenuItem("Recharger le projet");
-        JMenuItem exit = new JMenuItem("Fermer l'application");
-        JMenuItem settings = new JMenuItem("Paramètres");
-        JMenuItem contact = new JMenuItem("Contactez nous");
+
+        /***/JMenuItem exit = new JMenuItem("Fermer l'application");
+        /***/JMenuItem settings = new JMenuItem("Paramètres");
+        /***/JMenuItem contact = new JMenuItem("Contactez nous");
         /***/JMenuItem attributionLink = new JMenuItem("À propos");
         /***/JMenuItem reset_panel = new JMenuItem("Recréer le panneau");
         /***/JMenuItem close_project = new JMenuItem("Fermer le projet");
 
+
+        exporter.addActionListener(e -> {
+            String path = Utils.chooseFile("Enregistrer", "ProjectGcode.gcode", TopBar.this, "Gcode files", "gcode");
+            if (path != null) {
+                mainWindow.getController().saveGcode(path);
+            }
+        });
+        contact.addActionListener(e -> openEmailClient());
         attributionLink.addActionListener(e -> mainWindow.showAttributionWindow());
         settings.addActionListener(e -> mainWindow.showOptionWindow());
         exit.addActionListener(e -> mainWindow.getFrame().dispatchEvent(new WindowEvent(mainWindow.getFrame(), WindowEvent.WINDOW_CLOSING)));
@@ -75,6 +90,24 @@ public class TopBar extends JMenuBar {
         this.add(fichier);
         this.add(option);
         this.add(aide);
+    }
+
+
+    private static void openEmailClient() {
+        try {
+            String recipient = "support@example.com";
+            String subject = "Demande d'assistance";
+            String body = "Bonjour,\n\nJe souhaite obtenir de l'aide concernant votre application.";
+            String mailto = String.format("mailto:%s?subject=%s&body=%s",
+                    recipient,
+                    URLEncoder.encode(subject, StandardCharsets.UTF_8),
+                    URLEncoder.encode(body, StandardCharsets.UTF_8));
+            Desktop desktop = Desktop.getDesktop();
+            desktop.mail(new URI(mailto));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Impossible d'ouvrir le client de messagerie.", "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 }

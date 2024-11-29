@@ -68,7 +68,7 @@ public class DownBar {
             components.get(index * 2 - 1).setBackground(currentColor);
         }
         buttons.get(index).setBackground(currentColor);
-        for (int i = index*2+1; i < components.size(); i++) {
+        for (int i = index * 2 + 1; i < components.size(); i++) {
             components.get(i).setBackground(notSeenColor);
         }
     }
@@ -118,8 +118,8 @@ public class DownBar {
         bitsButton.setToolTipText("Menu configuration");
         JButton cutButton = new JButton("Coupes");
         cutButton.setToolTipText("Menu coupes");
-        JButton simulationButton = new JButton("Simulation");
-        simulationButton.setToolTipText("Menu simulation");
+//        JButton simulationButton = new JButton("Simulation");
+//        simulationButton.setToolTipText("Menu simulation");
         JButton exportButton = new JButton("Exportation");
         exportButton.setToolTipText("Menu exportation");
         arrowLeft = createSVGButton("leftArrow", true, "Menu précédent", uiConfig.getToolIconSize());
@@ -133,7 +133,7 @@ public class DownBar {
         //buttons.add(folderButton);
         buttons.add(bitsButton);
         buttons.add(cutButton);
-        buttons.add(simulationButton);
+        //buttons.add(simulationButton);
         buttons.add(exportButton);
 
         // Creates the component list by alternating between JButton and ColoredBox
