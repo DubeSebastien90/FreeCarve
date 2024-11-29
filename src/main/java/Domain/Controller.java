@@ -5,6 +5,7 @@ import Common.Exceptions.InvalidBitException;
 import Common.Exceptions.InvalidFileExtensionException;
 import Common.Interfaces.*;
 import Common.Units;
+import Common.Exceptions.InvalidBitException;
 import Common.Interfaces.IDoAction;
 import Common.Interfaces.IRefreshable;
 import Common.Interfaces.IUndoAction;
@@ -370,6 +371,7 @@ public class Controller implements IUnitConverter, IMemorizer {
     public Optional<VertexDTO> getGridPointNearBorder(VertexDTO point, double threshold) {
         return this.grid.getPointNearAllBorder(point, this.cncMachine.getPanel(), threshold, Optional.empty());
     }
+
 
     /**
      * Returns an optionnal closest point to all intersections on the board
