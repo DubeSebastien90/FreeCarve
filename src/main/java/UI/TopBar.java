@@ -95,7 +95,7 @@ public class TopBar extends JMenuBar {
 
     private static void openEmailClient() {
         try {
-            String recipient = "support@example.com";
+            String recipient = "expressogloo@gmail.com";
             String subject = "Demande d'assistance";
             String body = "Bonjour,\n\nJe souhaite obtenir de l'aide concernant votre application.";
             String mailto = String.format("mailto:%s?subject=%s&body=%s",
