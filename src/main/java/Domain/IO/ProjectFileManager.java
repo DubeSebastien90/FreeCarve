@@ -1,5 +1,6 @@
 package Domain.IO;
 
+import Common.DTO.PanelDTO;
 import Common.DTO.ProjectStateDTO;
 
 import java.io.FileWriter;
@@ -32,28 +33,18 @@ public class ProjectFileManager {
 
 
     /**
-     * Saves the {@code ProjectState passed as an argument as a file on the user's computer}. This function will ask the user the location and the name of the saved file.
+     * Saves the {@code PanelCNC} passed as an argument as a file on the user's computer.
      *
-     * @param state The {@code ProjectState} which needs to be saved.
+     * @param panelDTO The {@code PanelCNC} which needs to be saved.
      */
-    void saveProject(ProjectStateDTO state) {
-        //todo, must call choosePath()
-    }
+    void saveProject(PanelDTO panelDTO) {
 
-    /**
-     * Asks the user to select a location on its computer.
-     *
-     * @return The absolute path to go to the chosen location.
-     */
-    String choosePath() {
-        //todo
-        return "";
     }
 
     /**
      * @return A {@code ProjectState} if the user chose a valid file.
      */
     void openProject() {
-        //todo, must call choosePath()
+
     }
 }

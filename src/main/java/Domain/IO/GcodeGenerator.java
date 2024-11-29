@@ -1,6 +1,7 @@
 package Domain.IO;
 
 import Common.DTO.CutDTO;
+import Common.DTO.PanelDTO;
 import Common.DTO.ProjectStateDTO;
 import Common.DTO.VertexDTO;
 
@@ -18,10 +19,10 @@ public class GcodeGenerator {
     /**
      * Converts a {@code ProjectState} into a series of GCode instructions. These instructions can later be saved as a file.
      *
-     * @param state The {@code ProjectState} which needs to be converted into GCode
+     * @param panelDTO The {@code PanelDTO} which needs to be converted into GCode
      * @return The {@code String equivalent of the GCode}
      */
-    public static String convertToGCode(ProjectStateDTO state) {
+    public static String convertToGCode(PanelDTO panelDTO) {
         StringBuilder instructions = new StringBuilder();
 
         //definition of constants
@@ -37,7 +38,7 @@ public class GcodeGenerator {
         instructions.append("G92 Z0" + lineEnd);
         instructions.append(movementSpeed + lineEnd); //Define speed of the CNC
 
-        List<CutDTO> cutlist = state.getPanelDTO().getCutsDTO();
+        List<CutDTO> cutlist = panelDTO.getCutsDTO();
         for (CutDTO cut : cutlist) {
             instructions.append("T").append(cut.getBitIndex() + 1).append(" M06").append(lineEnd); //select the tool
             for (VertexDTO vertex : cut.getPoints()) {

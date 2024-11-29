@@ -28,6 +28,11 @@ class PanelCNC {
     private final IMemorizer memorizer;
     private static final int MAX_FEET_WIDTH = 10;
     private static final int MAX_FEET_HEIGHT = 5;
+    private static final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 5); // dimension in mm
+
+    PanelCNC(IMemorizer memorizer) {
+        this(defaultPanelDimension, memorizer);
+    }
 
     /**
      * Constructs a new {@code PanelCNC} with no {@code Cut} or {@code ClampZone} on it. The dimensions of the board are determined by the {@code VertexDTO} passed as parameter.
@@ -106,7 +111,7 @@ class PanelCNC {
     }
 
     /**
-     * Removes a cut from the current {@code ProjectState} board
+     * Removes a cut from the current {@code CNCMachine} board
      *
      * @param id The id of the {@code Cut} the needs to be removed
      * @return Boolean : true if cut is removed, false if it can't be removed

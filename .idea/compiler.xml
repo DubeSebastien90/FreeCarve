@@ -15,7 +15,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="A24-IFT-GLO-Equipe2" target="21" />
-      <module name="Expresso" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>

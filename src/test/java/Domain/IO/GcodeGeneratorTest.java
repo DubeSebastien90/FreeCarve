@@ -23,12 +23,10 @@ public class GcodeGeneratorTest {
         list.add(new VertexDTO(50, 50, 0));
         CutDTO cut1 = new CutDTO(new UUID(1, 1), 2, 1, CutType.LINE_FREE, list, new ArrayList<RefCutDTO>(), CutState.VALID);
         List<CutDTO> c = List.of(new CutDTO[]{cut1});
-        PanelDTO pnel = new PanelDTO(c, new VertexDTO(300, 300, 5), 300, 300, UUID.randomUUID());
-        BitDTO[] bits = {new BitDTO("g", 3)};
-        ProjectStateDTO pjt = new ProjectStateDTO(bits, pnel);
+        PanelDTO panelDTO = new PanelDTO(c, new VertexDTO(300, 300, 5), 300, 300, UUID.randomUUID());
 
         //Act
-        String actual = GcodeGenerator.convertToGCode(pjt);
+        String actual = GcodeGenerator.convertToGCode(panelDTO);
         String expectedGcode = """
                 G21;
                 G17;

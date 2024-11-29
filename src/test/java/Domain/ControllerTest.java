@@ -10,7 +10,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class ControllerTest {
@@ -23,26 +22,14 @@ public class ControllerTest {
     }
 
     @Test
-    void constructorTest(){
-        // Arrange
-        ProjectStateDTO state = controllerTest.getProjectStateDTO();
-
-        // Act
-
-        // Assert
-        Assertions.assertEquals(12, state.getBitList().length);
-    }
-
-    @Test
     void updateBitTest_WhenUpdateName_BitNameChange(){
         // Arrange
         BitDTO newBit = new BitDTO("test", 1.0f);
         // Act
         controllerTest.modifyBit(0, newBit);
-        ProjectStateDTO state = controllerTest.getProjectStateDTO();
 
         // Assert
-        Assertions.assertEquals("test", state.getBitList()[0].getName());
+        Assertions.assertEquals("test", controllerTest.getBitsDTO()[0].getName());
     }
 
     @Test

@@ -20,7 +20,7 @@ class UndoRedoManager implements IMemorizer {
     private final Collection<IRefreshable> refreshables;
 
     /**
-     * Construct a new {@code UndoRedo} object with two empty {@code ProjectState Stack}
+     * Construct a new {@code UndoRedo} object with two empty {@code CNCMachine Stack}
      */
     UndoRedoManager(){
         this(new LinkedList<>(), new LinkedList<>());

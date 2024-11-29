@@ -4,6 +4,9 @@ import Common.DTO.*;
 import Common.Exceptions.InvalidBitException;
 import Common.Interfaces.*;
 import Common.Units;
+import Common.Interfaces.IDoAction;
+import Common.Interfaces.IRefreshable;
+import Common.Interfaces.IUndoAction;
 import Domain.IO.GcodeGenerator;
 import Domain.IO.ProjectFileManager;
 import Domain.ThirdDimension.Camera;
@@ -26,16 +29,16 @@ import java.util.UUID;
  */
 public class Controller implements IUnitConverter, IMemorizer {
     private final UndoRedoManager undoRedoManager;
-    private final ProjectState currentProjectState;
+    private final CNCMachine cncMachine;
     private Grid grid;
     private final int defaultGridPrecision = 5;
     private final int defaultMagnetPrecision = 5;
     private Scene scene;
     private final Camera camera;
 
-    Controller(UndoRedoManager undoRedoManager, ProjectState projectState, Scene scene) {
+    Controller(UndoRedoManager undoRedoManager, CNCMachine CNCMachine, Scene scene) {
         this.undoRedoManager = undoRedoManager;
-        this.currentProjectState = projectState;
+        this.cncMachine = CNCMachine;
         this.scene = scene;
         this.camera = new Camera(scene);
         putGrid(defaultGridPrecision, defaultMagnetPrecision);
@@ -43,7 +46,7 @@ public class Controller implements IUnitConverter, IMemorizer {
 
     public static Controller initialize() {
         UndoRedoManager undoRedoManager = new UndoRedoManager();
-        return new Controller(undoRedoManager, new ProjectState(undoRedoManager), new Scene());
+        return new Controller(undoRedoManager, new CNCMachine(undoRedoManager), new Scene());
     }
 
     public void setScene() {
@@ -56,27 +59,20 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
-     * Requests a cut to do on the panel of the current {@code ProjectState}
+     * Requests a cut to do on the panel of the current {@code CNCMachine}
      *
      * @param cut A requestCutDTO with all the information about the cut.
      * @return The UUID of the Cut if the RequestCutDTO was valid.
      */
     public Optional<UUID> requestCut(RequestCutDTO cut) {
-        return this.currentProjectState.getPanel().requestCut(cut);
+        return cncMachine.getPanel().requestCut(cut);
     }
 
     /**
-     * @return The current {@code ProjectState}
-     */
-    public ProjectStateDTO getProjectStateDTO() {
-        return this.currentProjectState.getDTO();
-    }
-
-    /**
-     * @return The board of the current {@code ProjectState}
+     * @return The board of the current {@code CNCMachine}
      */
     public PanelDTO getPanelDTO() {
-        return getProjectStateDTO().getPanelDTO();
+        return cncMachine.getPanel().getDTO();
     }
 
     /**
@@ -86,7 +82,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return Optional<CutDTO> : CutDTO if found, null if not found
      */
     public Optional<CutDTO> findSpecificCut(UUID id) {
-        return this.currentProjectState.getPanel().findSpecificCut(id);
+        return this.cncMachine.getPanel().findSpecificCut(id);
     }
 
     /**
@@ -95,7 +91,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return List<CutDTO> of the cuts in the domain
      */
     public List<CutDTO> getCutListDTO() {
-        return getProjectStateDTO().getPanelDTO().getCutsDTO();
+        return cncMachine.getPanel().getDTO().getCutsDTO();
     }
 
     /**
@@ -104,22 +100,18 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param width  The new width of the board.
      * @param height The new height of the board.
      */
-    public void resizePanel(double width, double height) {
-        this.currentProjectState.getPanel().resize(width, height, this.currentProjectState.getPanel().getDepth());
-    }
-
     public void resizePanel(double width, double height, double depth) {
-        this.currentProjectState.getPanel().resize(width, height, depth);
+        this.cncMachine.getPanel().resize(width, height, depth);
     }
 
     /**
-     * Removes a cut from the current {@code ProjectState} board
+     * Removes a cut from the current {@code CNCMachine} board
      *
      * @param id The id of the {@code Cut} the needs to be removed
      * @return Boolean : true if cut is removed, false if it can't be removed
      */
     public boolean removeCut(UUID id) {
-        return this.currentProjectState.getPanel().removeCut(id);
+        return this.cncMachine.getPanel().removeCut(id);
     }
 
     /**
@@ -128,14 +120,14 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param cut The modified Cut.
      */
     public Optional<UUID> modifyCut(CutDTO cut) {
-        return this.currentProjectState.getPanel().modifyCut(cut);
+        return this.cncMachine.getPanel().modifyCut(cut);
     }
 
     /**
      * @return The list of Bit of the CNC
      */
     public BitDTO[] getBitsDTO() {
-        return getProjectStateDTO().getBitList();
+        return cncMachine.getBitStorage().getBitList();
     }
 
     /**
@@ -144,7 +136,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param index The index of the bit that needs to be removed.
      */
     public void removeBit(int index) throws InvalidBitException {
-        currentProjectState.removeBit(index);
+        cncMachine.getBitStorage().removeBit(index);
     }
 
     /**
@@ -154,7 +146,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param bit   A DTO representing the new {@code Bit}
      */
     public void modifyBit(int index, BitDTO bit) {
-        this.currentProjectState.updateBit(index, bit);
+        cncMachine.getBitStorage().updateBit(index, bit);
     }
 
     /**
@@ -200,7 +192,8 @@ public class Controller implements IUnitConverter, IMemorizer {
     /**
      * Saves the current state of the project.
      */
-    public void saveProject() {
+    public void saveProject(String path) {
+
     }
 
     /**
@@ -213,12 +206,12 @@ public class Controller implements IUnitConverter, IMemorizer {
     /**
      * Opens a file and set the current project as the project saved in the file.
      */
-    public void openProject() {
+    public void openProject(String path) {
         //todo
     }
 
     /**
-     * Modifies the {@code PanelCNC} of the current {@code ProjectState}
+     * Modifies the {@code PanelCNC} of the current {@code CNCMachine}
      *
      * @param panel The new PanelCNC as a DTO
      */
@@ -257,12 +250,12 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
-     * Converts the current {@code ProjectState} as GCode instructions.
+     * Converts the current {@code CNCMachine} as GCode instructions.
      *
      * @return The String that represent the GCode instructions.
      */
     public String convertToGCode() {
-        return GcodeGenerator.convertToGCode(getProjectStateDTO());
+        return GcodeGenerator.convertToGCode(getPanelDTO());
     }
 
 
@@ -324,7 +317,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
     public Optional<VertexDTO> getGridLineNearAllBorderAndCuts(VertexDTO p1, VertexDTO cursor, double threshold) {
-        return this.grid.getLineNearAllBorderAndCuts(p1, cursor, this.currentProjectState.getPanel(), threshold);
+        return this.grid.getLineNearAllBorderAndCuts(p1, cursor, this.cncMachine.getPanel(), threshold);
     }
 
 
@@ -336,7 +329,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
     public Optional<VertexDTO> getGridPointNearAllBorderAndCuts(VertexDTO point, double threshold) {
-        return this.grid.getPointNearAllBorderAndCuts(point, this.currentProjectState.getPanel(), threshold);
+        return this.grid.getPointNearAllBorderAndCuts(point, this.cncMachine.getPanel(), threshold);
     }
 
     /**
@@ -347,9 +340,8 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
     public Optional<VertexDTO> getGridPointNearBorder(VertexDTO point, double threshold) {
-        return this.grid.getPointNearAllBorder(point, this.currentProjectState.getPanel(), threshold, Optional.empty());
+        return this.grid.getPointNearAllBorder(point, this.cncMachine.getPanel(), threshold, Optional.empty());
     }
-
 
     /**
      * Returns an optionnal closest point to all intersections on the board
@@ -366,7 +358,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * Computes all of the intersection points  on the board, stores them in the grid class
      */
     public void computeGridIntersections() {
-        this.grid.computeIntersectionPointList(this.currentProjectState.getPanel());
+        this.grid.computeIntersectionPointList(this.cncMachine.getPanel());
     }
 
     /**
@@ -376,7 +368,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return list of reference Cut touching the point
      */
     public List<RefCutDTO> getRefCutsAndBorderOnPoint(VertexDTO point) {
-        return this.grid.getRefCutsAndBorderOnPoint(point, this.currentProjectState.getPanel());
+        return this.grid.getRefCutsAndBorderOnPoint(point, this.cncMachine.getPanel());
     }
 
     public void setGridMagnetism(boolean magnetism) {
@@ -411,7 +403,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return True if the point is on the board.
      */
     public boolean isPointOnPanel(VertexDTO point) {
-        return this.currentProjectState.getPanel().isPointOnPanel(point);
+        return this.cncMachine.getPanel().isPointOnPanel(point);
     }
 
     /**
@@ -420,7 +412,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return Map containing Position of the bit, BitDTO
      */
     public Map<Integer, BitDTO> refreshConfiguredBitMaps() {
-        return currentProjectState.getConfiguredBits();
+        return cncMachine.getBitStorage().getConfiguredBits();
     }
 
     public DimensionDTO convertUnit(DimensionDTO toConvert, Units targetUnit) {
@@ -428,7 +420,7 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     public void resetPanelCNC() {
-        currentProjectState.resetPanelCNC();
+        cncMachine.resetPanelCNC();
     }
 
 
@@ -439,7 +431,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return diameter of the bit
      */
     public double getBitDiameter(int bitIndex) {
-        return this.currentProjectState.getBitDiameter(bitIndex);
+        return cncMachine.getBitStorage().getBitDiameter(bitIndex);
     }
 
     /**
@@ -451,7 +443,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return the converted center-center distance
      */
     public double edgeEdgeToCenterCenter(double edge, int bitIndex1, int bitIndex2) {
-        return this.currentProjectState.edgeEdgeToCenterCenter(edge, bitIndex1, bitIndex2);
+        return this.cncMachine.edgeEdgeToCenterCenter(edge, bitIndex1, bitIndex2);
     }
 
     /**
@@ -463,7 +455,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return the converted edge-edge distance
      */
     public double centerCenterToEdgeEdge(double center, int bitIndex1, int bitIndex2) {
-        return this.currentProjectState.centerCenterToEdgeEdge(center, bitIndex1, bitIndex2);
+        return this.cncMachine.centerCenterToEdgeEdge(center, bitIndex1, bitIndex2);
     }
 
     /**
@@ -485,7 +477,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return the list of absolute points
      */
     public List<VertexDTO> getAbsolutePointsPosition(CutDTO cutDTO) {
-        return Cut.getAbsolutePointsPositionOfCutDTO(cutDTO, this.currentProjectState.getPanel());
+        return Cut.getAbsolutePointsPositionOfCutDTO(cutDTO, this.cncMachine.getPanel());
     }
 
     public VertexDTO getBorderPointCut(double margin) {
