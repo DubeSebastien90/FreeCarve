@@ -1,11 +1,11 @@
 package Domain;
 
-import Common.*;
 import Common.DTO.CutDTO;
 import Common.DTO.PanelDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import Common.Interfaces.IMemorizer;
+import Common.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,8 @@ class PanelCNC {
     PanelCNC(VertexDTO panelDimension, IMemorizer memorizer) {
         this.cutList = new ArrayList<>();
         this.clamps = new ArrayList<>();
-        this.panelDimension = panelDimension;
+        resize(panelDimension.getX(), panelDimension.getY(), depth);
+        this.depth = depth;
         this.memorizer = memorizer;
         updateBorderCut();
     }
@@ -83,7 +84,7 @@ class PanelCNC {
         //todo tester si la coupe est bonne ou non!!
         UUID newUUID = UUID.randomUUID();
         CutDTO cutDTO = new CutDTO(newUUID, cut);
-        memorizer.executeAndMemorize(()->this.cutList.add(createPanelCut(cutDTO)), ()->this.cutList.removeIf(e->e.getId() == newUUID));
+        memorizer.executeAndMemorize(() -> this.cutList.add(createPanelCut(cutDTO)), () -> this.cutList.removeIf(e -> e.getId() == newUUID));
         return Optional.of(newUUID);
     }
 
@@ -123,7 +124,6 @@ class PanelCNC {
         }
         return false;
     }
-
     /**
      * Cleanup all the references of the parameter cut used by all of the other cuts, otherwise, there is references problem
      * All the necessary cuts will become invalid and lose all of their references
@@ -141,6 +141,7 @@ class PanelCNC {
             }
         }
     }
+
 
     /**
      * Finds a specific cut with id
@@ -162,15 +163,15 @@ class PanelCNC {
         return clamps;
     }
 
-    Cut createPanelCut(CutDTO cutDTO){
+    Cut createPanelCut(CutDTO cutDTO) {
         return new Cut(cutDTO, this.getCutAndBorderList());
     }
 
-    Cut getBorderCut(){
+    Cut getBorderCut() {
         return this.borderCut;
     }
 
-    List<Cut> getCutAndBorderList(){
+    List<Cut> getCutAndBorderList() {
         List<Cut> addAll = new ArrayList<>();
         addAll.addAll(this.cutList);
         addAll.add(borderCut);
@@ -219,11 +220,12 @@ class PanelCNC {
      * @param width  The new width of the board.
      * @param height The new height of the board.
      */
-    void resize(double width, double height) {
+    void resize(double width, double height, double depth) {
         double newWidth = Math.min(Math.max(0, width), Util.feet_to_mm(MAX_FEET_WIDTH));
         double newHeight = Math.min(Math.max(0, height), Util.feet_to_mm(MAX_FEET_HEIGHT));
-
-        panelDimension = new VertexDTO(newWidth, newHeight, 0);
+        double newDepth = depth;
+        panelDimension = new VertexDTO(newWidth, newHeight, newDepth);
+        this.depth = newDepth;
         updateBorderCut();
     }
 
@@ -257,8 +259,8 @@ class PanelCNC {
         return point.getX() >= 0 && point.getY() >= 0 && point.getX() <= getWidth() && point.getY() <= getHeight();
     }
 
-    void updateBorderCut(){
-        if(this.borderCut == null){
+    void updateBorderCut() {
+        if (this.borderCut == null) {
             ArrayList<VertexDTO> borderPoints = new ArrayList<>();
             borderPoints.add(new VertexDTO(0, 0,0 ));
             borderPoints.add(new VertexDTO(0, panelDimension.getY(), 0 ));
@@ -271,11 +273,11 @@ class PanelCNC {
         }
         else{
             ArrayList<VertexDTO> borderPoints = new ArrayList<>();
-            borderPoints.add(new VertexDTO(0, 0,0 ));
-            borderPoints.add(new VertexDTO(0, panelDimension.getY(), 0 ));
-            borderPoints.add(new VertexDTO(panelDimension.getX(), panelDimension.getY(), 0 ));
-            borderPoints.add(new VertexDTO(panelDimension.getX(), 0,0 ));
-            borderPoints.add(new VertexDTO(0, 0,0 ));
+            borderPoints.add(new VertexDTO(0, 0, 0));
+            borderPoints.add(new VertexDTO(0, panelDimension.getY(), 0));
+            borderPoints.add(new VertexDTO(panelDimension.getX(), panelDimension.getY(), 0));
+            borderPoints.add(new VertexDTO(panelDimension.getX(), 0, 0));
+            borderPoints.add(new VertexDTO(0, 0, 0));
             this.borderCut.setPoints(borderPoints);
         }
     }

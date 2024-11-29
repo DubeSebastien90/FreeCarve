@@ -49,7 +49,6 @@ public class Controller implements IUnitConverter, IMemorizer {
     public void setScene() {
         this.scene = new Scene(Mesh.PanelToMesh(getPanelDTO(), getBitsDTO()));
         this.camera.setScene(this.scene);
-
     }
 
     /**
@@ -102,7 +101,11 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param height The new height of the board.
      */
     public void resizePanel(double width, double height) {
-        this.currentProjectState.getPanel().resize(width, height);
+        this.currentProjectState.getPanel().resize(width, height, this.currentProjectState.getPanel().getDepth());
+    }
+
+    public void resizePanel(double width, double height, double depth) {
+        this.currentProjectState.getPanel().resize(width, height, depth);
     }
 
     /**

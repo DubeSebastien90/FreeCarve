@@ -1,23 +1,21 @@
 package Domain.ThirdDimension;
 
-import Common.DTO.BitDTO;
-import Common.DTO.CutDTO;
-import Common.DTO.PanelDTO;
+import Common.DTO.*;
 import Domain.CutType;
 import Domain.IO.ParsedSTL;
 import Domain.IO.STLParser;
-import eu.mihosoft.jcsg.CSG;
-import eu.mihosoft.jcsg.Cube;
-import eu.mihosoft.jcsg.FileUtil;
+import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.Cube;
 
 import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.*;
+import java.util.UUID;
 
 /**
  * The Mesh class allows complex solids made out of triangles to be rendered and modified in the scene.
@@ -175,277 +173,127 @@ public class Mesh extends Transform {
     public static List<Mesh> PanelToMesh(PanelDTO panel, BitDTO[] bits) {
         List<Vertex[]> meshes = new ArrayList<>();
         meshes.add(new Vertex[]{new Vertex(0, 0, 0), new Vertex(0, panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), 0, 0)});
+
         CSG panneau = new Cube(panel.getPanelDimension().getX(), panel.getPanelDimension().getY(), panel.getPanelDimension().getZ()).toCSG();
-
-        try {
-            FileUtil.write(
-                    Paths.get("sample.stl"),
-                    panneau.toStlString()
-            );
-            Mesh panelFinal = new Mesh(Vertex.zero(), Color.GRAY, Objects.requireNonNull(Mesh.class.getResource("sample.stl")).getPath(), 100);
-            List<Mesh> arr = new ArrayList<>();
-            arr.add(panelFinal);
-            return arr;
-        } catch (IOException ex) {
-            return new ArrayList<>();
-        }
-
-//        for (CutDTO cut : panel.getCutsDTO()) {
-//            List<Vertex> pointCut = pointsOfCut(cut, bits[cut.getBitIndex()]);
-//            List<Vertex[]> impacted_meshes = impactedMeshes(meshes, pointCut);
-//            for (Vertex[] imp : impacted_meshes) {
-//                meshes.remove(imp);
-//            }
-//            List<Vertex[]> new_mesh = cutMesh(impacted_meshes, pointCut);
-//            meshes.addAll(new_mesh);
-//            meshes = cleanMeshes(meshes);
-//        }
-    }
-
-    public static List<Vertex> pointsOfCut(CutDTO cut, BitDTO bit) {
-        List<Vertex> points = new ArrayList<>();
-        if (cut.getCutType() == CutType.LINE_VERTICAL) {
-            double wichMin = Math.min((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
-            double wichMax = Math.max((cut.getAbsolutePointsPosition().get(0).getY()), cut.getAbsolutePointsPosition().get(1).getY());
-            Vertex v0 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMin, cut.getAbsolutePointsPosition().get(0).getZ());
-            Vertex v1 = new Vertex(cut.getAbsolutePointsPosition().get(0).getX(), wichMax, cut.getAbsolutePointsPosition().get(0).getZ());
-            points.add(Vertex.add(v0, new Vertex(-bit.getDiameter() / 2, 0, 0)));
-            points.add(Vertex.add(v1, new Vertex(-bit.getDiameter() / 2, 0, 0)));
-            points.add(Vertex.add(v1, new Vertex(bit.getDiameter() / 2, 0, 0)));
-            points.add(Vertex.add(v0, new Vertex(bit.getDiameter() / 2, 0, 0)));
-        } else if (cut.getCutType() == CutType.RECTANGULAR) {
-            points.add(new Vertex(cut.getAbsolutePointsPosition().get(0)));
-            points.add(new Vertex(cut.getAbsolutePointsPosition().get(1)));
-            points.add(new Vertex(cut.getAbsolutePointsPosition().get(2)));
-            points.add(new Vertex(cut.getAbsolutePointsPosition().get(3)));
-        } else if (cut.getCutType() == CutType.L_SHAPE) {
-
-        } else if (cut.getCutType() == CutType.LINE_HORIZONTAL) {
-            double wichMin = Math.min((cut.getAbsolutePointsPosition().get(0).getX()), cut.getAbsolutePointsPosition().get(1).getX());
-            double wichMax = Math.max((cut.getAbsolutePointsPosition().get(0).getX()), cut.getAbsolutePointsPosition().get(1).getX());
-            Vertex v0 = new Vertex(wichMin, cut.getAbsolutePointsPosition().get(0).getY(), cut.getAbsolutePointsPosition().get(0).getZ());
-            Vertex v1 = new Vertex(wichMax, cut.getAbsolutePointsPosition().get(0).getY(), cut.getAbsolutePointsPosition().get(0).getZ());
-            points.add(Vertex.add(v0, new Vertex(0, -bit.getDiameter() / 2, 0)));
-            points.add(Vertex.add(v1, new Vertex(0, -bit.getDiameter() / 2, 0)));
-            points.add(Vertex.add(v1, new Vertex(0, bit.getDiameter() / 2, 0)));
-            points.add(Vertex.add(v0, new Vertex(0, bit.getDiameter() / 2, 0)));
-        }
-        return ordonnerPoints(points);
-    }
-
-    private static List<Vertex> ordonnerPoints(List<Vertex> list) {
-        List<Vertex> points = new ArrayList<>();
-        Vertex v0 = list.stream()
-                .min(Comparator.comparingDouble(Vertex::getY)
-                        .thenComparingDouble(Vertex::getX))
-                .orElseThrow();
-        list.remove(v0);
-        Vertex v2 = list.stream()
-                .max(Comparator.comparingDouble(Vertex::getY)
-                        .thenComparingDouble(Vertex::getX))
-                .orElseThrow();
-        list.remove(v2);
-        Vertex v1 = list.stream()
-                .filter(p -> p.getX() <= v2.getX())
-                .max(Comparator.comparingDouble(Vertex::getY))
-                .orElseThrow();
-        Vertex v3 = list.stream()
-                .filter(p -> !p.equals(v0) && !p.equals(v1) && !p.equals(v2))
-                .findFirst()
-                .orElseThrow();
-        points.add(v0);
-        points.add(v1);
-        points.add(v2);
-        points.add(v3);
-        System.out.println(points);
-        return points;
-    }
-
-    private static List<Vertex[]> cleanMeshes(List<Vertex[]> meshes) {
-        List<Vertex[]> cleaned = new ArrayList<>();
-        for (Vertex[] vertices : meshes) {
-            if (vertices[0].getX() != vertices[1].getX() || vertices[0].getX() != vertices[2].getX() || vertices[0].getX() != vertices[3].getX()) {
-                if (vertices[0].getY() != vertices[1].getY() || vertices[0].getY() != vertices[2].getY() || vertices[0].getY() != vertices[3].getY()) {
-                    cleaned.add(vertices);
+        for (CutDTO cut : panel.getCutsDTO()) {
+            if (cut.getCutType() == CutType.LINE_VERTICAL) {
+                panneau = panneau.difference(createVerticalCut(cut, bits, panel));
+            } else if (cut.getCutType() == CutType.LINE_HORIZONTAL) {
+                panneau = panneau.difference(createHorizontalCut(cut, bits, panel));
+            } else if (cut.getCutType() == CutType.RECTANGULAR) {
+                CSG[] cuts = createRectangularCut(cut, bits, panel);
+                for (CSG si : cuts) {
+                    panneau = panneau.difference(si);
                 }
+            } else if (cut.getCutType() == CutType.BORDER) {
+                CSG[] cuts = createBorderCut(cut, bits, panel);
+                for (CSG si : cuts) {
+                    panneau = panneau.difference(si);
+                }
+            } else if (cut.getCutType() == CutType.L_SHAPE) {
+                CSG[] cuts = createLCut(cut, bits, panel);
+                for (CSG si : cuts) {
+                    panneau = panneau.difference(si);
+                }
+            } else if (cut.getCutType() == CutType.LINE_FREE) {
+                panneau = panneau.difference(createFreeCut(cut, bits, panel));
             }
         }
-        return cleaned;
+        Mesh finalMesh = new Mesh(new Vertex(50, 50, 0), 0.5, Color.BLUE, convertStringToVertex(panneau.toStlString()));
+        List<Mesh> arr = new ArrayList<>();
+        arr.add(finalMesh);
+        return arr;
     }
 
-    private static List<Mesh> transformListVertexToMeshes(List<Vertex[]> vertices, double depth) {
-        List<Mesh> meshes = new ArrayList<>();
-        for (Vertex[] meshVertex : vertices) {
-            List<Triangle> triangles = new ArrayList<>(List.of(
-                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[1].getX(), meshVertex[1].getY(), depth), new Vertex(meshVertex[1]), new Vertex(-1, 0, 0), Color.BLUE),
-                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[1].getX(), meshVertex[1].getY(), depth), new Vertex(meshVertex[0].getX(), meshVertex[0].getY(), depth), new Vertex(-1, 0, 0), Color.BLUE),
-                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[3]), new Vertex(meshVertex[3].getX(), meshVertex[3].getY(), depth), new Vertex(0, -1, 0), Color.BLUE),
-                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[3].getX(), meshVertex[3].getY(), depth), new Vertex(meshVertex[0].getX(), meshVertex[0].getY(), depth), new Vertex(0, -1, 0), Color.BLUE),
-                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[2]), new Vertex(meshVertex[1]), new Vertex(0, 0, -1), Color.BLUE),
-                    new Triangle(new Vertex(meshVertex[0]), new Vertex(meshVertex[3]), new Vertex(meshVertex[2]), new Vertex(0, 0, -1), Color.BLUE),
-                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[3]), new Vertex(meshVertex[3].getX(), meshVertex[3].getY(), depth), new Vertex(1, 0, 0), Color.BLUE),
-                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[2]), new Vertex(meshVertex[3]), new Vertex(1, 0, 0), Color.BLUE),
-                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[0].getX(), meshVertex[0].getY(), depth), new Vertex(meshVertex[3].getX(), meshVertex[3].getY(), depth), new Vertex(0, 0, 1), Color.BLUE),
-                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[1].getX(), meshVertex[1].getY(), depth), new Vertex(meshVertex[0].getX(), meshVertex[0].getY(), depth), new Vertex(0, 0, 1), Color.BLUE),
-                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[2]), new Vertex(meshVertex[1]), new Vertex(0, 1, 0), Color.BLUE),
-                    new Triangle(new Vertex(meshVertex[2].getX(), meshVertex[2].getY(), depth), new Vertex(meshVertex[1]), new Vertex(meshVertex[1].getX(), meshVertex[1].getY(), depth), new Vertex(0, 1, 0), Color.BLUE)
-            ));
-            meshes.add(new Mesh(new Vertex(0, 0, 0), 0.3, Color.BLUE, triangles));
-        }
-        return meshes;
+    private static CSG createHorizontalCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        CSG cut3d = new Cube(bits[cut.getBitIndex()].getDiameter(), Math.abs(cut.getAbsolutePointsPosition().get(0).getX() - cut.getAbsolutePointsPosition().get(1).getX()), panel.getPanelDimension().getZ()).toCSG();
+        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(90));
+        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate((cut.getAbsolutePointsPosition().get(0).getX() + cut.getAbsolutePointsPosition().get(1).getX()) / 2 - panel.getPanelDimension().getX() / 2, cut.getAbsolutePointsPosition().get(0).getY() - panel.getPanelDimension().getY() / 2 + bits[cut.getBitIndex()].getDiameter() / 2, 0));
+        return cut3d;
     }
 
-    private static List<Vertex[]> cutMesh(List<Vertex[]> meshes, List<Vertex> points) {
-        List<Vertex[]> cutMeshes = new ArrayList<>();
-        List<Vertex[]> impactedMeshes = new ArrayList<>();
-        List<Vertex[]> intersections = new ArrayList<>();
-        for (Vertex[] vertices : meshes) {
-            Vertex i0 = points.get(0);
-            Vertex i1 = points.get(1);
-            Vertex i2 = points.get(2);
-            Vertex i3 = points.get(3);
-            List<double[]> equations = equationsMesh(vertices);
-            Vertex[] cutButList = new Vertex[points.size()];
-            for (int i = 0; i < points.size(); i++) {
-                cutButList[i] = points.get(i);
-            }
-            List<double[]> cutEquations = equationsMesh(cutButList);
-            List<Vertex> intersect = new ArrayList<>();
-            for (double[] eq : equations) {
-                double[] intersect1 = trouverIntersection(eq[0], eq[1], cutEquations.get(0)[0], cutEquations.get(0)[1]);
-                if (intersect1 != null) {
-                    if (intersect1[0] < points.get(1).getX() && intersect1[0] > points.get(0).getX() && intersect1[1] < points.get(1).getY() && intersect1[1] > points.get(0).getY()) {
+    private static CSG createVerticalCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        CSG cut3d = new Cube(bits[cut.getBitIndex()].getDiameter(), Math.abs(cut.getAbsolutePointsPosition().get(0).getY() - cut.getAbsolutePointsPosition().get(1).getY()), panel.getPanelDimension().getZ()).toCSG();
+        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut.getAbsolutePointsPosition().get(0).getX() - panel.getPanelDimension().getX() / 2 + bits[cut.getBitIndex()].getDiameter() / 2, (cut.getAbsolutePointsPosition().get(0).getY() + cut.getAbsolutePointsPosition().get(1).getY()) / 2 - panel.getPanelDimension().getY() / 2, 0));
+        return cut3d;
+    }
 
+    private static CSG[] createRectangularCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        List<VertexDTO> arr1 = new ArrayList<>();
+        arr1.add(cut.getAbsolutePointsPosition().get(0));
+        arr1.add(cut.getAbsolutePointsPosition().get(1));
+        List<RefCutDTO> what = new ArrayList<>();
+        List<VertexDTO> arr2 = new ArrayList<>();
+        arr2.add(cut.getAbsolutePointsPosition().get(1));
+        arr2.add(cut.getAbsolutePointsPosition().get(2));
+        List<VertexDTO> arr3 = new ArrayList<>();
+        arr3.add(cut.getAbsolutePointsPosition().get(2));
+        arr3.add(cut.getAbsolutePointsPosition().get(3));
+        List<VertexDTO> arr4 = new ArrayList<>();
+        arr4.add(cut.getAbsolutePointsPosition().get(3));
+        arr4.add(cut.getAbsolutePointsPosition().get(0));
+        CSG cut1 = createHorizontalCut(new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr1, what), bits, panel);
+        CSG cut2 = createVerticalCut(new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr2, what), bits, panel);
+        CSG cut3 = createHorizontalCut(new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr3, what), bits, panel);
+        CSG cut4 = createVerticalCut(new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr4, what), bits, panel);
+        return new CSG[]{cut1, cut2, cut3, cut4};
+    }
+
+    private static CSG[] createBorderCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        return new CSG[]{};
+    }
+
+    private static CSG[] createLCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        return new CSG[]{};
+    }
+
+    private static CSG createFreeCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        return null;
+    }
+
+    public static List<Triangle> convertStringToVertex(String stlString) {
+        stlString = stlString.replaceAll("v3d.csg", "");
+        stlString = stlString.replaceAll("normal ", "\\$");
+        stlString = stlString.replaceAll("vertex ", "_");
+        stlString = stlString.replaceAll("(?<=\\\\d)([eE])(?=[+-]?\\\\d+)", "!");
+        stlString = stlString.replaceAll("[A-Za-z]", "");
+        stlString = stlString.replaceAll("\n", "");
+        stlString = stlString.replaceAll("!", "E");
+        stlString = stlString.trim();
+        stlString = stlString.replaceFirst("\\$", "");
+        String[] stlStrings = stlString.split("\\$");
+        List<Triangle> allVertex = new ArrayList<>();
+        for (String s : stlStrings) {
+            for (int i = 0; i < 4; i++) {
+                List<Vertex> li = new ArrayList<>();
+                for (String single : s.split("_")) {
+                    single = single.trim();
+                    String[] trio = single.split(" ");
+                    Double d1;
+                    Double d2;
+                    Double d3;
+                    try {
+                        d1 = Double.parseDouble(trio[0]);
+                    } catch (Exception e) {
+                        d1 = 0.0;
                     }
+                    try {
+                        d2 = Double.parseDouble(trio[1]);
+                    } catch (Exception e) {
+                        d2 = 0.0;
+                    }
+                    try {
+                        d3 = Double.parseDouble(trio[2]);
+                    } catch (Exception e) {
+                        d3 = 0.0;
+                    }
+                    Vertex vert = new Vertex(d1, d2, d3);
+                    li.add(vert);
                 }
-            }
-            cutMeshes.add(new Vertex[]{vertices[0], vertices[1], points.get(1), points.get(0)});
-            cutMeshes.add(new Vertex[]{points.get(1), vertices[1], vertices[2], points.get(2)});
-            cutMeshes.add(new Vertex[]{points.get(3), points.get(2), vertices[2], vertices[3]});
-            cutMeshes.add(new Vertex[]{vertices[0], points.get(0), points.get(3), vertices[3]});
-        }
-        return cutMeshes;
-    }
-
-    private static List<Vertex[]> impactedMeshes(List<Vertex[]> meshes, List<Vertex> points) {
-        List<Vertex[]> impacted = new ArrayList<>();
-        for (Vertex singlePoint : points) {
-            for (Vertex[] singleMesh : meshes) {
-                List<double[]> equations = equationsMesh(singleMesh);
-                double totalArea = area(singleMesh[0], singleMesh[1], singleMesh[2]) + area(singleMesh[0], singleMesh[2], singleMesh[3]);
-                double area1 = area(new Vertex(singlePoint), singleMesh[0], singleMesh[1]);
-                double area2 = area(new Vertex(singlePoint), singleMesh[1], singleMesh[2]);
-                double area3 = area(new Vertex(singlePoint), singleMesh[2], singleMesh[3]);
-                double area4 = area(new Vertex(singlePoint), singleMesh[3], singleMesh[0]);
-                if (Math.abs(totalArea - (area1 + area2 + area3 + area4)) < 1e-6 && !impacted.contains(singleMesh)) {
-                    impacted.add(singleMesh);
-                }
+                System.out.println(new Triangle(li.get(1), li.get(2), li.get(3), li.get(0), Color.BLUE));
+                allVertex.add(new Triangle(li.get(1), li.get(2), li.get(3), li.get(0), Color.BLUE));
             }
         }
-        return impacted;
-    }
-
-    private static List<double[]> equationsMesh(Vertex[] mesh) {
-        CSG cube = new Cube(2).toCSG();
-        List<double[]> equation = new ArrayList<>();
-        Double pente1 = calculerPente(mesh[0].getX(), mesh[0].getY(), mesh[1].getX(), mesh[1].getY());
-        if (pente1 != null) {
-            equation.add(new double[]{pente1, calculerOrdonneeALOrigine(mesh[0].getX(), mesh[0].getY(), pente1)});
-        } else {
-            equation.add(new double[]{mesh[0].getX()});
-        }
-        Double pente2 = calculerPente(mesh[1].getX(), mesh[1].getY(), mesh[2].getX(), mesh[2].getY());
-        if (pente2 != null) {
-            equation.add(new double[]{pente2, calculerOrdonneeALOrigine(mesh[1].getX(), mesh[1].getY(), pente2)});
-        } else {
-            equation.add(new double[]{mesh[1].getX()});
-        }
-        Double pente3 = calculerPente(mesh[2].getX(), mesh[2].getY(), mesh[3].getX(), mesh[3].getY());
-        if (pente3 != null) {
-            equation.add(new double[]{pente3, calculerOrdonneeALOrigine(mesh[2].getX(), mesh[2].getY(), pente3)});
-        } else {
-            equation.add(new double[]{mesh[2].getX()});
-        }
-        Double pente4 = calculerPente(mesh[0].getX(), mesh[0].getY(), mesh[3].getX(), mesh[3].getY());
-        if (pente4 != null) {
-            equation.add(new double[]{pente4, calculerOrdonneeALOrigine(mesh[0].getX(), mesh[0].getY(), pente4)});
-        } else {
-            equation.add(new double[]{mesh[0].getX()});
-        }
-        return equation;
-    }
-
-    /**
-     * Calcule la pente (m) de la ligne passant par deux points.
-     *
-     * @param x1 Coordonnée x du premier point.
-     * @param y1 Coordonnée y du premier point.
-     * @param x2 Coordonnée x du second point.
-     * @param y2 Coordonnée y du second point.
-     * @return La pente m de la ligne.
-     */
-    public static Double calculerPente(double x1, double y1, double x2, double y2) {
-        if (x1 == x2) {
-            return null;
-        }
-        return (y2 - y1) / (x2 - x1);
-    }
-
-    /**
-     * Calcule l'ordonnée à l'origine (c) de la ligne y = mx + c.
-     *
-     * @param x Coordonnée x d'un point.
-     * @param y Coordonnée y d'un point.
-     * @param m Pente de la ligne.
-     * @return L'ordonnée à l'origine c.
-     */
-    public static double calculerOrdonneeALOrigine(double x, double y, double m) {
-        return y - m * x;
-    }
-
-    /**
-     * Détermine la position d'un point par rapport à une fonction linéaire y = mx + c.
-     *
-     * @param x Coordonnée x du point.
-     * @param y Coordonnée y du point.
-     * @param m Pente de la ligne.
-     * @param c Ordonnée à l'origine de la ligne.
-     * @return Un int
-     */
-    public static int positionParRapportALigne(double x, double y, double m, double c) {
-        double yLigne = m * x + c;
-
-        if (y > yLigne) {
-            return 1;
-        } else if (y < yLigne) {
-            return -1;
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Calcule le point d'intersection entre deux fonctions linéaires y = m1*x + c1 et y = m2*x + c2.
-     *
-     * @param m1 Pente de la première fonction.
-     * @param c1 Ordonnée à l'origine de la première fonction.
-     * @param m2 Pente de la deuxième fonction.
-     * @param c2 Ordonnée à l'origine de la deuxième fonction.
-     * @return Un tableau contenant les coordonnées [x, y] du point d'intersection, ou null si les lignes sont parallèles.
-     */
-    public static double[] trouverIntersection(double m1, double c1, double m2, double c2) {
-        if (m1 == m2) {
-            return null;
-        }
-        double x = (c2 - c1) / (m1 - m2);
-        double y = m1 * x + c1;
-
-        return new double[]{x, y};
-    }
-
-    private static double area(Vertex a, Vertex b, Vertex c) {
-        return Math.abs(a.getX() * (b.getY() - c.getY()) +
-                b.getX() * (c.getY() - a.getY()) +
-                c.getX() * (a.getY() - b.getY())) / 2.0;
+        return allVertex;
     }
 }

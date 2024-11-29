@@ -2,9 +2,7 @@ package UI.Widgets;
 
 import Common.DTO.VertexDTO;
 import UI.Display2D.Rendering2DWindow;
-import UI.UIConfig;
 import UI.UiUnits;
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -100,16 +98,19 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
         yTextField.getNumericInput().addPropertyChangeListener("value", evt -> {
             rend.resizePanneau(rend.getBoard().getWidth(), yTextField.getMMValue());
         });
+        zTextField.getNumericInput().addPropertyChangeListener("value", evt -> {
+            rend.getMainWindow().getController().resizePanel(rend.getBoard().getWidth(), rend.getBoard().getHeight(), zTextField.getMMValue());
+        });
         if (gridPrecision != null) {
             gridPrecision.getNumericInput().addPropertyChangeListener("value", evt -> {
                 // TODO clarify what precision means and why it's an int
-                rend.getMainWindow().getController().putGrid((int)gridPrecision.getMMValue(), rend.getMainWindow().getController().getGrid().getMagnetPrecision());
+                rend.getMainWindow().getController().putGrid((int) gridPrecision.getMMValue(), rend.getMainWindow().getController().getGrid().getMagnetPrecision());
                 rend.repaint();
             });
         }
         if (magnetPrecision != null) {
             magnetPrecision.getNumericInput().addPropertyChangeListener("value", evt -> {
-                rend.getMainWindow().getController().putGrid(rend.getMainWindow().getController().getGrid().getSize(), (int)magnetPrecision.getMMValue());
+                rend.getMainWindow().getController().putGrid(rend.getMainWindow().getController().getGrid().getSize(), (int) magnetPrecision.getMMValue());
                 rend.repaint();
             });
         }

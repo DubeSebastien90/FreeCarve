@@ -1,5 +1,8 @@
 package Common.DTO;
 
+import Common.Util;
+import Domain.CutType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +38,7 @@ public class PanelDTO {
         borderPoints.add(new VertexDTO(panelDimension.getX(), 0,0 ));
         borderPoints.add(new VertexDTO(0, 0,0 ));
         this.borderCut = new CutDTO(borderUUID, panelDimension.getZ(), 0, CutType.RECTANGULAR, borderPoints, new ArrayList<RefCutDTO>(), CutState.VALID);
+
     }
 
     public List<CutDTO> getCutsDTO() {
@@ -55,4 +59,17 @@ public class PanelDTO {
         return Util.feet_to_mm(maxFeetHeight);
     }
 
+
+    /**
+     * Gets a list of the four points that represent the borders of the board
+     *
+     * @return List<VertexDTO> of the four points of the board
+     */
+    public List<VertexDTO> getListBoardPointsDTO() {
+        return this.borderCut.getPoints();
+    }
+
+    public CutDTO getBorderCut() {
+        return this.borderCut;
+    }
 }
