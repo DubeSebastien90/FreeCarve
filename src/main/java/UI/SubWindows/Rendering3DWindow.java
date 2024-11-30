@@ -53,6 +53,8 @@ public class Rendering3DWindow extends JPanel {
         meshManipulator = new MeshManipulator(this, mainWindow);
         addKeyListener(meshManipulator);
         addMouseListener(meshManipulator);
+        addMouseWheelListener(meshManipulator);
+        addMouseMotionListener(meshManipulator);
         mouselabel = new JLabel("0;0");
         this.addMouseMotionListener(new MouseAdapter() {
             @Override

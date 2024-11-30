@@ -1,16 +1,15 @@
 package Common.DTO;
 
 import Common.CutState;
-import Common.Pair;
 import Domain.CutType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
  * This class is a DTO wrapper of the {@code Cut} class in order to transfer READ-ONLY informations
+ *
  * @author Louis-Etienne Messier
  * @version 1.0
  * @since 2024-10-12
@@ -26,12 +25,13 @@ public class CutDTO {
 
     /**
      * Basic constructor of the {@code CutDTO}
-     * @param idCut id of the cut
-     * @param depth depth of the cut
+     *
+     * @param idCut    id of the cut
+     * @param depth    depth of the cut
      * @param bitIndex index of the bit used to make the cut
-     * @param type type of the cut {@code CutType}
+     * @param type     type of the cut {@code CutType}
      */
-    public CutDTO(UUID idCut, double depth, int bitIndex, CutType type, List<VertexDTO> points, List<RefCutDTO> refs, CutState cutState){
+    public CutDTO(UUID idCut, double depth, int bitIndex, CutType type, List<VertexDTO> points, List<RefCutDTO> refs, CutState cutState) {
         this.idCut = idCut;
         this.depth = depth;
         this.bitIndex = bitIndex;
@@ -41,7 +41,7 @@ public class CutDTO {
         this.cutState = cutState;
     }
 
-    public CutDTO(UUID uuid, RequestCutDTO requestCutDTO){
+    public CutDTO(UUID uuid, RequestCutDTO requestCutDTO) {
         this.idCut = uuid;
         this.depth = requestCutDTO.getDepth();
         this.bitIndex = requestCutDTO.getBitLocation();
@@ -51,19 +51,19 @@ public class CutDTO {
         this.cutState = CutState.VALID;
     }
 
-    public CutDTO(CutDTO other){
+    public CutDTO(CutDTO other) {
         this.idCut = other.idCut;
         this.depth = other.depth;
         this.bitIndex = other.bitIndex;
         this.type = other.type;
         this.points = new ArrayList<>();
         this.cutState = other.getState();
-        for(VertexDTO p : other.getPoints()){
+        for (VertexDTO p : other.getPoints()) {
             this.points.add(new VertexDTO(p));
         }
 
         refs = new ArrayList<>();
-        for(RefCutDTO ref : other.getRefsDTO()){
+        for (RefCutDTO ref : other.getRefsDTO()) {
             this.refs.add(new RefCutDTO(ref));
         }
     }
@@ -72,29 +72,33 @@ public class CutDTO {
         return this.bitIndex;
     }
 
-    public double getDepth(){
+    public double getDepth() {
         return this.depth;
     }
 
-    public UUID getId(){
+    public UUID getId() {
         return this.idCut;
     }
 
-    public CutType getCutType(){
+    public CutType getCutType() {
         return this.type;
     }
 
-    public CutState getState(){return this.cutState;}
+    public CutState getState() {
+        return this.cutState;
+    }
 
-    public List<VertexDTO> getPoints() {return this.points;}
+    public List<VertexDTO> getPoints() {
+        return this.points;
+    }
 
     public List<RefCutDTO> getRefsDTO() {
         return this.refs;
     }
 
-    public CutDTO addOffsetToPoints(VertexDTO offset){
+    public CutDTO addOffsetToPoints(VertexDTO offset) {
         List<VertexDTO> newPoints = new ArrayList<>();
-        for(VertexDTO point : this.points){
+        for (VertexDTO point : this.points) {
             newPoints.add(new VertexDTO(point.getX() + offset.getX(),
                     point.getY() + offset.getY(), point.getZ() + offset.getZ()));
         }

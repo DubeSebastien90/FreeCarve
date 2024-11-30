@@ -37,13 +37,12 @@ class PanelCNC {
     PanelCNC(VertexDTO panelDimension, IMemorizer memorizer) {
         this.cutList = new ArrayList<>();
         this.clamps = new ArrayList<>();
-        resize(panelDimension.getX(), panelDimension.getY(), depth);
-        this.depth = depth;
+        resize(panelDimension.getX(), panelDimension.getY(), panelDimension.getZ());
         this.memorizer = memorizer;
         updateBorderCut();
     }
 
-    public PanelCNC(PanelCNC other){
+    public PanelCNC(PanelCNC other) {
         this.cutList = other.cutList.stream().toList();
         this.clamps = other.clamps.stream().toList();
         this.panelDimension = other.panelDimension;
@@ -124,16 +123,17 @@ class PanelCNC {
         }
         return false;
     }
+
     /**
      * Cleanup all the references of the parameter cut used by all of the other cuts, otherwise, there is references problem
      * All the necessary cuts will become invalid and lose all of their references
      *
      * @param cut cut to cleanup in other cut
      */
-    void cleanupRemove(Cut cut){
-        for(Cut c : cutList){
-            for(RefCut ref : c.getRefs()){
-                if(ref.getCut() == cut){
+    void cleanupRemove(Cut cut) {
+        for (Cut c : cutList) {
+            for (RefCut ref : c.getRefs()) {
+                if (ref.getCut() == cut) {
                     c.setInvalidAndNoRef();
                     cleanupRemove(c);
                     break;
@@ -225,7 +225,6 @@ class PanelCNC {
         double newHeight = Math.min(Math.max(0, height), Util.feet_to_mm(MAX_FEET_HEIGHT));
         double newDepth = depth;
         panelDimension = new VertexDTO(newWidth, newHeight, newDepth);
-        this.depth = newDepth;
         updateBorderCut();
     }
 
@@ -262,16 +261,15 @@ class PanelCNC {
     void updateBorderCut() {
         if (this.borderCut == null) {
             ArrayList<VertexDTO> borderPoints = new ArrayList<>();
-            borderPoints.add(new VertexDTO(0, 0,0 ));
-            borderPoints.add(new VertexDTO(0, panelDimension.getY(), 0 ));
-            borderPoints.add(new VertexDTO(panelDimension.getX(), panelDimension.getY(), 0 ));
-            borderPoints.add(new VertexDTO(panelDimension.getX(), 0,0 ));
-            borderPoints.add(new VertexDTO(0, 0,0 ));
+            borderPoints.add(new VertexDTO(0, 0, 0));
+            borderPoints.add(new VertexDTO(0, panelDimension.getY(), 0));
+            borderPoints.add(new VertexDTO(panelDimension.getX(), panelDimension.getY(), 0));
+            borderPoints.add(new VertexDTO(panelDimension.getX(), 0, 0));
+            borderPoints.add(new VertexDTO(0, 0, 0));
 
             // Deliberately setting the bixIndex to -1, so that the borderCut has a recognizable bit, that has it's own property
-            this.borderCut = new Cut(new VertexDTO(0,0,0), CutType.RECTANGULAR, borderPoints, -1, getDepth());
-        }
-        else{
+            this.borderCut = new Cut(new VertexDTO(0, 0, 0), CutType.RECTANGULAR, borderPoints, -1, getDepth());
+        } else {
             ArrayList<VertexDTO> borderPoints = new ArrayList<>();
             borderPoints.add(new VertexDTO(0, 0, 0));
             borderPoints.add(new VertexDTO(0, panelDimension.getY(), 0));

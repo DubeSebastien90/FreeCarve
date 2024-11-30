@@ -17,7 +17,8 @@ import java.util.UUID;
  * @since 2024-09-08
  */
 public class Camera extends Transform {
-    private Scene scene;;
+    private Scene scene;
+    ;
     Double[][] pixelsDepthMap;
     public static final float MIN_LIGHTING = 0.2f;
 
@@ -37,7 +38,7 @@ public class Camera extends Transform {
         for (Mesh m : scene.getMeshes()) {
             for (Triangle t : m.getLocalTriangles()) {
                 Triangle transformed = getTransformedTriangle(m.getTransformedTriangle(t));
-                Arrays.stream(transformed.getVertices()).forEach(vertex -> vertex.add(new Vertex(img.getWidth()/2.0, img.getHeight()/2.0, 0)));
+                Arrays.stream(transformed.getVertices()).forEach(vertex -> vertex.add(new Vertex(img.getWidth() / 2.0, img.getHeight() / 2.0, 0)));
                 if (renderTriangle(img, transformed, mousePosition)) {
                     cutId = Optional.of(m.getId());
                 }
@@ -52,8 +53,8 @@ public class Camera extends Transform {
      * barycentric coordinates to paint the pixels of the triangle and normal vectors to implement base shading.
      * <br/><br/>
      *
-     * @param img the {@code Image} object associated with the panel
-     * @param t the {@code Triangle} to paint
+     * @param img           the {@code Image} object associated with the panel
+     * @param t             the {@code Triangle} to paint
      * @param mousePosition the position of a mouse click to select a mesh
      * @return true if the triangle has been clicked on
      */
@@ -70,8 +71,8 @@ public class Camera extends Transform {
                     if (x < img.getWidth() && y < img.getHeight()) {
                         if ((pixelsDepthMap[x][y] == null || pixelsDepthMap[x][y] < depth)) {
                             pixelsDepthMap[x][y] = depth;
-                            img.setRGB(x, img.getHeight()-y-1, printedColor.getRGB());
-                            if (mousePosition.getX() == x && mousePosition.getY() == img.getHeight()-y-1) {
+                            img.setRGB(x, img.getHeight() - y - 1, printedColor.getRGB());
+                            if (mousePosition.getX() == x && mousePosition.getY() == img.getHeight() - y - 1) {
                                 isSelected = true;
                             }
                         }
@@ -105,12 +106,12 @@ public class Camera extends Transform {
         Color color = triangle.getColor();
         Vertex lightDirection = new Vertex(0, 0, 1);
         double darker = (lightDirection.getX() * normal.getX() + lightDirection.getY() * normal.getY() + lightDirection.getZ() * normal.getZ()) / lightDirection.length();
-        if (darker < MIN_LIGHTING){
+        if (darker < MIN_LIGHTING) {
             darker = MIN_LIGHTING;
         }
         float[] component = color.getRGBColorComponents(null);
         try {
-            return new Color((float)(component[0] * darker), (float)(component[1] * darker), (float)(component[2] * darker));
+            return new Color((float) (component[0] * darker), (float) (component[1] * darker), (float) (component[2] * darker));
         } catch (Exception ignored) {
             return color;
         }

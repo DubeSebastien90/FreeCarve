@@ -47,8 +47,12 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     public void setScene() {
-        this.scene = new Scene(Mesh.PanelToMesh(getPanelDTO(), getBitsDTO()));
+        this.scene = new Scene(Mesh.PanelToMesh(this, getPanelDTO(), getBitsDTO()));
         this.camera.setScene(this.scene);
+    }
+
+    public List<UUID> getMeshesOfScene() {
+        return this.scene.getMeshesID();
     }
 
     /**
@@ -347,7 +351,6 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
 
-
     /**
      * Returns an optionnal closest point to all intersections on the board
      *
@@ -424,71 +427,76 @@ public class Controller implements IUnitConverter, IMemorizer {
         return new DimensionDTO((toConvert.value() * toConvert.unit().getRatio()) / targetUnit.getRatio(), targetUnit);
     }
 
-    public void resetPanelCNC(){
+    public void resetPanelCNC() {
         currentProjectState.resetPanelCNC();
     }
 
 
     /**
      * Returns the bit diameter if index is valid. If index not valid, returns 0
+     *
      * @param bitIndex index
      * @return diameter of the bit
      */
-    public double getBitDiameter(int bitIndex){
+    public double getBitDiameter(int bitIndex) {
         return this.currentProjectState.getBitDiameter(bitIndex);
     }
 
     /**
      * Transform a edge-edge distance of a cut into a center-center distance
-     * @param edge edge-edge distance
+     *
+     * @param edge      edge-edge distance
      * @param bitIndex1 bit index of the first point
      * @param bitIndex2 bit index of the reference point
      * @return the converted center-center distance
      */
-    public double edgeEdgeToCenterCenter(double edge, int bitIndex1, int bitIndex2){
+    public double edgeEdgeToCenterCenter(double edge, int bitIndex1, int bitIndex2) {
         return this.currentProjectState.edgeEdgeToCenterCenter(edge, bitIndex1, bitIndex2);
     }
 
     /**
      * Transform a center-center distance of a cut into a edge-edge distance
-     * @param center center-center distance
+     *
+     * @param center    center-center distance
      * @param bitIndex1 bit index of the first point
      * @param bitIndex2 bit index of the reference point
      * @return the converted edge-edge distance
      */
-    public double centerCenterToEdgeEdge(double center, int bitIndex1, int bitIndex2){
+    public double centerCenterToEdgeEdge(double center, int bitIndex1, int bitIndex2) {
         return this.currentProjectState.centerCenterToEdgeEdge(center, bitIndex1, bitIndex2);
     }
 
     /**
      * Generate a fixed list of points used by the rectangle cut according to an anchor point, a width and a height
+     *
      * @param anchor
      * @param width
      * @param height
      * @return
      */
-    public List<VertexDTO> generateRectanglePoints(VertexDTO anchor, double width, double height){
+    public List<VertexDTO> generateRectanglePoints(VertexDTO anchor, double width, double height) {
         return Cut.generateRectanglePoints(anchor, width, height);
     }
 
     /**
      * From a cut DTO queries the corresponding Cut Object to get it's absolute position
+     *
      * @param cutDTO cutDto to query
      * @return the list of absolute points
      */
-    public List<VertexDTO> getAbsolutePointsPosition(CutDTO cutDTO){
+    public List<VertexDTO> getAbsolutePointsPosition(CutDTO cutDTO) {
         return Cut.getAbsolutePointsPositionOfCutDTO(cutDTO, this.currentProjectState.getPanel());
     }
 
-    public VertexDTO getBorderPointCut(double margin){
+    public VertexDTO getBorderPointCut(double margin) {
         return Cut.getBorderPointCut(margin);
     }
 
-    public VertexDTO getDefaultBorderPointCut(){
+    public VertexDTO getDefaultBorderPointCut() {
         return Cut.getBorderPointCutDefaultMargins();
     }
 
-    public boolean isRefCircular(RefCutDTO refCutDTO, CutDTO cutToTest){
+    public boolean isRefCircular(RefCutDTO refCutDTO, CutDTO cutToTest) {
         return RefCut.isRefCircular(refCutDTO, cutToTest);
     }
 }

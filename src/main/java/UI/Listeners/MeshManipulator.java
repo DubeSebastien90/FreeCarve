@@ -1,18 +1,16 @@
 package UI.Listeners;
 
-import Domain.Controller;
 import Common.DTO.VertexDTO;
+import Domain.Controller;
 import UI.MainWindow;
 import UI.SubWindows.Rendering3DWindow;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
+import java.security.InvalidKeyException;
 import java.security.KeyException;
 import java.util.UUID;
 
-public class MeshManipulator implements KeyListener, MouseListener {
+public class MeshManipulator implements KeyListener, MouseListener, MouseWheelListener, MouseMotionListener {
 
     private final Rendering3DWindow rendering3DWindow;
     private final Controller controller;
@@ -26,6 +24,8 @@ public class MeshManipulator implements KeyListener, MouseListener {
     private UUID selectedMesh;
     private MovementType movementType = MovementType.NO_MESH;
     private final MainWindow mainWindow;
+    private double mousePosX = 0;
+    private double mousePosY = 0;
 
     public MeshManipulator(Rendering3DWindow rendering3DWindow, MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -122,7 +122,10 @@ public class MeshManipulator implements KeyListener, MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        rendering3DWindow.setMousePos(new VertexDTO(e.getX(), e.getY(), 1));
+        rendering3DWindow.repaint();
+        mousePosX = e.getPoint().x;
+        mousePosY = e.getPoint().y;
     }
 
     @Override
@@ -137,6 +140,44 @@ public class MeshManipulator implements KeyListener, MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        try {
+            int wheel = e.getWheelRotation();
+            if (wheel < 0) {
+                for (UUID id : controller.getMeshesOfScene()) {
+                    controller.applyTransform(id, new VertexDTO(0, 0, 0), VertexDTO.zero(), 0.01);
+                }
+            } else if (wheel > 0) {
+                for (UUID id : controller.getMeshesOfScene()) {
+                    controller.applyTransform(id, new VertexDTO(0, 0, 0), VertexDTO.zero(), -0.01);
+                }
+            }
+            rendering3DWindow.repaint();
+        } catch (InvalidKeyException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        double offsetX = -((mousePosX - e.getPoint().x));
+        double offsetY = ((mousePosY - e.getPoint().y));
+        try {
+            controller.applyTransform(selectedMesh, new VertexDTO(offsetX, offsetY, 0), VertexDTO.zero(), 0);
+        } catch (InvalidKeyException ex) {
+            System.out.println("Nothing selected for movement");
+        }
+        mousePosX = e.getPoint().x;
+        mousePosY = e.getPoint().y;
+        rendering3DWindow.repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
 
     }
 }

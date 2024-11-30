@@ -1,17 +1,16 @@
 package Domain.ThirdDimension;
 
+import Common.CutState;
 import Common.DTO.*;
+import Domain.Controller;
 import Domain.CutType;
-import Domain.IO.ParsedSTL;
 import Domain.IO.STLParser;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Cube;
 
 import java.awt.*;
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,10 +46,10 @@ public class Mesh extends Transform {
     /**
      * Constructor for a Mesh object with a file
      *
-     * @param position    - the position of the mesh in the scene
-     * @param color       - the color of the mesh
+     * @param position       - the position of the mesh in the scene
+     * @param color          - the color of the mesh
      * @param stlInputStream - Input stream to the file containing the triangles
-     * @param scale       - The scaling factor to apply to the read triangles
+     * @param scale          - The scaling factor to apply to the read triangles
      */
     public Mesh(Vertex position, Color color, InputStream stlInputStream, double scale) throws IOException {
         this(position, scale, color, Arrays.asList(Triangle.fromParsedSTL(STLParser.parse(stlInputStream), color)));
@@ -170,85 +169,124 @@ public class Mesh extends Transform {
      * @param panel
      * @return
      */
-    public static List<Mesh> PanelToMesh(PanelDTO panel, BitDTO[] bits) {
+    public static List<Mesh> PanelToMesh(Controller controller, PanelDTO panel, BitDTO[] bits) {
         List<Vertex[]> meshes = new ArrayList<>();
         meshes.add(new Vertex[]{new Vertex(0, 0, 0), new Vertex(0, panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), 0, 0)});
 
         CSG panneau = new Cube(panel.getPanelDimension().getX(), panel.getPanelDimension().getY(), panel.getPanelDimension().getZ()).toCSG();
         for (CutDTO cut : panel.getCutsDTO()) {
             if (cut.getCutType() == CutType.LINE_VERTICAL) {
-                panneau = panneau.difference(createVerticalCut(cut, bits, panel));
+                panneau = panneau.difference(createVerticalCut(controller, cut, bits, panel));
             } else if (cut.getCutType() == CutType.LINE_HORIZONTAL) {
-                panneau = panneau.difference(createHorizontalCut(cut, bits, panel));
+                panneau = panneau.difference(createHorizontalCut(controller, cut, bits, panel));
             } else if (cut.getCutType() == CutType.RECTANGULAR) {
-                CSG[] cuts = createRectangularCut(cut, bits, panel);
+                CSG[] cuts = createRectangularCut(controller, cut, bits, panel);
                 for (CSG si : cuts) {
                     panneau = panneau.difference(si);
                 }
-            } else if (cut.getCutType() == CutType.BORDER) {
-                CSG[] cuts = createBorderCut(cut, bits, panel);
-                for (CSG si : cuts) {
-                    panneau = panneau.difference(si);
-                }
+            } else if (cut.getCutType() == CutType.RETAILLER) {
+                panneau = panneau.difference(createBorderCut(controller, cut, bits, panel));
             } else if (cut.getCutType() == CutType.L_SHAPE) {
-                CSG[] cuts = createLCut(cut, bits, panel);
+                CSG[] cuts = createLCut(controller, cut, bits, panel);
                 for (CSG si : cuts) {
                     panneau = panneau.difference(si);
                 }
             } else if (cut.getCutType() == CutType.LINE_FREE) {
-                panneau = panneau.difference(createFreeCut(cut, bits, panel));
+                panneau = panneau.difference(createFreeCut(controller, cut, bits, panel));
             }
         }
-        Mesh finalMesh = new Mesh(new Vertex(50, 50, 0), 0.5, Color.BLUE, convertStringToVertex(panneau.toStlString()));
+        Mesh finalMesh = new Mesh(new Vertex(50, 50, 0), 0.5, new Color(222, 184, 135), convertStringToVertex(panneau.toStlString()));
         List<Mesh> arr = new ArrayList<>();
         arr.add(finalMesh);
         return arr;
     }
 
-    private static CSG createHorizontalCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
-        CSG cut3d = new Cube(bits[cut.getBitIndex()].getDiameter(), Math.abs(cut.getAbsolutePointsPosition().get(0).getX() - cut.getAbsolutePointsPosition().get(1).getX()), panel.getPanelDimension().getZ()).toCSG();
+    private static CSG createHorizontalCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
+        CSG cut3d = new Cube(bits[cut.getBitIndex()].getDiameter(), Math.abs(points.get(0).getX() - points.get(1).getX()), cut.getDepth()).toCSG();
         cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(90));
-        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate((cut.getAbsolutePointsPosition().get(0).getX() + cut.getAbsolutePointsPosition().get(1).getX()) / 2 - panel.getPanelDimension().getX() / 2, cut.getAbsolutePointsPosition().get(0).getY() - panel.getPanelDimension().getY() / 2 + bits[cut.getBitIndex()].getDiameter() / 2, 0));
+        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate((points.get(0).getX() + points.get(1).getX()) / 2 - panel.getPanelDimension().getX() / 2, points.get(0).getY() - panel.getPanelDimension().getY() / 2 + bits[cut.getBitIndex()].getDiameter() / 2, (panel.getPanelDimension().getZ() - cut.getDepth()) / 2));
         return cut3d;
     }
 
-    private static CSG createVerticalCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
-        CSG cut3d = new Cube(bits[cut.getBitIndex()].getDiameter(), Math.abs(cut.getAbsolutePointsPosition().get(0).getY() - cut.getAbsolutePointsPosition().get(1).getY()), panel.getPanelDimension().getZ()).toCSG();
-        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut.getAbsolutePointsPosition().get(0).getX() - panel.getPanelDimension().getX() / 2 + bits[cut.getBitIndex()].getDiameter() / 2, (cut.getAbsolutePointsPosition().get(0).getY() + cut.getAbsolutePointsPosition().get(1).getY()) / 2 - panel.getPanelDimension().getY() / 2, 0));
+    private static CSG createVerticalCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
+        CSG cut3d = new Cube(bits[cut.getBitIndex()].getDiameter(), Math.abs(points.get(0).getY() - points.get(1).getY()), cut.getDepth()).toCSG();
+        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(points.get(0).getX() - panel.getPanelDimension().getX() / 2 + bits[cut.getBitIndex()].getDiameter() / 2, (points.get(0).getY() + points.get(1).getY()) / 2 - panel.getPanelDimension().getY() / 2, (panel.getPanelDimension().getZ() - cut.getDepth()) / 2));
         return cut3d;
     }
 
-    private static CSG[] createRectangularCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+    private static CSG[] createRectangularCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
         List<VertexDTO> arr1 = new ArrayList<>();
-        arr1.add(cut.getAbsolutePointsPosition().get(0));
-        arr1.add(cut.getAbsolutePointsPosition().get(1));
+        arr1.add(points.get(0));
+        arr1.add(points.get(3));
         List<RefCutDTO> what = new ArrayList<>();
         List<VertexDTO> arr2 = new ArrayList<>();
-        arr2.add(cut.getAbsolutePointsPosition().get(1));
-        arr2.add(cut.getAbsolutePointsPosition().get(2));
+        arr2.add(points.get(0));
+        arr2.add(points.get(1));
         List<VertexDTO> arr3 = new ArrayList<>();
-        arr3.add(cut.getAbsolutePointsPosition().get(2));
-        arr3.add(cut.getAbsolutePointsPosition().get(3));
+        arr3.add(points.get(1));
+        arr3.add(points.get(2));
         List<VertexDTO> arr4 = new ArrayList<>();
-        arr4.add(cut.getAbsolutePointsPosition().get(3));
-        arr4.add(cut.getAbsolutePointsPosition().get(0));
-        CSG cut1 = createHorizontalCut(new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr1, what), bits, panel);
-        CSG cut2 = createVerticalCut(new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr2, what), bits, panel);
-        CSG cut3 = createHorizontalCut(new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr3, what), bits, panel);
-        CSG cut4 = createVerticalCut(new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr4, what), bits, panel);
+        arr4.add(points.get(3));
+        arr4.add(points.get(2));
+        CSG cut1 = createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr1, what, CutState.VALID), bits, panel);
+        CSG cut2 = createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr2, what, CutState.VALID), bits, panel);
+        CSG cut3 = createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr3, what, CutState.VALID), bits, panel);
+        CSG cut4 = createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr4, what, CutState.VALID), bits, panel);
         return new CSG[]{cut1, cut2, cut3, cut4};
     }
 
-    private static CSG[] createBorderCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
-        return new CSG[]{};
+    private static CSG createBorderCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        VertexDTO point = cut.getPoints().get(0);
+        List<RefCutDTO> what = new ArrayList<>();
+        List<VertexDTO> arr1 = new ArrayList<>();
+        if (cut.getRefsDTO().get(0).getIndex() % 2 != 0) {
+            if (cut.getRefsDTO().get(0).getIndex() == 1) {
+                arr1.add(new VertexDTO(0, panel.getPanelDimension().getY() - point.getX(), point.getZ()));
+                arr1.add(new VertexDTO(panel.getPanelDimension().getX(), panel.getPanelDimension().getY() - point.getX(), point.getZ()));
+                return createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr1, what, CutState.VALID), bits, panel);
+            }
+            arr1.add(new VertexDTO(0, point.getX(), point.getZ()));
+            arr1.add(new VertexDTO(panel.getPanelDimension().getX(), point.getX(), point.getZ()));
+            return createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr1, what, CutState.VALID), bits, panel);
+        }
+        if (cut.getRefsDTO().get(0).getIndex() == 2) {
+            arr1.add(new VertexDTO(panel.getPanelDimension().getX() - point.getX(), 0, point.getZ()));
+            arr1.add(new VertexDTO(panel.getPanelDimension().getX() - point.getX(), panel.getPanelDimension().getY(), point.getZ()));
+            return createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr1, what, CutState.VALID), bits, panel);
+        }
+        arr1.add(new VertexDTO(point.getX(), 0, point.getZ()));
+        arr1.add(new VertexDTO(point.getX(), panel.getPanelDimension().getY(), point.getZ()));
+        return createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr1, what, CutState.VALID), bits, panel);
     }
 
-    private static CSG[] createLCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
-        return new CSG[]{};
+    private static CSG[] createLCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
+        List<RefCutDTO> what = new ArrayList<>();
+        List<VertexDTO> arr1 = new ArrayList<>();
+        List<VertexDTO> arr2 = new ArrayList<>();
+        arr1.add(points.get(2));
+        arr1.add(points.get(1));
+        arr2.add(points.get(1));
+        arr2.add(points.get(0));
+        CSG cut1 = createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr1, what, CutState.VALID), bits, panel);
+        CSG cut2 = createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr2, what, CutState.VALID), bits, panel);
+        return new CSG[]{cut1, cut2};
     }
 
-    private static CSG createFreeCut(CutDTO cut, BitDTO[] bits, PanelDTO panel) {
-        return null;
+    private static CSG createFreeCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
+        double hypothenus = Math.sqrt(Math.pow(points.get(0).getY() - points.get(1).getY(), 2) + Math.pow(points.get(0).getX() - points.get(1).getX(), 2));
+        CSG cut3d = new Cube(bits[cut.getBitIndex()].getDiameter(), hypothenus, cut.getDepth()).toCSG();
+        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(90));
+        double ratio = (points.get(1).getY() - points.get(0).getY()) / (points.get(1).getX() - points.get(0).getX());
+        double rot = -Math.toDegrees(Math.atan(ratio));
+        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(rot));
+        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(((points.get(0).getX() + points.get(1).getX()) / 2) - panel.getPanelDimension().getX() / 2, (points.get(0).getY() + points.get(1).getY()) / 2 - panel.getPanelDimension().getY() / 2, (panel.getPanelDimension().getZ() - cut.getDepth()) / 2));
+
+        return cut3d;
     }
 
     public static List<Triangle> convertStringToVertex(String stlString) {
@@ -290,8 +328,7 @@ public class Mesh extends Transform {
                     Vertex vert = new Vertex(d1, d2, d3);
                     li.add(vert);
                 }
-                System.out.println(new Triangle(li.get(1), li.get(2), li.get(3), li.get(0), Color.BLUE));
-                allVertex.add(new Triangle(li.get(1), li.get(2), li.get(3), li.get(0), Color.BLUE));
+                allVertex.add(new Triangle(li.get(1), li.get(2), li.get(3), li.get(0), new Color(222, 184, 135)));
             }
         }
         return allVertex;
