@@ -116,14 +116,15 @@ public abstract class DrawCutWrapper {
             this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), this.strokeWidth);
         }
 
+        boolean canSelect = mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getDrawing().getState() == Drawing.DrawingState.IDLE;
         for (PersoPoint point : points) {
-            point.drawMM(graphics2D, renderer);
+            point.drawMM(graphics2D, renderer, canSelect);
         }
 
         for (RefCutDTO ref : cut.getRefsDTO()) {
             VertexDTO absPoints = ref.getAbsoluteOffset(mainWindow.getController());
             PersoPoint p = new PersoPoint(absPoints.getX(), absPoints.getY(), this.cursorRadius, true);
-            p.drawMM(graphics2D, renderer);
+            p.drawMM(graphics2D, renderer, false);
         }
     }
 

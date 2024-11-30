@@ -49,19 +49,19 @@ public class DrawCutRectangular extends DrawCutWrapper{
             p1.drawLineMM(graphics2D, renderer, cursor, this.strokeWidth);
             p2.drawLineMM(graphics2D, renderer, cursor, this.strokeWidth);
 
-            p1.drawMM(graphics2D, renderer); // drawing the points
-            p2.drawMM(graphics2D, renderer); //drawing the points
+            p1.drawMM(graphics2D, renderer, false); // drawing the points
+            p2.drawMM(graphics2D, renderer, false); //drawing the points
         }
 
         for (PersoPoint point : this.points){ // drawing the points
-            point.drawMM(graphics2D, renderer);
+            point.drawMM(graphics2D, renderer, false);
         }
 
         if (!refs.isEmpty()){ // drawing the first anchor point
             VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
             PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
             referenceAnchorPoint.setColor(ANCHOR_COLOR);
-            referenceAnchorPoint.drawMM(graphics2D, renderer);
+            referenceAnchorPoint.drawMM(graphics2D, renderer, false);
         }
 
     }

@@ -89,12 +89,21 @@ public class PersoPoint {
      * @param graphics2D
      * @param renderer
      */
-    public void drawMM(Graphics2D graphics2D, Rendering2DWindow renderer){
+    public void drawMM(Graphics2D graphics2D, Rendering2DWindow renderer, boolean canSelect){
         Point2D temp = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
         double diamPixel = this.radius*renderer.getZoom()*2;
-        graphics2D.setColor(this.color);
+        if (mouse_on_top(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp.getX(), temp.getY(), diamPixel/2) && canSelect){
+            graphics2D.setColor(Color.MAGENTA);
+        } else {
+            graphics2D.setColor(this.color);
+        }
         graphics2D.fillOval((int) (temp.getX()  - diamPixel/2.0), ((int) (temp.getY() - diamPixel/2.0)),
                 ((int) diamPixel), ((int) diamPixel));
+    }
+
+    boolean mouse_on_top(double mouse_x, double mouse_y, double pointX, double pointY, double pointRadius){
+        double dist = Math.sqrt(Math.pow(mouse_x-pointX,2)+Math.pow(mouse_y-pointY,2));
+        return dist <= pointRadius;
     }
 
     /**

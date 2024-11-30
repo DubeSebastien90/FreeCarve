@@ -50,14 +50,14 @@ public class DrawCutL extends DrawCutWrapper{
         }
 
         for (PersoPoint point : this.points){ // drawing the points
-            point.drawMM(graphics2D, renderer);
+            point.drawMM(graphics2D, renderer, false);
         }
 
         if (!refs.isEmpty() && !points.isEmpty()){ // drawing the first anchor point
             VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
             PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
             referenceAnchorPoint.setColor(ANCHOR_COLOR);
-            referenceAnchorPoint.drawMM(graphics2D, renderer);
+            referenceAnchorPoint.drawMM(graphics2D, renderer, false);
         }
 
     }

@@ -42,7 +42,7 @@ public class DrawFreeCut extends DrawCutWrapper {
         }
 
         for (PersoPoint point : this.points){ // drawing the points
-            point.drawMM(graphics2D, renderer);
+            point.drawMM(graphics2D, renderer, false);
         }
 
         if (!refs.isEmpty()){ // drawing the first anchor point
