@@ -160,15 +160,12 @@ public class Mesh extends Transform {
 
 
     /**
-     * trouver les 4 points de la coupe,
-     * trouver les impacted mesh
-     * trouver les points d'intersection avec chaque mesh si les points de la coupe dépassent le mesh
-     * faire les formes M1-C1-C2-M2, M2-C2-C3-M3, M3-C3-C4-M4, M4-C4-C1-M1
-     * traiter l'intérieur des coupes rectangles et en L
-     * traiter la profondeur de chaque coupe
+     * Converts the current panel on the CNC into a Mesh, a 3d representation of the panel.
      *
-     * @param panel
-     * @return
+     * @param controller the controller managing the current scene
+     * @param panel      the panel currently being processed by the CNC machine
+     * @param bits       the available CNC machine bits used for cutting
+     * @return The Mesh representing the panel
      */
     public static List<Mesh> PanelToMesh(Controller controller, PanelDTO panel, BitDTO[] bits) {
         List<Vertex[]> meshes = new ArrayList<>();
@@ -202,6 +199,19 @@ public class Mesh extends Transform {
         return arr;
     }
 
+    /**
+     * Creates a CSG object (Mesh equivalent but from JCSG) from a Horizontal Cut.
+     * <br><br>
+     * This method converts a cut of type {@code CutType.LINE_HORIZONTAL} into a
+     * corresponding CSG representation based on the specified cut attributes.
+     * <br>
+     *
+     * @param controller the controller managing the current scene
+     * @param cut        the Horizontal Cut to convert (must be of type {@code CutType.LINE_HORIZONTAL})
+     * @param bits       the available CNC machine bits used for cutting
+     * @param panel      the panel currently being processed by the CNC machine
+     * @return the generated CSG object representing the Horizontal cut
+     */
     private static CSG createHorizontalCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
         double ray = bits[cut.getBitIndex()].getDiameter() / 2;
         List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
@@ -219,6 +229,19 @@ public class Mesh extends Transform {
         return cut3d;
     }
 
+    /**
+     * Creates a CSG object (Mesh equivalent but from JCSG) from a Vertical Cut.
+     * <br><br>
+     * This method converts a cut of type {@code CutType.LINE_VERTICAL} into a
+     * corresponding CSG representation based on the specified cut attributes.
+     * <br>
+     *
+     * @param controller the controller managing the current scene
+     * @param cut        the Vertical Cut to convert (must be of type {@code CutType.LINE_VERTICAL})
+     * @param bits       the available CNC machine bits used for cutting
+     * @param panel      the panel currently being processed by the CNC machine
+     * @return the generated CSG object representing the Vertical cut
+     */
     private static CSG createVerticalCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
         double ray = bits[cut.getBitIndex()].getDiameter() / 2;
         List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
@@ -235,6 +258,19 @@ public class Mesh extends Transform {
         return cut3d;
     }
 
+    /**
+     * Creates a CSG object (Mesh equivalent but from JCSG) from a Rectangular Cut.
+     * <br><br>
+     * This method converts a cut of type {@code CutType.RECTANGLE} into a
+     * corresponding CSG representation based on the specified CNC settings.
+     * <br>
+     *
+     * @param controller the controller managing the current scene
+     * @param cut        the Rectangle Cut to convert (must be of type {@code CutType.RECTANGULAR})
+     * @param bits       the available CNC machine bits used for cutting
+     * @param panel      the panel currently being processed by the CNC machine
+     * @return the generated CSG object representing the Rectangle cut
+     */
     private static CSG[] createRectangularCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
         List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
         List<VertexDTO> arr1 = new ArrayList<>();
@@ -257,6 +293,19 @@ public class Mesh extends Transform {
         return new CSG[]{cut1, cut2, cut3, cut4};
     }
 
+    /**
+     * Creates a CSG object (Mesh equivalent but from JCSG) from a Border Cut.
+     * <br><br>
+     * This method converts a cut of type {@code CutType.RETAILLE} into a
+     * corresponding CSG representation based on the specified CNC settings.
+     * <br>
+     *
+     * @param controller the controller managing the current scene
+     * @param cut        the Border Cut to convert (must be of type {@code CutType.RETAILLE})
+     * @param bits       the available CNC machine bits used for cutting
+     * @param panel      the panel currently being processed by the CNC machine
+     * @return the generated CSG object representing the Border cut
+     */
     private static CSG createBorderCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
         VertexDTO point = cut.getPoints().get(0);
         List<RefCutDTO> what = new ArrayList<>();
@@ -281,6 +330,19 @@ public class Mesh extends Transform {
         return createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr1, what, CutState.VALID), bits, panel);
     }
 
+    /**
+     * Creates a CSG object (Mesh equivalent but from JCSG) from a L-shape Cut.
+     * <br><br>
+     * This method converts a cut of type {@code CutType.L_SHAPE} into a
+     * corresponding CSG representation based on the specified CNC settings.
+     * <br>
+     *
+     * @param controller the controller managing the current scene
+     * @param cut        the L_shape Cut to convert (must be of type {@code CutType.L_SHAPE})
+     * @param bits       the available CNC machine bits used for cutting
+     * @param panel      the panel currently being processed by the CNC machine
+     * @return the generated CSG object representing the L-shape cut
+     */
     private static CSG[] createLCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
         List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
         List<RefCutDTO> what = new ArrayList<>();
@@ -295,6 +357,19 @@ public class Mesh extends Transform {
         return new CSG[]{cut1, cut2};
     }
 
+    /**
+     * Creates a CSG object (Mesh equivalent but from JCSG) from a FreeCut Cut.
+     * <br><br>
+     * This method converts a cut of type {@code CutType.LINE_FREE} into a
+     * corresponding CSG representation based on the specified CNC settings.
+     * <br>
+     *
+     * @param controller the controller managing the current scene
+     * @param cut        the FreeCut Cut to convert (must be of type {@code CutType.LINE_FREE})
+     * @param bits       the available CNC machine bits used for cutting
+     * @param panel      the panel currently being processed by the CNC machine
+     * @return the generated CSG object representing the FreeCut
+     */
     private static CSG createFreeCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
         List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
         double ray = bits[cut.getBitIndex()].getDiameter() / 2;
@@ -306,26 +381,23 @@ public class Mesh extends Transform {
         cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(rot));
         cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate((((points.get(0).getX() + points.get(1).getX()) / 2) - panel.getPanelDimension().getX() / 2), ((points.get(0).getY() + points.get(1).getY()) / 2 - panel.getPanelDimension().getY() / 2), (panel.getPanelDimension().getZ() - cut.getDepth()) / 2));
         CSG cyl = new Cylinder(bits[cut.getBitIndex()].getDiameter() / 2, cut.getDepth()).toCSG();
-        //cyl = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut3d.getCenterX(), cut3d.getCenterY(), panel.getPanelDimension().getZ() / 2 - cut.getDepth()));
         CSG firstEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(hypothenus / 2, 0, 0));
         CSG secEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(hypothenus / -2, 0, 0));
         firstEnd = firstEnd.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(rot));
         secEnd = secEnd.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(rot));
         firstEnd = firstEnd.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut3d.getCenterX(), cut3d.getCenterY(), panel.getPanelDimension().getZ() / 2 - cut.getDepth()));
         secEnd = secEnd.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut3d.getCenterX(), cut3d.getCenterY(), panel.getPanelDimension().getZ() / 2 - cut.getDepth()));
-
-//        if (rot < 0) {
-//            firstEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(Math.abs(points.get(0).getX() - points.get(1).getX()) / 2, Math.abs(points.get(0).getY() - points.get(1).getY()) / 2, 0));
-//            secEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(Math.abs(points.get(0).getX() - points.get(1).getX()) / -2, Math.abs(points.get(0).getY() - points.get(1).getY()) / -2, 0));
-//        } else {
-//            firstEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(Math.abs(points.get(0).getX() - points.get(1).getX()) / 2, Math.abs(points.get(0).getY() - points.get(1).getY()) / -2, 0));
-//            secEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(Math.abs(points.get(0).getX() - points.get(1).getX()) / -2, Math.abs(points.get(0).getY() - points.get(1).getY()) / 2, 0));
-//        }
         cut3d = cut3d.union(firstEnd);
         cut3d = cut3d.union(secEnd);
         return cut3d;
     }
 
+    /**
+     * Parses a the stl string format of the JCSG library into a list of triangle.
+     *
+     * @param stlString The string which represent the mesh in stl format.
+     * @return A list of triangle formed based on the stl String.
+     */
     public static List<Triangle> convertStringToVertex(String stlString) {
         stlString = stlString.replaceAll("v3d.csg", "");
         stlString = stlString.replaceAll("normal ", "\\$");
