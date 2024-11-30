@@ -116,6 +116,10 @@ public abstract class DrawCutWrapper {
             this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), this.strokeWidth);
         }
 
+        for (PersoPoint point : points) {
+            point.drawMM(graphics2D, renderer);
+        }
+
         for (RefCutDTO ref : cut.getRefsDTO()) {
             VertexDTO absPoints = ref.getAbsoluteOffset(mainWindow.getController());
             PersoPoint p = new PersoPoint(absPoints.getX(), absPoints.getY(), this.cursorRadius, true);

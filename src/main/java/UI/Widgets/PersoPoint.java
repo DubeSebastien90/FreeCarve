@@ -3,6 +3,7 @@ package UI.Widgets;
 import UI.Display2D.Rendering2DWindow;
 
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
 /**
@@ -90,10 +91,10 @@ public class PersoPoint {
      */
     public void drawMM(Graphics2D graphics2D, Rendering2DWindow renderer){
         Point2D temp = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
-        double radiusPixel = renderer.scalePixelToMM(this.radius);
+        double diamPixel = this.radius*renderer.getZoom()*2;
         graphics2D.setColor(this.color);
-        graphics2D.fillOval((int) (temp.getX()  - this.getRadius()/2.0), ((int) (temp.getY() - this.getRadius()/2.0)),
-                ((int) this.getRadius()), ((int) this.getRadius()));
+        graphics2D.fillOval((int) (temp.getX()  - diamPixel/2.0), ((int) (temp.getY() - diamPixel/2.0)),
+                ((int) diamPixel), ((int) diamPixel));
     }
 
     /**
