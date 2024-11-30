@@ -7,6 +7,7 @@ import Domain.CutType;
 import Domain.IO.STLParser;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Cube;
+import eu.mihosoft.vrl.v3d.Cylinder;
 
 import java.awt.*;
 import java.io.IOException;
@@ -202,17 +203,35 @@ public class Mesh extends Transform {
     }
 
     private static CSG createHorizontalCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        double ray = bits[cut.getBitIndex()].getDiameter() / 2;
         List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
-        CSG cut3d = new Cube(bits[cut.getBitIndex()].getDiameter(), Math.abs(points.get(0).getX() - points.get(1).getX()), cut.getDepth()).toCSG();
+        CSG cut3d = new Cube(ray * 2, Math.abs(points.get(0).getX() - points.get(1).getX()), cut.getDepth()).toCSG();
         cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(90));
-        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate((points.get(0).getX() + points.get(1).getX()) / 2 - panel.getPanelDimension().getX() / 2, points.get(0).getY() - panel.getPanelDimension().getY() / 2 + bits[cut.getBitIndex()].getDiameter() / 2, (panel.getPanelDimension().getZ() - cut.getDepth()) / 2));
+        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(((points.get(0).getX() + points.get(1).getX()) / 2 - panel.getPanelDimension().getX() / 2), (points.get(0).getY() - panel.getPanelDimension().getY() / 2 + bits[cut.getBitIndex()].getDiameter() / 2) - ray, (panel.getPanelDimension().getZ() - cut.getDepth()) / 2));
+
+        CSG cyl = new Cylinder(ray, cut.getDepth()).toCSG();
+        cyl = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut3d.getCenterX(), cut3d.getCenterY(), panel.getPanelDimension().getZ() / 2 - cut.getDepth()));
+        CSG firstEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut3d.getMinX() - cut3d.getCenterX(), 0, 0));
+        CSG secEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut3d.getMaxX() - cut3d.getCenterX(), 0, 0));
+        cut3d = cut3d.union(firstEnd);
+        cut3d = cut3d.union(secEnd);
+
         return cut3d;
     }
 
     private static CSG createVerticalCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
+        double ray = bits[cut.getBitIndex()].getDiameter() / 2;
         List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
-        CSG cut3d = new Cube(bits[cut.getBitIndex()].getDiameter(), Math.abs(points.get(0).getY() - points.get(1).getY()), cut.getDepth()).toCSG();
-        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(points.get(0).getX() - panel.getPanelDimension().getX() / 2 + bits[cut.getBitIndex()].getDiameter() / 2, (points.get(0).getY() + points.get(1).getY()) / 2 - panel.getPanelDimension().getY() / 2, (panel.getPanelDimension().getZ() - cut.getDepth()) / 2));
+
+        CSG cut3d = new Cube(ray * 2, Math.abs(points.get(0).getY() - points.get(1).getY()), cut.getDepth()).toCSG();
+        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(points.get(0).getX() - panel.getPanelDimension().getX() / 2, ((points.get(0).getY() + points.get(1).getY()) / 2 - panel.getPanelDimension().getY() / 2), (panel.getPanelDimension().getZ() - cut.getDepth()) / 2));
+
+        CSG cyl = new Cylinder(ray, cut.getDepth()).toCSG();
+        cyl = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut3d.getCenterX(), cut3d.getCenterY(), panel.getPanelDimension().getZ() / 2 - cut.getDepth()));
+        CSG firstEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(0, cut3d.getMinY() - cut3d.getCenterY(), 0));
+        CSG secEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(0, cut3d.getMaxY() - cut3d.getCenterY(), 0));
+        cut3d = cut3d.union(firstEnd);
+        cut3d = cut3d.union(secEnd);
         return cut3d;
     }
 
@@ -278,14 +297,32 @@ public class Mesh extends Transform {
 
     private static CSG createFreeCut(Controller controller, CutDTO cut, BitDTO[] bits, PanelDTO panel) {
         List<VertexDTO> points = controller.getAbsolutePointsPosition(cut);
+        double ray = bits[cut.getBitIndex()].getDiameter() / 2;
         double hypothenus = Math.sqrt(Math.pow(points.get(0).getY() - points.get(1).getY(), 2) + Math.pow(points.get(0).getX() - points.get(1).getX(), 2));
-        CSG cut3d = new Cube(bits[cut.getBitIndex()].getDiameter(), hypothenus, cut.getDepth()).toCSG();
+        CSG cut3d = new Cube(bits[cut.getBitIndex()].getDiameter(), hypothenus - ray, cut.getDepth()).toCSG();
         cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(90));
         double ratio = (points.get(1).getY() - points.get(0).getY()) / (points.get(1).getX() - points.get(0).getX());
         double rot = -Math.toDegrees(Math.atan(ratio));
         cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(rot));
-        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(((points.get(0).getX() + points.get(1).getX()) / 2) - panel.getPanelDimension().getX() / 2, (points.get(0).getY() + points.get(1).getY()) / 2 - panel.getPanelDimension().getY() / 2, (panel.getPanelDimension().getZ() - cut.getDepth()) / 2));
+        cut3d = cut3d.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate((((points.get(0).getX() + points.get(1).getX()) / 2) - panel.getPanelDimension().getX() / 2), ((points.get(0).getY() + points.get(1).getY()) / 2 - panel.getPanelDimension().getY() / 2), (panel.getPanelDimension().getZ() - cut.getDepth()) / 2));
+        CSG cyl = new Cylinder(bits[cut.getBitIndex()].getDiameter() / 2, cut.getDepth()).toCSG();
+        //cyl = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut3d.getCenterX(), cut3d.getCenterY(), panel.getPanelDimension().getZ() / 2 - cut.getDepth()));
+        CSG firstEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(hypothenus / 2, 0, 0));
+        CSG secEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(hypothenus / -2, 0, 0));
+        firstEnd = firstEnd.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(rot));
+        secEnd = secEnd.transformed(eu.mihosoft.vrl.v3d.Transform.unity().rotZ(rot));
+        firstEnd = firstEnd.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut3d.getCenterX(), cut3d.getCenterY(), panel.getPanelDimension().getZ() / 2 - cut.getDepth()));
+        secEnd = secEnd.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(cut3d.getCenterX(), cut3d.getCenterY(), panel.getPanelDimension().getZ() / 2 - cut.getDepth()));
 
+//        if (rot < 0) {
+//            firstEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(Math.abs(points.get(0).getX() - points.get(1).getX()) / 2, Math.abs(points.get(0).getY() - points.get(1).getY()) / 2, 0));
+//            secEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(Math.abs(points.get(0).getX() - points.get(1).getX()) / -2, Math.abs(points.get(0).getY() - points.get(1).getY()) / -2, 0));
+//        } else {
+//            firstEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(Math.abs(points.get(0).getX() - points.get(1).getX()) / 2, Math.abs(points.get(0).getY() - points.get(1).getY()) / -2, 0));
+//            secEnd = cyl.transformed(eu.mihosoft.vrl.v3d.Transform.unity().translate(Math.abs(points.get(0).getX() - points.get(1).getX()) / -2, Math.abs(points.get(0).getY() - points.get(1).getY()) / 2, 0));
+//        }
+        cut3d = cut3d.union(firstEnd);
+        cut3d = cut3d.union(secEnd);
         return cut3d;
     }
 
