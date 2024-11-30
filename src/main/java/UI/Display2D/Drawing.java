@@ -127,7 +127,7 @@ public class Drawing {
         createCutActionListener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (currentDrawingCut.getCursorPoint() != null) {
+                if (currentDrawingCut.getCursorPoint() != null && getState() == DrawingState.CREATE_CUT) {
                     if (currentDrawingCut.getCursorPoint().getValid() == PersoPoint.Valid.NOT_VALID)  // Cut invalid
                     {
                         deactivateCreateCutListener();
@@ -140,7 +140,7 @@ public class Drawing {
                             if(id.isPresent()){
                                 updateCuts();
                                 renderer.getChangeCutListener().addCutEventOccured(new ChangeCutEvent(renderer, id.get()));
-                                initCut(currentDrawingCut.getCutType());
+                                setState(DrawingState.IDLE);
                             }
                         }
                     }

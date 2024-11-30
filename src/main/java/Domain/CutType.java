@@ -7,5 +7,5 @@ public enum CutType {
     L_SHAPE,
     LINE_VERTICAL,
     LINE_FREE,
-    RETAILLER,
+    RETAILLER
 }
