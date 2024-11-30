@@ -103,8 +103,7 @@ public class PersoPoint {
         } else {
             graphics2D.setColor(this.color);
         }
-        graphics2D.fillOval((int) (temp.getX() - diamPixel / 2.0), ((int) (temp.getY() - diamPixel / 2.0)),
-                ((int) diamPixel), ((int) diamPixel));
+        graphics2D.fillOval((int) (temp.getX() - diamPixel / 2.0), ((int) (temp.getY() - diamPixel / 2.0)),((int) diamPixel), ((int) diamPixel));
 
         return selected;
     }

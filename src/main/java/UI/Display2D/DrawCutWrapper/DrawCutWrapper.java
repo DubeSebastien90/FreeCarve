@@ -111,8 +111,10 @@ public abstract class DrawCutWrapper {
         this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
+
         boolean canSelect = mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getDrawing().getState() == Drawing.DrawingState.IDLE && (renderer.isPointonPanel());
         //draw refs
+
         for (RefCutDTO ref : cut.getRefsDTO()) {
             VertexDTO absPoints = ref.getAbsoluteOffset(mainWindow.getController());
             PersoPoint p = new PersoPoint(absPoints.getX(), absPoints.getY(), this.cursorRadius, true);
