@@ -2,6 +2,8 @@ package Domain;
 
 import Common.*;
 import Common.DTO.*;
+import Common.Exceptions.ClampZoneException;
+import Common.DTO.*;
 import Common.DTO.CutDTO;
 import Common.DTO.PanelDTO;
 import Common.DTO.RequestCutDTO;
@@ -206,8 +208,45 @@ class PanelCNC {
      *
      * @param clamp The new {@code CLampZone}
      */
-    void addClamps(ClampZone clamp) {
-        this.clamps.add(clamp);
+    Optional<UUID> addClamps(ClampZoneDTO clamp) throws ClampZoneException {
+        for (VertexDTO points : clamp.getZone()) {
+            if (!isPointOnPanel(points)) {
+                return Optional.empty();
+            }
+        }
+        ClampZone newClamp = new ClampZone(clamp);
+        memorizer.executeAndMemorize(()->this.clamps.add(newClamp), ()->this.clamps.removeIf(e->e.getId() == newClamp.getId()));
+        return Optional.of(newClamp.getId());
+    }
+
+    /**
+     * Removes a {@code ClampZone} from the current {@code ProjectState} board
+     * @param id The id of the {@code ClampZone} the needs to be removed
+     * @return Boolean : true if clamp is removed, false if it can't be removed
+     */
+    boolean removeClamp(UUID id){
+        for(ClampZone clamp : clamps){
+            if(clamp.getId() == id){
+                memorizer.executeAndMemorize(()->this.clamps.remove(clamp), ()->this.clamps.add(clamp));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    boolean modifyClamp(ClampZoneDTO clamp) throws ClampZoneException {
+        for (VertexDTO points : clamp.getZone()) {
+            if (!isPointOnPanel(points)) {
+                return false;
+            }
+        }
+        for (ClampZone c : clamps) {
+            if (c.getId() == clamp.getClampId().orElseThrow(() ->new ClampZoneException("La zone interdite n'existe pas"))) {
+                c.modifyClamp(clamp);
+                return true;
+            }
+        }
+        return false;
     }
 
     VertexDTO getPanelDimension() {

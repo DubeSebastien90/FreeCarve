@@ -1,6 +1,7 @@
 package Domain;
 
 import Common.DTO.*;
+import Common.Exceptions.ClampZoneException;
 import Common.Exceptions.InvalidBitException;
 import Common.Exceptions.InvalidFileExtensionException;
 import Common.Interfaces.*;
@@ -254,9 +255,8 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param points the list of points that define the {@code ClampZone}
      * @return The id of the clampZone if it could be created.
      */
-    public Optional<UUID> addClampZone(VertexDTO[] points) {
-        //todo
-        return null;
+    public Optional<UUID> addClampZone(ClampZoneDTO clampZoneDTO) throws ClampZoneException {
+        return cncMachine.getPanel().addClamps(clampZoneDTO);
     }
 
     /**
