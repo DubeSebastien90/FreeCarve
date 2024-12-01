@@ -223,10 +223,13 @@ public class VertexDTO implements Serializable {
         return "(" + x + "," + y + ")";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof VertexDTO vertexDTO)) return false;
-        return Double.compare(x, vertexDTO.x) == 0 && Double.compare(y, vertexDTO.y) == 0 && Double.compare(z, vertexDTO.z) == 0;
+    public boolean equals(Object obj){
+        if(obj instanceof VertexDTO){
+            VertexDTO other = (VertexDTO) obj;
+            return Math.abs(this.x - other.x) < doubleTolerance &&
+                    Math.abs(this.y - other.y) < doubleTolerance &&
+                    Math.abs(this.z - other.z) < doubleTolerance;
+        }
+        return false;
     }
 }
