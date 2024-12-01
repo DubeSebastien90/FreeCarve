@@ -223,15 +223,15 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
                         for (DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
                             for (PersoPoint point : cutWrapper.getPersoPoints()) {
                                 Point2D temp = mmTopixel(new Point2D.Double(point.getLocationX(), point.getLocationY()));
-                                if (!foundSomething && PersoPoint.mouse_on_top(e.getX(), e.getY(), temp.getX(), temp.getY(), point.getRadius()*zoom)) {
+                                if (!foundSomething && PersoPoint.mouse_on_top(e.getX(), e.getY(), temp.getX(), temp.getY(), point.getRadius() * zoom)) {
                                     drawing.initModifyPoint(cutWrapper, point);
                                     foundSomething = true;
                                 }
                             }
-                            for(int i =0; i  < cutWrapper.getPersoPoints().size() - 1; i++) {
+                            for (int i = 0; i < cutWrapper.getPersoPoints().size() - 1; i++) {
                                 Point2D temp1 = mmTopixel(new Point2D.Double(cutWrapper.getPersoPoints().get(i).getLocationX(), cutWrapper.getPersoPoints().get(i).getLocationY()));
-                                Point2D temp2 = mmTopixel(new Point2D.Double(cutWrapper.getPersoPoints().get(i+1).getLocationX(), cutWrapper.getPersoPoints().get(i+1).getLocationY()));
-                                if (!foundSomething && PersoPoint.mouse_on_top_line(e.getX(),e.getY(),temp1,temp2,10)) {
+                                Point2D temp2 = mmTopixel(new Point2D.Double(cutWrapper.getPersoPoints().get(i + 1).getLocationX(), cutWrapper.getPersoPoints().get(i + 1).getLocationY()));
+                                if (!foundSomething && PersoPoint.mouse_on_top_line(e.getX(), e.getY(), temp1, temp2, 10)) {
                                     drawing.initModifyCut(cutWrapper);
                                     foundSomething = true;
                                 }
@@ -265,6 +265,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
                 if (drawing.getState() == Drawing.DrawingState.MODIFY_CUT) {
                     super.mouseReleased(e);
                     drawing.closeModifyCut();
+                    drawing.setState(Drawing.DrawingState.IDLE);
                     mousePt = e.getPoint();
                     repaint();
                 }

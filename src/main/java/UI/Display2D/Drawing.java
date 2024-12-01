@@ -290,6 +290,8 @@ public class Drawing {
         this.state = state;
     }
 
+
+
     /**
      * Activates the cutListener so that the board reacts when a cut is being made
      */
