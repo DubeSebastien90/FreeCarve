@@ -5,6 +5,7 @@ import Domain.CutType;
 
 import Common.DTO.GridDTO;
 import Common.DTO.VertexDTO;
+import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
 import UI.LeftBar;
@@ -217,6 +218,16 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
                             draggingAPoint = true;
                         }
                     }
+                    if (drawing.getState() == Drawing.DrawingState.IDLE) {
+                        for (DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
+                            for (PersoPoint point : cutWrapper.getPersoPoints()) {
+                                Point2D temp = mmTopixel(new Point2D.Double(point.getLocationX(), point.getLocationY()));
+                                if (PersoPoint.mouse_on_top(e.getX(), e.getY(), temp.getX(), temp.getY(), point.getRadius()*zoom)) {
+                                    drawing.setState(Drawing.DrawingState.MODIFY_POINT);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -235,6 +246,12 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
                     clearPoints();
                     repaint();
                 }
+                if (drawing.getState() == Drawing.DrawingState.MODIFY_POINT) {
+                    super.mouseReleased(e);
+                    drawing.setState(Drawing.DrawingState.IDLE);
+                    mousePt = e.getPoint();
+                    repaint();
+                }
             }
         });
     }
@@ -247,7 +264,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (!draggingAPoint) {
+                if (!draggingAPoint && drawing.getState() != Drawing.DrawingState.MODIFY_POINT) {
                     offsetX -= ((mousePt.getX() - e.getPoint().x) / zoom);
                     offsetY += ((mousePt.getY() - e.getPoint().y) / zoom);
                     mousePt = e.getPoint();

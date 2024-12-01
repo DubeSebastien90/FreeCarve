@@ -41,6 +41,7 @@ public class Drawing {
         CREATE_CUT,
         IDLE,
         MODIFY_ANCHOR,
+        MODIFY_POINT
     }
 
     /**
@@ -207,6 +208,19 @@ public class Drawing {
             currentModifiedCut.emptyRefs();
             setState(DrawingState.MODIFY_ANCHOR);
             activateModifyAnchorCutListener();
+        }
+
+    }
+
+    public void initModifyPoint(CutDTO cutToChangePoint, PersoPoint pointToChange){
+        Optional<DrawCutWrapper> modifiedCut = getWrapperById(cutToChangePoint.getId());
+
+        if(modifiedCut.isPresent()){
+            currentModifiedCut = modifiedCut.get();
+            //deactivateModifyPointCutListener();;
+            currentModifiedCut.emptyRefs();
+            setState(DrawingState.MODIFY_POINT);
+            //activateModifyPointCutListener();
         }
 
     }

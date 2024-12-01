@@ -116,7 +116,7 @@ public abstract class DrawCutWrapper {
             this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), this.strokeWidth);
         }
 
-        boolean canSelect = mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getDrawing().getState() == Drawing.DrawingState.IDLE;
+        boolean canSelect = mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getDrawing().getState() == Drawing.DrawingState.IDLE && (renderer.isPointonPanel());
         for (PersoPoint point : points) {
             point.drawMM(graphics2D, renderer, canSelect);
         }

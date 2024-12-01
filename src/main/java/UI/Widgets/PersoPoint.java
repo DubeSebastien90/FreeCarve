@@ -101,7 +101,7 @@ public class PersoPoint {
                 ((int) diamPixel), ((int) diamPixel));
     }
 
-    boolean mouse_on_top(double mouse_x, double mouse_y, double pointX, double pointY, double pointRadius){
+    public static boolean mouse_on_top(double mouse_x, double mouse_y, double pointX, double pointY, double pointRadius){
         double dist = Math.sqrt(Math.pow(mouse_x-pointX,2)+Math.pow(mouse_y-pointY,2));
         return dist <= pointRadius;
     }
