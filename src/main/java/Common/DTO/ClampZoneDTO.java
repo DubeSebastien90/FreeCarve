@@ -1,5 +1,8 @@
 package Common.DTO;
 
+import java.util.Optional;
+import java.util.UUID;
+
 /**
  * The {@code ClampZoneDTO} class is a read-only {@code ClampZone}
  *
@@ -9,13 +12,19 @@ package Common.DTO;
  */
 public class ClampZoneDTO {
     private final VertexDTO[] zone = new VertexDTO[2];
+    private Optional<UUID> clampId = Optional.empty();
 
-    public ClampZoneDTO(VertexDTO first, VertexDTO second) {
+    public ClampZoneDTO(VertexDTO first, VertexDTO second, Optional<UUID> clampId){
         zone[0] = first;
         zone[1] = second;
+        this.clampId = clampId;
     }
 
     public VertexDTO[] getZone() {
-        return zone;
+        return this.zone;
+    }
+
+    public Optional<UUID> getClampId() {
+        return this.clampId;
     }
 }

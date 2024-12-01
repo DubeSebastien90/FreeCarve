@@ -1,15 +1,15 @@
 package Domain;
 
-import Common.DTO.PanelDTO;
-import Common.DTO.RefCutDTO;
-import Common.DTO.RequestCutDTO;
-import Common.DTO.VertexDTO;
+import Common.DTO.*;
+import Common.Exceptions.ClampZoneException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Optional;
+import java.util.UUID;
 
 public class PanelCNCTest {
     private PanelCNC panelCNC;
@@ -95,5 +95,95 @@ public class PanelCNCTest {
         Assertions.assertEquals(pDTO.getCutsDTO().getFirst().getPoints().getFirst().getX(), 13);
         Assertions.assertEquals(pDTO.getCutsDTO().getFirst().getPoints().getFirst().getY(), 14);
         Assertions.assertEquals(pDTO.getCutsDTO().getFirst().getPoints().getFirst().getZ(), 15);
+    }
+
+    @Test
+    void addClamp_WhenClampValid_AddsToClampList() throws ClampZoneException {
+        // Arrange
+        ClampZoneDTO clampZoneDTO = new ClampZoneDTO(new VertexDTO(0, 0, 0), new VertexDTO(1, 1, 1), Optional.empty());
+
+        // Act
+        panelCNC.addClamps(clampZoneDTO);
+
+        // Assert
+        Assertions.assertEquals(panelCNC.getClamps().size(), 1);
+    }
+
+    @Test
+    void addClamp_WhenPointOutsidePanel_IDisEmpty() throws ClampZoneException {
+        // Arrange
+        ClampZoneDTO clampZoneDTO = new ClampZoneDTO(new VertexDTO(-1f, -1f, 0), new VertexDTO(1, 1, 1), Optional.empty());
+
+        // Act
+        Optional<UUID> id = panelCNC.addClamps(clampZoneDTO);
+
+        // Assert
+        Assertions.assertEquals(id, Optional.empty());
+    }
+
+    @Test
+    void addClamps_WhenClampInvalid_ThrowsClampZoneException(){
+        // Arrange
+        ClampZoneDTO clampZoneDTO = new ClampZoneDTO(new VertexDTO(1f, 1f, 1), new VertexDTO(1, 1, 1), Optional.empty());
+
+        // Act
+        Assertions.assertThrows(ClampZoneException.class, () -> panelCNC.addClamps(clampZoneDTO));
+    }
+
+    @Test
+    void removeClamps_WhenClampExists_RemovesFromClampList() throws ClampZoneException {
+        // Arrange
+        ClampZoneDTO clampZoneDTO = new ClampZoneDTO(new VertexDTO(0, 0, 0), new VertexDTO(1, 1, 1), Optional.empty());
+        Optional<UUID> newID = panelCNC.addClamps(clampZoneDTO);
+
+        // Act
+        Assertions.assertTrue(panelCNC.removeClamp(newID.orElse(null)));
+
+        // Assert
+        Assertions.assertEquals(panelCNC.getClamps().size(), 0);
+    }
+
+    @Test
+    void removeClamps_WhenClampDoentExist_returnsFalse(){
+        // Arrange
+        int sizeBeginning = panelCNC.getClamps().size();
+
+        // Act
+        boolean result = panelCNC.removeClamp(UUID.randomUUID());
+
+        // Assert
+        Assertions.assertFalse(result);
+        Assertions.assertEquals(sizeBeginning, panelCNC.getClamps().size());
+    }
+
+    @Test
+    void removeClamps_WhenUUIDNull_returnsFalse(){
+        // Arrange
+        int sizeBeginning = panelCNC.getClamps().size();
+
+        // Act
+        boolean result = panelCNC.removeClamp(null);
+
+        // Assert
+        Assertions.assertFalse(result);
+        Assertions.assertEquals(sizeBeginning, panelCNC.getClamps().size());
+    }
+
+    @Test
+    void modifyClamp_WhenClampExist_Modify() throws ClampZoneException {
+        // Arrange
+        ClampZoneDTO newClamp = new ClampZoneDTO(new VertexDTO(0.0f, 0.0f, 0.0f),
+                            new VertexDTO(0.1f, 0.1f, 0.1f),
+                        Optional.empty());
+
+        UUID newID = panelCNC.addClamps(newClamp).get();
+
+        // Act
+        panelCNC.modifyClamp(new ClampZoneDTO(new VertexDTO(0.0f, 0.0f, 0.0f),
+                new VertexDTO(0.2f, 0.2f, 0.2f),
+                Optional.of(newID)));
+        // Assert
+        Assertions.assertEquals(0.2f, panelCNC.getClamps().get(0).getZone()[1].getX());
+        Assertions.assertEquals(0.2f, panelCNC.getClamps().get(0).getZone()[1].getX());
     }
 }
