@@ -38,12 +38,12 @@ public class DrawCutStraight extends DrawCutWrapper{
         }
 
         for (int i =0; i < points.size()-1; i++){
-            points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), this.strokeWidth);
+            points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), false);
         }
 
         graphics2D.setColor(cursor.getColor());
         if (!points.isEmpty()){
-            points.getLast().drawLineMM(graphics2D, renderer, cursor, this.strokeWidth);
+            points.getLast().drawLineMM(graphics2D, renderer, cursor, false);
         }
 
         for (PersoPoint point : this.points){ // drawing the points

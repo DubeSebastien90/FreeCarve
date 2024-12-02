@@ -30,9 +30,11 @@ public class Drawing {
     private MouseListener createCutActionListener;
     private MouseMotionListener modifyAnchorMoveListener;
     private MouseListener modifyAnchorActionListener;
+    private MouseMotionListener createPointMoveListener;
     private List<DrawCutWrapper> cutWrappers; //todo change to map so that you can retrieve them with ID - for faster usage
     private DrawCutWrapper currentDrawingCut;
     private DrawCutWrapper currentModifiedCut;
+    private PersoPoint currentModifiedPoint;
     private final Rendering2DWindow renderer;
     private final MainWindow mainWindow;
     private DrawingState state;
@@ -197,6 +199,14 @@ public class Drawing {
             }
         };
 
+        createPointMoveListener = new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+                System.out.println("pipi");
+            }
+        };
+
     }
 
     public void initModifyAnchor(CutDTO cutToChangeAnchor){
@@ -212,17 +222,26 @@ public class Drawing {
 
     }
 
-    public void initModifyPoint(CutDTO cutToChangePoint, PersoPoint pointToChange){
-        Optional<DrawCutWrapper> modifiedCut = getWrapperById(cutToChangePoint.getId());
+    public void initModifyPoint(DrawCutWrapper cutToChangePoint, PersoPoint pointToChange){
+        currentModifiedCut = cutToChangePoint;
+        currentModifiedPoint = pointToChange;
+        setState(Drawing.DrawingState.MODIFY_POINT);
+        activateModifyPointCutListener();
 
-        if(modifiedCut.isPresent()){
-            currentModifiedCut = modifiedCut.get();
-            //deactivateModifyPointCutListener();;
-            currentModifiedCut.emptyRefs();
-            setState(DrawingState.MODIFY_POINT);
-            //activateModifyPointCutListener();
-        }
+    }
 
+    public void closeModifyPoint(){
+        setState(DrawingState.IDLE);
+        currentModifiedCut.emptyRefs();
+        deactivateModifyPointCutListener();
+    }
+
+    private void activateModifyPointCutListener(){
+        renderer.addMouseMotionListener(createPointMoveListener);
+    }
+
+    private void deactivateModifyPointCutListener(){
+        renderer.removeMouseMotionListener(createPointMoveListener);
     }
 
     public void setState(DrawingState state){

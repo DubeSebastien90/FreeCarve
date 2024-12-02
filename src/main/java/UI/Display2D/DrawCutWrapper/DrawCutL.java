@@ -46,7 +46,7 @@ public class DrawCutL extends DrawCutWrapper{
 
 
         for (int i =0; i < points.size()-1; i++){
-            points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), this.strokeWidth);
+            points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), false);
         }
 
         for (PersoPoint point : this.points){ // drawing the points

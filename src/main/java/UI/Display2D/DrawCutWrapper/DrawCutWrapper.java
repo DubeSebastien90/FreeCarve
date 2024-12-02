@@ -111,20 +111,28 @@ public abstract class DrawCutWrapper {
         this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
-
-        for(int i =0; i  < points.size() - 1; i++){
-            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), this.strokeWidth);
-        }
-
         boolean canSelect = mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getDrawing().getState() == Drawing.DrawingState.IDLE && (renderer.isPointonPanel());
-        for (PersoPoint point : points) {
-            point.drawMM(graphics2D, renderer, canSelect);
-        }
-
+        //draw refs
         for (RefCutDTO ref : cut.getRefsDTO()) {
             VertexDTO absPoints = ref.getAbsoluteOffset(mainWindow.getController());
             PersoPoint p = new PersoPoint(absPoints.getX(), absPoints.getY(), this.cursorRadius, true);
             p.drawMM(graphics2D, renderer, false);
+        }
+        //draw line
+        Color c = Color.black;
+        for(int i =0; i  < points.size() - 1; i++){
+            if(this.points.get(i).getColor() != Color.MAGENTA){
+                c = this.points.get(i).getColor();
+            }
+        }
+        for(int i =0; i  < points.size() - 1; i++){
+            graphics2D.setColor(c);
+            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), canSelect);
+        }
+
+        //draw points
+        for (PersoPoint point : points) {
+            point.drawMM(graphics2D, renderer, canSelect);
         }
     }
 

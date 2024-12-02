@@ -223,7 +223,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
                             for (PersoPoint point : cutWrapper.getPersoPoints()) {
                                 Point2D temp = mmTopixel(new Point2D.Double(point.getLocationX(), point.getLocationY()));
                                 if (PersoPoint.mouse_on_top(e.getX(), e.getY(), temp.getX(), temp.getY(), point.getRadius()*zoom)) {
-                                    drawing.setState(Drawing.DrawingState.MODIFY_POINT);
+                                    drawing.initModifyPoint(cutWrapper, point);
                                 }
                             }
                         }
@@ -248,7 +248,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
                 }
                 if (drawing.getState() == Drawing.DrawingState.MODIFY_POINT) {
                     super.mouseReleased(e);
-                    drawing.setState(Drawing.DrawingState.IDLE);
+                    drawing.closeModifyPoint();
                     mousePt = e.getPoint();
                     repaint();
                 }
