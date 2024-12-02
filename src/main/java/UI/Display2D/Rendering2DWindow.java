@@ -219,11 +219,21 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
                         }
                     }
                     if (drawing.getState() == Drawing.DrawingState.IDLE) {
+                        boolean foundSomething = false;
                         for (DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
                             for (PersoPoint point : cutWrapper.getPersoPoints()) {
                                 Point2D temp = mmTopixel(new Point2D.Double(point.getLocationX(), point.getLocationY()));
-                                if (PersoPoint.mouse_on_top(e.getX(), e.getY(), temp.getX(), temp.getY(), point.getRadius()*zoom)) {
+                                if (!foundSomething && PersoPoint.mouse_on_top(e.getX(), e.getY(), temp.getX(), temp.getY(), point.getRadius()*zoom)) {
                                     drawing.initModifyPoint(cutWrapper, point);
+                                    foundSomething = true;
+                                }
+                            }
+                            for(int i =0; i  < cutWrapper.getPersoPoints().size() - 1; i++) {
+                                Point2D temp1 = mmTopixel(new Point2D.Double(cutWrapper.getPersoPoints().get(i).getLocationX(), cutWrapper.getPersoPoints().get(i).getLocationY()));
+                                Point2D temp2 = mmTopixel(new Point2D.Double(cutWrapper.getPersoPoints().get(i+1).getLocationX(), cutWrapper.getPersoPoints().get(i+1).getLocationY()));
+                                if (!foundSomething && PersoPoint.mouse_on_top_line(e.getX(),e.getY(),temp1,temp2,10)) {
+                                    drawing.initModifyCut(cutWrapper);
+                                    foundSomething = true;
                                 }
                             }
                         }
@@ -252,6 +262,12 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
                     mousePt = e.getPoint();
                     repaint();
                 }
+                if (drawing.getState() == Drawing.DrawingState.MODIFY_CUT) {
+                    super.mouseReleased(e);
+                    drawing.closeModifyCut();
+                    mousePt = e.getPoint();
+                    repaint();
+                }
             }
         });
     }
@@ -264,7 +280,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (!draggingAPoint && drawing.getState() != Drawing.DrawingState.MODIFY_POINT) {
+                if (!draggingAPoint && drawing.getState() != Drawing.DrawingState.MODIFY_POINT && drawing.getState() != Drawing.DrawingState.MODIFY_CUT) {
                     offsetX -= ((mousePt.getX() - e.getPoint().x) / zoom);
                     offsetY += ((mousePt.getY() - e.getPoint().y) / zoom);
                     mousePt = e.getPoint();

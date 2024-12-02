@@ -24,10 +24,11 @@ public class PersoPoint {
     private Color color = Color.BLACK;
     private boolean filled;
 
-    public enum Valid{
+    public enum Valid {
         VALID,
         NOT_VALID,
     }
+
     /**
      * Constructs a PersoPoint with the specified location and radius.
      *
@@ -62,9 +63,10 @@ public class PersoPoint {
 
     /**
      * Copy constructor
+     *
      * @param persoPoint PersoPoint to be copied
      */
-    public PersoPoint(PersoPoint persoPoint){
+    public PersoPoint(PersoPoint persoPoint) {
         this.locationX = persoPoint.locationX;
         this.locationY = persoPoint.locationY;
         this.radius = persoPoint.radius;
@@ -75,54 +77,57 @@ public class PersoPoint {
 
     /**
      * Draws the PersoPoint, DOESN'T CONVERT it's coordinate
+     *
      * @param graphics2D
      * @param renderer
      */
-    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer){
+    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
         graphics2D.setColor(this.color);
-        graphics2D.fillOval((int) (this.getLocationX()  - this.getRadius()/2.0), ((int) (this.getLocationY() - this.getRadius()/2.0)),
+        graphics2D.fillOval((int) (this.getLocationX() - this.getRadius() / 2.0), ((int) (this.getLocationY() - this.getRadius() / 2.0)),
                 ((int) this.getRadius()), ((int) this.getRadius()));
     }
 
     /**
      * Draws the PersoPoint, converts it's coordinate from MM to pixels
+     *
      * @param graphics2D
      * @param renderer
      */
-    public void drawMM(Graphics2D graphics2D, Rendering2DWindow renderer, boolean canSelect){
+    public void drawMM(Graphics2D graphics2D, Rendering2DWindow renderer, boolean canSelect) {
         Point2D temp = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
-        double diamPixel = this.radius*renderer.getZoom()*2;
-        if (mouse_on_top(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp.getX(), temp.getY(), diamPixel/2) && canSelect){
+        double diamPixel = this.radius * renderer.getZoom() * 2;
+        if (mouse_on_top(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp.getX(), temp.getY(), diamPixel / 2) && canSelect) {
             graphics2D.setColor(Color.MAGENTA);
         } else {
             graphics2D.setColor(this.color);
         }
-        graphics2D.fillOval((int) (temp.getX()  - diamPixel/2.0), ((int) (temp.getY() - diamPixel/2.0)),
+        graphics2D.fillOval((int) (temp.getX() - diamPixel / 2.0), ((int) (temp.getY() - diamPixel / 2.0)),
                 ((int) diamPixel), ((int) diamPixel));
     }
 
-    public static boolean mouse_on_top(double mouse_x, double mouse_y, double pointX, double pointY, double pointRadius){
-        double dist = Math.sqrt(Math.pow(mouse_x-pointX,2)+Math.pow(mouse_y-pointY,2));
+    public static boolean mouse_on_top(double mouse_x, double mouse_y, double pointX, double pointY, double pointRadius) {
+        double dist = Math.sqrt(Math.pow(mouse_x - pointX, 2) + Math.pow(mouse_y - pointY, 2));
         return dist <= pointRadius;
     }
 
     /**
      * Draws a line between this PersoPoint and another, converts MM to pixel first
+     *
      * @param graphics2D
      * @param renderer
-     * @param to PersoPoint to draw to
+     * @param to         PersoPoint to draw to
      */
-    public void drawLineMM(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint to, boolean canSelect){
+    public void drawLineMM(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint to, boolean canSelect) {
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(to.locationX, to.locationY));
-        if (canSelect && mouse_on_top_line(renderer.getMousePt().getX(), renderer.getMousePt().getY(),temp1, temp2, (radius*renderer.getZoom())/PRECISION)){
+        if (canSelect && mouse_on_top_line(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp1, temp2, (radius * renderer.getZoom()) / PRECISION)) {
             graphics2D.setColor(Color.MAGENTA);
         } //else graphics2D.setColor(this.color);
-        graphics2D.drawLine((int) ( temp1.getX()), (int) (temp1.getY()),
+        graphics2D.drawLine((int) (temp1.getX()), (int) (temp1.getY()),
                 (int) (temp2.getX()), (int) (temp2.getY()));
     }
 
-    boolean mouse_on_top_line(double mouseX, double mouseY, Point2D point_from, Point2D point_to, double _radius){
+    public static boolean mouse_on_top_line(double mouseX, double mouseY, Point2D point_from, Point2D point_to, double _radius) {
 
         double dx = point_to.getX() - point_from.getX();
         double dy = point_to.getY() - point_from.getY();
@@ -147,17 +152,15 @@ public class PersoPoint {
         double x4 = point_to.getX() - nx;
         double y4 = point_to.getY() - ny;
 
-        // Check if mouse is inside the rectangle
         return pointInRectangle(mouseX, mouseY, x1, y1, x2, y2, x3, y3, x4, y4);
     }
 
-    // Helper function to check if a point is inside a rectangle
-    private boolean pointInRectangle(double px, double py,
+    public static boolean pointInRectangle(double px, double py,
                                      double x1, double y1,
                                      double x2, double y2,
                                      double x3, double y3,
                                      double x4, double y4) {
-        // Using cross products to determine if the point is inside the rectangle
+
         double cross1 = (px - x1) * (y2 - y1) - (py - y1) * (x2 - x1);
         double cross2 = (px - x2) * (y3 - y2) - (py - y2) * (x3 - x2);
         double cross3 = (px - x3) * (y4 - y3) - (py - y3) * (x4 - x3);
@@ -231,6 +234,7 @@ public class PersoPoint {
 
     /**
      * Set the color of the point
+     *
      * @param color new color of the point
      */
     public void setColor(Color color) {
@@ -250,6 +254,7 @@ public class PersoPoint {
 
     /**
      * Get state of the PersoPoint
+     *
      * @return State
      */
     public Valid getValid() {
@@ -258,6 +263,7 @@ public class PersoPoint {
 
     /**
      * Set state of the PersoPoint
+     *
      * @param valid new State
      */
     public void setValid(Valid valid) {
@@ -266,19 +272,21 @@ public class PersoPoint {
 
     /**
      * Get the distance from origin
+     *
      * @return value of distance from origin
      */
-    public double getDistance(){
+    public double getDistance() {
         return Math.sqrt(locationX * locationX + locationY * locationY);
     }
 
     /**
      * Get distance from point
+     *
      * @param other other point
      * @return the distance this point and the other
      */
-    public double getDistance(PersoPoint other){
-        return  Math.sqrt(Math.pow(locationX - other.getLocationX(), 2) +
+    public double getDistance(PersoPoint other) {
+        return Math.sqrt(Math.pow(locationX - other.getLocationX(), 2) +
                 Math.pow(locationY - other.getLocationY(), 2));
     }
 }
