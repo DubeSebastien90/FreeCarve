@@ -203,7 +203,7 @@ public class Drawing {
 
         pointMoveListener = new MouseAdapter() {
             @Override
-            public void mouseMoved(MouseEvent e) {
+            public void mouseDragged(MouseEvent e) {
                 super.mouseMoved(e);
                 System.out.println("pointMoveListener");
             }
@@ -211,9 +211,14 @@ public class Drawing {
 
         cutMoveListener = new MouseAdapter() {
             @Override
-            public void mouseMoved(MouseEvent e) {
+            public void mouseDragged(MouseEvent e) {
                 super.mouseMoved(e);
-                System.out.println("cutMoveListener");
+                switch (currentModifiedCut.getCutType()){
+                    case LINE_VERTICAL:
+                        break;
+                    case LINE_HORIZONTAL:
+                        break;
+                }
             }
         };
 
@@ -250,7 +255,6 @@ public class Drawing {
         currentModifiedCut = cutToChangePoint;
         setState(DrawingState.MODIFY_CUT);
         activateModifyCutListener();
-
     }
 
     public void closeModifyCut(){
