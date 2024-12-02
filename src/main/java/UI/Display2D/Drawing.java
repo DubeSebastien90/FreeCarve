@@ -240,12 +240,20 @@ public class Drawing {
 
     }
 
-    public void initModifyPoint(DrawCutWrapper cutToChangePoint, PersoPoint pointToChange) {
+
+    public void initModifyPoint(DrawCutWrapper cutToChangePoint, PersoPoint pointToChange){
         currentModifiedCut = cutToChangePoint;
         currentModifiedPoint = pointToChange;
         setState(Drawing.DrawingState.MODIFY_POINT);
         activateModifyPointCutListener();
+    }
 
+    private void activateModifyPointCutListener(){
+        renderer.addMouseMotionListener(pointMoveListener);
+    }
+
+    private void deactivateModifyPointCutListener(){
+        renderer.removeMouseMotionListener(pointMoveListener);
     }
 
     public void closeModifyPoint() {
@@ -264,16 +272,6 @@ public class Drawing {
         setState(DrawingState.IDLE);
         currentModifiedCut.emptyRefs();
         deactivateModifyCutListener();
-    }
-
-    private void activateModifyPointCutListener() {
-        renderer.addMouseMotionListener(pointMoveListener);
-        System.out.println("activateModifyPointCutListener");
-    }
-
-    private void deactivateModifyPointCutListener() {
-        renderer.removeMouseMotionListener(pointMoveListener);
-        System.out.println("deactivateModifyPointCutListener");
     }
 
     private void activateModifyCutListener() {
