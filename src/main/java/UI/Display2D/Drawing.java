@@ -218,9 +218,9 @@ public class Drawing {
 
         cutMoveListener = new MouseAdapter() {
             @Override
-            public void mouseDragged(MouseEvent e) {
+            public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
-                //currentModifiedCut.movedUpdate(renderer, Drawing.this);
+                System.out.println("cutMoveListener");
             }
         };
 
@@ -262,17 +262,19 @@ public class Drawing {
         deactivateModifyPointCutListener();
     }
 
-    public void initModifyCut(DrawCutWrapper cutToChangePoint) {
+    public void initModifyCut(DrawCutWrapper cutToChangePoint){
         currentModifiedCut = cutToChangePoint;
         setState(DrawingState.MODIFY_CUT);
         activateModifyCutListener();
+
     }
 
-    public void closeModifyCut() {
+    public void closeModifyCut(){
         setState(DrawingState.IDLE);
         currentModifiedCut.emptyRefs();
         deactivateModifyCutListener();
     }
+
 
     private void activateModifyCutListener() {
         renderer.addMouseMotionListener(cutMoveListener);
