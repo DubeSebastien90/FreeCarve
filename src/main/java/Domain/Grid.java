@@ -209,17 +209,17 @@ public class Grid {
      * Returns an optional closest point to the cut lines based on a reference point
      *
      * @param point     reference point
-     * @param board     reference to the board
+     * @param cncMachine    reference to the cncMachine
      * @param threshold threshold of the distance
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
-    public Optional<VertexDTO> getPointNearAllCuts(VertexDTO point, PanelCNC board, double threshold,
+    public Optional<VertexDTO> getPointNearAllCuts(VertexDTO point, CNCMachine cncMachine, double threshold,
                                                    Optional<VertexDTO> closestPoint) {
 
         // Testing all of the cuts
-        for (Cut wrapper : board.getCutList()) {
+        for (Cut wrapper : cncMachine.getPanel().getCutList()) {
             if(wrapper.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
-            List<VertexDTO> points = wrapper.getAbsolutePointsPosition();
+            List<VertexDTO> points = wrapper.getAbsolutePointsPosition(cncMachine);
             if (points.size() > 1) {
                 for (int i = 0; i < points.size() - 1; i++) {
                     Optional<VertexDTO> checkPoint = isPointNearLine(point, points.get(i), points.get(i + 1), threshold);
@@ -242,14 +242,14 @@ public class Grid {
      * Returns an optionnal closest point to the board outlines based on a reference point
      *
      * @param point     reference point
-     * @param board     reference to the board
+     * @param cncMachine    reference to the cncMachine
      * @param threshold threshold of the distance
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
-    public Optional<VertexDTO> getPointNearAllBorder(VertexDTO point, PanelCNC board, double threshold, Optional<VertexDTO> closestPoint) {
+    public Optional<VertexDTO> getPointNearAllBorder(VertexDTO point, CNCMachine cncMachine, double threshold, Optional<VertexDTO> closestPoint) {
 
         // Testing the border
-        List<VertexDTO> borderList = board.getBorderCut().getAbsolutePointsPosition();
+        List<VertexDTO> borderList = cncMachine.getPanel().getBorderCut().getAbsolutePointsPosition(cncMachine);
         for (int i = 0; i < borderList.size() - 1; i++) {
             Optional<VertexDTO> checkPoint = isPointNearLine(point, borderList.get(i), borderList.get(i + 1),
                     threshold);
@@ -270,34 +270,34 @@ public class Grid {
      * Returns an optionnal closest point to the board outlines + cuts based on a reference point
      *
      * @param point     reference point
-     * @param board     reference to the board
+     * @param cncMachine     reference to the cncMachine
      * @param threshold threshold of the distance
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
-    public Optional<VertexDTO> getPointNearAllBorderAndCuts(VertexDTO point, PanelCNC board, double threshold) {
+    public Optional<VertexDTO> getPointNearAllBorderAndCuts(VertexDTO point, CNCMachine cncMachine, double threshold) {
         Optional<VertexDTO> closestPoint = Optional.empty();
-        closestPoint = this.getPointNearAllBorder(point, board, threshold, closestPoint);
-        closestPoint = this.getPointNearAllCuts(point, board, threshold, closestPoint);
+        closestPoint = this.getPointNearAllBorder(point, cncMachine, threshold, closestPoint);
+        closestPoint = this.getPointNearAllCuts(point, cncMachine, threshold, closestPoint);
         return closestPoint;
     }
 
     /**
      * Test the borders of the panel to get the refs
      * @param point point to test
-     * @param board ref to the board
+     * @param cncMachine ref to the cncMachine
      * @return the list of the refs obtained
      */
-    public List<RefCutDTO> getRefBorderOnPoint(VertexDTO point, PanelCNC board){
+    public List<RefCutDTO> getRefBorderOnPoint(VertexDTO point, CNCMachine cncMachine){
         List<RefCutDTO> ref = new ArrayList<>();
 
         List<Cut> allLineList = new ArrayList<>();
 
-        Cut borderCut = board.getBorderCut();
+        Cut borderCut = cncMachine.getPanel().getBorderCut();
         allLineList.add(borderCut); // adding the border as cuts to consider any line intersection on the border of the board
 
         for(Cut cut : allLineList){
 
-            List<VertexDTO> points = cut.getAbsolutePointsPosition();
+            List<VertexDTO> points = cut.getAbsolutePointsPosition(cncMachine);
             for(int i =0; i < points.size() - 1; i++){
                 Optional<Pair<VertexDTO, Double>> isPointOnLine = isPointOnLineGetRef(point, points.get(i), points.get(i+1));
                 if(isPointOnLine.isPresent()){
@@ -311,17 +311,17 @@ public class Grid {
     /**
      * Test the cuts to get the refs
      * @param point point to test
-     * @param board ref to the board
+     * @param cncMachine ref to the board
      * @return the list of the refs obtained
      */
-    public List<RefCutDTO> getRefCutsOnPoint(VertexDTO point, PanelCNC board){
+    public List<RefCutDTO> getRefCutsOnPoint(VertexDTO point, CNCMachine cncMachine){
         List<RefCutDTO> ref = new ArrayList<>();
 
-        List<Cut> allLineList = board.getCutList();
+        List<Cut> allLineList = cncMachine.getPanel().getCutList();
 
         for(Cut cut : allLineList){
             if(cut.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
-            List<VertexDTO> points = cut.getAbsolutePointsPosition();
+            List<VertexDTO> points = cut.getAbsolutePointsPosition(cncMachine);
             for(int i =0; i < points.size() - 1; i++){
                 Optional<Pair<VertexDTO, Double>> isPointOnLine = isPointOnLineGetRef(point, points.get(i), points.get(i+1));
                 if(isPointOnLine.isPresent()){
@@ -335,42 +335,41 @@ public class Grid {
     /**
      * Test the both the cuts and the borders of the board to get the refs
      * @param point point to test
-     * @param board ref to the board
+     * @param cncMachine ref to the board
      * @return the list of the refs obtained
      */
-    public List<RefCutDTO> getRefCutsAndBorderOnPoint(VertexDTO point, PanelCNC board){
+    public List<RefCutDTO> getRefCutsAndBorderOnPoint(VertexDTO point, CNCMachine cncMachine){
         List<RefCutDTO> ref = new ArrayList<>();
-        ref.addAll(getRefCutsOnPoint(point, board));
-        ref.addAll(getRefBorderOnPoint(point, board));
+        ref.addAll(getRefCutsOnPoint(point, cncMachine));
+        ref.addAll(getRefBorderOnPoint(point, cncMachine));
         return ref;
     }
 
     /**
      * Checks for intersection points on all lines on the board, and store them in the grid
      *
-     * @param board
+     * @param cncMachine
      * @return
      */
-    public void computeIntersectionPointList(PanelCNC board){
+    public void computeIntersectionPointList(CNCMachine cncMachine){
 
         intersectionPoints.clear();
 
         List<Cut> allLineList = new ArrayList<Cut>();
-        allLineList.addAll(board.getCutList());
-        Cut borderCut = board.getBorderCut();
+        allLineList.addAll(cncMachine.getPanel().getCutList());
+        Cut borderCut = cncMachine.getPanel().getBorderCut();
         allLineList.add(borderCut); // adding the border as cuts to consider any line intersection on the border of the board
 
         for(Cut cuts : allLineList){
-            List<VertexDTO> points = cuts.getAbsolutePointsPosition();
+            List<VertexDTO> points = cuts.getAbsolutePointsPosition(cncMachine);
             if(cuts.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
             if(points.size() > 1){
                 for(Cut cuts2 : allLineList){
                     if(cuts2.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
-                    List<VertexDTO> points2 = cuts2.getAbsolutePointsPosition();
+                    List<VertexDTO> points2 = cuts2.getAbsolutePointsPosition(cncMachine);
                     if(points2.size() > 1){
                         for(int i =0; i < points.size()-1; i++){
                             for(int j =0; j < points2.size() -1 ; j++){
-                                // if(cuts == cuts2 && i == j){continue;}
                                 // Checks intersection of all lines of all cuts
                                 Optional<VertexDTO> checkPoint = VertexDTO.isLineIntersectLimited(points2.get(j), points2.get(j+1),
                                         points.get(i), points.get(i + 1));
@@ -389,16 +388,16 @@ public class Grid {
      *
      * @param p1           initial point of the cut
      * @param cursor       cursor position
-     * @param board        reference to the board
+     * @param cncMachine        reference to the board
      * @param threshold    threashold of the distance
      * @param closestPoint initial closest point
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
-    public Optional<VertexDTO> getLineNearAllBorder(VertexDTO p1, VertexDTO cursor, PanelCNC board, double threshold,
+    public Optional<VertexDTO> getLineNearAllBorder(VertexDTO p1, VertexDTO cursor, CNCMachine cncMachine, double threshold,
                                                     Optional<VertexDTO> closestPoint) {
 
         // Testing the border
-        List<VertexDTO> borderList = board.getBorderCut().getPoints();
+        List<VertexDTO> borderList = cncMachine.getPanel().getBorderCut().getPoints();
         for (int i = 0; i < borderList.size() - 1; i++) {
             Optional<VertexDTO> checkPoint = isLineIntersectCursor(p1, cursor, borderList.get(i), borderList.get(i + 1),
                     threshold);
@@ -423,17 +422,17 @@ public class Grid {
      *
      * @param p1           initial point of the cut
      * @param cursor       cursor position
-     * @param board        reference to the board
+     * @param cncMachine        reference to the board
      * @param threshold    threashold of the distance
      * @param closestPoint initial closest point
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
-    public Optional<VertexDTO> getLineNearAllCuts(VertexDTO p1, VertexDTO cursor, PanelCNC board, double threshold,
+    public Optional<VertexDTO> getLineNearAllCuts(VertexDTO p1, VertexDTO cursor, CNCMachine cncMachine, double threshold,
                                                   Optional<VertexDTO> closestPoint) {
 
         // Testing all of the cuts
-        for (Cut wrapper : board.getCutList()) {
-            List<VertexDTO> points = wrapper.getAbsolutePointsPosition();
+        for (Cut wrapper : cncMachine.getPanel().getCutList()) {
+            List<VertexDTO> points = wrapper.getAbsolutePointsPosition(cncMachine);
             for (int i = 0; i < points.size() - 1; i++) {
                 Optional<VertexDTO> checkPoint = isLineIntersectCursor(p1, cursor, points.get(i), points.get(i + 1), threshold);
                 if (checkPoint.isPresent()) {
@@ -456,14 +455,14 @@ public class Grid {
      *
      * @param p1        initial point of the cut
      * @param cursor    current cursor position
-     * @param board     reference to the board
+     * @param cncMachine     reference to the board
      * @param threshold threshold of the distance
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
-    public Optional<VertexDTO> getLineNearAllBorderAndCuts(VertexDTO p1, VertexDTO cursor, PanelCNC board, double threshold) {
+    public Optional<VertexDTO> getLineNearAllBorderAndCuts(VertexDTO p1, VertexDTO cursor, CNCMachine cncMachine, double threshold) {
         Optional<VertexDTO> closestPoint = Optional.empty();
-        closestPoint = this.getLineNearAllBorder(p1, cursor, board, threshold, closestPoint);
-        closestPoint = this.getLineNearAllCuts(p1, cursor, board, threshold, closestPoint);
+        closestPoint = this.getLineNearAllBorder(p1, cursor, cncMachine, threshold, closestPoint);
+        closestPoint = this.getLineNearAllCuts(p1, cursor, cncMachine, threshold, closestPoint);
         return closestPoint;
     }
 

@@ -121,11 +121,11 @@ class PanelCNC {
      * @param id The id of the {@code Cut} the needs to be removed
      * @return Boolean : true if cut is removed, false if it can't be removed
      */
-    boolean removeCut(UUID id) {
+    boolean removeCut(UUID id, CNCMachine cncMachine) {
         List<Cut> list = getCutList();
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId() == id) {
-                cleanupRemove(list.get(i));
+                cleanupRemove(list.get(i), cncMachine);
                 list.remove(i);
                 //todo look for potential non removable cut
                 return true;
@@ -140,12 +140,12 @@ class PanelCNC {
      *
      * @param cut cut to cleanup in other cut
      */
-    void cleanupRemove(Cut cut) {
-        for (Cut c : cutList) {
-            for (RefCut ref : c.getRefs()) {
-                if (ref.getCut() == cut) {
-                    c.setInvalidAndNoRef();
-                    cleanupRemove(c);
+    void cleanupRemove(Cut cut, CNCMachine cncMachine){
+        for(Cut c : cutList){
+            for(RefCut ref : c.getRefs()){
+                if(ref.getCut() == cut){
+                    c.setInvalidAndNoRef(cncMachine);
+                    cleanupRemove(c, cncMachine);
                     break;
                 }
             }

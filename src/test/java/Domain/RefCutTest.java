@@ -13,9 +13,15 @@ public class RefCutTest {
     private Cut cut_interpolation_0;
     private Cut cut_interpolation_0_5;
     private RefCut ref;
+    private UndoRedoManager undoRedoManager;
+    private CNCMachine cncMachine;
 
     @BeforeEach
     void setUp(){
+
+        undoRedoManager = new UndoRedoManager();
+        cncMachine = new CNCMachine(undoRedoManager);
+
         ArrayList<VertexDTO> points = new ArrayList<>();
         points.add(new VertexDTO(0, 0, 0));
         points.add(new VertexDTO(0, 100, 0));
@@ -44,8 +50,8 @@ public class RefCutTest {
     void ref_test_offset(){
         // Arrange
         // Act
-        VertexDTO offset0_5 = cut_interpolation_0_5.getRefs().getFirst().getAbsoluteOffset();
-        VertexDTO offset0 = cut_interpolation_0.getRefs().getFirst().getAbsoluteOffset();
+        VertexDTO offset0_5 = cut_interpolation_0_5.getRefs().getFirst().getAbsoluteOffset(cncMachine);
+        VertexDTO offset0 = cut_interpolation_0.getRefs().getFirst().getAbsoluteOffset(cncMachine);
         // Assert
         Assertions.assertEquals(offset0_5.getX(), 0);
         Assertions.assertEquals(offset0_5.getY(), 50);
@@ -58,7 +64,7 @@ public class RefCutTest {
         // Arrange
 
         // Act
-        List<VertexDTO> absolutePoints = cut_interpolation_0.getAbsolutePointsPosition();
+        List<VertexDTO> absolutePoints = cut_interpolation_0.getAbsolutePointsPosition(cncMachine);
         VertexDTO p1 = absolutePoints.get(0);
         VertexDTO p2 = absolutePoints.get(1);
 
@@ -75,7 +81,7 @@ public class RefCutTest {
         // Arrange
 
         // Act
-        List<VertexDTO> absolutePoints = cut_interpolation_0_5.getAbsolutePointsPosition();
+        List<VertexDTO> absolutePoints = cut_interpolation_0_5.getAbsolutePointsPosition(cncMachine);
         VertexDTO p1 = absolutePoints.get(0);
         VertexDTO p2 = absolutePoints.get(1);
 
@@ -99,7 +105,7 @@ public class RefCutTest {
         points.add(new VertexDTO(0 + offsetX, 100 + offsetY, 0));
         cut.setPoints(points);
 
-        List<VertexDTO> absolutePoints = cut_interpolation_0_5.getAbsolutePointsPosition();
+        List<VertexDTO> absolutePoints = cut_interpolation_0_5.getAbsolutePointsPosition(cncMachine);
         VertexDTO p1 = absolutePoints.get(0);
         VertexDTO p2 = absolutePoints.get(1);
 
@@ -148,7 +154,7 @@ public class RefCutTest {
 
 
         // Act
-        List<VertexDTO> absolutePoints = cut4.getAbsolutePointsPosition();
+        List<VertexDTO> absolutePoints = cut4.getAbsolutePointsPosition(cncMachine);
         VertexDTO p1 = absolutePoints.get(0);
         VertexDTO p2 = absolutePoints.get(1);
 
@@ -190,7 +196,7 @@ public class RefCutTest {
         Cut cut2 = new Cut(CutType.LINE_HORIZONTAL, pointsHorizontal, 0, 5.0f, refs1);
 
         // ACT
-        List<VertexDTO> absolutePoints = cut2.getAbsolutePointsPosition();
+        List<VertexDTO> absolutePoints = cut2.getAbsolutePointsPosition(cncMachine);
         VertexDTO p1 = absolutePoints.get(0);
         VertexDTO p2 = absolutePoints.get(1);
 
@@ -227,7 +233,7 @@ public class RefCutTest {
         Cut cut2 = new Cut(CutType.L_SHAPE, pointsL, 0, 5.0f, refs1);
 
         // ACT
-        List<VertexDTO> absolutePoints = cut2.getAbsolutePointsPosition();
+        List<VertexDTO> absolutePoints = cut2.getAbsolutePointsPosition(cncMachine);
         VertexDTO p1 = absolutePoints.get(0);
         VertexDTO p2 = absolutePoints.get(1);
         VertexDTO p3 = absolutePoints.get(2);
@@ -268,7 +274,7 @@ public class RefCutTest {
         Cut cut2 = new Cut(CutType.L_SHAPE, pointsL, 0, 5.0f, refs1);
 
         // ACT
-        List<VertexDTO> absolutePoints = cut2.getAbsolutePointsPosition();
+        List<VertexDTO> absolutePoints = cut2.getAbsolutePointsPosition(cncMachine);
         VertexDTO p1 = absolutePoints.get(0);
         VertexDTO p2 = absolutePoints.get(1);
         VertexDTO p3 = absolutePoints.get(2);

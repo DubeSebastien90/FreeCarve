@@ -120,7 +120,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return Boolean : true if cut is removed, false if it can't be removed
      */
     public boolean removeCut(UUID id) {
-        return this.cncMachine.getPanel().removeCut(id);
+        return this.cncMachine.getPanel().removeCut(id, cncMachine);
     }
 
     /**
@@ -346,7 +346,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
     public Optional<VertexDTO> getGridLineNearAllBorderAndCuts(VertexDTO p1, VertexDTO cursor, double threshold) {
-        return this.grid.getLineNearAllBorderAndCuts(p1, cursor, this.cncMachine.getPanel(), threshold);
+        return this.grid.getLineNearAllBorderAndCuts(p1, cursor, this.cncMachine, threshold);
     }
 
 
@@ -358,7 +358,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
     public Optional<VertexDTO> getGridPointNearAllBorderAndCuts(VertexDTO point, double threshold) {
-        return this.grid.getPointNearAllBorderAndCuts(point, this.cncMachine.getPanel(), threshold);
+        return this.grid.getPointNearAllBorderAndCuts(point, this.cncMachine, threshold);
     }
 
     /**
@@ -369,7 +369,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return Optional<VertexDTO> : null if no line nearby, the closest Point if point nearby
      */
     public Optional<VertexDTO> getGridPointNearBorder(VertexDTO point, double threshold) {
-        return this.grid.getPointNearAllBorder(point, this.cncMachine.getPanel(), threshold, Optional.empty());
+        return this.grid.getPointNearAllBorder(point, this.cncMachine, threshold, Optional.empty());
     }
 
 
@@ -388,7 +388,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * Computes all of the intersection points  on the board, stores them in the grid class
      */
     public void computeGridIntersections() {
-        this.grid.computeIntersectionPointList(this.cncMachine.getPanel());
+        this.grid.computeIntersectionPointList(this.cncMachine);
     }
 
     /**
@@ -398,7 +398,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return list of reference Cut touching the point
      */
     public List<RefCutDTO> getRefCutsAndBorderOnPoint(VertexDTO point) {
-        return this.grid.getRefCutsAndBorderOnPoint(point, this.cncMachine.getPanel());
+        return this.grid.getRefCutsAndBorderOnPoint(point, this.cncMachine);
     }
 
     public void setGridMagnetism(boolean magnetism) {
@@ -507,7 +507,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return the list of absolute points
      */
     public List<VertexDTO> getAbsolutePointsPosition(CutDTO cutDTO) {
-        return Cut.getAbsolutePointsPositionOfCutDTO(cutDTO, this.cncMachine.getPanel());
+        return Cut.getAbsolutePointsPositionOfCutDTO(cutDTO, this.cncMachine);
     }
 
     public VertexDTO getBorderPointCut(double margin) {

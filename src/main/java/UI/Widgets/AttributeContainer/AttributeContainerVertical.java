@@ -11,6 +11,7 @@ import UI.Widgets.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 public class AttributeContainerVertical extends AttributeContainer {
     SingleValueBox distanceFromEdgeToEdge;
@@ -70,9 +71,17 @@ public class AttributeContainerVertical extends AttributeContainer {
      */
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO) {
         super.init_attribute();
-        distanceFromEdgeToEdge = new SingleValueBox(mainWindow, true, "Distance relative de la sous-pièce", "X", edgeEdgeX(), UIConfig.INSTANCE.getDefaultUnit());
-        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow, true, "Taille de la sous-pièce", "X", Math.abs(edgeEdgeX()), UIConfig.INSTANCE.getDefaultUnit());
-        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distances centrales (GCODE)", "X", centerCenterX(), UIConfig.INSTANCE.getDefaultUnit());
+        distanceFromEdgeToEdge = new SingleValueBox(mainWindow, true, "Distance relative de la sous-pièce", "X", xEdgeEdge(), UIConfig.INSTANCE.getDefaultUnit());
+        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow, true, "Taille de la sous-pièce", "X", Math.abs(xEdgeEdge()), UIConfig.INSTANCE.getDefaultUnit());
+        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Position absolue (GCODE)", "X", xCenterCenter(), UIConfig.INSTANCE.getDefaultUnit());
+    }
+
+    private double xEdgeEdge(){
+        return cutDTO.getPoints().getFirst().getX();
+    }
+    private double xCenterCenter(){
+        List<VertexDTO> absPoints = mainWindow.getController().getAbsolutePointsPosition(cutDTO);
+        return absPoints.getFirst().getX();
     }
 
     @Override
@@ -86,9 +95,9 @@ public class AttributeContainerVertical extends AttributeContainer {
     @Override
     public void updatePanel(CutDTO newCutDTO) {
         cutDTO = newCutDTO;
-        distanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(edgeEdgeX());
-        absoluteDistanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(edgeEdgeX()));
-        distanceCenterToCenter.getInput().setValueInMMWithoutTrigerringListeners( centerCenterX());
+        distanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(xEdgeEdge());
+        absoluteDistanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(xEdgeEdge()));
+        distanceCenterToCenter.getInput().setValueInMMWithoutTrigerringListeners( xCenterCenter());
         depthBox.getInput().setValueInMMWithoutTrigerringListeners(cutDTO.getDepth());
         revalidate();
         repaint();
@@ -97,12 +106,6 @@ public class AttributeContainerVertical extends AttributeContainer {
     @Override
     protected CutDTO recomputePointsAfterBitChange(CutDTO c) {
         cutDTO = new CutDTO(c);
-        double centerCenterN = edgeEdgeToCenterCenter(distanceFromEdgeToEdge.getInput().getMMValue());
-        for(int i =0; i < c.getPoints().size(); i++){
-            VertexDTO oldVertex = c.getPoints().get(i);
-            VertexDTO newVertex = new VertexDTO(centerCenterN, oldVertex.getY(), oldVertex.getZ());
-            c.getPoints().set(i, newVertex);
-        }
         return c;
     }
 
@@ -119,11 +122,10 @@ public class AttributeContainerVertical extends AttributeContainer {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = new CutDTO(cutDTO);
-                double centerCenterN = edgeEdgeToCenterCenter(sb.getInput().getMMValue());
+                double newEdgeEdge = sb.getInput().getMMValue();
                 for(int i =0; i < c.getPoints().size(); i++){
                     VertexDTO oldVertex = c.getPoints().get(i);
-
-                    VertexDTO newVertex = new VertexDTO(centerCenterN, oldVertex.getY(), oldVertex.getZ());
+                    VertexDTO newVertex = new VertexDTO(newEdgeEdge, oldVertex.getY(), oldVertex.getZ());
                     c.getPoints().set(i, newVertex);
                 }
                 mainWindow.getController().modifyCut(c);

@@ -46,8 +46,8 @@ public class RefCut {
     }
 
 
-    public VertexDTO getAbsoluteOffset(){
-        List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition();
+    public VertexDTO getAbsoluteOffset(CNCMachine cncMachine){
+        List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition(cncMachine);
 
         VertexDTO p1 = absoluteVertex.get(index);
         VertexDTO p2 = absoluteVertex.get(index+1);
@@ -55,13 +55,13 @@ public class RefCut {
         return p1.interpolation(p2, interpolation);
     }
 
-    public VertexDTO getAbsoluteFirstPoint(){
-        List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition();
+    public VertexDTO getAbsoluteFirstPoint(CNCMachine cncMachine){
+        List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition(cncMachine);
         return absoluteVertex.get(index);
     }
 
-    public VertexDTO getAbsoluteSecondPoint(){
-        List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition();
+    public VertexDTO getAbsoluteSecondPoint(CNCMachine cncMachine){
+        List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition(cncMachine);
         return absoluteVertex.get(index+1);
     }
 
