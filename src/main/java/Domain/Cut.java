@@ -220,7 +220,7 @@ class Cut {
 
         // 3 : CutType = Line_Vertical or Line_Horizontal or Free_Line :
         //                              -number of refs : >=1
-        //                              -number of relative points : 2
+        //                              -number of relative points : 2, the points stored are EdgeEdge
         //                              -how absolute points are computed : based on it's first reference point, returns the shifted relative points by the ref offset
 
         // 4 : CutType = L :            -number of refs : >=2
@@ -231,7 +231,7 @@ class Cut {
         //                              -number of relative points : 5 - twice the anchor point at position 0 and 4 + 3 other points of rect
 
         //                              -how absolute points are computed : gets the intersection points of it's first two references, and offset the relative point by this offset.
-                                        //                                  The relative points are stored with centercenter witdh and height
+                                        //
 
         if (refs.isEmpty()){
             return this.getCopyPoints();
@@ -292,6 +292,15 @@ class Cut {
 
             if(refs.size() < 2){throw new AssertionError(type + " needs two refs, it has " + refs.size());}
 
+            // Compute the diameters of the bits used
+            int bitIndexRef1 = refs.getFirst().getCut().getBitIndex();
+            int bitIndexRef2 = refs.get(1).getCut().getBitIndex();
+            int bitIndexL = getBitIndex();
+            double diameterRef1 = cncMachine.getBitStorage().getBitDiameter(bitIndexRef1);
+            double diameterRef2 = cncMachine.getBitStorage().getBitDiameter(bitIndexRef2);
+            double diameterL = cncMachine.getBitStorage().getBitDiameter(bitIndexL);
+
+
             // Needs to calculate the absolute two points
             VertexDTO p1a = refs.getFirst().getAbsoluteOffset(cncMachine);
             VertexDTO p1b = refs.getFirst().getAbsoluteFirstPoint(cncMachine);
@@ -306,11 +315,39 @@ class Cut {
                 p2b = refs.get(1).getAbsoluteSecondPoint(cncMachine);// Changing the other ref point to prevent accidental colinearity
             }
 
+            VertexDTO cornerRelatif = VertexDTO.zero();
+            if(!points.isEmpty()){
+                cornerRelatif = points.getFirst();
+            }
+
+
+            VertexDTO dirX = VertexDTO.zero();
+            VertexDTO dirY = VertexDTO.zero();
+            if(cornerRelatif.getX() != 0){
+                dirX = new VertexDTO(cornerRelatif.getX(), 0, 0).normalize();
+            }
+            if(cornerRelatif.getY() != 0){
+                dirY = new VertexDTO(0, cornerRelatif.getY(), 0).normalize();
+            }
+
+            // Ajout des diametres pour faire la compensation
+            p1a = p1a.add(dirX.mul(diameterRef1/2));
+            p1b = p1b.add(dirX.mul(diameterRef1/2));
+
+            p2a = p2a.add(dirY.mul(diameterRef2/2));
+            p2b = p2b.add(dirY.mul(diameterRef2/2));
+
             Optional<VertexDTO> intersectionPoint = VertexDTO.isLineIntersectNoLimitation(p1a,
                     p1b, p2a, p2b);
 
             if(intersectionPoint.isPresent()){
-                return  this.getCopyPointsWithOffset(intersectionPoint.get());
+                VertexDTO p1 = points.getFirst();
+                VertexDTO p3 = points.get(2);
+                VertexDTO diagonal = p3.sub(p1);
+                double centerCenterWidth = diagonal.getX() + diameterL;
+                double centerCenterHeight = diagonal.getY() + diameterL;
+                VertexDTO center = intersectionPoint.get().add(p1).add(diagonal.mul(0.5));
+                return  generateRectanglePoints(center, centerCenterWidth, centerCenterHeight);
             }
             else{
                 return this.getCopyPoints();

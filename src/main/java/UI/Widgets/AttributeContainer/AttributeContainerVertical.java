@@ -103,12 +103,6 @@ public class AttributeContainerVertical extends AttributeContainer {
         repaint();
     }
 
-    @Override
-    protected CutDTO recomputePointsAfterBitChange(CutDTO c) {
-        cutDTO = new CutDTO(c);
-        return c;
-    }
-
     /**
      * Adding the custom event listeners to SingleValueBox objects. The goal is to make
      * the Value attribute react to change events

@@ -48,9 +48,4 @@ public class AttributeContainerError extends AttributeContainer {
     public void updatePanel(CutDTO newCutDTO) {
 
     }
-
-    @Override
-    protected CutDTO recomputePointsAfterBitChange(CutDTO c) {
-        return c;
-    }
 }

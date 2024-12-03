@@ -96,19 +96,6 @@ public class AttributeContainerBorder extends AttributeContainer{
         repaint();
     }
 
-    @Override
-    protected CutDTO recomputePointsAfterBitChange(CutDTO c) {
-        cutDTO = new CutDTO(c);
-        double centerCenterN = edgeEdgeToCenterCenter(marginEdgeToEdge.getInput().getMMValue());
-
-        for(int i =0; i < c.getPoints().size(); i++){
-            VertexDTO oldVertex = c.getPoints().get(i);
-            VertexDTO newVertex = new VertexDTO(centerCenterN, oldVertex.getY(), oldVertex.getZ());
-            c.getPoints().set(i, newVertex);
-        }
-        return c;
-    }
-
 
     /**
      * Adding the custom event listeners to SingleValueBox objects. The goal is to make
