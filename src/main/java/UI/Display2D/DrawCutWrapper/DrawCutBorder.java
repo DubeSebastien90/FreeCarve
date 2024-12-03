@@ -31,7 +31,6 @@ public class DrawCutBorder extends DrawCutWrapper{
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
 
-        System.out.println(points.size());
         for(int i =0; i  < points.size() - 1; i++){
             this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), this.strokeWidth);
         }
