@@ -32,17 +32,18 @@ public class DrawCutL extends DrawCutWrapper{
     @Override
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
 
-        this.update(renderer);
-
-        graphics2D.setStroke(stroke);
-        graphics2D.setColor(cursor.getColor());
-
         if(!refs.isEmpty()){
             VertexDTO p1 = new VertexDTO(cursor.getLocationX(), cursor.getLocationY(), 0.0f);
             List<VertexDTO> relativeEdgeEdgePoints = new ArrayList<>();
             relativeEdgeEdgePoints = mainWindow.getController().generateLPointsRelativeEdgeEdgeFromAbsolute(p1, cut.getBitIndex(), refs);
             this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints, refs, this.cut.getState());
         }
+
+        this.update(renderer);
+
+        graphics2D.setStroke(stroke);
+        graphics2D.setColor(cursor.getColor());
+
 
         for (int i =0; i < points.size()-1; i++){
             points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), this.strokeWidth);

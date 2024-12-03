@@ -497,7 +497,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return
      */
     public List<VertexDTO> generateRectanglePoints(VertexDTO anchor, double width, double height) {
-        return Cut.generateRectanglePoints(anchor, width, height);
+        return CutFactory.generateRectanglePoints(anchor, width, height);
     }
 
     /**
@@ -510,7 +510,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return
      */
     public List<VertexDTO> generateVerticalPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs){
-        return Cut.generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
+        return CutFactory.generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
     }
 
     /**
@@ -523,7 +523,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return
      */
     public List<VertexDTO> generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs){
-        return Cut.generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
+        return CutFactory.generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
     }
 
     /**
@@ -534,7 +534,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return
      */
     public List<VertexDTO> generateLPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, int bitIndex, List<RefCutDTO> refs){
-        return Cut.generateLPointsRelativeEdgeEdgeFromAbsolute(p1Abs, bitIndex, refs, this, cncMachine);
+        return CutFactory.generateLPointsRelativeEdgeEdgeFromAbsolute(p1Abs, bitIndex, refs, this, cncMachine);
     }
 
     /**
@@ -546,7 +546,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return
      */
     public List<VertexDTO> generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs){
-        return Cut.generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
+        return CutFactory.generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
     }
 
     /**
@@ -558,7 +558,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return
      */
     public List<VertexDTO> generateRectanglePointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p3Abs, int bitIndex, List<RefCutDTO> refs){
-        return Cut.generateRectangleRelativeEdgeEdgeFromAbsolute(p1Abs, p3Abs, bitIndex, refs, this, cncMachine);
+        return CutFactory.generateRectangleRelativeEdgeEdgeFromAbsolute(p1Abs, p3Abs, bitIndex, refs, this, cncMachine);
     }
 
     /**
@@ -567,7 +567,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return
      */
     public List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsolute(int bitIndex){
-        return Cut.generateBorderPointsRelativeEdgeEdgeFromAbsolute(bitIndex,this, cncMachine);
+        return CutFactory.generateBorderPointsRelativeEdgeEdgeFromAbsolute(bitIndex,this, cncMachine);
     }
 
     /**
@@ -577,7 +577,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return the list of absolute points
      */
     public List<VertexDTO> getAbsolutePointsPosition(CutDTO cutDTO) {
-        return Cut.getAbsolutePointsPositionOfCutDTO(cutDTO, this.cncMachine);
+        return CutFactory.getAbsolutePointsPositionOfCutDTO(cutDTO, this.cncMachine);
     }
 
     public boolean isRefCircular(RefCutDTO refCutDTO, CutDTO cutToTest) {

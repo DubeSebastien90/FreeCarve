@@ -36,40 +36,25 @@ public class AttributeContainerRectangle extends AttributeContainer{
         heightOfRectangleCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Hauteur centrale (GCODE)", "Y", getHeightCenterCenter(), UIConfig.INSTANCE.getDefaultUnit());
     }
     private VertexDTO getAnchorCenterPoint(){
-        VertexDTO p1 = cutDTO.getPoints().getFirst();
-        VertexDTO p3 = cutDTO.getPoints().get(2);
-        VertexDTO centerAnchorPoint = p3.sub(p1).mul(0.5).add(p1);
-        return centerAnchorPoint;
+        return cutDTO.getPoints().getFirst();
     }
 
     private double getWidthEdgeEdge(){
-        VertexDTO p1 = cutDTO.getPoints().getFirst();
-        VertexDTO p3 = cutDTO.getPoints().get(2);
-        VertexDTO diff = p3.sub(p1);
-        return Math.abs(diff.getX());
+        return cutDTO.getPoints().get(1).getX();
     }
 
     private double getHeightEdgeEdge(){
-        VertexDTO p1 = cutDTO.getPoints().getFirst();
-        VertexDTO p3 = cutDTO.getPoints().get(2);
-        VertexDTO diff = p3.sub(p1);
-        return Math.abs(diff.getY());
+        return cutDTO.getPoints().get(1).getY();
     }
 
     private double getWidthCenterCenter(){
-        List<VertexDTO> absPoints = mainWindow.getController().getAbsolutePointsPosition(cutDTO);
-        VertexDTO p1 = absPoints.getFirst();
-        VertexDTO p3 = absPoints.get(2);
-        VertexDTO diff = p3.sub(p1);
-        return Math.abs(diff.getX());
+        double bitDiamter = mainWindow.getController().getBitDiameter(cutDTO.getBitIndex());
+        return getWidthEdgeEdge() + bitDiamter;
     }
 
     private double getHeightCenterCenter(){
-        List<VertexDTO> absPoints = mainWindow.getController().getAbsolutePointsPosition(cutDTO);
-        VertexDTO p1 = absPoints.getFirst();
-        VertexDTO p3 = absPoints.get(2);
-        VertexDTO diff = p3.sub(p1);
-        return Math.abs(diff.getY());
+        double bitDiamter = mainWindow.getController().getBitDiameter(cutDTO.getBitIndex());
+        return getHeightEdgeEdge() + bitDiamter;
     }
 
     private void init_layout(){
@@ -125,32 +110,21 @@ public class AttributeContainerRectangle extends AttributeContainer{
     private CutDTO pointsWidthResizeEdgeEdge(double newWidthEdgeEdge){
         CutDTO c = new CutDTO(cutDTO);
         double height = getHeightEdgeEdge();
-        List<VertexDTO> newPoints = mainWindow.getController().generateRectanglePoints(getAnchorCenterPoint(), newWidthEdgeEdge, height);
-        for(int i=0; i < c.getPoints().size(); i++){
-            c.getPoints().set(i, newPoints.get(i));
-        }
+        c.getPoints().set(1, new VertexDTO(newWidthEdgeEdge, height, 0));
         return c;
     }
 
     private CutDTO pointsHeightResizeEdgeEdge(double newHeightEdgeEdge){
         CutDTO c = new CutDTO(cutDTO);
         double width = getWidthEdgeEdge();
-        List<VertexDTO> newPoints = mainWindow.getController().generateRectanglePoints(getAnchorCenterPoint(), width, newHeightEdgeEdge);
-        for(int i=0; i < c.getPoints().size(); i++){
-            c.getPoints().set(i, newPoints.get(i));
-        }
+        c.getPoints().set(1, new VertexDTO(width, newHeightEdgeEdge, 0));
         return c;
     }
 
     private CutDTO moveAllPointsCenterCenter(double newValue, VertexDTO.AXIS axis){
         CutDTO c = new CutDTO(cutDTO);
 
-        VertexDTO p1 = c.getPoints().getFirst();
-        VertexDTO p3 = c.getPoints().get(2);
-
         VertexDTO centerAnchorPoint = getAnchorCenterPoint();
-        double width = p3.sub(p1).getX();;
-        double height = p3.sub(p1).getY();
 
         VertexDTO anchor = VertexDTO.zero();
         if(axis == VertexDTO.AXIS.X){
@@ -162,12 +136,7 @@ public class AttributeContainerRectangle extends AttributeContainer{
         else if(axis == VertexDTO.AXIS.Z){
             anchor = new VertexDTO(centerAnchorPoint.getX(), centerAnchorPoint.getY(), newValue);
         }
-        List<VertexDTO> newPoints = mainWindow.getController().generateRectanglePoints(anchor, width, height);
-
-        for(int i=0; i < c.getPoints().size(); i++){
-            c.getPoints().set(i, newPoints.get(i));
-        }
-
+        c.getPoints().set(0, anchor);
         return c;
     }
 

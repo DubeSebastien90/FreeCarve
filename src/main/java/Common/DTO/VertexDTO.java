@@ -88,6 +88,10 @@ public class VertexDTO implements Serializable {
         return new VertexDTO(this.getX()/distance, this.getY()/distance, this.getZ()/distance);
     }
 
+    public double dotProduct(VertexDTO other){
+        return getX() * other.getX() + getY() * other.getY() + getZ() * other.getZ();
+    }
+
     /**
      * Interpolated between two points : this and the other point in parameter
      * @param other point to interpolate between

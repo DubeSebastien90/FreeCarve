@@ -36,7 +36,7 @@ class BitStorage {
 
         if (configuredBits.isEmpty()) {
             try {
-                setBit(new Bit("Défaut", 0.5f), 0);
+                setBit(new Bit("Défaut", 12.7f), 0);
             } catch (InvalidBitException ignored) {}
         }
     }
