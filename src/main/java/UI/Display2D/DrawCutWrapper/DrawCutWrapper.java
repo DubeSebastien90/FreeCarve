@@ -171,6 +171,8 @@ public abstract class DrawCutWrapper {
      */
     public abstract void cursorUpdate(Rendering2DWindow renderer, Drawing drawing);
 
+    //public abstract void movedUpdate(Rendering2DWindow renderer, Drawing drawing);
+
     /**
      * @return all the {@code PersoPoint} in the wrapper
      */

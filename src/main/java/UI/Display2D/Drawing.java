@@ -3,6 +3,7 @@ package UI.Display2D;
 import Common.CutState;
 import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
+import Common.DTO.VertexDTO;
 import Domain.CutType;
 import UI.Display2D.DrawCutWrapper.DrawCutFactory;
 import UI.Events.ChangeAttributeEvent;
@@ -13,16 +14,19 @@ import UI.SubWindows.CutListPanel;
 import UI.Widgets.CutBox;
 import UI.Widgets.PersoPoint;
 
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
  * Utility class to draw the cuts on the board
+ *
  * @author Louis-Etienne Messier
  */
 public class Drawing {
@@ -39,8 +43,9 @@ public class Drawing {
     private final Rendering2DWindow renderer;
     private final MainWindow mainWindow;
     private DrawingState state;
+    private Drawing drawing;
 
-    public enum DrawingState{
+    public enum DrawingState {
         CREATE_CUT,
         IDLE,
         MODIFY_ANCHOR,
@@ -50,10 +55,11 @@ public class Drawing {
 
     /**
      * Create the {@code Drawing} utility class
-     * @param renderer reference to the renderer
+     *
+     * @param renderer   reference to the renderer
      * @param mainWindow reference to the mainWindow
      */
-    public Drawing(Rendering2DWindow renderer, MainWindow mainWindow){
+    public Drawing(Rendering2DWindow renderer, MainWindow mainWindow) {
         this.renderer = renderer;
         this.mainWindow = mainWindow;
         currentDrawingCut = DrawCutFactory.createEmptyWrapper(CutType.LINE_VERTICAL, renderer, mainWindow);
@@ -62,9 +68,10 @@ public class Drawing {
 
     /**
      * Initiate a specific cut
+     *
      * @param type type of the cut
      */
-    public void initCut(CutType type){
+    public void initCut(CutType type) {
         deactivateCreateCutListener();
         setState(DrawingState.CREATE_CUT);
         currentDrawingCut = DrawCutFactory.createEmptyWrapper(type, renderer, mainWindow);
@@ -74,7 +81,7 @@ public class Drawing {
     /**
      * Refresh all the cuts : i.e recreate the all the DrawCutWrappers and repaint
      */
-    public void updateCuts(){
+    public void updateCuts() {
         this.cutWrappers = DrawCutFactory.createListDrawCutWrapper(mainWindow.getController().getCutListDTO(), renderer, mainWindow);
         this.renderer.repaint();
     }
@@ -82,50 +89,53 @@ public class Drawing {
     /**
      * @return all the DrawCutWrappers instances
      */
-    public List<DrawCutWrapper> getCutWrappers(){
+    public List<DrawCutWrapper> getCutWrappers() {
         return this.cutWrappers;
     }
 
     /**
      * @return the cursor {@code PersoPoint}
      */
-    public PersoPoint getCreateCursorPoint(){
+    public PersoPoint getCreateCursorPoint() {
         return this.currentDrawingCut.getCursorPoint();
     }
 
-    public PersoPoint getModifyingAnchorCursorPoint(){
+    public PersoPoint getModifyingAnchorCursorPoint() {
         return this.currentModifiedCut.getCursorPoint();
     }
 
-    public DrawingState getState() {return this.state;}
-
-    /**
-     *
-     * @return the {@code DrawCutWrapper} that represents the cut being done, can be null
-     */
-    public DrawCutWrapper getCurrentDrawingCut(){
-        return  this.currentDrawingCut;
+    public DrawingState getState() {
+        return this.state;
     }
 
-    public DrawCutWrapper getCurrentModifiedCut(){return this.currentModifiedCut;}
+    /**
+     * @return the {@code DrawCutWrapper} that represents the cut being done, can be null
+     */
+    public DrawCutWrapper getCurrentDrawingCut() {
+        return this.currentDrawingCut;
+    }
+
+    public DrawCutWrapper getCurrentModifiedCut() {
+        return this.currentModifiedCut;
+    }
 
     /**
      * Initialize all of the mouse listeners : both MouseAdapter(s)
      */
-    private void initCutMouseListener(){
+    private void initCutMouseListener() {
         createCutMoveListener = new MouseAdapter() {
 
             @Override
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
-                if(currentDrawingCut.getCursorPoint() != null){
+                if (currentDrawingCut.getCursorPoint() != null) {
                     currentDrawingCut.cursorUpdate(renderer, Drawing.this);
                     renderer.repaint();
                 }
             }
 
             @Override
-            public void mouseDragged(MouseEvent e){
+            public void mouseDragged(MouseEvent e) {
             }
         };
 
@@ -136,13 +146,12 @@ public class Drawing {
                     if (currentDrawingCut.getCursorPoint().getValid() == PersoPoint.Valid.NOT_VALID)  // Cut invalid
                     {
                         deactivateCreateCutListener();
-                    }
-                    else // Cut valid
+                    } else // Cut valid
                     {
                         boolean isOver = currentDrawingCut.addPoint(Drawing.this, renderer, new PersoPoint(currentDrawingCut.getCursorPoint()));
-                        if(isOver){
+                        if (isOver) {
                             Optional<UUID> id = currentDrawingCut.end();
-                            if(id.isPresent()){
+                            if (id.isPresent()) {
                                 updateCuts();
                                 renderer.getChangeCutListener().addCutEventOccured(new ChangeCutEvent(renderer, id.get()));
                                 setState(DrawingState.IDLE);
@@ -157,14 +166,14 @@ public class Drawing {
             @Override
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
-                if(currentModifiedCut.getCursorPoint() != null){
+                if (currentModifiedCut.getCursorPoint() != null) {
                     currentModifiedCut.cursorUpdate(renderer, Drawing.this);
                     renderer.repaint();
                 }
             }
 
             @Override
-            public void mouseDragged(MouseEvent e){
+            public void mouseDragged(MouseEvent e) {
             }
         };
 
@@ -175,11 +184,10 @@ public class Drawing {
                     if (currentModifiedCut.getCursorPoint().getValid() == PersoPoint.Valid.NOT_VALID)  // Cut invalid
                     {
                         deactivateModifyAnchorCutListener();
-                    }
-                    else // Cut valid
+                    } else // Cut valid
                     {
                         currentModifiedCut.addPoint(Drawing.this, renderer, new PersoPoint(currentModifiedCut.getCursorPoint()));
-                        if (currentModifiedCut.areRefsValid()){
+                        if (currentModifiedCut.areRefsValid()) {
                             CutDTO c = currentModifiedCut.getCutDTO();
                             List<RefCutDTO> newRefs = currentModifiedCut.getRefs();
                             c = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), c.getPoints(), newRefs, c.getState());
@@ -187,13 +195,12 @@ public class Drawing {
                             mainWindow.getController().modifyCut(c);
 
                             Optional<CutBox> cutBox = cutListPanel.getCutBoxWithId(c.getId());
-                            if(cutBox.isPresent()){
+                            if (cutBox.isPresent()) {
                                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(c, cutBox.get()));
                             }
 
                             deactivateModifyAnchorCutListener();
-                        }
-                        else{
+                        } else {
                             deactivateModifyAnchorCutListener();
                         }
                     }
@@ -213,23 +220,19 @@ public class Drawing {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseMoved(e);
-                switch (currentModifiedCut.getCutType()){
-                    case LINE_VERTICAL:
-                        break;
-                    case LINE_HORIZONTAL:
-                        break;
-                }
+                //currentModifiedCut.movedUpdate(renderer, Drawing.this);
             }
         };
 
     }
 
-    public void initModifyAnchor(CutDTO cutToChangeAnchor){
+    public void initModifyAnchor(CutDTO cutToChangeAnchor) {
         Optional<DrawCutWrapper> modifiedCut = getWrapperById(cutToChangeAnchor.getId());
 
-        if(modifiedCut.isPresent()){
+        if (modifiedCut.isPresent()) {
             currentModifiedCut = modifiedCut.get();
-            deactivateModifyAnchorCutListener();;
+            deactivateModifyAnchorCutListener();
+            ;
             currentModifiedCut.emptyRefs();
             setState(DrawingState.MODIFY_ANCHOR);
             activateModifyAnchorCutListener();
@@ -237,7 +240,7 @@ public class Drawing {
 
     }
 
-    public void initModifyPoint(DrawCutWrapper cutToChangePoint, PersoPoint pointToChange){
+    public void initModifyPoint(DrawCutWrapper cutToChangePoint, PersoPoint pointToChange) {
         currentModifiedCut = cutToChangePoint;
         currentModifiedPoint = pointToChange;
         setState(Drawing.DrawingState.MODIFY_POINT);
@@ -245,58 +248,58 @@ public class Drawing {
 
     }
 
-    public void closeModifyPoint(){
+    public void closeModifyPoint() {
         setState(DrawingState.IDLE);
         currentModifiedCut.emptyRefs();
         deactivateModifyPointCutListener();
     }
 
-    public void initModifyCut(DrawCutWrapper cutToChangePoint){
+    public void initModifyCut(DrawCutWrapper cutToChangePoint) {
         currentModifiedCut = cutToChangePoint;
         setState(DrawingState.MODIFY_CUT);
         activateModifyCutListener();
     }
 
-    public void closeModifyCut(){
+    public void closeModifyCut() {
         setState(DrawingState.IDLE);
         currentModifiedCut.emptyRefs();
         deactivateModifyCutListener();
     }
 
-    private void activateModifyPointCutListener(){
+    private void activateModifyPointCutListener() {
         renderer.addMouseMotionListener(pointMoveListener);
         System.out.println("activateModifyPointCutListener");
     }
 
-    private void deactivateModifyPointCutListener(){
+    private void deactivateModifyPointCutListener() {
         renderer.removeMouseMotionListener(pointMoveListener);
         System.out.println("deactivateModifyPointCutListener");
     }
 
-    private void activateModifyCutListener(){
+    private void activateModifyCutListener() {
         renderer.addMouseMotionListener(cutMoveListener);
         System.out.println("activateModifyCutListener");
     }
 
-    private void deactivateModifyCutListener(){
+    private void deactivateModifyCutListener() {
         renderer.removeMouseMotionListener(cutMoveListener);
         System.out.println("deactivateModifyCutListener");
     }
 
-    public void setState(DrawingState state){
+    public void setState(DrawingState state) {
         this.state = state;
     }
 
     /**
      * Activates the cutListener so that the board reacts when a cut is being made
      */
-    private void activateCreateCutListener(){
+    private void activateCreateCutListener() {
         renderer.addMouseMotionListener(createCutMoveListener);
         renderer.addMouseListener(createCutActionListener);
         currentDrawingCut.createCursorPoint(this.renderer);
     }
 
-    private void activateModifyAnchorCutListener(){
+    private void activateModifyAnchorCutListener() {
         renderer.addMouseMotionListener(modifyAnchorMoveListener);
         renderer.addMouseListener(modifyAnchorActionListener);
         currentModifiedCut.createCursorPoint(this.renderer);
@@ -305,7 +308,7 @@ public class Drawing {
     /**
      * Deactivate the cutListener
      */
-    private void deactivateCreateCutListener(){
+    private void deactivateCreateCutListener() {
         renderer.removeMouseMotionListener(createCutMoveListener);
         renderer.removeMouseListener(createCutActionListener);
         currentDrawingCut.destroyCursorPoint();
@@ -313,7 +316,7 @@ public class Drawing {
         renderer.repaint();
     }
 
-    private void deactivateModifyAnchorCutListener(){
+    private void deactivateModifyAnchorCutListener() {
         renderer.removeMouseMotionListener(modifyAnchorMoveListener);
         renderer.removeMouseListener(modifyAnchorActionListener);
         currentModifiedCut.destroyCursorPoint();
@@ -321,72 +324,72 @@ public class Drawing {
         renderer.repaint();
     }
 
-    public void changeSelectedWrapperById(UUID id){
+    public void changeSelectedWrapperById(UUID id) {
 
-        for(DrawCutWrapper wrapper : cutWrappers){
-            if(wrapper.getState() == DrawCutWrapper.DrawCutState.SELECTED){
+        for (DrawCutWrapper wrapper : cutWrappers) {
+            if (wrapper.getState() == DrawCutWrapper.DrawCutState.SELECTED) {
                 wrapper.setState(DrawCutWrapper.DrawCutState.NOT_SELECTED, renderer);
             }
         }
 
-        for(DrawCutWrapper wrapper : cutWrappers){
-            if(wrapper.getCutDTO().getId() == id){
+        for (DrawCutWrapper wrapper : cutWrappers) {
+            if (wrapper.getCutDTO().getId() == id) {
                 wrapper.setState(DrawCutWrapper.DrawCutState.SELECTED, renderer);
             }
         }
     }
 
-    public void changeHoverWrapperById(UUID id){
-        for(DrawCutWrapper wrapper : cutWrappers){
-            if(wrapper.getCutDTO().getId() == id){
+    public void changeHoverWrapperById(UUID id) {
+        for (DrawCutWrapper wrapper : cutWrappers) {
+            if (wrapper.getCutDTO().getId() == id) {
                 wrapper.setState(DrawCutWrapper.DrawCutState.HOVER, renderer);
             }
         }
     }
 
-    public void changeNotSelectedWrapperById(UUID id){
-        for(DrawCutWrapper wrapper : cutWrappers){
-            if(wrapper.getCutDTO().getId() == id){
+    public void changeNotSelectedWrapperById(UUID id) {
+        for (DrawCutWrapper wrapper : cutWrappers) {
+            if (wrapper.getCutDTO().getId() == id) {
                 wrapper.setState(DrawCutWrapper.DrawCutState.NOT_SELECTED, renderer);
             }
         }
     }
 
-    public void changeRefWrapperById(UUID id){
-        for(DrawCutWrapper wrapper : cutWrappers){
-            if(wrapper.getCutDTO().getId() == id){
+    public void changeRefWrapperById(UUID id) {
+        for (DrawCutWrapper wrapper : cutWrappers) {
+            if (wrapper.getCutDTO().getId() == id) {
                 wrapper.setState(DrawCutWrapper.DrawCutState.REF, renderer);
             }
         }
     }
 
-    public void changeInvalidWrapperById(UUID id){
-        for(DrawCutWrapper wrapper : cutWrappers){
-            if(wrapper.getCutDTO().getId() == id){
+    public void changeInvalidWrapperById(UUID id) {
+        for (DrawCutWrapper wrapper : cutWrappers) {
+            if (wrapper.getCutDTO().getId() == id) {
                 wrapper.setState(DrawCutWrapper.DrawCutState.INVALID, renderer);
             }
         }
     }
 
-    public void changeAllInvalid(){
-        for(DrawCutWrapper wrapper : cutWrappers){
-            if(wrapper.getCutDTO().getState() == CutState.NOT_VALID){
+    public void changeAllInvalid() {
+        for (DrawCutWrapper wrapper : cutWrappers) {
+            if (wrapper.getCutDTO().getState() == CutState.NOT_VALID) {
                 wrapper.setState(DrawCutWrapper.DrawCutState.INVALID, renderer);
             }
         }
     }
 
-    public void changeGoBackWrapperById(UUID id){
-        for(DrawCutWrapper wrapper : cutWrappers){
-            if(wrapper.getCutDTO().getId() == id){
+    public void changeGoBackWrapperById(UUID id) {
+        for (DrawCutWrapper wrapper : cutWrappers) {
+            if (wrapper.getCutDTO().getId() == id) {
                 wrapper.goBackState(renderer);
             }
         }
     }
 
-    public Optional<DrawCutWrapper> getWrapperById(UUID id){
-        for(DrawCutWrapper wrapper : cutWrappers){
-            if(wrapper.getCutDTO().getId() == id){
+    public Optional<DrawCutWrapper> getWrapperById(UUID id) {
+        for (DrawCutWrapper wrapper : cutWrappers) {
+            if (wrapper.getCutDTO().getId() == id) {
                 return Optional.of(wrapper);
             }
         }
