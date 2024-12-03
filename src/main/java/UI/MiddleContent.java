@@ -94,6 +94,7 @@ public class MiddleContent {
         panel.add(exportWindow, "export");
 
         current = MiddleWindowType.CONFIG;
+        changePanel(current);
     }
 
     /**
