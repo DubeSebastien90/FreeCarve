@@ -118,6 +118,7 @@ public class Afficheur {
      * @param graphics2D the <code>Graphics</code> object to protect
      */
     void drawGrid(Graphics2D graphics2D) {
+        graphics2D.setStroke(new BasicStroke(1));
         graphics2D.setColor(new Color(0, 0, 0, (int) (Math.min(255, 127 * rend.getZoom()))));
         double size = rend.getMainWindow().getController().getGrid().getSize();
         size = size * (rend.getZoom());
