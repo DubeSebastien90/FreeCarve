@@ -17,8 +17,9 @@ import java.beans.PropertyChangeListener;
 
 public class AttributeContainerBorder extends AttributeContainer{
 
-    SingleValueBox marginEdgeToEdge;
-    SingleValueBox marginCenterToCenter;
+    SingleValueBox widthEdgeEdge;
+    SingleValueBox heightEdgeEdge;
+
 
     public AttributeContainerBorder(MainWindow mainWindow, CutListPanel cutListPanel, CutDTO cutDTO, CutBox cutBox) {
         super(mainWindow, cutListPanel, cutDTO, cutBox);
@@ -29,8 +30,8 @@ public class AttributeContainerBorder extends AttributeContainer{
 
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO){
         super.init_attribute();
-        marginEdgeToEdge = new SingleValueBox(mainWindow, true, "Distance relative de la marge", "Marge",borderEdgeEdge(), UIConfig.INSTANCE.getDefaultUnit());
-        marginCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Distances centrales (GCODE)", "Marge", borderCenterCenter(), UIConfig.INSTANCE.getDefaultUnit());
+        widthEdgeEdge = new SingleValueBox(mainWindow, true, "Largeur interne de la retaille", "Marge",borderEdgeEdgeWidth(), UIConfig.INSTANCE.getDefaultUnit(), 0, Double.MAX_VALUE);
+        heightEdgeEdge = new SingleValueBox(mainWindow, true, "Hauteur interne de la retaille", "Marge", borderEdgeEdgeHeight(), UIConfig.INSTANCE.getDefaultUnit(), 0, Double.MAX_VALUE);
     }
 
     private void init_layout(){
@@ -45,13 +46,13 @@ public class AttributeContainerBorder extends AttributeContainer{
         gc.weighty = 1;
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        add(marginEdgeToEdge, gc);
+        add(widthEdgeEdge, gc);
 
 
         gc.gridx = 0;
         gc.gridy = 1;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        add(marginCenterToCenter, gc);
+        add(heightEdgeEdge, gc);
 
         gc.gridx = 0;
         gc.gridy = 2;
@@ -63,25 +64,22 @@ public class AttributeContainerBorder extends AttributeContainer{
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         add(bitChoiceBox, gc);
 
-        gc.gridx = 0;
-        gc.gridy = 4;
-        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        add(modifyAnchorBox, gc);
-
 
     }
 
-    private double borderCenterCenter(){
-        return  cutDTO.getPoints().getFirst().getX();
+
+    private double borderEdgeEdgeWidth(){
+        return cutDTO.getPoints().getFirst().getX() + cutDTO.getPoints().get(1).getX();
     }
 
-    private double borderEdgeEdge(){
-        return borderCenterCenter();
+    private double borderEdgeEdgeHeight(){
+        return cutDTO.getPoints().getFirst().getY() + cutDTO.getPoints().get(1).getY();
     }
 
     @Override
     public void setupEventListeners() {
-        addEventListenerToEdgeEdge(marginEdgeToEdge);
+        addEventListenerToWidth(widthEdgeEdge);
+        addEventListenerToHeight(heightEdgeEdge);
         addEventListenerToBitChoiceBox(bitChoiceBox);
         addEventListenerToDepth(depthBox);
         addEventListenerModifyAnchor(modifyAnchorBox);
@@ -90,31 +88,41 @@ public class AttributeContainerBorder extends AttributeContainer{
     @Override
     public void updatePanel(CutDTO newCutDTO) {
         cutDTO = new CutDTO(newCutDTO);
-        marginEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(borderEdgeEdge());
-        marginCenterToCenter.getInput().setValueInMMWithoutTrigerringListeners(borderCenterCenter());
+        widthEdgeEdge.getInput().setValueInMMWithoutTrigerringListeners(borderEdgeEdgeWidth());
+        heightEdgeEdge.getInput().setValueInMMWithoutTrigerringListeners(borderEdgeEdgeHeight());
         revalidate();
         repaint();
     }
 
 
-    /**
-     * Adding the custom event listeners to SingleValueBox objects. The goal is to make
-     * the Value attribute react to change events
-     *
-     * Changes the margin size
-     *
-     * @param sb {@code SingleValueBox object}
-     */
-    private void addEventListenerToEdgeEdge(SingleValueBox sb) {
+    private void addEventListenerToWidth(SingleValueBox sb) {
         sb.getInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = new CutDTO(cutDTO);
-                double centerCenterN = marginEdgeToEdge.getInput().getMMValue();
+                double newWidth = sb.getInput().getMMValue();
 
                 for(int i =0; i < c.getPoints().size(); i++){
                     VertexDTO oldVertex = c.getPoints().get(i);
-                    VertexDTO newVertex = new VertexDTO(centerCenterN, oldVertex.getY(), oldVertex.getZ());
+                    VertexDTO newVertex = new VertexDTO(newWidth/2, oldVertex.getY(), oldVertex.getZ());
+                    c.getPoints().set(i, newVertex);
+                }
+                mainWindow.getController().modifyCut(c);
+                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
+            }
+        });
+    }
+
+    private void addEventListenerToHeight(SingleValueBox sb) {
+        sb.getInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                CutDTO c = new CutDTO(cutDTO);
+                double newHeight = sb.getInput().getMMValue();
+
+                for(int i =0; i < c.getPoints().size(); i++){
+                    VertexDTO oldVertex = c.getPoints().get(i);
+                    VertexDTO newVertex = new VertexDTO(oldVertex.getX(), newHeight/2, oldVertex.getZ());
                     c.getPoints().set(i, newVertex);
                 }
                 mainWindow.getController().modifyCut(c);

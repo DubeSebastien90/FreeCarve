@@ -12,6 +12,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 public class DrawCutBorder extends DrawCutWrapper{
 
@@ -30,6 +31,7 @@ public class DrawCutBorder extends DrawCutWrapper{
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
 
+        System.out.println(points.size());
         for(int i =0; i  < points.size() - 1; i++){
             this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), this.strokeWidth);
         }
@@ -45,11 +47,7 @@ public class DrawCutBorder extends DrawCutWrapper{
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
 
         if(!refs.isEmpty()){
-            ArrayList<VertexDTO> newPoints = new ArrayList<>();
-            for(int i =0 ; i < refs.size(); i++){
-                newPoints.add(mainWindow.getController().getDefaultBorderPointCut());
-                newPoints.add(mainWindow.getController().getDefaultBorderPointCut()); // adds two points points size checking
-            }
+            List<VertexDTO> newPoints = mainWindow.getController().generateBorderPointsRelativeEdgeEdgeFromAbsolute(cut.getBitIndex());
             this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs, this.cut.getState());
             return true;
         }

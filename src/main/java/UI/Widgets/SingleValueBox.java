@@ -25,9 +25,24 @@ public class SingleValueBox extends GenericAttributeBox {
         this.init(mainWindow, inputName, value, units);
     }
 
+    public SingleValueBox(MainWindow mainWindow, boolean haveBackground, String name, String inputName, double value, UiUnits units, double minValue, double maxValue) {
+        super(haveBackground, name);
+        this.init(mainWindow, inputName, value, units, minValue, maxValue);
+    }
+
     private void init(MainWindow mainWindow, String name, double value, UiUnits units) {
         GridBagConstraints gc = new GridBagConstraints();
         this.theInput = new MeasurementInputField(mainWindow, name, value, -Double.MAX_VALUE, Double.MAX_VALUE, units);
+        gc.gridx = 0;
+        gc.gridy = 1;
+        gc.fill = GridBagConstraints.NONE;
+        gc.weightx = 1;
+        this.add(theInput, gc);
+    }
+
+    private void init(MainWindow mainWindow, String name, double value, UiUnits units, double minValue, double maxValue) {
+        GridBagConstraints gc = new GridBagConstraints();
+        this.theInput = new MeasurementInputField(mainWindow, name, value, minValue, maxValue, units);
         gc.gridx = 0;
         gc.gridy = 1;
         gc.fill = GridBagConstraints.NONE;

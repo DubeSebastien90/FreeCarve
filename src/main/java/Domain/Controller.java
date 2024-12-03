@@ -562,6 +562,15 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
+     * compute the valid base border cut points
+     * @param bitIndex
+     * @return
+     */
+    public List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsolute(int bitIndex){
+        return Cut.generateBorderPointsRelativeEdgeEdgeFromAbsolute(bitIndex,this, cncMachine);
+    }
+
+    /**
      * From a cut DTO queries the corresponding Cut Object to get it's absolute position
      *
      * @param cutDTO cutDto to query
@@ -569,14 +578,6 @@ public class Controller implements IUnitConverter, IMemorizer {
      */
     public List<VertexDTO> getAbsolutePointsPosition(CutDTO cutDTO) {
         return Cut.getAbsolutePointsPositionOfCutDTO(cutDTO, this.cncMachine);
-    }
-
-    public VertexDTO getBorderPointCut(double margin) {
-        return Cut.getBorderPointCut(margin);
-    }
-
-    public VertexDTO getDefaultBorderPointCut() {
-        return Cut.getBorderPointCutDefaultMargins();
     }
 
     public boolean isRefCircular(RefCutDTO refCutDTO, CutDTO cutToTest) {

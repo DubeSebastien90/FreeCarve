@@ -187,23 +187,31 @@ class Cut {
         return new ArrayList<>(List.of(p1,p2,p3,p4,p5));
     }
 
+    public static List<VertexDTO> generateRectanglePoints(VertexDTO centerAnchor, double widthLeft, double widthRight, double heightBottom, double heightTop){
+        if (widthLeft < 0 || widthRight < 0) {throw new IllegalArgumentException("Width of rectangle points is negative, should be positive");}
+        if (heightTop < 0 || heightBottom < 0) {throw new IllegalArgumentException("Height of rectangle points is negative, should be positive");}
+        VertexDTO p1 = new VertexDTO(centerAnchor.getX() - widthLeft, centerAnchor.getY() - heightBottom, centerAnchor.getZ());
+        VertexDTO p2 = new VertexDTO(centerAnchor.getX() - widthLeft, centerAnchor.getY()  + heightTop, centerAnchor.getZ());
+        VertexDTO p3 = new VertexDTO(centerAnchor.getX() + widthRight, centerAnchor.getY()  + heightTop, centerAnchor.getZ());
+        VertexDTO p4 = new VertexDTO(centerAnchor.getX() + widthRight, centerAnchor.getY()  - heightBottom, centerAnchor.getZ());
+        VertexDTO p5 = new VertexDTO(p1);
+        return new ArrayList<>(List.of(p1,p2,p3,p4,p5));
+    }
+
     public static List<VertexDTO> getAbsolutePointsPositionOfCutDTO(CutDTO cutDTO, CNCMachine cncMachine){
         Cut c = cncMachine.getPanel().createPanelCut(cutDTO);
         return c.getAbsolutePointsPosition(cncMachine);
     }
 
-    /**
-     * Returns a valid bordercut point, based on a margin
-     * @param margin
-     * @return
-     */
-    public static VertexDTO getBorderPointCut(double margin){
-        return new VertexDTO(margin, 0, 0);// The border margin is stored in the X axis
-    }
-
-    public static VertexDTO getBorderPointCutDefaultMargins(){
-        double defaultMargins = 50;
-        return new VertexDTO(defaultMargins, 0, 0); // The border margin is stored in the X axis
+    public static List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsolute(int bitIndex, Controller controller, CNCMachine cncMachine){
+        VertexDTO panelDimension = cncMachine.getPanel().getPanelDimension();
+        double baseBorderSize = 30;
+        VertexDTO widthLeftHeightBottom = new VertexDTO(panelDimension.getX() / 2 - baseBorderSize, panelDimension.getY() / 2 - baseBorderSize, 0);
+        VertexDTO widhtRightHeightTop = new VertexDTO(panelDimension.getX() / 2 - baseBorderSize, panelDimension.getY() / 2 - baseBorderSize, 0);
+        List<VertexDTO> outputList = new ArrayList<>();
+        outputList.add(widhtRightHeightTop);
+        outputList.add(widthLeftHeightBottom);
+        return  outputList;
     }
 
     public static List<VertexDTO> generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs, Controller controller, CNCMachine cncMachine){
@@ -375,8 +383,8 @@ class Cut {
         // 1 : ref list is empty : just return the points
 
         // 2 : CutType = RETAILLER :    -number of refs : >=1
-        //                              -number of relative points : 2 - twice the same, they are empty except for the margin contained in the X axis
-        //                              -how absolute points are computed : based on it's single reference point (the first border ref), returns the same border cut but shifted by the margin of the relative point
+        //                              -number of relative points : 2 - first stores the widthLeft and heightBottom (X, Y) - second stores the widthRight and heightTop(X,Y)
+        //                              -how absolute points are computed : based on the center anchor point and the width/height parameter, generate a rectangle
 
         // 3 : CutType = Line_Vertical or Line_Horizontal or Free_Line :
         //                              -number of refs : >=1
@@ -397,25 +405,13 @@ class Cut {
             return this.getCopyPoints();
         }
         if(type == CutType.RETAILLER){
-            for(int i =0 ; i < refs.size(); i++){ // There could be references that are not the border of the pannel
-                if(refs.get(i).getCut().getBitIndex() == -1){ // This is indeed a border reference if bitIndex == -1
-                    ArrayList<VertexDTO> outputList = new ArrayList<>();
-                    RefCut ref = refs.getFirst();
-
-                    VertexDTO ap1 = ref.getAbsoluteFirstPoint(cncMachine);
-                    VertexDTO ap2 = ref.getAbsoluteSecondPoint(cncMachine);
-
-                    VertexDTO v = ap2.sub(ap1);
-                    Pair<VertexDTO, VertexDTO> rotated = VertexDTO.perpendicularPointsAroundP1(VertexDTO.zero(), v);
-                    VertexDTO diff = rotated.getSecond().normalize().mul(-points.get(i).getX());
-                    VertexDTO p1 = ap1.add(diff);
-                    VertexDTO p2 = ap2.add(diff);
-                    outputList.add(p1);
-                    outputList.add(p2);
-                    return outputList;
-                }
-            }
-            return getCopyPoints();
+            double bitDiameter = cncMachine.getBitStorage().getBitDiameter(bitIndex);
+            VertexDTO centerAnchor = cncMachine.getPanel().getPanelDimension().mul(0.5);
+            double widthLeft = points.getFirst().getX() + bitDiameter/2;
+            double heightBottom = points.getFirst().getY() + bitDiameter/2;
+            double widthRight = points.get(1).getX() + bitDiameter/2;
+            double heightTop = points.get(1).getY() + bitDiameter/2;
+            return generateRectanglePoints(centerAnchor, widthLeft, widthRight, heightBottom, heightTop);
         }
         if(type == CutType.LINE_FREE){
             return  this.getCopyPointsWithOffset(refs.getFirst().getAbsoluteOffset(cncMachine));
