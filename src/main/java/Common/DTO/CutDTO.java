@@ -3,9 +3,8 @@ package Common.DTO;
 import Common.CutState;
 import Domain.CutType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * This class is a DTO wrapper of the {@code Cut} class in order to transfer READ-ONLY informations
@@ -14,7 +13,7 @@ import java.util.UUID;
  * @version 1.0
  * @since 2024-10-12
  */
-public class CutDTO {
+public class CutDTO implements Serializable {
     private UUID idCut;
     private double depth;
     private int bitIndex;
@@ -105,4 +104,23 @@ public class CutDTO {
         return new CutDTO(this.idCut, this.depth, this.bitIndex, this.type, newPoints, refs, this.cutState);
     }
 
+    @Override
+    public String toString() {
+        return "CutDTO{" +
+                "idCut=" + idCut +
+                ", depth=" + depth +
+                ", bitIndex=" + bitIndex +
+                ", points=" + points +
+                ", type=" + type +
+                ", refs=" + refs +
+                ", cutState=" + cutState +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CutDTO cutDTO)) return false;
+        return Double.compare(depth, cutDTO.depth) == 0 && bitIndex == cutDTO.bitIndex && Objects.equals(idCut, cutDTO.idCut) && Objects.equals(points, cutDTO.points) && type == cutDTO.type && Objects.equals(refs, cutDTO.refs) && cutState == cutDTO.cutState;
+    }
 }

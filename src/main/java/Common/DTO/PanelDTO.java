@@ -1,15 +1,15 @@
 package Common.DTO;
 
+import java.io.Serializable;
 import Common.Util;
 import Domain.CutType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import Common.CutState;
-import Common.Util;
-import Domain.CutType;
 
 /**
  * This class is a DTO wrapper of the {@code Panel} class in order to transfer READ-ONLY informations
@@ -18,7 +18,7 @@ import Domain.CutType;
  * @version 1.0
  * @since 2024-10-12
  */
-public class PanelDTO {
+public class PanelDTO implements Serializable {
     private final List<CutDTO> cutList;
     private final VertexDTO panelDimension;
     private CutDTO borderCut;
@@ -71,5 +71,22 @@ public class PanelDTO {
 
     public CutDTO getBorderCut() {
         return this.borderCut;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PanelDTO panelDTO)) return false;
+        return Double.compare(maxFeetWidth, panelDTO.maxFeetWidth) == 0 && Double.compare(maxFeetHeight, panelDTO.maxFeetHeight) == 0 && Objects.equals(cutList, panelDTO.cutList) && Objects.equals(panelDimension, panelDTO.panelDimension) && Objects.equals(borderCut, panelDTO.borderCut);
+    }
+
+    @Override
+    public String toString() {
+        return "PanelDTO{" +
+                "cutList=" + cutList +
+                ", panelDimension=" + panelDimension +
+                ", borderCut=" + borderCut +
+                ", maxFeetWidth=" + maxFeetWidth +
+                ", maxFeetHeight=" + maxFeetHeight +
+                '}';
     }
 }

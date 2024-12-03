@@ -1,6 +1,5 @@
 package Domain;
 
-import Common.DTO.CutDTO;
 import Common.DTO.VertexDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,7 @@ public class RefCutTest {
         ArrayList<VertexDTO> points = new ArrayList<>();
         points.add(new VertexDTO(0, 0, 0));
         points.add(new VertexDTO(0, 100, 0));
-        cut = new Cut(new VertexDTO(0, 0, 0), CutType.LINE_VERTICAL, points, 0, 5.0f);
+        cut = new Cut(CutType.LINE_VERTICAL, points, 0, 5.0f);
 
         ArrayList<RefCut> refs = new ArrayList<>();
         ref = new RefCut(cut, 0, 0.5);
@@ -28,7 +27,7 @@ public class RefCutTest {
         ArrayList<VertexDTO> points2 = new ArrayList<>();
         points2.add(new VertexDTO(0, 0, 0));
         points2.add(new VertexDTO(100, 0, 0));
-        cut_interpolation_0_5 = new Cut(new VertexDTO(0, 0, 0), CutType.LINE_HORIZONTAL, points2, 0, 5.0f, refs);
+        cut_interpolation_0_5 = new Cut(CutType.LINE_HORIZONTAL, points2, 0, 5.0f, refs);
 
 
         ArrayList<RefCut> refs2 = new ArrayList<>();
@@ -37,7 +36,7 @@ public class RefCutTest {
         ArrayList<VertexDTO> points3 = new ArrayList<>();
         points3.add(new VertexDTO(0, 0, 0));
         points3.add(new VertexDTO(100, 0, 0));
-        cut_interpolation_0 = new Cut(new VertexDTO(0, 0, 0), CutType.LINE_HORIZONTAL, points3, 0, 5.0f, refs2);
+        cut_interpolation_0 = new Cut(CutType.LINE_HORIZONTAL, points3, 0, 5.0f, refs2);
 
     }
 
@@ -130,22 +129,22 @@ public class RefCutTest {
         pointsHorizontal.add(new VertexDTO(100, 0, 0));
 
 
-        Cut cut1 = new Cut(new VertexDTO(0, 0, 0), CutType.LINE_VERTICAL, pointsVertical, 0, 5.0f);
+        Cut cut1 = new Cut(CutType.LINE_VERTICAL, pointsVertical, 0, 5.0f);
         RefCut ref1 = new RefCut(cut1, 0, 0.5);
         ArrayList<RefCut> refs1 = new ArrayList<>();
         refs1.add(ref1);
 
-        Cut cut2 = new Cut(new VertexDTO(0, 0, 0), CutType.LINE_HORIZONTAL, pointsHorizontal, 0, 5.0f, refs1);
+        Cut cut2 = new Cut(CutType.LINE_HORIZONTAL, pointsHorizontal, 0, 5.0f, refs1);
         RefCut ref2 = new RefCut(cut2, 0, 0.5);
         ArrayList<RefCut> refs2 = new ArrayList<>();
         refs2.add(ref2);
 
-        Cut cut3 = new Cut(new VertexDTO(0, 0, 0), CutType.LINE_VERTICAL, pointsVertical, 0, 5.0f, refs2);
+        Cut cut3 = new Cut(CutType.LINE_VERTICAL, pointsVertical, 0, 5.0f, refs2);
         RefCut ref3 = new RefCut(cut3, 0, 0.5);
         ArrayList<RefCut> refs3 = new ArrayList<>();
         refs3.add(ref3);
 
-        Cut cut4 = new Cut(new VertexDTO(0, 0, 0), CutType.LINE_HORIZONTAL, pointsHorizontal, 0, 5.0f, refs3);
+        Cut cut4 = new Cut(CutType.LINE_HORIZONTAL, pointsHorizontal, 0, 5.0f, refs3);
 
 
         // Act
@@ -182,13 +181,13 @@ public class RefCutTest {
         pointsHorizontal.add(new VertexDTO(0, 0, 0));
         pointsHorizontal.add(new VertexDTO(100, 0, 0));
 
-        Cut cut1 = new Cut(new VertexDTO(0, 0, 0), CutType.RECTANGULAR, pointsRect, 0, 5.0f);
+        Cut cut1 = new Cut(CutType.RECTANGULAR, pointsRect, 0, 5.0f);
         RefCut ref1 = new RefCut(cut1, 2, 0.5); // INDEX IS 2 for the appropriate segment
         ArrayList<RefCut> refs1 = new ArrayList<>();
         refs1.add(ref1);
 
 
-        Cut cut2 = new Cut(new VertexDTO(0, 0, 0), CutType.LINE_HORIZONTAL, pointsHorizontal, 0, 5.0f, refs1);
+        Cut cut2 = new Cut(CutType.LINE_HORIZONTAL, pointsHorizontal, 0, 5.0f, refs1);
 
         // ACT
         List<VertexDTO> absolutePoints = cut2.getAbsolutePointsPosition();
@@ -218,14 +217,14 @@ public class RefCutTest {
         ArrayList<VertexDTO> pointsL = new ArrayList<>();
         pointsL.add(new VertexDTO(50, 50, 0));
 
-        Cut cut1 = new Cut(new VertexDTO(0, 0, 0), CutType.RECTANGULAR, pointsRect, 0, 5.0f);
+        Cut cut1 = new Cut(CutType.RECTANGULAR, pointsRect, 0, 5.0f);
         RefCut ref1 = new RefCut(cut1, 0, 0.5);
         RefCut ref2 = new RefCut(cut1, 3, 0.5);
         ArrayList<RefCut> refs1 = new ArrayList<>();
         refs1.add(ref1);
         refs1.add(ref2);
 
-        Cut cut2 = new Cut(new VertexDTO(0, 0, 0), CutType.L_SHAPE, pointsL, 0, 5.0f, refs1);
+        Cut cut2 = new Cut(CutType.L_SHAPE, pointsL, 0, 5.0f, refs1);
 
         // ACT
         List<VertexDTO> absolutePoints = cut2.getAbsolutePointsPosition();
@@ -259,14 +258,14 @@ public class RefCutTest {
         ArrayList<VertexDTO> pointsL = new ArrayList<>();
         pointsL.add(new VertexDTO(-50, -50, 0));
 
-        Cut cut1 = new Cut(new VertexDTO(0, 0, 0), CutType.RECTANGULAR, pointsRect, 0, 5.0f);
+        Cut cut1 = new Cut(CutType.RECTANGULAR, pointsRect, 0, 5.0f);
         RefCut ref1 = new RefCut(cut1, 1, 0.5);
         RefCut ref2 = new RefCut(cut1, 2, 0.5);
         ArrayList<RefCut> refs1 = new ArrayList<>();
         refs1.add(ref1);
         refs1.add(ref2);
 
-        Cut cut2 = new Cut(new VertexDTO(0, 0, 0), CutType.L_SHAPE, pointsL, 0, 5.0f, refs1);
+        Cut cut2 = new Cut(CutType.L_SHAPE, pointsL, 0, 5.0f, refs1);
 
         // ACT
         List<VertexDTO> absolutePoints = cut2.getAbsolutePointsPosition();

@@ -1,16 +1,14 @@
 package Domain.IO;
 
 import Common.DTO.PanelDTO;
-import Common.DTO.ProjectStateDTO;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 /**
- * The {@code ProjectFileManager} class regroup functions which interact with files on the user's personal computer
+ * The {@code ProjectFileManager} class regroup functions which interact with files on the user's computer
  *
  * @author Adam Côté
- * @version 1.0
+ * @author Kamran Charles Nayebi
  * @since 2024-10-20
  */
 public class ProjectFileManager {
@@ -37,14 +35,20 @@ public class ProjectFileManager {
      *
      * @param panelDTO The {@code PanelCNC} which needs to be saved.
      */
-    void saveProject(PanelDTO panelDTO) {
-
+    public static void saveProject(String path, PanelDTO panelDTO) throws IOException {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path))) {
+            out.writeObject(panelDTO);
+        }
     }
 
     /**
      * @return A {@code ProjectState} if the user chose a valid file.
      */
-    void openProject() {
-
+    public static PanelDTO loadProject(String path) throws IOException, ClassNotFoundException {
+        PanelDTO panelDTO;
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(path))) {
+            panelDTO = (PanelDTO) in.readObject();
+        }
+        return panelDTO;
     }
 }

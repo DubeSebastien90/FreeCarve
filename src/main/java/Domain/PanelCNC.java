@@ -7,10 +7,7 @@ import Common.DTO.VertexDTO;
 import Common.Interfaces.IMemorizer;
 import Common.Util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,12 +44,19 @@ class PanelCNC {
         updateBorderCut();
     }
 
-    public PanelCNC(PanelCNC other) {
-        this.cutList = other.cutList.stream().toList();
-        this.clamps = other.clamps.stream().toList();
-        this.panelDimension = other.panelDimension;
-        this.memorizer = other.memorizer;
+    public PanelCNC(PanelCNC panelDTO, IMemorizer memorizer) {
+        this.cutList = panelDTO.cutList.stream().toList();
+        this.clamps = panelDTO.clamps.stream().toList();
+        this.panelDimension = panelDTO.getPanelDimension();
+        this.memorizer = panelDTO.memorizer;
+        List<Cut> cuts = new ArrayList<>();
+        cuts.add(borderCut);
         updateBorderCut();
+        for (CutDTO cutDTO : panelDTO.getCutsDTO()){
+            cuts.add(new Cut(cutDTO, cuts));
+        }
+        cuts.remove(borderCut);
+        this.cutList = cuts;
     }
 
     public PanelDTO getDTO() {
@@ -285,4 +289,10 @@ class PanelCNC {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PanelCNC panelCNC)) return false;
+        return Objects.equals(cutList, panelCNC.cutList) && Objects.equals(clamps, panelCNC.clamps) && Objects.equals(panelDimension, panelCNC.panelDimension) && Objects.equals(borderCut, panelCNC.borderCut);
+    }
 }

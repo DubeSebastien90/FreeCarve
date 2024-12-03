@@ -7,11 +7,7 @@ import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import Common.Pair;
 
-import java.sql.Ref;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,8 +27,6 @@ class Cut {
     private List<RefCut> refs;
     private CutState cutState;
 
-
-
     public Cut(CutDTO uiCut, List<Cut> cutAndBorderList) {
         this.type = uiCut.getCutType();
         this.points = uiCut.getPoints();
@@ -45,8 +39,6 @@ class Cut {
         for(RefCutDTO ref : uiCut.getRefsDTO()){
             refs.add(new RefCut(ref, cutAndBorderList));
         }
-
-
     }
 
     public void modifyCut(CutDTO uiCut, List<Cut> cutAndBorderList){
@@ -67,13 +59,12 @@ class Cut {
     /**
      * Constructs a new {@code Cut} with all of it's attributes, set the ref to null
      *
-     * @param startPoint the initial {@code Point} of the cut
-     * @param type       the type of the cut
-     * @param points     all the other point that characterise the cut
-     * @param bitIndex   the index of the bit that is used for the cut
-     * @param depth      the depth of the cut
+     * @param type     the type of the cut
+     * @param points   all the other point that characterise the cut
+     * @param bitIndex the index of the bit that is used for the cut
+     * @param depth    the depth of the cut
      */
-    public Cut(VertexDTO startPoint, CutType type, List<VertexDTO> points, int bitIndex, double depth) {
+    public Cut(CutType type, List<VertexDTO> points, int bitIndex, double depth) {
         this.type = type;
         this.points = points;
         this.bitIndex = bitIndex;
@@ -86,14 +77,13 @@ class Cut {
     /**
      * Constructs a new {@code Cut} with all of it's attributes
      *
-     * @param startPoint the initial {@code Point} of the cut
-     * @param type       the type of the cut
-     * @param points     all the other point that characterise the cut
-     * @param bitIndex   the index of the bit that is used for the cut
-     * @param depth      the depth of the cut
-     * @param refCut        reference to the anchor point of the cut
+     * @param type     the type of the cut
+     * @param points   all the other point that characterise the cut
+     * @param bitIndex the index of the bit that is used for the cut
+     * @param depth    the depth of the cut
+     * @param refCut   reference to the anchor point of the cut
      */
-    public Cut(VertexDTO startPoint, CutType type, List<VertexDTO> points, int bitIndex, double depth, ArrayList<RefCut> refCut) {
+    public Cut(CutType type, List<VertexDTO> points, int bitIndex, double depth, ArrayList<RefCut> refCut) {
         this.type = type;
 
         this.points = new ArrayList<>();
@@ -352,5 +342,12 @@ class Cut {
         else{
             throw new NullPointerException("Invalid cuttype");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cut cut)) return false;
+        return bitIndex == cut.bitIndex && Double.compare(depth, cut.depth) == 0 && type == cut.type && Objects.equals(points, cut.points) && Objects.equals(id, cut.id) && Objects.equals(refs, cut.refs) && cutState == cut.cutState;
     }
 }

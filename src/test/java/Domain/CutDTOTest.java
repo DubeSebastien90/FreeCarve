@@ -34,7 +34,7 @@ public class CutDTOTest {
         pointsListToDTO.add(temp3);
         pointsListToDTO.add(temp4);
         pointsListToDTO.add(temp5);
-        Cut cut = new Cut(temp3, CutType.LINE_VERTICAL, pointsListToDTO, 0, 3.0f);
+        Cut cut = new Cut(CutType.LINE_VERTICAL, pointsListToDTO, 0, 3.0f);
         cutDTOwithCut = cut.getDTO();
     }
 

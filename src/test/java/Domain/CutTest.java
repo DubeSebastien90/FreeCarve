@@ -24,7 +24,7 @@ public class CutTest {
         VertexDTO temp2 = new VertexDTO(100, 200, 300);
         pointsList.add(temp1);
         pointsList.add(temp2);
-        cut = new Cut(temp1, CutType.RECTANGULAR, pointsList, 0,
+        cut = new Cut(CutType.RECTANGULAR, pointsList, 0,
                 5.0f);
 
         VertexDTO temp3 = new VertexDTO(1, 2, 3);

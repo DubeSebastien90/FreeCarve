@@ -38,6 +38,22 @@ public class PanelCNCTest {
     }
 
     @Test
+    void constructor_WithDTO_BuildsCorrectPanel(){
+        // Arrange
+        PanelDTO panelDTO = panelCNC.getDTO();
+        // Act
+        PanelCNC result = new PanelCNC(panelDTO, new UndoRedoManager());
+        // Assert
+        Assertions.assertEquals(panelCNC.getWidth(), result.getWidth());
+        Assertions.assertEquals(panelCNC.getHeight(), result.getHeight());
+        Assertions.assertEquals(panelCNC.getPanelDimension().getX(), result.getPanelDimension().getX());
+        Assertions.assertEquals(panelCNC.getPanelDimension().getY(), result.getPanelDimension().getY());
+        Assertions.assertEquals(panelCNC.getCutList(), result.getCutList());
+        Assertions.assertEquals(panelCNC.getDepth(), result.getDepth());
+        Assertions.assertEquals(panelCNC, result);
+    }
+
+    @Test
     void add_new_cut(){
         // Arrange - BeforeEach
         Assertions.assertEquals(panelCNC.getCutList().size(), 0);
@@ -53,8 +69,6 @@ public class PanelCNCTest {
         // Assert
         Assertions.assertEquals(panelCNC.getCutList().size(), 1);
     }
-
-
 
     @Test
     void valid_panelDTO_return(){

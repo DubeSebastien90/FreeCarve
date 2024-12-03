@@ -2,6 +2,8 @@ package Domain;
 
 import Common.DTO.VertexDTO;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -35,5 +37,12 @@ class ClampZone {
     boolean pointCollision(VertexDTO coordinatesmm) {
         //todo
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ClampZone clampZone)) return false;
+        return Objects.deepEquals(zone, clampZone.zone) && Objects.equals(id, clampZone.id);
     }
 }

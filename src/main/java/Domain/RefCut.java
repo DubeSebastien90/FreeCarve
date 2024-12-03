@@ -7,6 +7,7 @@ import Common.DTO.VertexDTO;
 import java.security.InvalidParameterException;
 import java.util.List;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -80,4 +81,10 @@ public class RefCut {
         return out;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RefCut refCut)) return false;
+        return index == refCut.index && Double.compare(interpolation, refCut.interpolation) == 0 && Objects.equals(cut, refCut.cut);
+    }
 }

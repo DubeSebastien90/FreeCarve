@@ -190,10 +190,15 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
-     * Saves the current state of the project.
+     * Saves the current project.
      */
     public void saveProject(String path) {
-
+        try{
+            ProjectFileManager.saveProject(path, getPanelDTO());
+        } catch (Exception e) {
+            System.out.println("There was an error saving the project at path " + path);
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -207,7 +212,12 @@ public class Controller implements IUnitConverter, IMemorizer {
      * Opens a file and set the current project as the project saved in the file.
      */
     public void openProject(String path) {
-        //todo
+        try {
+            cncMachine.setPanel(new PanelCNC(ProjectFileManager.loadProject(path), undoRedoManager));
+        } catch (Exception e) {
+        System.out.println("There was an error opening the project at path " + path);
+            e.printStackTrace();
+        }
     }
 
     /**

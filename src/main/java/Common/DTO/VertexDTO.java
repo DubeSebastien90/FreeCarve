@@ -3,6 +3,8 @@ package Common.DTO;
 
 import Common.Pair;
 
+import java.io.Serializable;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -13,7 +15,7 @@ import java.util.Optional;
  * @version 1.0
  * @since 2024-10-20
  */
-public class VertexDTO {
+public class VertexDTO implements Serializable {
     public static final double doubleTolerance = 1E-6; // Adjust the tolerance value as needed to only proc when close values
     private final double x;
     private final double y;
@@ -200,5 +202,12 @@ public class VertexDTO {
      */
     public String format2D (){
         return "(" + x + "," + y + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VertexDTO vertexDTO)) return false;
+        return Double.compare(x, vertexDTO.x) == 0 && Double.compare(y, vertexDTO.y) == 0 && Double.compare(z, vertexDTO.z) == 0;
     }
 }

@@ -3,12 +3,15 @@ package Common.DTO;
 
 import Domain.Controller;
 
+import javax.naming.ldap.Control;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * DTO of the {@code RefCut object}
  */
-public class RefCutDTO {
+public class RefCutDTO implements Serializable {
     private CutDTO cut;
     private int index;
     private double interpolation;
@@ -63,4 +66,19 @@ public class RefCutDTO {
         return absoluteVertex.get(index + 1);
     }
 
+    @Override
+    public String toString() {
+        return "RefCutDTO{" +
+                "cut=" + cut +
+                ", index=" + index +
+                ", interpolation=" + interpolation +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RefCutDTO refCutDTO)) return false;
+        return index == refCutDTO.index && Double.compare(interpolation, refCutDTO.interpolation) == 0 && Objects.equals(cut, refCutDTO.cut);
+    }
 }
