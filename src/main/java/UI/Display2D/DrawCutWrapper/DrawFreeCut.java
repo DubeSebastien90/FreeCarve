@@ -29,7 +29,6 @@ public class DrawFreeCut extends DrawCutWrapper {
 
     @Override
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
-        this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
 
@@ -46,18 +45,26 @@ public class DrawFreeCut extends DrawCutWrapper {
             point.drawMM(graphics2D, renderer);
         }
 
+        if (!refs.isEmpty()){ // drawing the first anchor point
+            VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
+            PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
+            referenceAnchorPoint.setColor(ANCHOR_COLOR);
+            referenceAnchorPoint.drawMM(graphics2D, renderer);
+        }
     }
 
     @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
-        List<VertexDTO> newPoints = this.cut.getPoints();
-        VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
-        VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
-        newPoint = newPoint.sub(offset);
-        newPoints.add(newPoint);
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs, this.cut.getState());
+        if (refs.isEmpty()){
+            VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
+            refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+        }
+        else{
+            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  0.0f);
+            temporaryCreationPoints.add(newPoint);
 
-        return this.cut.getPoints().size() >= 2; // returns true if all the points are added
+        }
+        return temporaryCreationPoints.size() >= 2; // returns true if all the points are added
     }
 
     @Override
@@ -73,33 +80,75 @@ public class DrawFreeCut extends DrawCutWrapper {
     @Override
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
-        p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-        // For the snap area
-        double threshold = renderer.scalePixelToMM(snapThreshold);
+        if(refs.isEmpty()){ // Get the reference point
+            p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-        // Get the possible closest point
-        VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-        Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(pointDTO, threshold);
+            double threshold = renderer.scalePixelToMM(snapThreshold);
+            VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
+            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
 
-
-        if(closestPoint.isPresent()){
-            p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
-
-            if(this.points.isEmpty()){ // If first point, set anchor
-                VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-                refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+            if(closestPoint.isPresent()){
+                p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
+                p.setColor(ANCHOR_COLOR);
+                p.setValid(PersoPoint.Valid.VALID);
             }
-
-            p.setColor(SNAP_COLOR);
-            p.setValid(PersoPoint.Valid.VALID);
+            else{
+                p.setColor(INVALID_COLOR);
+                p.setValid(PersoPoint.Valid.NOT_VALID);
+            }
         }
-        else{
-            p.setColor(INVALID_COLOR);
-            p.setValid(PersoPoint.Valid.NOT_VALID);
+        else if(this.points.isEmpty()){ // First point
+            p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
+
+            double threshold = renderer.scalePixelToMM(snapThreshold);
+            VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+
+            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
+
+            if(closestPoint.isPresent()){
+
+                p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
+                p.setColor(VALID_COLOR);
+                p.setValid(PersoPoint.Valid.VALID);
+            }
+            else{
+                p.setColor(INVALID_COLOR);
+                p.setValid(PersoPoint.Valid.NOT_VALID);
+            }
+        }
+        else{ // Second point
+
+
+            // Get possible snap points
+            double threshold = renderer.scalePixelToMM(snapThreshold);
+            VertexDTO cursor = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+            VertexDTO p1 = new VertexDTO(points.getFirst().getLocationX(), points.getFirst().getLocationY(), 0.0f);
+            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridLineNearAllBorderAndCuts(p1,
+                    cursor,threshold
+            );
+
+            // Snap
+            if(closestPoint.isPresent()){
+                p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
+                p.setColor(SNAP_COLOR);
+                p.setValid(PersoPoint.Valid.VALID);
+                return;
+            }
+            // Test if on board
+            VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+            if(mainWindow.getController().isPointOnPanel(pointDTO)){
+                // Inside of the board
+                p.setColor(VALID_COLOR);
+                p.setValid(PersoPoint.Valid.VALID);
+            }
+            else{
+                // Outside of the board
+                p.setColor(INVALID_COLOR);
+                p.setValid(PersoPoint.Valid.NOT_VALID);
+            }
         }
     }
-
 
 }

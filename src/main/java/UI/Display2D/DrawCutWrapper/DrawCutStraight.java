@@ -87,6 +87,9 @@ public class DrawCutStraight extends DrawCutWrapper{
         else if(cut.getCutType() == CutType.LINE_HORIZONTAL){
             relativeEdgeEdgePoints = mainWindow.getController().generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(temporaryCreationPoints.getFirst(), temporaryCreationPoints.get(1), cut.getBitIndex(), refs);
         }
+        else if(cut.getCutType() == CutType.LINE_FREE){
+            relativeEdgeEdgePoints = mainWindow.getController().generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(temporaryCreationPoints.getFirst(), temporaryCreationPoints.get(1), cut.getBitIndex(), refs);
+        }
         this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints , refs, this.cut.getState());
         return createCut();
     }
@@ -139,9 +142,12 @@ public class DrawCutStraight extends DrawCutWrapper{
                 double firstPointX = this.points.getFirst().getLocationX();
                 p.movePoint(firstPointX, renderer.getMmMousePt().getY()); // lock to Y axis
             }
-            else{
+            else if(this.cut.getCutType() == CutType.LINE_HORIZONTAL){
                 double firstPointY = this.points.getFirst().getLocationY();
                 p.movePoint(renderer.getMmMousePt().getX(), firstPointY); // lock to X axis
+            }
+            else{
+                p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY()); // Free Cut
             }
 
 

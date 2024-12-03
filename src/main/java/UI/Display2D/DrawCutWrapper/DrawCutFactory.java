@@ -19,7 +19,7 @@ public class DrawCutFactory {
      */
     public static DrawCutWrapper createDrawCutWrapper(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
         if (cut.getCutType() == CutType.LINE_FREE){
-            return new DrawFreeCut(cut, renderer, mainWindow);
+            return new DrawCutStraight(cut, renderer, mainWindow);
         }
         else if(cut.getCutType() == CutType.LINE_VERTICAL){
             return new DrawCutStraight(cut, renderer, mainWindow);
@@ -46,7 +46,7 @@ public class DrawCutFactory {
      */
     public static DrawCutWrapper createEmptyWrapper(CutType type, Rendering2DWindow renderer, MainWindow mainWindow){
         if (type == CutType.LINE_FREE){
-            return new DrawFreeCut(type, renderer, mainWindow);
+            return new DrawCutStraight(type, renderer, mainWindow);
         }
         else if(type == CutType.LINE_VERTICAL){
             return new DrawCutStraight(type, renderer, mainWindow);

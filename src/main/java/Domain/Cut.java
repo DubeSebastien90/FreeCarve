@@ -206,6 +206,14 @@ class Cut {
         return new VertexDTO(defaultMargins, 0, 0); // The border margin is stored in the X axis
     }
 
+    public static List<VertexDTO> generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs, Controller controller, CNCMachine cncMachine){
+        VertexDTO anchor = refs.getFirst().getAbsoluteOffset(controller);
+        List<VertexDTO> output = new ArrayList<>();
+        output.add(p1Abs.sub(anchor));
+        output.add(p2Abs.sub(anchor));
+        return output;
+    }
+
     public static List<VertexDTO> generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs, Controller controller, CNCMachine cncMachine){
         int bit1Index = bitIndex;
         int bit2Index = refs.getFirst().getCut().getBitIndex();

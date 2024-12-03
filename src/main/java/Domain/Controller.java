@@ -537,6 +537,26 @@ public class Controller implements IUnitConverter, IMemorizer {
         return Cut.generateLPointsRelativeEdgeEdgeFromAbsolute(p1Abs, bitIndex, refs, this, cncMachine);
     }
 
+    /**
+     * From a reference, and absolute positions, computes the valid relative free cuts points
+     * @param p1Abs
+     * @param p2Abs
+     * @param bitIndex
+     * @param refs
+     * @return
+     */
+    public List<VertexDTO> generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs){
+        return Cut.generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
+    }
+
+    /**
+     * From two references, and absolute positions, computes the valid rectangle relative cuts points
+     * @param p1Abs
+     * @param p3Abs
+     * @param bitIndex
+     * @param refs
+     * @return
+     */
     public List<VertexDTO> generateRectanglePointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p3Abs, int bitIndex, List<RefCutDTO> refs){
         return Cut.generateRectangleRelativeEdgeEdgeFromAbsolute(p1Abs, p3Abs, bitIndex, refs, this, cncMachine);
     }

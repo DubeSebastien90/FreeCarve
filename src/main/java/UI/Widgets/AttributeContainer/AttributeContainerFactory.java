@@ -28,6 +28,9 @@ public class AttributeContainerFactory {
         else if(cutDTO.getCutType() == CutType.L_SHAPE){
             return new AttributeContainerCutL(mainWindow, cutListPanel, cutDTO, cutBox);
         }
+        else if(cutDTO.getCutType() == CutType.LINE_FREE){
+            return new AttributeContainerFree(mainWindow, cutListPanel, cutDTO, cutBox);
+        }
         else{
             return new AttributeContainerVertical(mainWindow, cutListPanel, cutDTO, cutBox);
         }
