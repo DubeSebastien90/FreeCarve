@@ -220,12 +220,7 @@ public class Drawing {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseMoved(e);
-                switch (currentModifiedCut.getCutType()){
-                    case LINE_VERTICAL:
-                        break;
-                    case LINE_HORIZONTAL:
-                        break;
-                }
+                //currentModifiedCut.movedUpdate(renderer, Drawing.this);
             }
         };
 
@@ -245,7 +240,6 @@ public class Drawing {
 
     }
 
-
     public void initModifyPoint(DrawCutWrapper cutToChangePoint, PersoPoint pointToChange){
         currentModifiedCut = cutToChangePoint;
         currentModifiedPoint = pointToChange;
@@ -253,13 +247,6 @@ public class Drawing {
         activateModifyPointCutListener();
     }
 
-    private void activateModifyPointCutListener(){
-        renderer.addMouseMotionListener(pointMoveListener);
-    }
-
-    private void deactivateModifyPointCutListener(){
-        renderer.removeMouseMotionListener(pointMoveListener);
-    }
 
     public void closeModifyPoint() {
         setState(DrawingState.IDLE);
@@ -267,18 +254,27 @@ public class Drawing {
         deactivateModifyPointCutListener();
     }
 
-    public void initModifyCut(DrawCutWrapper cutToChangePoint){
+    public void initModifyCut(DrawCutWrapper cutToChangePoint) {
         currentModifiedCut = cutToChangePoint;
         setState(DrawingState.MODIFY_CUT);
         activateModifyCutListener();
     }
 
-    public void closeModifyCut(){
+    public void closeModifyCut() {
         setState(DrawingState.IDLE);
         currentModifiedCut.emptyRefs();
         deactivateModifyCutListener();
     }
 
+    private void activateModifyPointCutListener() {
+        renderer.addMouseMotionListener(pointMoveListener);
+        System.out.println("activateModifyPointCutListener");
+    }
+
+    private void deactivateModifyPointCutListener() {
+        renderer.removeMouseMotionListener(pointMoveListener);
+        System.out.println("deactivateModifyPointCutListener");
+    }
 
     private void activateModifyCutListener() {
         renderer.addMouseMotionListener(cutMoveListener);
