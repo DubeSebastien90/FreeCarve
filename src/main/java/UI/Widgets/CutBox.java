@@ -184,6 +184,10 @@ public class CutBox implements Attributable {
         setState(realState);
     }
 
+    public void setIndex(int index){
+        this.index = index;
+    }
+
     /**
      * Set the state of the CutBox and it's underlying parameters
      *
@@ -405,31 +409,31 @@ public class CutBox implements Attributable {
         gc.weightx = 1.0f;
         gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding());
         panel.add(bitnameLabel, gc);
-
+//
+//
+//        gc.gridx = 2;
+//        gc.gridy = 0;
+//        gc.gridwidth = 1;
+//        gc.gridheight = 2;
+//        gc.anchor = GridBagConstraints.CENTER;
+//        gc.fill = GridBagConstraints.NONE;
+//        gc.weightx = 0.0;
+//        gc.weighty = 0.0f;
+//        gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding() / 2);
+//        panel.add(moveDownButton, gc);
+//
+//        gc.gridx = 3;
+//        gc.gridy = 0;
+//        gc.gridwidth = 1;
+//        gc.gridheight = 2;
+//        gc.anchor = GridBagConstraints.CENTER;
+//        gc.fill = GridBagConstraints.NONE;
+//        gc.weightx = 0.0;
+//        gc.weighty = 0.0f;
+//        gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding() / 2);
+//        panel.add(moveUpButton, gc);
 
         gc.gridx = 2;
-        gc.gridy = 0;
-        gc.gridwidth = 1;
-        gc.gridheight = 2;
-        gc.anchor = GridBagConstraints.CENTER;
-        gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 0.0;
-        gc.weighty = 0.0f;
-        gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding() / 2);
-        panel.add(moveDownButton, gc);
-
-        gc.gridx = 3;
-        gc.gridy = 0;
-        gc.gridwidth = 1;
-        gc.gridheight = 2;
-        gc.anchor = GridBagConstraints.CENTER;
-        gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 0.0;
-        gc.weighty = 0.0f;
-        gc.insets = new Insets(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding() / 2);
-        panel.add(moveUpButton, gc);
-
-        gc.gridx = 4;
         gc.gridy = 0;
         gc.gridwidth = 1;
         gc.gridheight = 2;

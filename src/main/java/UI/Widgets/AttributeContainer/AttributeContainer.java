@@ -124,7 +124,7 @@ public abstract class AttributeContainer extends BasicWindow {
         bb.getInput().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                mainWindow.getController().computeGridIntersections();
                 mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getDrawing().initModifyAnchor(cutDTO);
             }
         });

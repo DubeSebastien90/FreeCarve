@@ -79,6 +79,7 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
         panel.removeAll();
         List<CutDTO> cuts = mainWindow.getController().getCutListDTO();
         for (int i =0; i < cuts.size(); i++) {
+            cutBoxes.get(i).setIndex(i);
             cutBoxes.get(i).updatePanel(cuts.get(i));
             this.panel.add(cutBoxes.get(i).getPanel());
         }
