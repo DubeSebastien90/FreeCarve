@@ -177,7 +177,8 @@ class Cut {
     }
 
     public static List<VertexDTO> generateRectanglePoints(VertexDTO centerAnchor, double width, double height){
-
+        if (width < 0) {throw new IllegalArgumentException("Width of rectangle points is negative, should be positive");}
+        if (height < 0) {throw new IllegalArgumentException("Height of rectangle points is negative, should be positive");}
         VertexDTO p1 = new VertexDTO(centerAnchor.getX() - width/2, centerAnchor.getY() - height/2, centerAnchor.getZ());
         VertexDTO p2 = new VertexDTO(centerAnchor.getX() - width/2, centerAnchor.getY()  + height/2, centerAnchor.getZ());
         VertexDTO p3 = new VertexDTO(centerAnchor.getX() + width/2, centerAnchor.getY()  + height/2, centerAnchor.getZ());
@@ -204,6 +205,157 @@ class Cut {
         double defaultMargins = 50;
         return new VertexDTO(defaultMargins, 0, 0); // The border margin is stored in the X axis
     }
+
+    public static List<VertexDTO> generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs, Controller controller, CNCMachine cncMachine){
+        int bit1Index = bitIndex;
+        int bit2Index = refs.getFirst().getCut().getBitIndex();
+        VertexDTO anchor = refs.getFirst().getAbsoluteOffset(controller);
+        double diameter1 = cncMachine.getBitStorage().getBitDiameter(bit1Index);
+        double diameter2 = cncMachine.getBitStorage().getBitDiameter(bit2Index);
+        if(p1Abs.getY() - anchor.getY() != 0){
+            VertexDTO directionAnchor = (new VertexDTO(0, p1Abs.getY() - anchor.getY(), 0)).normalize();
+            anchor = anchor.add(directionAnchor.mul(diameter1/2));
+            anchor = anchor.add(directionAnchor.mul(diameter2/2));
+        }
+
+        List<VertexDTO> output = new ArrayList<>();
+        output.add(p1Abs.sub(anchor));
+        output.add(p2Abs.sub(anchor));
+        return output;
+    }
+
+    public static List<VertexDTO> generateVerticalPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs, Controller controller, CNCMachine cncMachine){
+        int bit1Index = bitIndex;
+        int bit2Index = refs.getFirst().getCut().getBitIndex();
+        VertexDTO anchor = refs.getFirst().getAbsoluteOffset(controller);
+        double diameter1 = cncMachine.getBitStorage().getBitDiameter(bit1Index);
+        double diameter2 = cncMachine.getBitStorage().getBitDiameter(bit2Index);
+        if(p1Abs.getX() - anchor.getX() != 0){
+            VertexDTO directionAnchor = (new VertexDTO(p1Abs.getX() - anchor.getX(), 0, 0)).normalize();
+            anchor = anchor.add(directionAnchor.mul(diameter1/2));
+            anchor = anchor.add(directionAnchor.mul(diameter2/2));
+        }
+
+        List<VertexDTO> output = new ArrayList<>();
+        output.add(p1Abs.sub(anchor));
+        output.add(p2Abs.sub(anchor));
+        return output;
+    }
+
+    public static List<VertexDTO> generateLPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, int bitIndex, List<RefCutDTO> refs, Controller controller, CNCMachine cncMachine){
+        // Compute the diameters of the bits used
+        int bitIndexRef1 = refs.getFirst().getCut().getBitIndex();
+        int bitIndexRef2 = refs.get(1).getCut().getBitIndex();
+        int bitIndexL = bitIndex;
+        double diameterRef1 = cncMachine.getBitStorage().getBitDiameter(bitIndexRef1);
+        double diameterRef2 = cncMachine.getBitStorage().getBitDiameter(bitIndexRef2);
+        double diameterL = cncMachine.getBitStorage().getBitDiameter(bitIndexL);
+
+        // Needs to calculate the absolute two points
+        VertexDTO p1a = refs.getFirst().getAbsoluteOffset(controller);
+        VertexDTO p1b = refs.getFirst().getAbsoluteFirstPoint(controller);
+        if(p1b.getDistance(p1a) < VertexDTO.doubleTolerance){
+            p1b = refs.getFirst().getAbsoluteSecondPoint(controller);// Changing the other ref point to prevent accidental colinearity
+        }
+
+        // Get the first absolute reference point
+        VertexDTO p2a = refs.get(1).getAbsoluteOffset(controller);
+        VertexDTO p2b = refs.get(1).getAbsoluteFirstPoint(controller);
+        if(p2b.getDistance(p2a) < VertexDTO.doubleTolerance){
+            p2b = refs.get(1).getAbsoluteSecondPoint(controller);// Changing the other ref point to prevent accidental colinearity
+        }
+
+        VertexDTO dirX = VertexDTO.zero();
+        VertexDTO dirY = VertexDTO.zero();
+        if(p1Abs.getX() - p1a.getX() != 0){
+            dirX = new VertexDTO(p1Abs.getX() - p1a.getX(), 0, 0).normalize();
+        }
+        if(p1Abs.getY() - p2a.getY() != 0){
+            dirY = new VertexDTO(0, p1Abs.getY() - p2a.getY(), 0).normalize();
+        }
+
+        // Ajout des diametres pour faire la compensation
+        p1a = p1a.add(dirX.mul(diameterRef1/2));
+        p1b = p1b.add(dirX.mul(diameterRef1/2));
+
+        p2a = p2a.add(dirY.mul(diameterRef2/2));
+        p2b = p2b.add(dirY.mul(diameterRef2/2));
+
+        Optional<VertexDTO> intersectionPoint = VertexDTO.isLineIntersectNoLimitation(p1a,
+                p1b, p2a, p2b);
+
+        if(intersectionPoint.isPresent()){
+            ArrayList<VertexDTO> outputs = new ArrayList<>();
+            VertexDTO relativeEdgeEdge = p1Abs.sub(intersectionPoint.get());
+            relativeEdgeEdge = relativeEdgeEdge.sub(dirX.mul(diameterL/2));
+            relativeEdgeEdge = relativeEdgeEdge.sub(dirY.mul(diameterL/2));
+            outputs.add(relativeEdgeEdge);
+            return outputs;
+        }
+        else{
+            throw new IllegalArgumentException("Cut arguments invalid");
+        }
+    }
+
+    public static List<VertexDTO> generateRectangleRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p3Abs, int bitIndex, List<RefCutDTO> refs, Controller controller, CNCMachine cncMachine){
+        // Compute the diameters of the bits used
+        int bitIndexRef1 = refs.getFirst().getCut().getBitIndex();
+        int bitIndexRef2 = refs.get(1).getCut().getBitIndex();
+        int bitIndexL = bitIndex;
+        double diameterRef1 = cncMachine.getBitStorage().getBitDiameter(bitIndexRef1);
+        double diameterRef2 = cncMachine.getBitStorage().getBitDiameter(bitIndexRef2);
+        double diameterL = cncMachine.getBitStorage().getBitDiameter(bitIndexL);
+
+        // Needs to calculate the absolute two points
+        VertexDTO p1a = refs.getFirst().getAbsoluteOffset(controller);
+        VertexDTO p1b = refs.getFirst().getAbsoluteFirstPoint(controller);
+        if(p1b.getDistance(p1a) < VertexDTO.doubleTolerance){
+            p1b = refs.getFirst().getAbsoluteSecondPoint(controller);// Changing the other ref point to prevent accidental colinearity
+        }
+
+        // Get the first absolute reference point
+        VertexDTO p2a = refs.get(1).getAbsoluteOffset(controller);
+        VertexDTO p2b = refs.get(1).getAbsoluteFirstPoint(controller);
+        if(p2b.getDistance(p2a) < VertexDTO.doubleTolerance){
+            p2b = refs.get(1).getAbsoluteSecondPoint(controller);// Changing the other ref point to prevent accidental colinearity
+        }
+
+        VertexDTO dirX = VertexDTO.zero();
+        VertexDTO dirY = VertexDTO.zero();
+        if(p1Abs.getX() - p1a.getX() != 0){
+            dirX = new VertexDTO(p1Abs.getX() - p1a.getX(), 0, 0).normalize();
+        }
+        if(p1Abs.getY() - p2a.getY() != 0){
+            dirY = new VertexDTO(0, p1Abs.getY() - p2a.getY(), 0).normalize();
+        }
+
+        // Ajout des diametres pour faire la compensation
+        p1a = p1a.add(dirX.mul(diameterRef1/2));
+        p1b = p1b.add(dirX.mul(diameterRef1/2));
+
+        p2a = p2a.add(dirY.mul(diameterRef2/2));
+        p2b = p2b.add(dirY.mul(diameterRef2/2));
+
+        Optional<VertexDTO> intersectionPoint = VertexDTO.isLineIntersectNoLimitation(p1a,
+                p1b, p2a, p2b);
+
+        if(intersectionPoint.isPresent()){
+            VertexDTO p1 = p1Abs.sub(intersectionPoint.get());
+            VertexDTO p3 = p3Abs.sub(intersectionPoint.get());
+            VertexDTO diagonal = p3.sub(p1);
+            double edgeEdgeWidth = Math.abs(diagonal.getX()) - diameterL;
+            double edgeEdgeHeight = Math.abs(diagonal.getY()) - diameterL;
+            VertexDTO center = p1.add(diagonal.mul(0.5));
+            return  generateRectanglePoints(center, edgeEdgeWidth, edgeEdgeHeight);
+        }
+        else{
+            throw new IllegalArgumentException("Cut arguments invalid");
+        }
+    }
+//
+//    public static List<VertexDTO> generateFreeRelativeEdgeEdgeFromAbsolute(){
+//
+//    }
 
     /**
      * Get the copied absolute points of the cut, based on it's references
@@ -315,10 +467,7 @@ class Cut {
                 p2b = refs.get(1).getAbsoluteSecondPoint(cncMachine);// Changing the other ref point to prevent accidental colinearity
             }
 
-            VertexDTO cornerRelatif = VertexDTO.zero();
-            if(!points.isEmpty()){
-                cornerRelatif = points.getFirst();
-            }
+            VertexDTO cornerRelatif = points.getFirst();
 
 
             VertexDTO dirX = VertexDTO.zero();
@@ -344,8 +493,8 @@ class Cut {
                 VertexDTO p1 = points.getFirst();
                 VertexDTO p3 = points.get(2);
                 VertexDTO diagonal = p3.sub(p1);
-                double centerCenterWidth = diagonal.getX() + diameterL;
-                double centerCenterHeight = diagonal.getY() + diameterL;
+                double centerCenterWidth = Math.abs(diagonal.getX()) + diameterL;
+                double centerCenterHeight = Math.abs(diagonal.getY()) + diameterL;
                 VertexDTO center = intersectionPoint.get().add(p1).add(diagonal.mul(0.5));
                 return  generateRectanglePoints(center, centerCenterWidth, centerCenterHeight);
             }

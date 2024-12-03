@@ -10,6 +10,7 @@ import UI.MainWindow;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,6 +20,8 @@ import java.util.UUID;
  * @author Louis-Etienne Messier
  */
 public class DrawCutRectangular extends DrawCutWrapper{
+
+
     public DrawCutRectangular(CutType type, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(type, renderer, mainWindow);
     }
@@ -29,12 +32,13 @@ public class DrawCutRectangular extends DrawCutWrapper{
 
     @Override
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
-        this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(cursor.getColor());
 
-
-        if(!this.points.isEmpty()){
+        if(!this.temporaryCreationPoints.isEmpty()){
+            this.points= new ArrayList<>();
+            VertexDTO absPos = temporaryCreationPoints.getFirst();
+            this.points.add(new PersoPoint(absPos.getX(), absPos.getY(), 10.0f, true, strokeColor));
 
             PersoPoint p1 = new PersoPoint(points.getFirst());
             PersoPoint p2 = new PersoPoint(points.getFirst());
@@ -64,41 +68,28 @@ public class DrawCutRectangular extends DrawCutWrapper{
 
     @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
-        List<VertexDTO> newPoints = this.cut.getPoints();
 
         if (refs.isEmpty()){
             VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
             refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
-
+            return  false;
         }
         else{
-            if(newPoints.isEmpty()){ // premier point a ajouter
-                VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
-                VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
-                newPoint = newPoint.sub(offset);
-                newPoints.add(newPoint);
+            if(temporaryCreationPoints.isEmpty()){ // premier point a ajouter
+                VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  0.0f);
+                temporaryCreationPoints.add(newPoint);
+                return false;
             }
             else{
                 // Dans le cas contraire, c'est le dernier point, donc ajoute les 4 points finaux:
                 //  3 - 2*
                 //  |   |
                 //  4 - 1
-                VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
-                VertexDTO p1 = newPoints.getFirst().add(offset);
-                VertexDTO mouseDTO = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), p1.getZ());
-                VertexDTO centerAnchorPoint = mouseDTO.sub(p1).mul(0.5).add(p1); // Compute the diagonal of the rec and find center
-                double width =  mouseDTO.sub(p1).getX();
-                double height = mouseDTO.sub(p1).getY();
-
-                newPoints = mainWindow.getController().generateRectanglePoints(centerAnchorPoint, width, height);
-                for(int i =0; i <newPoints.size(); i++){
-                    newPoints.set(i, newPoints.get(i).sub(offset)); // Substraction du offset pour retourner en relativeSpace
-                }
+                VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  0.0f);
+                temporaryCreationPoints.add(newPoint);
+                return true;
             }
         }
-
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs, this.cut.getState());
-        return this.cut.getPoints().size() >= 5;
     }
 
     @Override
@@ -108,6 +99,10 @@ public class DrawCutRectangular extends DrawCutWrapper{
 
     @Override
     public Optional<UUID> end() {
+        VertexDTO p1 = temporaryCreationPoints.getFirst();
+        VertexDTO p3 = temporaryCreationPoints.get(1);
+        List<VertexDTO> relativeEdgeEdgePoints = mainWindow.getController().generateRectanglePointsRelativeEdgeEdgeFromAbsolute(p1, p3, this.cut.getBitIndex(), refs);
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints , refs, this.cut.getState());
         return createCut();
     }
 

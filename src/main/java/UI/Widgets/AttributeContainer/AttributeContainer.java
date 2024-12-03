@@ -27,7 +27,6 @@ public abstract class AttributeContainer extends BasicWindow {
     protected CutListPanel cutListPanel;
     protected CutDTO cutDTO;
     protected CutBox cutBox;
-    protected Drawing drawing;
 
     SingleValueBox depthBox;
     BitChoiceBox bitChoiceBox;
@@ -52,39 +51,6 @@ public abstract class AttributeContainer extends BasicWindow {
      */
     protected abstract CutDTO recomputePointsAfterBitChange(CutDTO c);
 
-    protected double edgeEdgeX(){
-        int currentBitIndex = cutDTO.getBitIndex();
-        int refBitIndex = cutDTO.getRefsDTO().getFirst().getCut().getBitIndex();
-
-        return mainWindow.getController().centerCenterToEdgeEdge(cutDTO.getPoints().getFirst().getX(), currentBitIndex, refBitIndex);
-    }
-
-    protected double edgeEdgeY(){
-        int currentBitIndex = cutDTO.getBitIndex();
-        int refBitIndex = cutDTO.getRefsDTO().getFirst().getCut().getBitIndex();
-
-        return mainWindow.getController().centerCenterToEdgeEdge(cutDTO.getPoints().getFirst().getY(), currentBitIndex, refBitIndex);
-    }
-
-    protected double centerCenterX(){
-        return cutDTO.getPoints().getFirst().getX();
-    }
-
-    protected double centerCenterY(){
-        return cutDTO.getPoints().getFirst().getY();
-    }
-
-    protected double centerCenterToEdgeEdge(double centerCenter){
-        int currentBitIndex = cutDTO.getBitIndex();
-        int refBitIndex = cutDTO.getRefsDTO().getFirst().getCut().getBitIndex();
-        return mainWindow.getController().centerCenterToEdgeEdge(centerCenter, currentBitIndex, refBitIndex);
-    }
-
-    protected double edgeEdgeToCenterCenter(double edgeEdge){
-        int currentBitIndex = cutDTO.getBitIndex();
-        int refBitIndex = cutDTO.getRefsDTO().getFirst().getCut().getBitIndex();
-        return mainWindow.getController().edgeEdgeToCenterCenter(edgeEdge, currentBitIndex, refBitIndex);
-    }
 
     protected void init_attribute(){
 

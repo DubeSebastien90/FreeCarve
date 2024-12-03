@@ -40,12 +40,12 @@ public class AttributeContainerCutL extends AttributeContainer{
 
     private double lCenterCenterX(){
         List<VertexDTO> points = mainWindow.getController().getAbsolutePointsPosition(cutDTO);
-        return points.getFirst().getX();
+        return points.get(1).getX();
     }
 
     private double lCenterCenterY(){
         List<VertexDTO> points = mainWindow.getController().getAbsolutePointsPosition(cutDTO);
-        return points.getFirst().getY();
+        return points.get(1).getY();
     }
 
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO){
@@ -75,22 +75,22 @@ public class AttributeContainerCutL extends AttributeContainer{
         gc.gridx = 0;
         gc.gridy = 1;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        add(absoluteOffsetX, gc);
+        add(offsetY, gc);
 
         gc.gridx = 0;
         gc.gridy = 2;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        add(offsetXCenterCenter, gc);
+        add(absoluteOffsetX, gc);
 
         gc.gridx = 0;
         gc.gridy = 3;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        add(offsetY, gc);
+        add(absoluteOffsetY, gc);
 
         gc.gridx = 0;
         gc.gridy = 4;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        add(absoluteOffsetY, gc);
+        add(offsetXCenterCenter, gc);
 
         gc.gridx = 0;
         gc.gridy = 5;

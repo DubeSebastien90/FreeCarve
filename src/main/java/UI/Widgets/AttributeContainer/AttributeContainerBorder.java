@@ -76,7 +76,7 @@ public class AttributeContainerBorder extends AttributeContainer{
     }
 
     private double borderEdgeEdge(){
-        return centerCenterToEdgeEdge(borderCenterCenter());
+        return borderCenterCenter();
     }
 
     @Override
@@ -110,7 +110,7 @@ public class AttributeContainerBorder extends AttributeContainer{
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = new CutDTO(cutDTO);
-                double centerCenterN = edgeEdgeToCenterCenter(marginEdgeToEdge.getInput().getMMValue());
+                double centerCenterN = marginEdgeToEdge.getInput().getMMValue();
 
                 for(int i =0; i < c.getPoints().size(); i++){
                     VertexDTO oldVertex = c.getPoints().get(i);

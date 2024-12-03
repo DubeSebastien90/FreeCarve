@@ -35,6 +35,7 @@ public abstract class DrawCutWrapper {
     protected Stroke stroke;
     protected MainWindow mainWindow;
     protected List<RefCutDTO> refs;
+    protected List<VertexDTO> temporaryCreationPoints;
     protected DrawCutState state = DrawCutState.NOT_SELECTED;
     protected DrawCutState previousState = DrawCutState.NOT_SELECTED;
     public enum DrawCutState {
@@ -66,6 +67,7 @@ public abstract class DrawCutWrapper {
         cursorPoint  = null;
         this.update(renderer);
         this.refs = new ArrayList<>();
+        temporaryCreationPoints = new ArrayList<>();
 
     }
 
@@ -96,6 +98,7 @@ public abstract class DrawCutWrapper {
 
         this.mainWindow = mainWindow;
         cursorPoint  = null;
+        temporaryCreationPoints = new ArrayList<>();
         this.update(renderer);
     }
 

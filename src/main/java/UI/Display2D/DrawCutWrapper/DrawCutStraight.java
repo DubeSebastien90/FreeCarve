@@ -9,6 +9,7 @@ import UI.MainWindow;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,9 +29,13 @@ public class DrawCutStraight extends DrawCutWrapper{
 
     @Override
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
-        this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
+
+        this.points = new ArrayList<>();
+        for(VertexDTO p : temporaryCreationPoints){
+            points.add(new PersoPoint(p.getX(), p.getY(), 10.0f, true, strokeColor));
+        }
 
         for (int i =0; i < points.size()-1; i++){
             points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), this.strokeWidth);
@@ -56,31 +61,33 @@ public class DrawCutStraight extends DrawCutWrapper{
 
     @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
-
         if (refs.isEmpty()){
             VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
             refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
         }
         else{
-            List<VertexDTO> newPoints = this.cut.getPoints();
-            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  this.cut.getDepth());
-            VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
-            newPoint = newPoint.sub(offset);
-            newPoints.add(newPoint);
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs, this.cut.getState());
-        }
+            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  0.0f);
+            temporaryCreationPoints.add(newPoint);
 
-        return this.cut.getPoints().size() >= 2; // returns true if all the points are added
+        }
+        return temporaryCreationPoints.size() >= 2; // returns true if all the points are added
     }
 
     @Override
     public boolean areRefsValid() {
-
         return !refs.isEmpty() && areRefsNotCircular();
     }
 
     @Override
     public Optional<UUID> end() {
+        List<VertexDTO> relativeEdgeEdgePoints = new ArrayList<>();
+        if(cut.getCutType() == CutType.LINE_VERTICAL){
+            relativeEdgeEdgePoints = mainWindow.getController().generateVerticalPointsRelativeEdgeEdgeFromAbsolute(temporaryCreationPoints.getFirst(), temporaryCreationPoints.get(1), cut.getBitIndex(), refs);
+        }
+        else if(cut.getCutType() == CutType.LINE_HORIZONTAL){
+            relativeEdgeEdgePoints = mainWindow.getController().generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(temporaryCreationPoints.getFirst(), temporaryCreationPoints.get(1), cut.getBitIndex(), refs);
+        }
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints , refs, this.cut.getState());
         return createCut();
     }
 

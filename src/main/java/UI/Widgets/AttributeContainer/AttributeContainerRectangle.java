@@ -46,14 +46,14 @@ public class AttributeContainerRectangle extends AttributeContainer{
         VertexDTO p1 = cutDTO.getPoints().getFirst();
         VertexDTO p3 = cutDTO.getPoints().get(2);
         VertexDTO diff = p3.sub(p1);
-        return diff.getX();
+        return Math.abs(diff.getX());
     }
 
     private double getHeightEdgeEdge(){
         VertexDTO p1 = cutDTO.getPoints().getFirst();
         VertexDTO p3 = cutDTO.getPoints().get(2);
         VertexDTO diff = p3.sub(p1);
-        return diff.getY();
+        return Math.abs(diff.getY());
     }
 
     private double getWidthCenterCenter(){
@@ -61,7 +61,7 @@ public class AttributeContainerRectangle extends AttributeContainer{
         VertexDTO p1 = absPoints.getFirst();
         VertexDTO p3 = absPoints.get(2);
         VertexDTO diff = p3.sub(p1);
-        return diff.getX();
+        return Math.abs(diff.getX());
     }
 
     private double getHeightCenterCenter(){
@@ -69,7 +69,7 @@ public class AttributeContainerRectangle extends AttributeContainer{
         VertexDTO p1 = absPoints.getFirst();
         VertexDTO p3 = absPoints.get(2);
         VertexDTO diff = p3.sub(p1);
-        return diff.getY();
+        return Math.abs(diff.getY());
     }
 
     private void init_layout(){

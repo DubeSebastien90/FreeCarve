@@ -501,6 +501,47 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
+     * From a reference, and absolute positions, computes the valid relative vertical cuts points
+     *
+     * @param p1Abs
+     * @param p2Abs
+     * @param bitIndex
+     * @param refs
+     * @return
+     */
+    public List<VertexDTO> generateVerticalPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs){
+        return Cut.generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
+    }
+
+    /**
+     * From a reference, and absolute positions, computes the valid relative horizontal cuts points
+     *
+     * @param p1Abs
+     * @param p2Abs
+     * @param bitIndex
+     * @param refs
+     * @return
+     */
+    public List<VertexDTO> generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs){
+        return Cut.generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
+    }
+
+    /**
+     * From two reference, and an absolute positions, computes the valid relative L cuts points
+     * @param p1Abs
+     * @param bitIndex
+     * @param refs
+     * @return
+     */
+    public List<VertexDTO> generateLPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, int bitIndex, List<RefCutDTO> refs){
+        return Cut.generateLPointsRelativeEdgeEdgeFromAbsolute(p1Abs, bitIndex, refs, this, cncMachine);
+    }
+
+    public List<VertexDTO> generateRectanglePointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p3Abs, int bitIndex, List<RefCutDTO> refs){
+        return Cut.generateRectangleRelativeEdgeEdgeFromAbsolute(p1Abs, p3Abs, bitIndex, refs, this, cncMachine);
+    }
+
+    /**
      * From a cut DTO queries the corresponding Cut Object to get it's absolute position
      *
      * @param cutDTO cutDto to query

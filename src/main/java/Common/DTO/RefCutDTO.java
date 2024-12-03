@@ -16,13 +16,8 @@ public class RefCutDTO implements Serializable {
     private int index;
     private double interpolation;
 
-    public RefCutDTO(CutDTO cut, int index, double interpolation) {
-        if (index >= cut.getPoints().size() - 1) {
-            throw new IllegalArgumentException("The index " + index + " of the refCut is invalid, it doesn't correspond to the size of the points");
-        }
-        if (interpolation > 1 || interpolation < 0) {
-            throw new IllegalArgumentException("The interpolation is outside of it's designed boundaries : 0 and 1");
-        }
+    public RefCutDTO(CutDTO cut, int index, double interpolation){
+        if (interpolation > 1 || interpolation < 0) {throw new IllegalArgumentException("The interpolation is outside of it's designed boundaries : 0 and 1");}
 
         this.cut = cut;
         this.index = index;

@@ -1,6 +1,7 @@
 package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
+import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
 import Domain.CutType;
 import UI.Display2D.Drawing;
@@ -36,8 +37,11 @@ public class DrawCutL extends DrawCutWrapper{
         graphics2D.setStroke(stroke);
         graphics2D.setColor(cursor.getColor());
 
-        if(!this.points.isEmpty()){
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(cursor), refs, this.cut.getState());
+        if(!refs.isEmpty()){
+            VertexDTO p1 = new VertexDTO(cursor.getLocationX(), cursor.getLocationY(), 0.0f);
+            List<VertexDTO> relativeEdgeEdgePoints = new ArrayList<>();
+            relativeEdgeEdgePoints = mainWindow.getController().generateLPointsRelativeEdgeEdgeFromAbsolute(p1, cut.getBitIndex(), refs);
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints, refs, this.cut.getState());
         }
 
         for (int i =0; i < points.size()-1; i++){
@@ -60,14 +64,13 @@ public class DrawCutL extends DrawCutWrapper{
     @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
 
-        if(points.isEmpty()){
-            compute3Points(pointInMM);
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(pointInMM), refs, this.cut.getState());
+        if(refs.isEmpty()){
+            VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
+            refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
             return false;
         }
         else if(refs.size() >= 2){
-            compute3Points(pointInMM);
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), compute3Points(pointInMM), refs, this.cut.getState());
+            temporaryCreationPoints.add(new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f));
             return true;
         }
         else{
@@ -80,21 +83,11 @@ public class DrawCutL extends DrawCutWrapper{
         return refs.size() >= 2 && areRefsNotCircular();
     }
 
-    private List<VertexDTO> compute3Points(PersoPoint cursor){
-        List<VertexDTO> newPoints = new ArrayList<>();
-        VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
-        VertexDTO p1 = new VertexDTO(cursor.getLocationX(), cursor.getLocationY(), 0.0f);
-        p1 = p1.sub(offset);
-
-        VertexDTO newPoint = new VertexDTO(p1.getX(), p1.getY(),  this.cut.getDepth());
-        newPoints.add(newPoint);
-        newPoints.add(newPoint);
-        newPoints.add(newPoint); // add 3 to prevent amount of points error
-        return newPoints;
-    }
-
     @Override
     public Optional<UUID> end() {
+        List<VertexDTO> relativeEdgeEdgePoints = new ArrayList<>();
+        relativeEdgeEdgePoints = mainWindow.getController().generateLPointsRelativeEdgeEdgeFromAbsolute(temporaryCreationPoints.getFirst(), cut.getBitIndex(), refs);
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints , refs, this.cut.getState());
         return createCut();
     }
 
@@ -112,9 +105,9 @@ public class DrawCutL extends DrawCutWrapper{
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
                 p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-                refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+                List<RefCutDTO> testRefs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
 
-                if (refs.size() >= 2){
+                if (testRefs.size() >= 2){
                     p.setColor(VALID_COLOR);
                     p.setValid(PersoPoint.Valid.VALID);
                 }
