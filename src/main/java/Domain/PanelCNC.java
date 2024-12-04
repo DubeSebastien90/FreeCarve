@@ -95,7 +95,6 @@ class PanelCNC {
         UUID newUUID = UUID.randomUUID();
         CutDTO cutDTO = new CutDTO(newUUID, cut);
         memorizer.executeAndMemorize(() -> this.cutList.add(createPanelCut(cutDTO)), () -> this.cutList.removeIf(e -> e.getId() == newUUID));
-        memorizer.executeAndMemorize(()->this.cutList.add(createPanelCut(cutDTO)), ()->this.cutList.removeIf(e->e.getId() == newUUID));
         verifyCuts();
         return Optional.of(newUUID);
     }
@@ -189,7 +188,15 @@ class PanelCNC {
         return clamps;
     }
 
-    Cut createPanelCut(CutDTO cutDTO) {
+    List<ClampZoneDTO> getClampsDTO() {
+        List<ClampZoneDTO> clampsDTO = new ArrayList<>();
+        for(ClampZone clamp : clamps){
+            clampsDTO.add(new ClampZoneDTO(clamp.getZone()[0], clamp.getZone()[1], Optional.of(clamp.getId())));
+        }
+        return clampsDTO;
+    }
+
+    Cut createPanelCut(CutDTO cutDTO){
         return new Cut(cutDTO, this.getCutAndBorderList());
     }
 
