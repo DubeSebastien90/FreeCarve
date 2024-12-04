@@ -92,6 +92,10 @@ public class VertexDTO implements Serializable {
         return getX() * other.getX() + getY() * other.getY() + getZ() * other.getZ();
     }
 
+    public static boolean isValueAroundTolerance(double groundTruthValue, double comparisonValue){
+        return comparisonValue > groundTruthValue-doubleTolerance && comparisonValue < groundTruthValue+doubleTolerance;
+    }
+
     /**
      * Interpolated between two points : this and the other point in parameter
      * @param other point to interpolate between

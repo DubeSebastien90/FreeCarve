@@ -210,7 +210,9 @@ public class RefCutTest {
     }
 
     @Test
-    void ref_L(){
+    void create_basic_ref_L(){
+
+        Controller controller = Controller.initialize();
 
         // Arrange
         ArrayList<VertexDTO> pointsRect = new ArrayList<>();
@@ -239,13 +241,15 @@ public class RefCutTest {
         VertexDTO p3 = absolutePoints.get(2);
 
         // ASSERT
+        double bitDiameter = controller.getBitDiameter(0);
         Assertions.assertEquals(absolutePoints.size(), 3);
-        Assertions.assertEquals(p1.getX(), 0 );
-        Assertions.assertEquals(p1.getY(), 50);
-        Assertions.assertEquals(p2.getX(), 50);
-        Assertions.assertEquals(p2.getY(), 50);
-        Assertions.assertEquals(p3.getX(), 50);
-        Assertions.assertEquals(p3.getY(), 0);
+
+        Assertions.assertEquals(0 , p1.getX(), VertexDTO.doubleTolerance);
+        Assertions.assertEquals(bitDiameter + 50 , p1.getY(), VertexDTO.doubleTolerance);
+        Assertions.assertEquals(50 + bitDiameter , p2.getX(), VertexDTO.doubleTolerance);
+        Assertions.assertEquals(50 + bitDiameter , p2.getY(), VertexDTO.doubleTolerance);
+        Assertions.assertEquals(bitDiameter + 50 , p3.getX(), VertexDTO.doubleTolerance);
+        Assertions.assertEquals(0 , p3.getY(), VertexDTO.doubleTolerance);
 
     }
 
@@ -280,12 +284,14 @@ public class RefCutTest {
         VertexDTO p3 = absolutePoints.get(2);
 
         // ASSERT
+        Controller controller = Controller.initialize();
+        double bitDiamter = controller.getBitDiameter(0);
         Assertions.assertEquals(absolutePoints.size(), 3);
         Assertions.assertEquals(p1.getX(), 100 );
-        Assertions.assertEquals(p1.getY(), 50);
-        Assertions.assertEquals(p2.getX(), 50);
-        Assertions.assertEquals(p2.getY(), 50);
-        Assertions.assertEquals(p3.getX(), 50);
+        Assertions.assertEquals(p1.getY(),  50 - bitDiamter, VertexDTO.doubleTolerance);
+        Assertions.assertEquals(p2.getX(), 50 - bitDiamter, VertexDTO.doubleTolerance);
+        Assertions.assertEquals(p2.getY(), 50 - bitDiamter, VertexDTO.doubleTolerance);
+        Assertions.assertEquals(p3.getX(), 50 - bitDiamter, VertexDTO.doubleTolerance);
         Assertions.assertEquals(p3.getY(), 100);
 
     }

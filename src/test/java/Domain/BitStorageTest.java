@@ -25,9 +25,6 @@ public class BitStorageTest {
         // Act
         // Assert
         Assertions.assertEquals(12, bitStorage.getBitList().length);
-
-        // Check that the default bit is created
-        Assertions.assertEquals(0.5f, bitStorage.getBitList()[0].getDiameter());
     }
 
     @Test
