@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class ClampZoneTest {
@@ -94,5 +95,77 @@ public class ClampZoneTest {
 
         // Assert
         Assertions.assertEquals(0.2f, newClamp.getZone()[1].getX());
+    }
+
+    @Test
+    void pointCollision_WhenPointInside_ReturnsTrue() throws ClampZoneException {
+        // Arrange
+        ClampZone newClamp = new ClampZone(new ClampZoneDTO(new VertexDTO(0.0f, 0.0f, 0.0f),
+                new VertexDTO(3.0f, 3.0f, 0.1f),
+                Optional.empty()));
+
+        // Act
+        boolean result = newClamp.pointCollision(new VertexDTO(0.05f, 0.05f, 0.05f));
+
+        // Assert
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void pointCollision_WhenPointOutside_ReturnsFalse() throws ClampZoneException {
+        // Arrange
+        ClampZone newClamp = new ClampZone(new ClampZoneDTO(new VertexDTO(0.0f, 0.0f, 0.0f),
+                new VertexDTO(3.0f, 3.0f, 0.1f),
+                Optional.empty()));
+
+        // Act
+        boolean result = newClamp.pointCollision(new VertexDTO(3.05f, 3.05f, 0.05f));
+
+        // Assert
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    void intersectCut_WhenCutIntersects_ReturnsTrue() throws ClampZoneException {
+        // Arrange
+        ClampZone newClamp = new ClampZone(new ClampZoneDTO(new VertexDTO(0.0f, 0.0f, 0.0f),
+                new VertexDTO(3.0f, 3.0f, 0.1f),
+                Optional.empty()));
+
+        VertexDTO point1 = new VertexDTO(0.0f, 0.0f, 0.0f);
+        VertexDTO point2 = new VertexDTO(3.0f, 0.0f, 0.1f);
+        ArrayList<VertexDTO> points = new ArrayList<VertexDTO>();
+        points.add(point1);
+        points.add(point2);
+
+        Cut cut = new Cut(new VertexDTO(0.0f, 0.0f, 0.0f), CutType.LINE_HORIZONTAL, points, 0, 5.0);
+
+        // Act
+        boolean result = newClamp.intersectCut(cut);
+
+        // Assert
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void intersectCut_WhenCutDoesntIntersect_ReturnsFalse() throws ClampZoneException {
+        // Arrange
+        ClampZone newClamp = new ClampZone(new ClampZoneDTO(new VertexDTO(0.0f, 0.0f, 0.0f),
+                new VertexDTO(2.0f, 2.0f, 0.1f),
+                Optional.empty()));
+
+        VertexDTO point1 = new VertexDTO(1.0f, 3.0f, 0.0f);
+        VertexDTO point2 = new VertexDTO(6.0f, 3.0f, 0.1f);
+        ArrayList<VertexDTO> points = new ArrayList<VertexDTO>();
+        points.add(point1);
+        points.add(point2);
+
+        Cut cut = new Cut(new VertexDTO(0.0f, 0.0f, 0.0f), CutType.LINE_HORIZONTAL, points, 0, 5.0);
+
+        // Act
+        boolean result = newClamp.intersectCut(cut);
+
+        // Assert
+        Assertions.assertFalse(result);
     }
 }

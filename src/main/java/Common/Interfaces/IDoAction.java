@@ -1,5 +1,7 @@
 package Common.Interfaces;
 
+import Common.Exceptions.ClampZoneException;
+
 /**
  * Functional interface that represents an action to be done
  * @author Kamran Charles Nayebi
