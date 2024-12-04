@@ -189,6 +189,7 @@ public class LeftBar extends JScrollPane {
         lActionListener();
         undoActionListener();
         redoActionListener();
+        forbiddenZonesActionListener();
     }
 
     /**
@@ -340,7 +341,8 @@ public class LeftBar extends JScrollPane {
                     middle.getCutWindow().getRendering2DWindow().cut(CutType.RECTANGULAR);
                     FlatSVGIcon icon = getIcon("rectangle", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
                     toolBar.getTool(ToolBar.Tool.RECTANGLE).setIcon(icon);
-                }            }
+                }
+            }
         });
     }
 
@@ -357,7 +359,8 @@ public class LeftBar extends JScrollPane {
                     middle.getCutWindow().getRendering2DWindow().cut(CutType.RETAILLER);
                     FlatSVGIcon icon = getIcon("retailler", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
                     toolBar.getTool(ToolBar.Tool.RETAILLER).setIcon(icon);
-                }            }
+                }
+            }
         });
     }
 
@@ -374,7 +377,8 @@ public class LeftBar extends JScrollPane {
                     middle.getCutWindow().getRendering2DWindow().cut(CutType.L_SHAPE);
                     FlatSVGIcon icon = getIcon("coupeL", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
                     toolBar.getTool(ToolBar.Tool.COUPEL).setIcon(icon);
-                }            }
+                }
+            }
         });
     }
 
@@ -411,5 +415,11 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.RETAILLER).setIcon(icon5);
         FlatSVGIcon icon6 = getIcon("forbidden", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
         toolBar.getTool(ToolBar.Tool.FORBIDDEN).setIcon(icon6);
+    }
+
+    public void forbiddenZonesActionListener() {
+        toolBar.getTool(ToolBar.Tool.FORBIDDEN).addActionListener(e -> {
+            System.out.println("Zone interdite");
+        });
     }
 }
