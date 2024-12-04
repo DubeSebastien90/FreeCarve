@@ -5,7 +5,6 @@ import Common.Exceptions.InvalidBitException;
 import Common.Exceptions.InvalidFileExtensionException;
 import Common.Interfaces.*;
 import Common.Units;
-import Common.Exceptions.InvalidBitException;
 import Common.Interfaces.IDoAction;
 import Common.Interfaces.IRefreshable;
 import Common.Interfaces.IUndoAction;
@@ -465,109 +464,85 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
-     * Transform a edge-edge distance of a cut into a center-center distance
-     *
-     * @param edge      edge-edge distance
-     * @param bitIndex1 bit index of the first point
-     * @param bitIndex2 bit index of the reference point
-     * @return the converted center-center distance
-     */
-    public double edgeEdgeToCenterCenter(double edge, int bitIndex1, int bitIndex2) {
-        return this.cncMachine.edgeEdgeToCenterCenter(edge, bitIndex1, bitIndex2);
-    }
-
-    /**
-     * Transform a center-center distance of a cut into a edge-edge distance
-     *
-     * @param center    center-center distance
-     * @param bitIndex1 bit index of the first point
-     * @param bitIndex2 bit index of the reference point
-     * @return the converted edge-edge distance
-     */
-    public double centerCenterToEdgeEdge(double center, int bitIndex1, int bitIndex2) {
-        return this.cncMachine.centerCenterToEdgeEdge(center, bitIndex1, bitIndex2);
-    }
-
-    /**
      * Generate a fixed list of points used by the rectangle cut according to an anchor point, a width and a height
      *
-     * @param anchor
-     * @param width
-     * @param height
+     * @param anchor center point of the wanted rectangle
+     * @param width full width of the wanted rectangle
+     * @param height full height of the wanted rectangle
      * @return
      */
     public List<VertexDTO> generateRectanglePoints(VertexDTO anchor, double width, double height) {
-        return CutFactory.generateRectanglePoints(anchor, width, height);
+        return CutPointsFactory.generateRectanglePoints(anchor, width, height);
     }
 
     /**
      * From a reference, and absolute positions, computes the valid relative vertical cuts points
      *
-     * @param p1Abs
-     * @param p2Abs
-     * @param bitIndex
-     * @param refs
-     * @return
+     * @param p1Abs first absolute point
+     * @param p2Abs second absolute point
+     * @param bitIndex index of the bit of the cut
+     * @param refs list of the refs of the cut
+     * @return the list of relative points of the wanted cut
      */
     public List<VertexDTO> generateVerticalPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs){
-        return CutFactory.generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
+        return CutPointsFactory.generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
     }
 
     /**
      * From a reference, and absolute positions, computes the valid relative horizontal cuts points
      *
-     * @param p1Abs
-     * @param p2Abs
-     * @param bitIndex
-     * @param refs
-     * @return
+     * @param p1Abs first absolute point
+     * @param p2Abs second absolute point
+     * @param bitIndex index of the bit of the cut
+     * @param refs list of the refs of the cut
+     * @return the list of relative points of the wanted cut
      */
     public List<VertexDTO> generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs){
-        return CutFactory.generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
+        return CutPointsFactory.generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
     }
 
     /**
      * From two reference, and an absolute positions, computes the valid relative L cuts points
-     * @param p1Abs
-     * @param bitIndex
-     * @param refs
-     * @return
+     * @param p1Abs absolute corner of the wanted cut
+     * @param bitIndex index of the bit of the cut
+     * @param refs list of the refs of the cut
+     * @return the list of relative points of the wanted cut
      */
     public List<VertexDTO> generateLPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, int bitIndex, List<RefCutDTO> refs){
-        return CutFactory.generateLPointsRelativeEdgeEdgeFromAbsolute(p1Abs, bitIndex, refs, this, cncMachine);
+        return CutPointsFactory.generateLPointsRelativeEdgeEdgeFromAbsolute(p1Abs, bitIndex, refs, this, cncMachine);
     }
 
     /**
      * From a reference, and absolute positions, computes the valid relative free cuts points
-     * @param p1Abs
-     * @param p2Abs
-     * @param bitIndex
-     * @param refs
-     * @return
+     * @param p1Abs first absolute point
+     * @param p2Abs second absolute point
+     * @param bitIndex index of the bit of the cut
+     * @param refs list of the refs of the cut
+     * @return the list of relative points of the wanted cut
      */
     public List<VertexDTO> generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs){
-        return CutFactory.generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
+        return CutPointsFactory.generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(p1Abs, p2Abs, bitIndex, refs, this, cncMachine);
     }
 
     /**
      * From two references, and absolute positions, computes the valid rectangle relative cuts points
-     * @param p1Abs
-     * @param p3Abs
-     * @param bitIndex
-     * @param refs
-     * @return
+     * @param p1Abs first corner of the rectangle in absolute coords
+     * @param p3Abs third corner (diagonal to p1Abs) of the rectangle in absolute coords
+     * @param bitIndex index of the bit of the cut
+     * @param refs list of the refs of the cut
+     * @return the list of relative points of the wanted cut
      */
     public List<VertexDTO> generateRectanglePointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p3Abs, int bitIndex, List<RefCutDTO> refs){
-        return CutFactory.generateRectangleRelativeEdgeEdgeFromAbsolute(p1Abs, p3Abs, bitIndex, refs, this, cncMachine);
+        return CutPointsFactory.generateRectangleRelativeEdgeEdgeFromAbsolute(p1Abs, p3Abs, bitIndex, refs, this, cncMachine);
     }
 
     /**
      * compute the valid base border cut points
-     * @param bitIndex
-     * @return
+     * @param bitIndex index of the bit of the cut
+     * @return the list of relative points of the wanted cut
      */
     public List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsolute(int bitIndex){
-        return CutFactory.generateBorderPointsRelativeEdgeEdgeFromAbsolute(bitIndex,this, cncMachine);
+        return CutPointsFactory.generateBorderPointsRelativeEdgeEdgeFromAbsolute(bitIndex,this, cncMachine);
     }
 
     /**
@@ -577,9 +552,15 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return the list of absolute points
      */
     public List<VertexDTO> getAbsolutePointsPosition(CutDTO cutDTO) {
-        return CutFactory.getAbsolutePointsPositionOfCutDTO(cutDTO, this.cncMachine);
+        return cncMachine.getAbsolutePointsPositionOfCutDTO(cutDTO);
     }
 
+    /**
+     * Test if the ref and the cut have a circular reference
+     * @param refCutDTO to test
+     * @param cutToTest to test
+     * @ true if circular, false if not circular
+     */
     public boolean isRefCircular(RefCutDTO refCutDTO, CutDTO cutToTest) {
         return RefCut.isRefCircular(refCutDTO, cutToTest);
     }

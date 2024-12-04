@@ -1,6 +1,5 @@
 package Domain;
 
-import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
 
@@ -11,9 +10,9 @@ import java.util.Optional;
 /**
  * Helper class that centralizes all of the cut creation/modification maths to generate relative and absolute points
  */
-public class CutFactory {
+public class CutPointsFactory {
 
-    // 5 possibilies :
+    // 5 possibilities :
 
     // 1 : ref list is empty : just return the points
 
@@ -36,6 +35,37 @@ public class CutFactory {
     //                              -how absolute points are computed : gets the intersection points of it's first two references, and offset the relative point by this offset.
     //
 
+
+    /**
+     * Get the copied absolute points of the cut, based on it's references
+     * @return List<VertexDTO> of the copied absolute points
+     */
+    public static List<VertexDTO> generateAbsolutePointsPosition(Cut c, CNCMachine cncMachine) {
+        if (c.getRefs().isEmpty()){
+            return c.getCopyPoints();
+        }
+        if(c.getType() == CutType.RETAILLER){
+            return CutPointsFactory.generateAbsoluteBorderPoints(c, cncMachine);
+        }
+        if(c.getType() == CutType.LINE_FREE){
+            return CutPointsFactory.generateAbsoluteLineFreePoints(c, cncMachine);
+        }
+        if(c.getType()  == CutType.LINE_VERTICAL){
+            return CutPointsFactory.generateAbsoluteLineVerticalPoints(c, cncMachine);
+        }
+        if(c.getType()  == CutType.LINE_HORIZONTAL){
+            return CutPointsFactory.generateAbsoluteLineHorizontalPoints(c, cncMachine);
+        }
+        if(c.getType()  == CutType.RECTANGULAR){
+            return CutPointsFactory.generateAbsoluteRectangularPoints(c, cncMachine);
+        }
+        if(c.getType()  == CutType.L_SHAPE){
+            return CutPointsFactory.generateAbsoluteLPoints(c, cncMachine);
+        }
+        else{
+            throw new NullPointerException("Invalid cuttype");
+        }
+    }
 
     /**
      * From a center anchor, generate the points of a rectangle with a width and a height
@@ -75,16 +105,6 @@ public class CutFactory {
         return new ArrayList<>(List.of(p1,p2,p3,p4,p5));
     }
 
-    /**
-     * From a CutDTO, returns it's absolute points position
-     * @param cutDTO
-     * @param cncMachine
-     * @return
-     */
-    public static List<VertexDTO> getAbsolutePointsPositionOfCutDTO(CutDTO cutDTO, CNCMachine cncMachine){
-        Cut c = cncMachine.getPanel().createPanelCut(cutDTO);
-        return c.getAbsolutePointsPosition(cncMachine);
-    }
 
     /**
      * Generate the relative points of the retaille cut
@@ -338,14 +358,14 @@ public class CutFactory {
      * @param cncMachine
      * @return
      */
-    public static List<VertexDTO> getAbsoluteBorderPoints(Cut c, CNCMachine cncMachine){
+    private static List<VertexDTO> generateAbsoluteBorderPoints(Cut c, CNCMachine cncMachine){
         double bitDiameter = cncMachine.getBitStorage().getBitDiameter(c.getBitIndex());
         VertexDTO centerAnchor = cncMachine.getPanel().getPanelDimension().mul(0.5);
         double widthLeft = c.getPoints().getFirst().getX() + bitDiameter/2;
         double heightBottom = c.getPoints().getFirst().getY() + bitDiameter/2;
         double widthRight = c.getPoints().get(1).getX() + bitDiameter/2;
         double heightTop = c.getPoints().get(1).getY() + bitDiameter/2;
-        return CutFactory.generateRectanglePoints(centerAnchor, widthLeft, widthRight, heightBottom, heightTop);
+        return CutPointsFactory.generateRectanglePoints(centerAnchor, widthLeft, widthRight, heightBottom, heightTop);
     }
 
     /**
@@ -354,7 +374,7 @@ public class CutFactory {
      * @param cncMachine
      * @return
      */
-    public static List<VertexDTO> getAbsoluteLineFreePoints(Cut c, CNCMachine cncMachine){
+    private static List<VertexDTO> generateAbsoluteLineFreePoints(Cut c, CNCMachine cncMachine){
         return  c.getCopyPointsWithOffset(c.getRefs().getFirst().getAbsoluteOffset(cncMachine));
     }
 
@@ -364,7 +384,7 @@ public class CutFactory {
      * @param cncMachine
      * @return
      */
-    public static List<VertexDTO> getAbsoluteLineVerticalPoints(Cut c, CNCMachine cncMachine){
+    private static List<VertexDTO> generateAbsoluteLineVerticalPoints(Cut c, CNCMachine cncMachine){
         int bit1Index = c.getBitIndex();
         int bit2Index = c.getRefs().getFirst().getCut().getBitIndex();
         VertexDTO anchor = c.getRefs().getFirst().getAbsoluteOffset(cncMachine);
@@ -385,7 +405,7 @@ public class CutFactory {
      * @param cncMachine
      * @return
      */
-    public static List<VertexDTO> getAbsoluteLineHorizontalPoints(Cut c, CNCMachine cncMachine){
+    private static List<VertexDTO> generateAbsoluteLineHorizontalPoints(Cut c, CNCMachine cncMachine){
         int bit1Index = c.getBitIndex();
         int bit2Index = c.getRefs().getFirst().getCut().getBitIndex();
         VertexDTO anchor = c.getRefs().getFirst().getAbsoluteOffset(cncMachine);
@@ -406,7 +426,7 @@ public class CutFactory {
      * @param cncMachine
      * @return
      */
-    public static List<VertexDTO> getAbsoluteRectangularPoints(Cut c, CNCMachine cncMachine){
+    private static List<VertexDTO> generateAbsoluteRectangularPoints(Cut c, CNCMachine cncMachine){
         if(c.getRefs().size() < 2){throw new AssertionError(c.getType() + " needs two refs, it has " + c.getRefs().size());}
 
         // Compute the diameters of the bits used
@@ -466,7 +486,7 @@ public class CutFactory {
             double centerCenterWidth = c.getPoints().get(1).getX() + diameterL;
             double centerCenterHeight = c.getPoints().get(1).getY() + diameterL;
 
-            return CutFactory.generateRectanglePoints(centerCenterOffset, centerCenterWidth, centerCenterHeight);
+            return CutPointsFactory.generateRectanglePoints(centerCenterOffset, centerCenterWidth, centerCenterHeight);
 
         }
         else{
@@ -480,7 +500,7 @@ public class CutFactory {
      * @param cncMachine
      * @return
      */
-    public static List<VertexDTO> getAbsoluteLPoints(Cut c, CNCMachine cncMachine) {
+    private static List<VertexDTO> generateAbsoluteLPoints(Cut c, CNCMachine cncMachine) {
         if(c.getRefs().size() < 2){throw new AssertionError(c.getType() + " needs two refs, it has " + c.getRefs().size());}
 
         ArrayList<VertexDTO> outputPoints = new ArrayList<>();

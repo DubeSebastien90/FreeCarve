@@ -5,10 +5,7 @@ import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
-import Common.Pair;
 
-import java.util.*;
-import java.sql.Ref;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -179,30 +176,7 @@ class Cut {
      * @return List<VertexDTO> of the copied absolute points
      */
     public List<VertexDTO> getAbsolutePointsPosition(CNCMachine cncMachine) {
-        if (refs.isEmpty()){
-            return this.getCopyPoints();
-        }
-        if(type == CutType.RETAILLER){
-            return CutFactory.getAbsoluteBorderPoints(this, cncMachine);
-        }
-        if(type == CutType.LINE_FREE){
-            return CutFactory.getAbsoluteLineFreePoints(this, cncMachine);
-        }
-        if(type == CutType.LINE_VERTICAL){
-            return CutFactory.getAbsoluteLineVerticalPoints(this, cncMachine);
-        }
-        if(type == CutType.LINE_HORIZONTAL){
-            return CutFactory.getAbsoluteLineHorizontalPoints(this, cncMachine);
-        }
-        if(type == CutType.RECTANGULAR){
-            return CutFactory.getAbsoluteRectangularPoints(this, cncMachine);
-        }
-        if(type == CutType.L_SHAPE){
-            return CutFactory.getAbsoluteLPoints(this, cncMachine);
-        }
-        else{
-            throw new NullPointerException("Invalid cuttype");
-        }
+        return CutPointsFactory.generateAbsolutePointsPosition(this, cncMachine);
     }
 
     @Override

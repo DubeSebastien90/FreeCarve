@@ -1,6 +1,10 @@
 package Domain;
 
+import Common.DTO.CutDTO;
+import Common.DTO.VertexDTO;
 import Common.Interfaces.IMemorizer;
+
+import java.util.List;
 
 /**
  * Class that represents the CNC machine
@@ -51,31 +55,6 @@ class CNCMachine {
         this.panel.validateCuts(bitStorage);
     }
 
-    public double edgeEdgeToCenterCenter(double edgeEdge, int bitIndex1, int bitIndex2){
-
-        double bitDiameter1 = bitStorage.getBitDiameter(bitIndex1);
-        double bitDiameter2 = bitStorage.getBitDiameter(bitIndex2);
-        if(edgeEdge < 0){
-            return edgeEdge - bitDiameter1/2 -bitDiameter2/2;
-        }
-        else{
-            return edgeEdge + bitDiameter1/2 + bitDiameter2/2;
-        }
-
-    }
-
-    public double centerCenterToEdgeEdge(double centerCenter, int bitIndex1, int bitIndex2){
-        double bitDiameter1 = bitStorage.getBitDiameter(bitIndex1);
-        double bitDiameter2 = bitStorage.getBitDiameter(bitIndex2);
-
-        if(centerCenter > 0){
-            return centerCenter - bitDiameter1/2 -bitDiameter2/2;
-        }
-        else{
-            return centerCenter + bitDiameter1/2 + bitDiameter2 /2;
-        }
-    }
-
     public void resetPanelCNC(){
         PanelCNC copy = this.panel;
         memorizer.executeAndMemorize(() -> {
@@ -83,5 +62,16 @@ class CNCMachine {
         }, () -> {
             this.panel = copy;
         });
+    }
+
+
+    /**
+     * From a CutDTO, returns it's absolute points position
+     * @param cutDTO
+     * @return
+     */
+    public List<VertexDTO> getAbsolutePointsPositionOfCutDTO(CutDTO cutDTO){
+        Cut c = this.getPanel().createPanelCut(cutDTO);
+        return c.getAbsolutePointsPosition(this);
     }
 }
