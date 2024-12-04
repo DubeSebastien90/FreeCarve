@@ -47,8 +47,15 @@ class ClampZone {
      * @return A boolean indicating if the point is in the ClampZone.
      */
     boolean pointCollision(VertexDTO coordinatesmm) {
-        //todo
-        return false;
+        double minX = Math.min(zone[0].getX(), zone[1].getX());
+        double maxX = Math.max(zone[0].getX(), zone[1].getX());
+        double minY = Math.min(zone[0].getY(), zone[1].getX());
+        double maxY = Math.max(zone[0].getY(), zone[1].getX());
+
+        return (coordinatesmm.getX() >= minX
+                && coordinatesmm.getX() <= maxX
+                && coordinatesmm.getY() >= minY
+                && coordinatesmm.getY() <= maxY);
     }
 
     @Override
@@ -73,5 +80,14 @@ class ClampZone {
 
     VertexDTO[] getZone() {
         return this.zone;
+    }
+
+    public boolean intersectCut(Cut cut) {
+        for(VertexDTO vertex : cut.getAbsolutePointsPosition()){
+            if(pointCollision(vertex)){
+                return true;
+            }
+        }
+        return false;
     }
 }
