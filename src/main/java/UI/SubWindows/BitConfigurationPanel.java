@@ -104,9 +104,7 @@ public class BitConfigurationPanel extends BasicWindow {
         for (int i = 0; i < getBitList().length; i++) {
             JToggleButton bit = getBitList()[i];
             int finalI = i;
-            bit.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
+            bit.addActionListener(e->{
                     ChangeAttributeEvent event = new ChangeAttributeEvent(
                             this,
                             new BitInfoDisplay(
@@ -120,7 +118,6 @@ public class BitConfigurationPanel extends BasicWindow {
                         getBitList()[j].setSelected(finalI == j);
                     }
                     selectedBit = finalI;
-                }
             });
         }
     }

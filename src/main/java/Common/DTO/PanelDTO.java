@@ -1,15 +1,14 @@
 package Common.DTO;
 
 import java.io.Serializable;
-import Common.Util;
-import Domain.CutType;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 import Common.CutState;
+import Common.Util;
+import Domain.CutType;
 
 /**
  * This class is a DTO wrapper of the {@code Panel} class in order to transfer READ-ONLY informations
@@ -72,6 +71,7 @@ public class PanelDTO implements Serializable {
     public CutDTO getBorderCut() {
         return this.borderCut;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,6 +1,8 @@
 package Domain.IO;
 
+import Common.DTO.BitDTO;
 import Common.DTO.PanelDTO;
+import Common.Exceptions.InvalidFileExtensionException;
 import Domain.TestHelper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -38,7 +40,7 @@ public class ProjectFileManagerTest {
         String texte = "Gateau\nau\nBananes";
 
         //Act
-        ProjectFileManager.saveString(path, texte);
+        ProjectFileManager.saveString(new File(path), texte);
 
         //Assert
         StringBuilder actualText = new StringBuilder();
@@ -55,30 +57,57 @@ public class ProjectFileManagerTest {
     }
 
     @Test
-    void saveProject_ValidPath_WritesFile() throws IOException {
+    void saveProject_ValidPath_WritesFile() throws IOException, InvalidFileExtensionException {
         //Arrange
         String path = "test/saveProject_ValidPath.PAN";
         PanelDTO panelDTO = TestHelper.createPanelDTO();
 
         //Act
-        ProjectFileManager.saveProject(path, panelDTO);
+        ProjectFileManager.saveProject(new File(path), panelDTO);
 
         //Assert
         Assertions.assertTrue(new File(path).exists());
     }
 
     @Test
-    void loadProject_ValidPath_ReadsDTOFromFile() throws IOException, ClassNotFoundException {
+    void loadProject_ValidPath_ReadsDTOFromFile() throws IOException, ClassNotFoundException, InvalidFileExtensionException {
         //Arrange
         String path = "test/loadProject_ValidPath.PAN";
         PanelDTO panelDTO = TestHelper.createPanelDTO();
 
         //Act
-        ProjectFileManager.saveProject(path, panelDTO);
-        PanelDTO result = ProjectFileManager.loadProject(path);
+        ProjectFileManager.saveProject(new File(path), panelDTO);
+        PanelDTO result = ProjectFileManager.loadProject(new File(path));
 
         //Assert
         Assertions.assertEquals(panelDTO, result);
+    }
+
+    @Test
+    void saveBits_ValidPath_WritesFile() throws IOException, InvalidFileExtensionException {
+        //Arrange
+        String path = "test/saveBits_ValidPath.CNC";
+        BitDTO[] bitDTOS = {new BitDTO("", 0.0), new BitDTO("Default", 0.5), new BitDTO("", 0.0)};
+
+        //Act
+        ProjectFileManager.saveBits(new File(path), bitDTOS);
+
+        //Assert
+        Assertions.assertTrue(new File(path).exists());
+    }
+
+    @Test
+    void loadBits_ValidPath_ReadsDTOFromFile() throws IOException, ClassNotFoundException, InvalidFileExtensionException {
+        //Arrange
+        String path = "test/loadBits_ValidPath.CNC";
+        BitDTO[] bitDTOS = {new BitDTO("", 0.0), new BitDTO("Default", 0.5), new BitDTO("", 0.0)};
+
+        //Act
+        ProjectFileManager.saveBits(new File(path), bitDTOS);
+        BitDTO[] result = ProjectFileManager.loadBits(new File(path));
+
+        //Assert
+        Assertions.assertArrayEquals(bitDTOS, result);
     }
 
 }

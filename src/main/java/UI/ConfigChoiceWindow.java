@@ -1,10 +1,12 @@
 package UI;
 
 import Common.DTO.BitDTO;
+import Common.Exceptions.InvalidFileExtensionException;
 import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
+import UI.Listeners.SaveToolsActionListener;
 import UI.SubWindows.AttributePanel;
 import UI.SubWindows.BitConfigurationPanel;
 import UI.Display2D.Rendering2DWindow;
@@ -16,6 +18,8 @@ import UI.Widgets.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -31,6 +35,8 @@ import java.util.Map;
 public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, ChangeAttributeListener {
     private final Rendering2DWindow rend;
     private final BigButton nextButton = new BigButton("Suivant");
+    private final JButton saveToolsButton = UiUtil.createSVGButton("upload", true, 50);
+    private final JButton loadToolsButton = UiUtil.createSVGButton("download", true, 50);
     private final MainWindow mainWindow;
     private final BitConfigurationPanel bitWindow;
     private final AttributePanel attributePanel;
@@ -38,17 +44,16 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
     /**
      * Constructs a ConfigChoiceWindow and initializes its components and layout.
      */
-    public ConfigChoiceWindow(MainWindow mainWindow, Map<Integer, BitDTO> configuredBitsMap) {
+    public ConfigChoiceWindow(MainWindow mainWindow) {
         this.setLayout(new GridBagLayout());
         rend = new Rendering2DWindow(mainWindow, this, this);
         bitWindow = new BitConfigurationPanel(this, mainWindow);
         attributePanel = new AttributePanel(true, mainWindow);
-        configuredBitsMap = configuredBitsMap;
+        this.mainWindow = mainWindow;
         setFocusable(true);
         requestFocusInWindow();
         init();
-        setButtonEventHandler();
-        this.mainWindow = mainWindow;
+        setButtonEventHandlers();
     }
 
     /**
@@ -74,44 +79,77 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
         gbc.insets = new Insets(0, 0, 0, 10);
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 2;
+        gbc.gridheight = 2;
+        gbc.gridwidth = 5;
         gbc.weightx = 2;
-        gbc.weighty = 0.75;
+        gbc.weighty = 0.90;
         gbc.fill = GridBagConstraints.BOTH;
         add(splitPane, gbc);
 
         gbc.insets = new Insets(5, 0, 0, 10);
         gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
+        gbc.gridy = 2;
+        gbc.gridheight = 2;
+        gbc.gridwidth = 2;
         gbc.weightx = 2;
-        gbc.weighty = 0.25;
+        gbc.weighty = 0.10;
         gbc.fill = GridBagConstraints.BOTH;
         add(bitWindow, gbc);
 
-        gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridx = 3;
+        gbc.gridy = 2;
         gbc.gridheight = 1;
-        gbc.weightx = 2;
+        gbc.gridwidth = 2;
         gbc.weighty = 0.25;
         gbc.fill = GridBagConstraints.BOTH;
         add(nextButton, gbc);
+
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 3;
+        gbc.gridy = 3;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.weighty = 0.05;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(saveToolsButton, gbc);
+
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 4;
+        gbc.gridy = 3;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.weighty = 0.05;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(loadToolsButton, gbc);
+
     }
 
     /**
-     * Sets the event handler for the next button. When the button is clicked,
-     * it triggers the action to proceed to the next window in the main interface.
+     * Sets the event handler for the buttons
      */
-    private void setButtonEventHandler() {
-        nextButton.getButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainWindow.getMiddleContent().nextWindow();
+    private void setButtonEventHandlers() {
+        nextButton.getButton().addActionListener(e-> mainWindow.getMiddleContent().nextWindow());
+
+        saveToolsButton.addActionListener(new SaveToolsActionListener(mainWindow));
+
+        loadToolsButton.addActionListener(e->{
+            File file = Utils.chooseFile("Charger outils", "defaut.CNC", mainWindow.getFrame(), FileCache.INSTANCE.getLastToolSave(), "Fichier outils (CNC)", "CNC");
+            if (file != null) {
+                try {
+                    mainWindow.getController().loadTools(file);
+                } catch (InvalidFileExtensionException ex) {
+                    System.out.println("Invalid file extension");
+                } catch (IOException ex) {
+                    System.out.println("Unable to load file");
+                } catch (ClassNotFoundException ex) {
+                    System.out.println("File content is not valid");
+                }
+                bitWindow.refresh();
+                attributePanel.update();
+                mainWindow.getMiddleContent().getCutWindow().notifyObservers();
+                FileCache.INSTANCE.setLastToolSave(file);
             }
         });
-
     }
 
     /**

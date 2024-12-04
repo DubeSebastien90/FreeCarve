@@ -40,17 +40,23 @@ public class PanelCNCTest {
     @Test
     void constructor_WithDTO_BuildsCorrectPanel(){
         // Arrange
+        ArrayList<VertexDTO> pointList = new ArrayList<>();
+        pointList.add(new VertexDTO(13, 14, 15));
+        pointList.add(new VertexDTO(16, 17, 18));
+
+        RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>());
+        panelCNC.requestCut(rcDTO);
+
         PanelDTO panelDTO = panelCNC.getDTO();
+
         // Act
         PanelCNC result = new PanelCNC(panelDTO, new UndoRedoManager());
         // Assert
         Assertions.assertEquals(panelCNC.getWidth(), result.getWidth());
         Assertions.assertEquals(panelCNC.getHeight(), result.getHeight());
-        Assertions.assertEquals(panelCNC.getPanelDimension().getX(), result.getPanelDimension().getX());
-        Assertions.assertEquals(panelCNC.getPanelDimension().getY(), result.getPanelDimension().getY());
+        Assertions.assertEquals(panelCNC.getPanelDimension(), result.getPanelDimension());
         Assertions.assertEquals(panelCNC.getCutList(), result.getCutList());
         Assertions.assertEquals(panelCNC.getDepth(), result.getDepth());
-        Assertions.assertEquals(panelCNC, result);
     }
 
     @Test

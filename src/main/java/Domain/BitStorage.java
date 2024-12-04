@@ -6,6 +6,7 @@ import Common.Exceptions.InvalidBitException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
  * Represents the bit storage in a {@code CNCMachine}
@@ -17,13 +18,27 @@ class BitStorage {
     private Map<Integer, BitDTO> configuredBits;
 
     BitStorage() {
-        this(Arrays.stream(new Bit[12]).map(bit -> new Bit()).toList().toArray(Bit[]::new));
+        this(new BitDTO[12]);
     }
 
-    BitStorage(Bit[] bitList) {
-        bitList[0] = new Bit("Défaut", 0.5f);
-        this.bitList = bitList;
+    BitStorage(BitDTO[] bitList) {
         this.configuredBits = new HashMap<>();
+        this.bitList = new Bit[bitList.length];
+
+        for (int i = 0; i < bitList.length; i++) {
+            if (bitList[i] != null && bitList[i].getDiameter() != 0.0f) {
+                configuredBits.put(i, bitList[i]);
+                this.bitList[i] = new Bit(bitList[i].getName(), bitList[i].getDiameter());
+            } else {
+                this.bitList[i] = new Bit();
+            }
+        }
+
+        if (configuredBits.isEmpty()) {
+            try {
+                setBit(new Bit("Défaut", 0.5f), 0);
+            } catch (InvalidBitException ignored) {}
+        }
     }
 
     public BitDTO[] getBitList() {
@@ -39,6 +54,7 @@ class BitStorage {
         if (index < 0 || index > bitList.length)
             throw new InvalidBitException("L'index doit être entre 0 et 11");
         this.bitList[index] = bit;
+        configuredBits.put(index, bit.getDTO());
     }
 
     /**
@@ -58,6 +74,7 @@ class BitStorage {
             bitList[position].setName(bitDTO.getName());
             bitList[position].setDiameter(bitDTO.getDiameter());
         }
+        configuredBits.put(position, bitDTO);
     }
 
     /**
@@ -74,14 +91,11 @@ class BitStorage {
         if (bitList[position].getDiameter() == 0)
             throw new InvalidBitException("Il doit y avoir un bit présent pour le supprimer");
 
+        configuredBits.remove(position);
         bitList[position] = new Bit();
     }
 
     Map<Integer, BitDTO> getConfiguredBits() {
-        for (int i = 0; i < bitList.length; i++) {
-            if (bitList[i] != null && bitList[i].getDiameter() != 0.0f)
-                configuredBits.put(i, new BitDTO(bitList[i].getName(), bitList[i].getDiameter()));
-        }
         return configuredBits;
     }
 

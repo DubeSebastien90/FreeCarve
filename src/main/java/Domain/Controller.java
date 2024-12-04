@@ -2,6 +2,7 @@ package Domain;
 
 import Common.DTO.*;
 import Common.Exceptions.InvalidBitException;
+import Common.Exceptions.InvalidFileExtensionException;
 import Common.Interfaces.*;
 import Common.Units;
 import Common.Interfaces.IDoAction;
@@ -14,6 +15,8 @@ import Domain.ThirdDimension.Mesh;
 import Domain.ThirdDimension.Scene;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.util.List;
 import java.util.Map;
@@ -100,9 +103,14 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param width  The new width of the board.
      * @param height The new height of the board.
      */
-    public void resizePanel(double width, double height, double depth) {
-        this.cncMachine.getPanel().resize(width, height, depth);
+    public void resizePanel(double width, double height) {
+        cncMachine.getPanel().resize(width, height, cncMachine.getPanel().getDepth());
     }
+
+    public void resizePanel(double width, double height, double depth) {
+        cncMachine.getPanel().resize(width, height, depth);
+    }
+
 
     /**
      * Removes a cut from the current {@code CNCMachine} board
@@ -137,6 +145,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      */
     public void removeBit(int index) throws InvalidBitException {
         cncMachine.getBitStorage().removeBit(index);
+        cncMachine.getPanel().validateCuts(cncMachine.getBitStorage());
     }
 
     /**
@@ -147,6 +156,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      */
     public void modifyBit(int index, BitDTO bit) {
         cncMachine.getBitStorage().updateBit(index, bit);
+        cncMachine.getPanel().validateCuts(cncMachine.getBitStorage());
     }
 
     /**
@@ -192,32 +202,40 @@ public class Controller implements IUnitConverter, IMemorizer {
     /**
      * Saves the current project.
      */
-    public void saveProject(String path) {
-        try{
-            ProjectFileManager.saveProject(path, getPanelDTO());
-        } catch (Exception e) {
-            System.out.println("There was an error saving the project at path " + path);
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Saves the Gcode of the project.
-     */
-    public void saveGcode(String path) {
-        ProjectFileManager.saveString(path, convertToGCode());
+    public void saveProject(File file) throws InvalidFileExtensionException, IOException {
+        ProjectFileManager.saveProject(file, getPanelDTO());
     }
 
     /**
      * Opens a file and set the current project as the project saved in the file.
      */
-    public void openProject(String path) {
-        try {
-            cncMachine.setPanel(new PanelCNC(ProjectFileManager.loadProject(path), undoRedoManager));
-        } catch (Exception e) {
-        System.out.println("There was an error opening the project at path " + path);
-            e.printStackTrace();
-        }
+    public void loadProject(File path) throws InvalidFileExtensionException, IOException, ClassNotFoundException {
+        PanelDTO result = ProjectFileManager.loadProject(path);
+        PanelDTO copy = getPanelDTO();
+        undoRedoManager.executeAndMemorize(() -> cncMachine.setPanel(new PanelCNC(result, undoRedoManager)), () -> cncMachine.setPanel(new PanelCNC(copy, undoRedoManager)));
+    }
+
+    /**
+     * Saves the current tools.
+     */
+    public void saveTools(File path) throws InvalidFileExtensionException, IOException {
+        ProjectFileManager.saveBits(path, getBitsDTO());
+    }
+
+    /**
+     * Opens a file and set the current project as the project saved in the file.
+     */
+    public void loadTools(File path) throws InvalidFileExtensionException, IOException, ClassNotFoundException {
+        BitDTO[] result = ProjectFileManager.loadBits(path);
+        BitDTO[] copy = getBitsDTO();
+        undoRedoManager.executeAndMemorize(()->cncMachine.setBitStorage(new BitStorage(result)), ()->cncMachine.setBitStorage(new BitStorage(copy)));;
+    }
+
+    /**
+     * Saves the Gcode of the project.
+     */
+    public void saveGcode(File path) {
+        ProjectFileManager.saveString(path, convertToGCode());
     }
 
     /**
@@ -421,7 +439,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      *
      * @return Map containing Position of the bit, BitDTO
      */
-    public Map<Integer, BitDTO> refreshConfiguredBitMaps() {
+    public Map<Integer, BitDTO> getConfiguredBitsMap() {
         return cncMachine.getBitStorage().getConfiguredBits();
     }
 

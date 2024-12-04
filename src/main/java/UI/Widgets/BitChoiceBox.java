@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  * The {@code BitChoiceBox} class is a UI class that encapsulate the BitChoiceBox editor (choosing a bit in a drop down menu)
  *  It is used to store the index and the name of the item
- *  So when the user wants to change the bit of a cut, he can choose it in a drop down menu
+ *  So when the user wants to change the bit of a cut, they can choose it in a drop down menu
  *
  * @author Antoine Morin
  * @version 1.0

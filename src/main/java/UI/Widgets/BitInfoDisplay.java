@@ -15,7 +15,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Map;
 
 /**
  * Represents a display panel that shows and allows editing of bit information.
@@ -210,12 +209,8 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
                     newBit
             );
         }
-        mainWindow.getMiddleContent().configuredBitsListener(
-                bitConfigurationPanel.getSelectedBit(),
-                newBit
-        );
         bitConfigurationPanel.refresh();
-        mainWindow.getMiddleContent().getCutWindow().getCutListPanel().refreshAttributeContainer();
+        mainWindow.getMiddleContent().getCutWindow().notifyObservers();
     }
 
     private void removeBit() {
@@ -223,16 +218,10 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
             //Todo: Gérer message qui dit qu'on ne peut pas delete si aucun bit configuré
             return;
 
-        if (mainWindow.getMiddleContent().getConfiguredBitsMap().size() == 1) {
-            //Todo: Gérer message d'erreur pour la zone de message
-            return;
-        }
-
         try {
             mainWindow.getController().removeBit(bitConfigurationPanel.getSelectedBit());
-            mainWindow.getMiddleContent().getConfiguredBitsMap().remove(bitConfigurationPanel.getSelectedBit());
             this.mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().setSelectedBit(
-                    (Integer) this.mainWindow.getMiddleContent().getConfiguredBitsMap().keySet().toArray()[0]
+                    (Integer) this.mainWindow.getController().getConfiguredBitsMap().keySet().toArray()[0]
             );
         } catch (InvalidBitException e) {
             //Todo: Gérer le message d'erreur, might never happen
@@ -241,7 +230,8 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
         nameTextArea.setText("Aucun outil assigné");
         widthTextArea.getNumericInput().setValue(0.0);
         bitConfigurationPanel.refresh();
-        mainWindow.getMiddleContent().getCutWindow().getCutListPanel().refreshAttributeContainer();
+        mainWindow.getMiddleContent().getCutWindow().notifyObservers();
+        //mainWindow.getMiddleContent().getCutWindow().getCutListPanel().refreshAttributeContainer();
     }
 
     /**

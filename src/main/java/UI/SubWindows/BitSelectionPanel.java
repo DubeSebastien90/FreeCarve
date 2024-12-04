@@ -24,7 +24,6 @@ public class BitSelectionPanel extends BasicWindow {
     private JPanel panel;
     private ButtonGroup buttonGroup = new ButtonGroup();
     private final JToggleButton[] bitButtonList = new JToggleButton[UIConfig.INSTANCE.getMAX_NB_BITS()];
-    private Map<Integer, BitDTO> configuredBitsMap;
 
     /**
      * The position of the selected bit in the bit list
@@ -38,12 +37,10 @@ public class BitSelectionPanel extends BasicWindow {
      * @param haveBackground true if the panel should have a background, false otherwise
      * @param listener the listener for attribute changes triggered by bit selection.
      * @param mainWindow the main window of the application
-     * @param configuredBitsMap the map of configured bits
      */
-    public BitSelectionPanel(boolean haveBackground, ChangeAttributeListener listener, MainWindow mainWindow, Map<Integer, BitDTO> configuredBitsMap) {
+    public BitSelectionPanel(boolean haveBackground, ChangeAttributeListener listener, MainWindow mainWindow) {
         super(haveBackground);
         this.mainWindow = mainWindow;
-        this.configuredBitsMap = configuredBitsMap;
         this.listener = listener;
         updateBitList();
         init();
@@ -85,6 +82,7 @@ public class BitSelectionPanel extends BasicWindow {
      */
     public void update(GridBagConstraints gbc){
         panel.removeAll();
+        Map<Integer, BitDTO> configuredBitsMap = mainWindow.getController().getConfiguredBitsMap();
 
         if(configuredBitsMap == null || configuredBitsMap.isEmpty()){
             JLabel label = new JLabel("Aucun bit configuré");
@@ -152,7 +150,7 @@ public class BitSelectionPanel extends BasicWindow {
      * Updates the bit list with the latest bits from the controller
      */
     private void updateBitList(){
-        for(Map.Entry<Integer, BitDTO> entry : configuredBitsMap.entrySet()){
+        for(Map.Entry<Integer, BitDTO> entry : mainWindow.getController().getConfiguredBitsMap().entrySet()){
             BitDTO bitDTO = entry.getValue();
             JToggleButton button = new JToggleButton(bitDTO.getName());
             button.setActionCommand(String.valueOf(entry.getKey()));

@@ -168,6 +168,10 @@ class Cut {
 
     public CutState getCutState(){return this.cutState;}
 
+    public void setCutState(CutState state) {
+        this.cutState = state;
+    }
+
     public static List<VertexDTO> generateRectanglePoints(VertexDTO centerAnchor, double width, double height){
 
         VertexDTO p1 = new VertexDTO(centerAnchor.getX() - width/2, centerAnchor.getY() - height/2, centerAnchor.getZ());

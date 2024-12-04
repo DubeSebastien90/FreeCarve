@@ -133,7 +133,7 @@ public class UiUtil {
      * @param type type of the Cut
      * @return the name of the Cut
      */
-    public static  String getIconName(CutType type){
+    public static String getIconName(CutType type){
         String iconName = "";
         switch(type){
             case BORDER -> iconName = "Interdit";

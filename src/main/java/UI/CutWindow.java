@@ -49,16 +49,14 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     private Rendering2DWindow rendering2DWindow;
     private MainWindow mainWindow;
     private BitSelectionPanel bitSelectionPanel;
-    private Map<Integer, BitDTO> configuredBitsMap;
     private PanelObservers panelObservers;
 
     /**
      * Constructs a {@code CutWindow} instance initializing all of it's sub-panels
      * and sub-components
      */
-    public CutWindow(MainWindow mainWindow, Map<Integer, BitDTO> configuredBitsMap) {
+    public CutWindow(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
-        this.configuredBitsMap = configuredBitsMap;
         this.init(mainWindow);
         this.panelObservers = new PanelObservers();
 
@@ -197,7 +195,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         rendering2DWindow = new Rendering2DWindow(mainWindow, this, this);
         panel1 = rendering2DWindow;
 
-        bitSelectionPanel = new BitSelectionPanel(true, this, mainWindow, configuredBitsMap);
+        bitSelectionPanel = new BitSelectionPanel(true, this, mainWindow);
         bitPanel = bitSelectionPanel;
 
         attributePanel = new AttributePanel(true, mainWindow);

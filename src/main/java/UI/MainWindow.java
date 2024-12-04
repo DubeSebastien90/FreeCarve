@@ -1,6 +1,7 @@
 package UI;
 
 import Domain.Controller;
+import UI.Listeners.SaveDispatcher;
 import UI.Listeners.UndoRedoDispatcher;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
@@ -182,6 +183,7 @@ public class MainWindow {
             }
         });
 
-        DefaultKeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new UndoRedoDispatcher(controller));
+        DefaultKeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new UndoRedoDispatcher(getController()));
+        DefaultKeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new SaveDispatcher(this));
     }
 }

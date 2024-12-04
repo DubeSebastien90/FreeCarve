@@ -1,6 +1,7 @@
 package UI;
 
 import Domain.CutType;
+import UI.Listeners.SaveProjectActionListener;
 
 import javax.swing.*;
 
@@ -188,9 +189,7 @@ public class LeftBar extends JScrollPane {
      * Sets the save button in the toolBar to save the project at the default place on the machine.
      */
     private void saveActionListener() {
-        toolBar.getTool(ToolBar.Tool.SAVE).addActionListener(e -> {
-            //todo
-        });
+        toolBar.getTool(ToolBar.Tool.SAVE).addActionListener(new SaveProjectActionListener(mainWindow));
     }
 
     /**

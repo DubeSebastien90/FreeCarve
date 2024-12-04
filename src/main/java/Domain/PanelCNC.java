@@ -1,5 +1,7 @@
 package Domain;
 
+import Common.*;
+import Common.DTO.*;
 import Common.DTO.CutDTO;
 import Common.DTO.PanelDTO;
 import Common.DTO.RequestCutDTO;
@@ -44,14 +46,13 @@ class PanelCNC {
         updateBorderCut();
     }
 
-    public PanelCNC(PanelCNC panelDTO, IMemorizer memorizer) {
-        this.cutList = panelDTO.cutList.stream().toList();
-        this.clamps = panelDTO.clamps.stream().toList();
+    public PanelCNC(PanelDTO panelDTO, IMemorizer memorizer) {
         this.panelDimension = panelDTO.getPanelDimension();
-        this.memorizer = panelDTO.memorizer;
+        this.memorizer = memorizer;
+        this.borderCut = new Cut(panelDTO.getBorderCut(), new ArrayList<>());
+        this.clamps = new ArrayList<>();
         List<Cut> cuts = new ArrayList<>();
         cuts.add(borderCut);
-        updateBorderCut();
         for (CutDTO cutDTO : panelDTO.getCutsDTO()){
             cuts.add(new Cut(cutDTO, cuts));
         }
@@ -151,6 +152,19 @@ class PanelCNC {
         }
     }
 
+    /**
+     * Updates the validity state of the cuts depending on the bits
+     *
+     * @param bitStorage the bit storage containing the bits
+     */
+    void validateCuts(BitStorage bitStorage){
+        Map<Integer, BitDTO> configuredBits = bitStorage.getConfiguredBits();
+        for (Cut c : cutList) {
+            if (!c.getRefs().isEmpty()){
+                c.setCutState(configuredBits.containsKey(c.getBitIndex()) ? CutState.VALID : CutState.NOT_VALID);
+            }
+        }
+    }
 
     /**
      * Finds a specific cut with id
@@ -277,7 +291,7 @@ class PanelCNC {
             borderPoints.add(new VertexDTO(0, 0, 0));
 
             // Deliberately setting the bixIndex to -1, so that the borderCut has a recognizable bit, that has it's own property
-            this.borderCut = new Cut(new VertexDTO(0, 0, 0), CutType.RECTANGULAR, borderPoints, -1, getDepth());
+            this.borderCut = new Cut(CutType.RECTANGULAR, borderPoints, -1, getDepth());
         } else {
             ArrayList<VertexDTO> borderPoints = new ArrayList<>();
             borderPoints.add(new VertexDTO(0, 0, 0));

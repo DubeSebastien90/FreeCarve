@@ -1,5 +1,6 @@
 package UI;
 
+import UI.Listeners.ExportGcodeActionListener;
 import UI.SubWindows.BasicWindow;
 import UI.Widgets.BigButton;
 import UI.SubWindows.Rendering3DWindow;
@@ -9,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * Represents an export window that displays a 3D renderer for visualizing
@@ -114,15 +116,7 @@ public class ExportWindow extends JPanel {
     }
 
     private void setButtonAction() {
-        nextButton.getButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String path = Utils.chooseFile("Enregistrer", "ProjectGcode.gcode", ExportWindow.this, "Gcode files", "gcode");
-                if (path != null) {
-                    mainWindow.getController().saveGcode(path);
-                }
-            }
-        });
+        nextButton.getButton().addActionListener(new ExportGcodeActionListener(mainWindow));
     }
 
     /**

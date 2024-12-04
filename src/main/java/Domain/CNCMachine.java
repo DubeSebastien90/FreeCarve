@@ -28,7 +28,7 @@ class CNCMachine {
      * @param panel   The panel.
      */
     CNCMachine(BitStorage bitStorage, PanelCNC panel, IMemorizer memorizer) {
-        setPanel(panel);
+        this.panel = panel;
         setBitStorage(bitStorage);
         this.memorizer = memorizer;
     }
@@ -39,6 +39,7 @@ class CNCMachine {
 
     void setPanel(PanelCNC panel) {
         this.panel = panel;
+        this.panel.validateCuts(bitStorage);
     }
 
     public BitStorage getBitStorage() {
@@ -47,6 +48,7 @@ class CNCMachine {
 
     public void setBitStorage(BitStorage bitStorage) {
         this.bitStorage = bitStorage;
+        this.panel.validateCuts(bitStorage);
     }
 
     public double edgeEdgeToCenterCenter(double edgeEdge, int bitIndex1, int bitIndex2){

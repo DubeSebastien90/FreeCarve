@@ -99,15 +99,6 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
     }
 
     /**
-     * For all of the attributeContainer is the list of CutBox, refresh their properties
-     */
-    public void refreshAttributeContainer(){
-        for(CutBox c : cutBoxes){
-            c.getAttributeContainer().refreshBits();
-        }
-    }
-
-    /**
      * Initiates all of the {@code CutList} components
      */
     private void init() {

@@ -25,7 +25,7 @@ public class CNCMachineTest {
     void valid_board() {
         // Arrange
         PanelCNC panelCNC = new PanelCNC(new VertexDTO(12, 13, 0), new UndoRedoManager());
-        Bit[] bitList = new Bit[12];
+        BitDTO[] bitList = new BitDTO[12];
 
         // Act
         CNCMachine CNCMachine = new CNCMachine(new BitStorage(bitList), panelCNC, new UndoRedoManager());

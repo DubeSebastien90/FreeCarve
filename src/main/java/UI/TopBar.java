@@ -1,11 +1,18 @@
 package UI;
 
+import Common.Exceptions.InvalidFileExtensionException;
+import UI.Listeners.ExportGcodeActionListener;
+import UI.Listeners.SaveProjectActionListener;
+import UI.Listeners.SaveProjectAsActionListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * The {@code TopBar} class creates a menu at the top of the application which contains various functionality and support to the user
@@ -41,47 +48,56 @@ public class TopBar extends JMenuBar {
         JMenuItem enregistrer = new JMenuItem("Enregistrer");
         JMenuItem enregistrerSous = new JMenuItem("Enregistrer Sous");
         JMenuItem charger = new JMenuItem("Charger");
-        JMenuItem chargerRecent = new JMenuItem("Charger récent");
 
-        /***/JMenuItem exporter = new JMenuItem("Exporter GCODE");
+        JMenuItem exporter = new JMenuItem("Exporter GCODE");
 
         JMenuItem recharger = new JMenuItem("Recharger le projet");
 
-        /***/JMenuItem exit = new JMenuItem("Fermer l'application");
-        /***/JMenuItem settings = new JMenuItem("Paramètres");
-        /***/JMenuItem contact = new JMenuItem("Contactez nous");
-        /***/JMenuItem attributionLink = new JMenuItem("À propos");
-        /***/JMenuItem reset_panel = new JMenuItem("Recréer le panneau");
-        /***/JMenuItem close_project = new JMenuItem("Fermer le projet");
+        JMenuItem exit = new JMenuItem("Fermer l'application");
+        JMenuItem settings = new JMenuItem("Paramètres");
+        JMenuItem contact = new JMenuItem("Contactez nous");
+        JMenuItem attributionLink = new JMenuItem("À propos");
+        JMenuItem close_project = new JMenuItem("Fermer le projet");
 
 
-        exporter.addActionListener(e -> {
-            String path = Utils.chooseFile("Enregistrer", "ProjectGcode.gcode", TopBar.this, "Gcode files", "gcode");
-            if (path != null) {
-                mainWindow.getController().saveGcode(path);
-            }
-        });
         contact.addActionListener(e -> openEmailClient());
         attributionLink.addActionListener(e -> mainWindow.showAttributionWindow());
         settings.addActionListener(e -> mainWindow.showOptionWindow());
         exit.addActionListener(e -> mainWindow.getFrame().dispatchEvent(new WindowEvent(mainWindow.getFrame(), WindowEvent.WINDOW_CLOSING)));
-        reset_panel.addActionListener(e -> {
+        nouveau.addActionListener(e -> {
             mainWindow.getController().resetPanelCNC();
             mainWindow.getMiddleContent().getCutWindow().notifyObservers();
         });
+        enregistrer.addActionListener(new SaveProjectActionListener(mainWindow));
+        enregistrerSous.addActionListener(new SaveProjectAsActionListener(mainWindow));
+        charger.addActionListener(e -> {
+            File file = Utils.chooseFile("Charger projet", "Projet.PAN", mainWindow.getFrame(), FileCache.INSTANCE.getLastProjectSave(), "Fichier de projet (PAN)", "PAN");
+            if (file != null) {
+                try {
+                    mainWindow.getController().loadProject(file);
+                } catch (InvalidFileExtensionException ex) {
+                    System.out.println("Invalid file extension");
+                } catch (IOException ex) {
+                    System.out.println("Unable to load file");
+                } catch (ClassNotFoundException ex) {
+                    System.out.println("File content is not valid");
+                }
+                mainWindow.getMiddleContent().getCutWindow().notifyObservers();
+                FileCache.INSTANCE.setLastProjectSave(file);
+            }
+        });
         close_project.addActionListener(e -> mainWindow.showFileSelectionWindow());
+        exporter.addActionListener(new ExportGcodeActionListener(mainWindow));
 
         fichier.add(nouveau);
         fichier.add(enregistrer);
         fichier.add(enregistrerSous);
         fichier.add(charger);
         fichier.add(exporter);
-        fichier.add(chargerRecent);
         fichier.add(recharger);
         fichier.add(close_project);
 
         option.add(settings);
-        option.add(reset_panel);
         option.add(exit);
 
         aide.add(contact);

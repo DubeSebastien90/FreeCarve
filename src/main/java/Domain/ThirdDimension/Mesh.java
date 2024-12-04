@@ -136,12 +136,12 @@ public class Mesh extends Transform {
 
     private void setLocalTriangles(List<Triangle> list) {
         localTriangles = list;
-//        Vertex translation = Vertex.multiply(calculateCenter(), -1);
-//        for (Triangle t : getLocalTriangles()) {
-//            for (Vertex v : t.getVertices()) {
-//                v.add(translation);
-//            }
-//        }
+        Vertex translation = Vertex.multiply(calculateCenter(), -1);
+        for (Triangle t : getLocalTriangles()) {
+            for (Vertex v : t.getVertices()) {
+                v.add(translation);
+            }
+        }
     }
 
     /**
