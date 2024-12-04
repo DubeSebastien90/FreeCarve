@@ -44,13 +44,6 @@ public abstract class AttributeContainer extends BasicWindow {
     public abstract void setupEventListeners();
     public abstract void updatePanel(CutDTO newCutDTO);
 
-    /**
-     * Action to perform when changing the bit, in order to keep the wanted property : i.e the internal with of a rectangle
-     * @param c CutDTO with the new bit
-     * @return a CutDto with the modified relative points
-     */
-    protected abstract CutDTO recomputePointsAfterBitChange(CutDTO c);
-
 
     protected void init_attribute(){
 

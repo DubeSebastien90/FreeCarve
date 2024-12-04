@@ -100,10 +100,8 @@ public class AttributeContainerFree extends AttributeContainer {
         cutDTO = newCutDTO;
         offsetOfFirstPoint.getxInput().setValueInMMWithoutTrigerringListeners(edgeEdgeFirstPoint().getX());
         offsetOfFirstPoint.getyInput().setValueInMMWithoutTrigerringListeners(edgeEdgeFirstPoint().getY());
-        offsetOfFirstPoint.getzInput().setValueInMMWithoutTrigerringListeners(edgeEdgeFirstPoint().getZ());
         offsetOfSecondPoint.getxInput().setValueInMMWithoutTrigerringListeners(edgeEdgeSecondPoint().getX());
         offsetOfSecondPoint.getyInput().setValueInMMWithoutTrigerringListeners(edgeEdgeSecondPoint().getY());
-        offsetOfSecondPoint.getzInput().setValueInMMWithoutTrigerringListeners(edgeEdgeSecondPoint().getZ());
         depthBox.getInput().setValueInMMWithoutTrigerringListeners(cutDTO.getDepth());
         revalidate();
         repaint();
@@ -128,18 +126,6 @@ public class AttributeContainerFree extends AttributeContainer {
                 CutDTO c = new CutDTO(cutDTO);
                 VertexDTO oldVertex = c.getPoints().get(index);
                 VertexDTO newPoint = new VertexDTO(oldVertex.getX(), pb.getyInput().getMMValue(), oldVertex.getZ());
-                c.getPoints().set(index, newPoint);
-                mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
-            }
-        });
-
-        pb.getzInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                CutDTO c = new CutDTO(cutDTO);
-                VertexDTO oldVertex = c.getPoints().get(index);
-                VertexDTO newPoint = new VertexDTO(oldVertex.getX(), oldVertex.getY(), pb.getyInput().getMMValue());
                 c.getPoints().set(index, newPoint);
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));

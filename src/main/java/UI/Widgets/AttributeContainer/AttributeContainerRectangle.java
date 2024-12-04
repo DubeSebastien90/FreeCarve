@@ -156,7 +156,6 @@ public class AttributeContainerRectangle extends AttributeContainer{
         cutDTO = newCutDTO;
         offsetOfRectangle.getxInput().setValueInMMWithoutTrigerringListeners(getAnchorCenterPoint().getX());
         offsetOfRectangle.getyInput().setValueInMMWithoutTrigerringListeners(getAnchorCenterPoint().getY());
-        offsetOfRectangle.getzInput().setValueInMMWithoutTrigerringListeners(getAnchorCenterPoint().getZ());
         widthOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(getWidthEdgeEdge());
         heightOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(getHeightEdgeEdge());
         widthOfRectangleCenterCenter.getInput().setValueInMMWithoutTrigerringListeners(getWidthCenterCenter());
@@ -201,15 +200,6 @@ public class AttributeContainerRectangle extends AttributeContainer{
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = moveAllPointsCenterCenter(pb.getyInput().getMMValue(), VertexDTO.AXIS.Y);
-                mainWindow.getController().modifyCut(c);
-                cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
-            }
-        });
-
-        pb.getzInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                CutDTO c = moveAllPointsCenterCenter(pb.getzInput().getMMValue(), VertexDTO.AXIS.Z);
                 mainWindow.getController().modifyCut(c);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }

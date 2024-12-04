@@ -172,6 +172,7 @@ class Cut {
 
     public CutState getCutState(){return this.cutState;}
 
+    public void setCutState(CutState cutState){this.cutState = cutState;}
 
     /**
      * Get the copied absolute points of the cut, based on it's references

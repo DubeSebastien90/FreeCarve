@@ -19,7 +19,6 @@ public class PointsBox extends GenericAttributeBox {
 
     private MeasurementInputField xInput;
     private MeasurementInputField yInput;
-    private MeasurementInputField zInput;
 
 
     public PointsBox(MainWindow mainWindow, boolean hasBackground, String name, VertexDTO vertexDTO) {
@@ -32,7 +31,6 @@ public class PointsBox extends GenericAttributeBox {
 
         this.xInput = new MeasurementInputField(mainWindow, "X", vertexDTO.getX(), -Double.MAX_VALUE, Double.MAX_VALUE, UiUnits.MILLIMETERS);
         this.yInput = new MeasurementInputField(mainWindow, "Y", vertexDTO.getY(), -Double.MAX_VALUE, Double.MAX_VALUE, UiUnits.MILLIMETERS);
-        this.zInput = new MeasurementInputField(mainWindow, "Z", vertexDTO.getZ(), -Double.MAX_VALUE, Double.MAX_VALUE, UiUnits.MILLIMETERS);
 
         gc.gridx = 0;
         gc.gridy = 1;
@@ -44,11 +42,6 @@ public class PointsBox extends GenericAttributeBox {
         gc.fill = GridBagConstraints.NONE;
         gc.weightx = 1;
         this.add(yInput, gc);
-        gc.gridx = 0;
-        gc.gridy = 3;
-        gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 1;
-        this.add(zInput, gc);
     }
 
     public MeasurementInputField getxInput() {
@@ -57,9 +50,5 @@ public class PointsBox extends GenericAttributeBox {
 
     public MeasurementInputField getyInput() {
         return this.yInput;
-    }
-
-    public MeasurementInputField getzInput() {
-        return this.zInput;
     }
 }
