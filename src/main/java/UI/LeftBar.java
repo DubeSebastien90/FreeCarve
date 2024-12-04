@@ -186,6 +186,7 @@ public class LeftBar extends JScrollPane {
         lActionListener();
         undoActionListener();
         redoActionListener();
+        forbiddenZonesActionListener();
     }
 
     /**
@@ -339,6 +340,12 @@ public class LeftBar extends JScrollPane {
     private void redoActionListener() {
         toolBar.getTool(ToolBar.Tool.REDO).addActionListener(e -> {
             mainWindow.getController().redo();
+        });
+    }
+
+    public void forbiddenZonesActionListener() {
+        toolBar.getTool(ToolBar.Tool.FORBIDDEN).addActionListener(e -> {
+            System.out.println("Zone interdite");
         });
     }
 }
