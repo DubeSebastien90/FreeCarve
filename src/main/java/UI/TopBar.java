@@ -2,6 +2,7 @@ package UI;
 
 import Common.Exceptions.InvalidFileExtensionException;
 import UI.Listeners.ExportGcodeActionListener;
+import UI.Listeners.LoadProjectActionListener;
 import UI.Listeners.SaveProjectActionListener;
 import UI.Listeners.SaveProjectAsActionListener;
 
@@ -70,22 +71,7 @@ public class TopBar extends JMenuBar {
         });
         enregistrer.addActionListener(new SaveProjectActionListener(mainWindow));
         enregistrerSous.addActionListener(new SaveProjectAsActionListener(mainWindow));
-        charger.addActionListener(e -> {
-            File file = Utils.chooseFile("Charger projet", "Projet.PAN", mainWindow.getFrame(), FileCache.INSTANCE.getLastProjectSave(), "Fichier de projet (PAN)", "PAN");
-            if (file != null) {
-                try {
-                    mainWindow.getController().loadProject(file);
-                } catch (InvalidFileExtensionException ex) {
-                    System.out.println("Invalid file extension");
-                } catch (IOException ex) {
-                    System.out.println("Unable to load file");
-                } catch (ClassNotFoundException ex) {
-                    System.out.println("File content is not valid");
-                }
-                mainWindow.getMiddleContent().getCutWindow().notifyObservers();
-                FileCache.INSTANCE.setLastProjectSave(file);
-            }
-        });
+        charger.addActionListener(new LoadProjectActionListener(mainWindow));
         close_project.addActionListener(e -> mainWindow.showFileSelectionWindow());
         exporter.addActionListener(new ExportGcodeActionListener(mainWindow));
 

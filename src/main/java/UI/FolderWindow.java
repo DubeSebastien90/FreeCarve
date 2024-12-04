@@ -1,5 +1,7 @@
 package UI;
 
+import UI.Listeners.LoadProjectActionListener;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -80,6 +82,7 @@ public class FolderWindow extends JPanel {
         gbc.anchor = GridBagConstraints.FIRST_LINE_START;
         openButton.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
                 UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding()));
+        openButton.addActionListener(new LoadProjectActionListener(mainWindow));
         westPanel.add(openButton, gbc);
     }
 
@@ -152,5 +155,6 @@ public class FolderWindow extends JPanel {
      */
     private void setButtonActionListener() {
         newButton.addActionListener(e -> mainWindow.showTrueMode());
+        openButton.addActionListener(e -> mainWindow.showTrueMode());
     }
 }
