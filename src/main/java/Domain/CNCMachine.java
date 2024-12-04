@@ -1,8 +1,12 @@
 package Domain;
 
 import Common.DTO.CutDTO;
+import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import Common.Interfaces.IMemorizer;
+
+import java.util.Optional;
+import java.util.UUID;
 
 import java.util.List;
 
@@ -71,6 +75,18 @@ class CNCMachine {
     public void setBitStorage(BitStorage bitStorage) {
         this.bitStorage = bitStorage;
         this.panel.validateCuts(bitStorage);
+    }
+
+    public Optional<UUID> requestCut(RequestCutDTO requestCutDTO){
+        Optional<UUID> id = panel.requestCut(requestCutDTO);
+        this.panel.verifyCuts(this);
+        return id;
+    }
+
+    public Optional<UUID> modifyCut(CutDTO cutDTO){
+        Optional<UUID> id = panel.modifyCut(cutDTO);
+        this.panel.verifyCuts(this);
+        return id;
     }
 
     public void resetPanelCNC(){

@@ -82,11 +82,10 @@ class ClampZone {
         return this.zone;
     }
 
-    public boolean intersectCut(Cut cut) {
-        for(VertexDTO vertex : cut.getAbsolutePointsPosition()){
-            if(pointCollision(vertex)){
+    public boolean intersectCut(Cut cut, CNCMachine cncMachine){
+        for(VertexDTO vertex : cut.getAbsolutePointsPosition(cncMachine)){
+            if(pointCollision(vertex))
                 return true;
-            }
         }
         return false;
     }

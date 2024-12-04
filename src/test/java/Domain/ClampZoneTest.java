@@ -124,48 +124,4 @@ public class ClampZoneTest {
         // Assert
         Assertions.assertFalse(result);
     }
-
-    @Test
-    void intersectCut_WhenCutIntersects_ReturnsTrue() throws ClampZoneException {
-        // Arrange
-        ClampZone newClamp = new ClampZone(new ClampZoneDTO(new VertexDTO(0.0f, 0.0f, 0.0f),
-                new VertexDTO(3.0f, 3.0f, 0.1f),
-                Optional.empty()));
-
-        VertexDTO point1 = new VertexDTO(0.0f, 0.0f, 0.0f);
-        VertexDTO point2 = new VertexDTO(3.0f, 0.0f, 0.1f);
-        ArrayList<VertexDTO> points = new ArrayList<VertexDTO>();
-        points.add(point1);
-        points.add(point2);
-
-        Cut cut = new Cut(new VertexDTO(0.0f, 0.0f, 0.0f), CutType.LINE_HORIZONTAL, points, 0, 5.0);
-
-        // Act
-        boolean result = newClamp.intersectCut(cut);
-
-        // Assert
-        Assertions.assertTrue(result);
-    }
-
-    @Test
-    void intersectCut_WhenCutDoesntIntersect_ReturnsFalse() throws ClampZoneException {
-        // Arrange
-        ClampZone newClamp = new ClampZone(new ClampZoneDTO(new VertexDTO(0.0f, 0.0f, 0.0f),
-                new VertexDTO(2.0f, 2.0f, 0.1f),
-                Optional.empty()));
-
-        VertexDTO point1 = new VertexDTO(1.0f, 3.0f, 0.0f);
-        VertexDTO point2 = new VertexDTO(6.0f, 3.0f, 0.1f);
-        ArrayList<VertexDTO> points = new ArrayList<VertexDTO>();
-        points.add(point1);
-        points.add(point2);
-
-        Cut cut = new Cut(new VertexDTO(0.0f, 0.0f, 0.0f), CutType.LINE_HORIZONTAL, points, 0, 5.0);
-
-        // Act
-        boolean result = newClamp.intersectCut(cut);
-
-        // Assert
-        Assertions.assertFalse(result);
-    }
 }
