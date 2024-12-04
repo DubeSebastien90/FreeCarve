@@ -95,7 +95,6 @@ class PanelCNC {
         UUID newUUID = UUID.randomUUID();
         CutDTO cutDTO = new CutDTO(newUUID, cut);
         memorizer.executeAndMemorize(() -> this.cutList.add(createPanelCut(cutDTO)), () -> this.cutList.removeIf(e -> e.getId() == newUUID));
-        verifyCuts();
         return Optional.of(newUUID);
     }
 
@@ -110,7 +109,6 @@ class PanelCNC {
 
             if (cut.getId() == this.cutList.get(i).getId()) {
                 this.cutList.get(i).modifyCut(cut, this.getCutAndBorderList());
-                verifyCuts();
                 return Optional.of(cut.getId());
             }
         }
@@ -159,8 +157,8 @@ class PanelCNC {
      *
      * @param bitStorage the bit storage containing the bits
      */
-    void validateCuts(BitStorage bitStorage){
-        Map<Integer, BitDTO> configuredBits = bitStorage.getConfiguredBits();
+    void validateCuts(CNCMachine cncMachine){
+        Map<Integer, BitDTO> configuredBits = cncMachine.getBitStorage().getConfiguredBits();
         for (Cut c : cutList) {
             if (!c.getRefs().isEmpty()){
                 c.setCutState(configuredBits.containsKey(c.getBitIndex()) ? CutState.VALID : CutState.NOT_VALID);
@@ -363,11 +361,11 @@ class PanelCNC {
         }
     }
 
-    public void verifyCuts(){
+    public void verifyCuts(CNCMachine cncMachine){
         for (ClampZone clampZone: clamps){
             for (Cut cut: cutList){
-                if(clampZone.intersectCut(cut)){
-                    cut.setInvalidAndNoRef();
+                if(clampZone.intersectCut(cut, cncMachine)){
+                    cut.setInvalidAndNoRef(cncMachine);
                 }
             }
         }
