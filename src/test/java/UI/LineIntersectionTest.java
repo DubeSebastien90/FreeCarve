@@ -14,8 +14,10 @@ public class LineIntersectionTest {
 
     @BeforeEach
     void SetUp(){
-        mainWindow = new MainWindow();
-        mainWindow.start();
+        if (!GraphicsEnvironment.isHeadless()) {
+            mainWindow = new MainWindow();
+            mainWindow.start();
+        }
     }
 
     @Test
