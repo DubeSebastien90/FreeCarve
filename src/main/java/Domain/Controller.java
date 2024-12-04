@@ -262,11 +262,10 @@ public class Controller implements IUnitConverter, IMemorizer {
     /**
      * Modifies an existing clampZone
      *
-     * @param id    The id of the ClampZone that is modified
      * @param clamp The new ClampZone
      */
-    public void modifyClampZone(UUID id, ClampZoneDTO clamp) {
-        //todo
+    public void modifyClampZone(ClampZoneDTO clamp) throws ClampZoneException {
+        currentProjectState.getPanel().modifyClamp(clamp);
     }
 
     /**
@@ -275,7 +274,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param id The id of the {@code ClampZone} that needs to be removed.
      */
     public void removeClampZone(UUID id) {
-        //todo
+        currentProjectState.getPanel().removeClamp(id);
     }
 
     /**

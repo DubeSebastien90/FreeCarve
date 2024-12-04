@@ -242,7 +242,20 @@ class PanelCNC {
         }
         for (ClampZone c : clamps) {
             if (c.getId() == clamp.getClampId().orElseThrow(() ->new ClampZoneException("La zone interdite n'existe pas"))) {
-                c.modifyClamp(clamp);
+                ClampZoneDTO copy = new ClampZoneDTO(c.getZone()[0], c.getZone()[1], Optional.of(c.getId()));
+                memorizer.executeAndMemorize(()-> {
+                    try {
+                        c.modifyClamp(clamp);
+                    } catch (ClampZoneException e) {
+                        System.out.println("Modification impossible"); // Might never happen but was obliged to surround
+                    }
+                }, ()-> {
+                    try {
+                        c.modifyClamp(copy);
+                    } catch (ClampZoneException e) {
+                        System.out.println("Modification impossible"); // Might never happen but was obliged to surround
+                    }
+                });
                 return true;
             }
         }
@@ -342,6 +355,15 @@ class PanelCNC {
         }
     }
 
+    public void verifyCuts(){
+        for (ClampZone clampZone: clamps){
+            for (Cut cut: cutList){
+                if(clampZone.intersectCut(cut)){
+                    cut.setInvalidAndNoRef();
+                }
+            }
+        }
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
