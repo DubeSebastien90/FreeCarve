@@ -268,6 +268,10 @@ public class Controller implements IUnitConverter, IMemorizer {
         currentProjectState.getPanel().modifyClamp(clamp);
     }
 
+    public List<ClampZoneDTO> getClampZones(){
+        return currentProjectState.getPanel().getClampsDTO();
+    }
+
     /**
      * Removes a ClampZone form the current {@code PanelCNC}
      *

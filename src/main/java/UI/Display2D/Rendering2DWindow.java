@@ -296,6 +296,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         afficheur.drawRectangle(graphics2D);
         afficheur.drawPoints(graphics2D);
         afficheur.drawCuts(graphics2D, this, drawing, mainWindow);
+        afficheur.drawForbiddenZone(graphics2D, mainWindow);
         if (mainWindow.getController().getGrid().isActive()) {
             afficheur.drawGrid(graphics2D);
         }
@@ -505,6 +506,10 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         updateCuts();
         this.revalidate();
         this.repaint();
+    }
+
+    public void drawForbiddenZone(){
+        System.out.println("drawForbiddenZone");
     }
 }
 
