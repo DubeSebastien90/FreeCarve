@@ -1,5 +1,6 @@
 package UI.Display2D;
 
+import Common.DTO.ClampZoneDTO;
 import Common.CutState;
 import Common.DTO.VertexDTO;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
@@ -166,4 +167,26 @@ public class Afficheur {
         graphics2D.fillRect(0, rectY, rectX, rectHeight);
         graphics2D.fillRect(rectX + rectWidth, rectY, rend.getWidth(), rectHeight);
     }
+
+    /**
+     * Draws the forbidden zones on the board
+     * @param g
+     * @param mainWindow
+     */
+    void drawForbiddenZone(Graphics2D g, MainWindow mainWindow){
+        for (ClampZoneDTO clampZoneDTO : mainWindow.getController().getClampZones()) {
+            int x = (int) rend.scaleMMToPixel(Math.min(clampZoneDTO.getZone()[0].getX(), clampZoneDTO.getZone()[1].getX()));
+            int y = (int)  rend.scaleMMToPixel(Math.min(clampZoneDTO.getZone()[0].getY(), clampZoneDTO.getZone()[1].getY()));
+            int width = (int) rend.scaleMMToPixel(Math.abs(clampZoneDTO.getZone()[0].getX() - clampZoneDTO.getZone()[1].getX()));
+            int height = (int) rend.scaleMMToPixel(Math.abs(clampZoneDTO.getZone()[0].getY() - clampZoneDTO.getZone()[1].getY()));
+
+            g.setColor(Color.RED);
+
+            g.drawRect(x, y, width, height);
+
+            g.setColor(new Color(255, 0, 0, 100));
+            g.fillRect(x, y, width, height);
+        }
+    }
+
 }
