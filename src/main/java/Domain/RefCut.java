@@ -46,6 +46,11 @@ public class RefCut {
     }
 
 
+    /**
+     * Based on the refCut interpolation, cut reference and index, returns the absolute position
+     * @param cncMachine
+     * @return
+     */
     public VertexDTO getAbsoluteOffset(CNCMachine cncMachine){
         List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition(cncMachine);
 
@@ -55,11 +60,21 @@ public class RefCut {
         return p1.interpolation(p2, interpolation);
     }
 
+    /**
+     * Returns the absolute first point of the cut reference
+     * @param cncMachine
+     * @return
+     */
     public VertexDTO getAbsoluteFirstPoint(CNCMachine cncMachine){
         List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition(cncMachine);
         return absoluteVertex.get(index);
     }
 
+    /**
+     * Returns the absolute second point of the cut reference
+     * @param cncMachine
+     * @return
+     */
     public VertexDTO getAbsoluteSecondPoint(CNCMachine cncMachine){
         List<VertexDTO> absoluteVertex = cut.getAbsolutePointsPosition(cncMachine);
         return absoluteVertex.get(index+1);
@@ -71,6 +86,13 @@ public class RefCut {
 
     Cut getCut() {return this.cut;}
 
+    /**
+     * Given a refCut to test, and a Cut, check if the refCut is already a reference to the Cut,
+     * necessary to check, otherwise the reference could be circular and infinite
+     * @param refsCutDTO
+     * @param cutToTest
+     * @return
+     */
     public static boolean isRefCircular(RefCutDTO refsCutDTO, CutDTO cutToTest){
         boolean out = false;
         out = refsCutDTO.getCut().getId() == cutToTest.getId();
