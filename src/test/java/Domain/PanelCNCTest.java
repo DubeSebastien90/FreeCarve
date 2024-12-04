@@ -1,5 +1,6 @@
 package Domain;
 
+import Common.CutState;
 import Common.DTO.*;
 import Common.Exceptions.ClampZoneException;
 import org.junit.jupiter.api.Assertions;
@@ -185,5 +186,89 @@ public class PanelCNCTest {
         // Assert
         Assertions.assertEquals(0.2f, panelCNC.getClamps().get(0).getZone()[1].getX());
         Assertions.assertEquals(0.2f, panelCNC.getClamps().get(0).getZone()[1].getX());
+    }
+
+    @Test
+    void addCut_WhenCutIntersectsClamp_CutIsInvalid() throws ClampZoneException {
+        // Arrange
+        ClampZoneDTO clampZoneDTO = new ClampZoneDTO(new VertexDTO(0, 0, 0), new VertexDTO(1, 1, 1), Optional.empty());
+        panelCNC.addClamps(clampZoneDTO);
+
+        ArrayList<VertexDTO> pointList = new ArrayList<>();
+        pointList.add(new VertexDTO(0.5f, 0.5f, 0.5f));
+        pointList.add(new VertexDTO(1.5f, 1.5f, 1.5f));
+        RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>());
+
+        // Act
+        panelCNC.requestCut(rcDTO);
+
+        // Assert
+        Assertions.assertEquals(panelCNC.getCutList().get(0).getCutState(), CutState.NOT_VALID);
+    }
+
+    @Test
+    void addCut_WhenCutDoesntIntersectsClamp_CutIsValid() throws ClampZoneException {
+        // Arrange
+        ClampZoneDTO clampZoneDTO = new ClampZoneDTO(new VertexDTO(0, 0, 0), new VertexDTO(1, 1, 1), Optional.empty());
+        panelCNC.addClamps(clampZoneDTO);
+
+        ArrayList<VertexDTO> pointList = new ArrayList<>();
+        pointList.add(new VertexDTO(2.5f, 2.5f, 0.5f));
+        pointList.add(new VertexDTO(1.5f, 1.5f, 1.5f));
+        RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>());
+
+        // Act
+        panelCNC.requestCut(rcDTO);
+
+        // Assert
+        Assertions.assertEquals(panelCNC.getCutList().get(0).getCutState(), CutState.VALID);
+    }
+
+    @Test
+    void modifyCut_WhenNewCutIntersectsClamp_CutIsInvalid() throws ClampZoneException {
+        // Arrange
+        ClampZoneDTO clampZoneDTO = new ClampZoneDTO(new VertexDTO(0, 0, 0), new VertexDTO(1, 1, 1), Optional.empty());
+        panelCNC.addClamps(clampZoneDTO);
+
+        ArrayList<VertexDTO> pointList = new ArrayList<>();
+        pointList.add(new VertexDTO(2.5f, 2.5f, 0.5f));
+        pointList.add(new VertexDTO(1.5f, 1.5f, 1.5f));
+        RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>());
+        Optional<UUID> id = panelCNC.requestCut(rcDTO);
+
+        ArrayList<VertexDTO> newPointList = new ArrayList<>();
+        newPointList.add(new VertexDTO(0.5f, 0.5f, 0.5f));
+        newPointList.add(new VertexDTO(1.5f, 1.5f, 1.5f));
+        CutDTO newRCDTO = new CutDTO(id.get(),new RequestCutDTO(newPointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>()));
+
+        // Act
+        panelCNC.modifyCut(newRCDTO);
+
+        // Assert
+        Assertions.assertEquals(panelCNC.getCutList().get(0).getCutState(), CutState.NOT_VALID);
+    }
+
+    @Test
+    void modifyCut_WhenNewCutDoesntIntersectClamp_CutIsValid() throws ClampZoneException {
+        // Arrange
+        ClampZoneDTO clampZoneDTO = new ClampZoneDTO(new VertexDTO(0, 0, 0), new VertexDTO(1, 1, 1), Optional.empty());
+        panelCNC.addClamps(clampZoneDTO);
+
+        ArrayList<VertexDTO> pointList = new ArrayList<>();
+        pointList.add(new VertexDTO(2.5f, 2.5f, 0.5f));
+        pointList.add(new VertexDTO(1.5f, 1.5f, 1.5f));
+        RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>());
+        Optional<UUID> id = panelCNC.requestCut(rcDTO);
+
+        ArrayList<VertexDTO> newPointList = new ArrayList<>();
+        newPointList.add(new VertexDTO(3.5f, 3.5f, 0.5f));
+        newPointList.add(new VertexDTO(1.5f, 1.5f, 1.5f));
+        CutDTO newRCDTO = new CutDTO(id.get(),new RequestCutDTO(newPointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>()));
+
+        // Act
+        panelCNC.modifyCut(newRCDTO);
+
+        // Assert
+        Assertions.assertEquals(panelCNC.getCutList().get(0).getCutState(), CutState.VALID);
     }
 }

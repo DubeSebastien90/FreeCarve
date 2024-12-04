@@ -92,10 +92,11 @@ class PanelCNC {
      * @param cut The RequestCut that needs to be valid.
      */
     public Optional<UUID> requestCut(RequestCutDTO cut) {
-        //todo tester si la coupe est bonne ou non!!
         UUID newUUID = UUID.randomUUID();
         CutDTO cutDTO = new CutDTO(newUUID, cut);
         memorizer.executeAndMemorize(() -> this.cutList.add(createPanelCut(cutDTO)), () -> this.cutList.removeIf(e -> e.getId() == newUUID));
+        memorizer.executeAndMemorize(()->this.cutList.add(createPanelCut(cutDTO)), ()->this.cutList.removeIf(e->e.getId() == newUUID));
+        verifyCuts();
         return Optional.of(newUUID);
     }
 
@@ -106,11 +107,11 @@ class PanelCNC {
      * @return Optional<UUID>
      */
     Optional<UUID> modifyCut(CutDTO cut) {
-        //todo tester si la  modification de la coupe est bonne ou non!!
         for (int i = 0; i < this.cutList.size(); i++) {
 
             if (cut.getId() == this.cutList.get(i).getId()) {
                 this.cutList.get(i).modifyCut(cut, this.getCutAndBorderList());
+                verifyCuts();
                 return Optional.of(cut.getId());
             }
         }
