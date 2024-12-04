@@ -66,7 +66,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return The UUID of the Cut if the RequestCutDTO was valid.
      */
     public Optional<UUID> requestCut(RequestCutDTO cut) {
-        return cncMachine.getPanel().requestCut(cut);
+        return cncMachine.requestCut(cut);
     }
 
     /**
@@ -126,7 +126,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param cut The modified Cut.
      */
     public Optional<UUID> modifyCut(CutDTO cut) {
-        return this.cncMachine.getPanel().modifyCut(cut);
+        return this.cncMachine.modifyCut(cut);
     }
 
     /**
@@ -143,7 +143,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      */
     public void removeBit(int index) throws InvalidBitException {
         cncMachine.getBitStorage().removeBit(index);
-        cncMachine.getPanel().validateCuts(cncMachine.getBitStorage());
+        cncMachine.getPanel().validateCuts(cncMachine);
     }
 
     /**
@@ -154,7 +154,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      */
     public void modifyBit(int index, BitDTO bit) {
         cncMachine.getBitStorage().updateBit(index, bit);
-        cncMachine.getPanel().validateCuts(cncMachine.getBitStorage());
+        cncMachine.getPanel().validateCuts(cncMachine);
     }
 
     /**
@@ -262,11 +262,11 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param clamp The new ClampZone
      */
     public void modifyClampZone(ClampZoneDTO clamp) throws ClampZoneException {
-        currentProjectState.getPanel().modifyClamp(clamp);
+        cncMachine.getPanel().modifyClamp(clamp);
     }
 
     public List<ClampZoneDTO> getClampZones(){
-        return currentProjectState.getPanel().getClampsDTO();
+        return cncMachine.getPanel().getClampsDTO();
     }
 
     /**
@@ -275,7 +275,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param id The id of the {@code ClampZone} that needs to be removed.
      */
     public void removeClampZone(UUID id) {
-        currentProjectState.getPanel().removeClamp(id);
+        cncMachine.getPanel().removeClamp(id);
     }
 
     /**
