@@ -104,7 +104,6 @@ public class PersoPoint {
             graphics2D.setColor(this.color);
         }
         graphics2D.fillOval((int) (temp.getX() - diamPixel / 2.0), ((int) (temp.getY() - diamPixel / 2.0)),((int) diamPixel), ((int) diamPixel));
-
         return selected;
     }
 
@@ -120,7 +119,6 @@ public class PersoPoint {
      * @param renderer
      * @param to         PersoPoint to draw to
      */
-
     public boolean drawLineMM(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint to, boolean canSelect) {
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(to.locationX, to.locationY));
