@@ -93,16 +93,20 @@ public class PersoPoint {
      * @param graphics2D
      * @param renderer
      */
-    public void drawMM(Graphics2D graphics2D, Rendering2DWindow renderer, boolean canSelect) {
+    public boolean drawMM(Graphics2D graphics2D, Rendering2DWindow renderer, boolean canSelect) {
+        boolean selected = false;
         Point2D temp = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
         double diamPixel = this.radius * renderer.getZoom() * 2;
         if (mouse_on_top(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp.getX(), temp.getY(), diamPixel / 2) && canSelect) {
             graphics2D.setColor(Color.MAGENTA);
+            selected = true;
         } else {
             graphics2D.setColor(this.color);
         }
         graphics2D.fillOval((int) (temp.getX() - diamPixel / 2.0), ((int) (temp.getY() - diamPixel / 2.0)),
                 ((int) diamPixel), ((int) diamPixel));
+
+        return selected;
     }
 
     public static boolean mouse_on_top(double mouse_x, double mouse_y, double pointX, double pointY, double pointRadius) {
@@ -117,14 +121,17 @@ public class PersoPoint {
      * @param renderer
      * @param to         PersoPoint to draw to
      */
-    public void drawLineMM(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint to, boolean canSelect) {
+    public boolean drawLineMM(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint to, boolean canSelect) {
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(to.locationX, to.locationY));
+        boolean selected = false;
         if (canSelect && mouse_on_top_line(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp1, temp2, (radius * renderer.getZoom()) / PRECISION)) {
+            selected = true;
             graphics2D.setColor(Color.MAGENTA);
         } //else graphics2D.setColor(this.color);
         graphics2D.drawLine((int) (temp1.getX()), (int) (temp1.getY()),
                 (int) (temp2.getX()), (int) (temp2.getY()));
+        return selected;
     }
 
     public static boolean mouse_on_top_line(double mouseX, double mouseY, Point2D point_from, Point2D point_to, double _radius) {
