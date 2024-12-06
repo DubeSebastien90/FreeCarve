@@ -8,6 +8,7 @@ import UI.UIConfig;
 import UI.Widgets.CutBox;
 import UI.Widgets.PointsBox;
 import UI.Widgets.SingleValueBox;
+import UI.Events.ChangeAttributeEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -99,7 +100,7 @@ public class AttributeContainerClamp extends AttributeContainer{
                     mainWindow.getController().generateRectanglePoints(getCenterPoint(), getWidthEdgeEdge(), value),
                     new ArrayList<>(), cutDTO.getState());
             mainWindow.getController().modifyCut(newClamp);
-
+            cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
         });
     }
 
@@ -113,6 +114,7 @@ public class AttributeContainerClamp extends AttributeContainer{
                     mainWindow.getController().generateRectanglePoints(getCenterPoint(), value, getHeightEdgeEdge()),
                     new ArrayList<>(), cutDTO.getState());
             mainWindow.getController().modifyCut(newClamp);
+            cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
         });
     }
 
@@ -126,6 +128,7 @@ public class AttributeContainerClamp extends AttributeContainer{
                     mainWindow.getController().generateRectanglePoints(new VertexDTO(value, getCenterPoint().getY(), getCenterPoint().getZ()), getWidthEdgeEdge(), getHeightEdgeEdge()),
                     new ArrayList<>(), cutDTO.getState());
             mainWindow.getController().modifyCut(newClamp);
+            cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
         });
 
         pb.getyInput().getNumericInput().addPropertyChangeListener("value", evt -> {
@@ -137,6 +140,8 @@ public class AttributeContainerClamp extends AttributeContainer{
                     mainWindow.getController().generateRectanglePoints(new VertexDTO(getCenterPoint().getX(), value, getCenterPoint().getZ()), getWidthEdgeEdge(), getHeightEdgeEdge()),
                     new ArrayList<>(), cutDTO.getState());
             mainWindow.getController().modifyCut(newClamp);
+            cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
+
         });
     }
 }
