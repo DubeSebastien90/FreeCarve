@@ -236,7 +236,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
                             }
                         }
                         for (DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
-                            if (!foundSomething && mainWindow.getController().isRoundedCutDTOHoveredByCursor(cutWrapper.getCutDTO(), new VertexDTO(mmMousePt.getX(),mmMousePt.getY(),0))){
+                            if (!foundSomething && mainWindow.getController().isRoundedCutDTOHoveredByCursor(cutWrapper.getCutDTO(), new VertexDTO(mmMousePt.getX(), mmMousePt.getY(), 0))) {
                                 drawing.initModifyCut(cutWrapper);
                                 foundSomething = true;
                             }
@@ -244,6 +244,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
                     }
                 }
             }
+
 
             @Override
             public void mouseClicked(MouseEvent e) {

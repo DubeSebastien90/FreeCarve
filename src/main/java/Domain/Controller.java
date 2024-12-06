@@ -599,6 +599,7 @@ public class Controller implements IUnitConverter, IMemorizer {
         return cncMachine.getPanel().getInvalidCutStates(cncMachine, cutID);
     }
 
+
     public boolean isRoundedCutDTOSegmentHoveredByCursor(CutDTO cutDTO, VertexDTO cursor, int pt1, int pt2) {
         return RoundedCut.isRoundedCutSegmentHoveredByMouse(cutDTO, cursor, cncMachine, pt1, pt2);
     }
@@ -607,6 +608,7 @@ public class Controller implements IUnitConverter, IMemorizer {
         double dist = Math.sqrt(Math.pow(mouse_x - pointX, 2) + Math.pow(mouse_y - pointY, 2));
         return dist <= pointRadius;
     }
+
 
     public CutDTO getCutDTOById(UUID cutId) {
         for(CutDTO cut : getCutListDTO()){

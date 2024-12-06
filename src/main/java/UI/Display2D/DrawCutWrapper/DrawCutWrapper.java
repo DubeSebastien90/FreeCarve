@@ -12,7 +12,6 @@ import UI.Widgets.CutBox;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,9 +72,9 @@ public abstract class DrawCutWrapper {
      */
     public DrawCutWrapper(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
         this.cut = cut;
+        this.mainWindow = mainWindow;
         this.strokeWidth = getStrokeWidthBruh(renderer);
         this.stroke = new BasicStroke((float) renderer.scalePixelToMM(strokeWidth), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-        this.mainWindow = mainWindow;
         cursorPoint = null;
         this.update(renderer);
         this.refs = new ArrayList<>();
@@ -138,7 +137,6 @@ public abstract class DrawCutWrapper {
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
 
-
         //draw line
         Color c = Color.black;
         for (int i = 0; i < points.size() - 1; i++) {
@@ -180,6 +178,7 @@ public abstract class DrawCutWrapper {
     public void setHoveredView(boolean hoveredView) {
         this.hoveredView = hoveredView;
     }
+
 
     /**
      * Draw the anchor of the specific cut
