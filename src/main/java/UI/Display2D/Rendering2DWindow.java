@@ -334,6 +334,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
             afficheur.drawGrid(graphics2D);
         }
         afficheur.drawMask(graphics2D);
+        afficheur.drawCutDimensions(graphics2D, this, drawing, mainWindow);
         afficheur.drawMousePos(graphics2D);
     }
 

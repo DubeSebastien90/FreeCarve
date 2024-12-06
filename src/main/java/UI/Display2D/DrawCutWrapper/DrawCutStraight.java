@@ -63,15 +63,19 @@ public class DrawCutStraight extends DrawCutWrapper{
     @Override
     public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
         VertexDTO anchorAbsolutePosition = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
-        double anchorDiameter = mainWindow.getController().getBitDiameter(cut.getRefsDTO().getFirst().getIndex());
+        double anchorDiameter = mainWindow.getController().getBitDiameter(cut.getRefsDTO().getFirst().getCut().getBitIndex());
         if(cut.getCutType() == CutType.LINE_HORIZONTAL){
             double verticalOffset = Math.abs(cut.getPoints().getFirst().getY());
             double absoluteY = mainWindow.getController().getAbsolutePointsPosition(cut).getFirst().getY();
             VertexDTO anchorToCut = new VertexDTO(anchorAbsolutePosition.getX(), absoluteY, 0);
             VertexDTO diffNormalized = anchorToCut.sub(anchorAbsolutePosition).normalize();
-
-            VertexDTO p1 = anchorAbsolutePosition.add(diffNormalized.mul(anchorDiameter));
+            VertexDTO p1 = anchorAbsolutePosition.add(diffNormalized.mul(anchorDiameter/2));
             VertexDTO p2 = p1.add(diffNormalized.mul(verticalOffset));
+
+            if(verticalOffset == 0){ // when the anchor and the cut is colinear
+                p1 = anchorAbsolutePosition;
+                p2 = anchorAbsolutePosition;
+            }
             UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, verticalOffset, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
         }
         else if(cut.getCutType() == CutType.LINE_VERTICAL){
@@ -79,9 +83,13 @@ public class DrawCutStraight extends DrawCutWrapper{
             double absoluteX = mainWindow.getController().getAbsolutePointsPosition(cut).getFirst().getX();
             VertexDTO anchorToCut = new VertexDTO(absoluteX, anchorAbsolutePosition.getY(), 0);
             VertexDTO diffNormalized = anchorToCut.sub(anchorAbsolutePosition).normalize();
-
-            VertexDTO p1 = anchorAbsolutePosition.add(diffNormalized.mul(anchorDiameter));
+            VertexDTO p1 = anchorAbsolutePosition.add(diffNormalized.mul(anchorDiameter/2));
             VertexDTO p2 = p1.add(diffNormalized.mul(horizontalOffset));
+
+            if(horizontalOffset == 0){// when the anchor and the cut is colinear
+                p1 = anchorAbsolutePosition;
+                p2 = anchorAbsolutePosition;
+            }
             UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, horizontalOffset, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
         }
 
