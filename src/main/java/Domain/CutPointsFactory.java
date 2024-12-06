@@ -21,7 +21,7 @@ public class CutPointsFactory {
     //                              -how absolute points are computed : based on the center anchor point and the width/height parameter, generate a rectangle
 
     // 3 : CutType = Line_Vertical or Line_Horizontal or Free_Line :
-    //                              -number of refs : >=1
+    //                              -number of refs : >=1 : can be 1, 2, 3, based on how to cut is made, the first ref is the anchor, and the 2-3 are the relative points anchors
     //                              -number of relative points : 2, the points stored are EdgeEdge
     //                              -how absolute points are computed : based on it's first reference point, returns the shifted relative points by the ref offset
 

@@ -220,7 +220,6 @@ public class Drawing {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseMoved(e);
-                //currentModifiedCut.movedUpdate(renderer, Drawing.this);
             }
         };
 

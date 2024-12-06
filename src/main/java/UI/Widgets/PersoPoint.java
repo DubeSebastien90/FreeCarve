@@ -126,7 +126,7 @@ public class PersoPoint {
         if (canSelect && mouse_on_top_line(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp1, temp2, (radius * renderer.getZoom()) / PRECISION)) {
             selected = true;
             graphics2D.setColor(Color.MAGENTA);
-        } //else graphics2D.setColor(this.color);
+        }
         graphics2D.drawLine((int) (temp1.getX()), (int) (temp1.getY()), (int) (temp2.getX()), (int) (temp2.getY()));
         return selected;
     }
