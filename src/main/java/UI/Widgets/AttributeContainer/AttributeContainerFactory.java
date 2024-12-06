@@ -31,6 +31,9 @@ public class AttributeContainerFactory {
         else if(cutDTO.getCutType() == CutType.LINE_FREE){
             return new AttributeContainerFree(mainWindow, cutListPanel, cutDTO, cutBox);
         }
+        else if(cutDTO.getCutType() == CutType.CLAMP){
+            return new AttributeContainerClamp(mainWindow, cutListPanel, cutDTO, cutBox);
+        }
         else{
             return new AttributeContainerVertical(mainWindow, cutListPanel, cutDTO, cutBox);
         }
