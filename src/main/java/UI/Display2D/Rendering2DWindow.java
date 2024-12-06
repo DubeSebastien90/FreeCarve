@@ -303,8 +303,6 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         }
         afficheur.drawMask(graphics2D);
         afficheur.drawMousePos(graphics2D);
-        afficheur.drawForbiddenZone(graphics2D, mainWindow);
-
     }
 
     /**
