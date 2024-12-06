@@ -13,9 +13,10 @@ import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.List;
 
 public class DrawCutBorder extends DrawCutWrapper {
 
@@ -72,7 +73,7 @@ public class DrawCutBorder extends DrawCutWrapper {
     @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
 
-        if(!refs.isEmpty()){
+        if (!refs.isEmpty()) {
             List<VertexDTO> newPoints = mainWindow.getController().generateBorderPointsRelativeEdgeEdgeFromAbsolute(cut.getBitIndex());
             this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs, this.cut.getState());
             return true;
@@ -94,13 +95,20 @@ public class DrawCutBorder extends DrawCutWrapper {
     @Override
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
-
+        double threshold;
+        if (mainWindow.getController().getGrid().isMagnetic()) {
+            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
+        } else {
+            threshold = renderer.scalePixelToMM(snapThreshold);
+        }
         p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-        double threshold = renderer.scalePixelToMM(snapThreshold);
         VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
         Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearBorder(p1, threshold);
-        closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, false);
+        Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
+        if (otherPoint.isPresent() && (otherPoint.get().getX() == 0 || otherPoint.get().getX() == mainWindow.getController().getPanelDTO().getPanelDimension().getX() || otherPoint.get().getY() == 0 || otherPoint.get().getY() == mainWindow.getController().getPanelDTO().getPanelDimension().getY())) {
+            closestPoint = otherPoint;
+        }
         if (closestPoint.isPresent()) {
             p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
             VertexDTO snapPoint = new VertexDTO(closestPoint.get().getX(), closestPoint.get().getY(), 0.0f);

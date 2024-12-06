@@ -39,12 +39,13 @@ public class DrawCutStraight extends DrawCutWrapper {
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
         this.points = new ArrayList<>();
-        for(VertexDTO p : temporaryCreationPoints){
+        for (VertexDTO p : temporaryCreationPoints) {
             points.add(new PersoPoint(p.getX(), p.getY(), 10.0f, true, strokeColor));
         }
 
         for (int i =0; i < points.size()-1; i++){
             points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), false);
+
         }
 
         graphics2D.setColor(cursor.getColor());
@@ -119,12 +120,11 @@ public class DrawCutStraight extends DrawCutWrapper {
 
     @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
-        if (refs.isEmpty()){
+        if (refs.isEmpty()) {
             VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
             refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
-        }
-        else{
-            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  0.0f);
+        } else {
+            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
             temporaryCreationPoints.add(newPoint);
 
         }
@@ -139,16 +139,14 @@ public class DrawCutStraight extends DrawCutWrapper {
     @Override
     public Optional<UUID> end() {
         List<VertexDTO> relativeEdgeEdgePoints = new ArrayList<>();
-        if(cut.getCutType() == CutType.LINE_VERTICAL){
+        if (cut.getCutType() == CutType.LINE_VERTICAL) {
             relativeEdgeEdgePoints = mainWindow.getController().generateVerticalPointsRelativeEdgeEdgeFromAbsolute(temporaryCreationPoints.getFirst(), temporaryCreationPoints.get(1), cut.getBitIndex(), refs);
-        }
-        else if(cut.getCutType() == CutType.LINE_HORIZONTAL){
+        } else if (cut.getCutType() == CutType.LINE_HORIZONTAL) {
             relativeEdgeEdgePoints = mainWindow.getController().generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(temporaryCreationPoints.getFirst(), temporaryCreationPoints.get(1), cut.getBitIndex(), refs);
-        }
-        else if(cut.getCutType() == CutType.LINE_FREE){
+        } else if (cut.getCutType() == CutType.LINE_FREE) {
             relativeEdgeEdgePoints = mainWindow.getController().generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(temporaryCreationPoints.getFirst(), temporaryCreationPoints.get(1), cut.getBitIndex(), refs);
         }
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints , refs, this.cut.getState());
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints, refs, this.cut.getState());
         return createCut();
     }
 
@@ -207,12 +205,10 @@ public class DrawCutStraight extends DrawCutWrapper {
             if (this.cut.getCutType() == CutType.LINE_VERTICAL) {
                 double firstPointX = this.points.getFirst().getLocationX();
                 p.movePoint(firstPointX, renderer.getMmMousePt().getY()); // lock to Y axis
-            }
-            else if(this.cut.getCutType() == CutType.LINE_HORIZONTAL){
+            } else if (this.cut.getCutType() == CutType.LINE_HORIZONTAL) {
                 double firstPointY = this.points.getFirst().getLocationY();
                 p.movePoint(renderer.getMmMousePt().getX(), firstPointY); // lock to X axis
-            }
-            else{
+            } else {
                 p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY()); // Free Cut
             }
 
@@ -230,6 +226,9 @@ public class DrawCutStraight extends DrawCutWrapper {
             }
             if (otherPoint.isPresent() && (otherPoint.get().getX() == points.getFirst().getLocationX() || otherPoint.get().getY() == points.getFirst().getLocationY())) {
                 closestPoint = otherPoint;
+            }
+            if (this.cut.getCutType() == CutType.LINE_FREE) {
+                closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
             }
 
             // Snap
