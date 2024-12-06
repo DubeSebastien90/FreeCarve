@@ -121,7 +121,8 @@ public class DrawCutStraight extends DrawCutWrapper {
 
     @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
-        if (refs.isEmpty()) {
+        if (refs.isEmpty()){
+            refs = cut.getRefsDTO();
             VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
             RefCutDTO ref = mainWindow.getController().getRefCutsAndBorderOnPoint(p1).getFirst();
             if(refs.size() <= 0){
@@ -136,7 +137,6 @@ public class DrawCutStraight extends DrawCutWrapper {
             VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  0.0f);
             temporaryCreationPoints.add(newPoint);
             List<RefCutDTO> listRefs = mainWindow.getController().getRefCutsAndBorderOnPoint(newPoint);
-            System.out.println("REF VERT : " + listRefs.size());
             if(!listRefs.isEmpty() && !temporaryCreationPoints.isEmpty()){
                 int refIndex = temporaryCreationPoints.size();
                 if(refs.size() > refIndex){

@@ -76,7 +76,7 @@ public class DrawCutL extends DrawCutWrapper {
 
         int index2 = 1;
         VertexDTO dirOpposite= absPoints.get(index2);
-        VertexDTO offset = new VertexDTO(relativeOffset.getX(), relativeOffset.getY(), 0).normalize().mul(-1).mul(Math.sqrt(bitDiameter*bitDiameter/2));
+        VertexDTO offset = new VertexDTO(Math.signum(relativeOffset.getX()), Math.signum(relativeOffset.getY()), 0).mul(-bitDiameter/2);
 
         VertexDTO p1Width = dirOpposite;
         VertexDTO p2Width = dirOpposite.sub(new VertexDTO(relativeOffset.getX(), 0, 0));
