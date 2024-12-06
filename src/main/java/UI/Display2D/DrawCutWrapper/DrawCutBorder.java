@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
 
-public class DrawCutBorder extends DrawCutWrapper{
+public class DrawCutBorder extends DrawCutWrapper {
 
 
     public DrawCutBorder(CutType type, Rendering2DWindow renderer, MainWindow mainWindow) {
@@ -29,13 +29,14 @@ public class DrawCutBorder extends DrawCutWrapper{
     }
 
     @Override
-    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer){
+    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
         this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
 
         for(int i =0; i  < points.size() - 1; i++){
             this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), false);
+
         }
 
     }
@@ -79,6 +80,7 @@ public class DrawCutBorder extends DrawCutWrapper{
         return false;
     }
 
+
     @Override
     public boolean areRefsValid() {
         return !refs.isEmpty() && areRefsNotCircular();
@@ -98,18 +100,17 @@ public class DrawCutBorder extends DrawCutWrapper{
         double threshold = renderer.scalePixelToMM(snapThreshold);
         VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
         Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearBorder(p1, threshold);
-
-        if(closestPoint.isPresent()){
+        closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, false);
+        if (closestPoint.isPresent()) {
             p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
             VertexDTO snapPoint = new VertexDTO(closestPoint.get().getX(), closestPoint.get().getY(), 0.0f);
             refs = mainWindow.getController().getRefCutsAndBorderOnPoint(snapPoint);
 
-            if(!refs.isEmpty()){
+            if (!refs.isEmpty()) {
                 p.setColor(VALID_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
             }
-        }
-        else{
+        } else {
             p.setColor(INVALID_COLOR);
             p.setValid(PersoPoint.Valid.NOT_VALID);
         }

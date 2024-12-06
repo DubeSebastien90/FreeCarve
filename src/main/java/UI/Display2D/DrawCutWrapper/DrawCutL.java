@@ -21,9 +21,10 @@ import java.util.UUID;
 
 /**
  * L line drawing that inherits from DrawCutWrapper
+ *
  * @author Louis-Etienne Messier
  */
-public class DrawCutL extends DrawCutWrapper{
+public class DrawCutL extends DrawCutWrapper {
 
     public DrawCutL(CutType type, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(type, renderer, mainWindow);
@@ -55,9 +56,10 @@ public class DrawCutL extends DrawCutWrapper{
 
         for (PersoPoint point : this.points){ // drawing the points
             point.drawMM(graphics2D, renderer, false);
+
         }
 
-        if (!refs.isEmpty() && !points.isEmpty()){ // drawing the first anchor point
+        if (!refs.isEmpty() && !points.isEmpty()) { // drawing the first anchor point
             VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
             PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
             referenceAnchorPoint.setColor(ANCHOR_COLOR);
@@ -103,9 +105,9 @@ public class DrawCutL extends DrawCutWrapper{
         }
         else if(refs.size() >= 2){
             temporaryCreationPoints.add(new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f));
+
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -124,36 +126,32 @@ public class DrawCutL extends DrawCutWrapper{
     }
 
     @Override
-    public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing){
+    public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
 
-        if(points.isEmpty()){ // First point
+        if (points.isEmpty()) { // First point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
             double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getPointNearIntersections(p1, threshold);
-
-            if(closestPoint.isPresent()){
-                p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
+            closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, false);
+            if (closestPoint.isPresent()) {
+                p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
                 p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
                 List<RefCutDTO> testRefs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
-
                 if (testRefs.size() >= 2){
                     p.setColor(VALID_COLOR);
                     p.setValid(PersoPoint.Valid.VALID);
-                }
-                else{
+                } else {
                     p.setColor(INVALID_COLOR);
                     p.setValid(PersoPoint.Valid.NOT_VALID);
                 }
-            }
-            else{
+            } else {
                 p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
-        }
-        else{ // Second L cut point
+        } else { // Second L cut point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
             // For the snap area
             double threshold = renderer.scalePixelToMM(snapThreshold);
@@ -161,9 +159,9 @@ public class DrawCutL extends DrawCutWrapper{
             // Get the possible closest point
             VertexDTO cursor = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(cursor, threshold);
-
+            closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
             // Snap
-            if(closestPoint.isPresent()){
+            if (closestPoint.isPresent()) {
                 p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
                 p.setColor(SNAP_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
@@ -172,12 +170,11 @@ public class DrawCutL extends DrawCutWrapper{
 
             // Test if on board
             VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-            if(mainWindow.getController().isPointOnPanel(pointDTO)){
+            if (mainWindow.getController().isPointOnPanel(pointDTO)) {
                 // Inside of the board
                 p.setColor(VALID_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
-            }
-            else{
+            } else {
                 // Outside of the board
                 p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);

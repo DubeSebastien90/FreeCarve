@@ -2,6 +2,8 @@ package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
 import Common.DTO.DimensionDTO;
+import Common.DTO.PanelDTO;
+
 import Common.DTO.VertexDTO;
 import Common.Units;
 import Domain.CutType;
@@ -20,9 +22,10 @@ import java.util.UUID;
 
 /**
  * Vertical/Horizontal line drawing that inherits from DrawCutWrapper
+ *
  * @author Louis-Etienne Messier
  */
-public class DrawCutStraight extends DrawCutWrapper{
+public class DrawCutStraight extends DrawCutWrapper {
     public DrawCutStraight(CutType type, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(type, renderer, mainWindow);
     }
@@ -35,7 +38,6 @@ public class DrawCutStraight extends DrawCutWrapper{
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
-
         this.points = new ArrayList<>();
         for(VertexDTO p : temporaryCreationPoints){
             points.add(new PersoPoint(p.getX(), p.getY(), 10.0f, true, strokeColor));
@@ -52,9 +54,10 @@ public class DrawCutStraight extends DrawCutWrapper{
 
         for (PersoPoint point : this.points){ // drawing the points
             point.drawMM(graphics2D, renderer, false);
+
         }
 
-        if (!refs.isEmpty()){ // drawing the first anchor point
+        if (!refs.isEmpty()) { // drawing the first anchor point
             VertexDTO offset = refs.getFirst().getAbsoluteOffset(mainWindow.getController());
             PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
             referenceAnchorPoint.setColor(ANCHOR_COLOR);
@@ -154,46 +157,51 @@ public class DrawCutStraight extends DrawCutWrapper{
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
 
-        if(refs.isEmpty()){ // Get the reference point
+        if (refs.isEmpty()) { // Get the reference point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
             double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
-
-            if(closestPoint.isPresent()){
-                p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
-                p.setColor(ANCHOR_COLOR);
-                p.setValid(PersoPoint.Valid.VALID);
-            }
-            else{
+            Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
+            if (otherPoint.isPresent()) {
+                p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
+                if (closestPoint.isPresent() && (otherPoint.get().getX() == closestPoint.get().getX() || otherPoint.get().getY() == closestPoint.get().getY())) {
+                    p.setColor(ANCHOR_COLOR);
+                    p.setValid(PersoPoint.Valid.VALID);
+                } else {
+                    p.setColor(INVALID_COLOR);
+                    p.setValid(PersoPoint.Valid.NOT_VALID);
+                }
+            } else {
                 p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
-        }
-        else if(this.points.isEmpty()){ // First point
+        } else if (this.points.isEmpty()) { // First point
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
             double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
-
-            if(closestPoint.isPresent()){
-
-                p.movePoint(closestPoint.get().getX(),closestPoint.get().getY());
-                p.setColor(VALID_COLOR);
-                p.setValid(PersoPoint.Valid.VALID);
-            }
-            else{
+            Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
+            if (otherPoint.isPresent()) {
+                p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
+                if (closestPoint.isPresent() && (otherPoint.get().getX() == closestPoint.get().getX() || otherPoint.get().getY() == closestPoint.get().getY())) {
+                    p.setColor(ANCHOR_COLOR);
+                    p.setValid(PersoPoint.Valid.VALID);
+                } else {
+                    p.setColor(INVALID_COLOR);
+                    p.setValid(PersoPoint.Valid.NOT_VALID);
+                }
+            } else {
                 p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
-        }
-        else{ // Second point
+        } else { // Second point
 
-            if(this.cut.getCutType() == CutType.LINE_VERTICAL){
+            if (this.cut.getCutType() == CutType.LINE_VERTICAL) {
                 double firstPointX = this.points.getFirst().getLocationX();
                 p.movePoint(firstPointX, renderer.getMmMousePt().getY()); // lock to Y axis
             }
@@ -211,11 +219,19 @@ public class DrawCutStraight extends DrawCutWrapper{
             VertexDTO cursor = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             VertexDTO p1 = new VertexDTO(points.getFirst().getLocationX(), points.getFirst().getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridLineNearAllBorderAndCuts(p1,
-                    cursor,threshold
+                    cursor, threshold
             );
+            Optional<VertexDTO> otherPoint = Optional.empty();
+            PanelDTO board = mainWindow.getController().getPanelDTO();
+            if (((p1.getX()) % mainWindow.getController().getGrid().getSize() == 0) || ((p1.getY()) % mainWindow.getController().getGrid().getSize() == 0) || p1.getX() == board.getPanelDimension().getX() || p1.getY() == board.getPanelDimension().getY()) {
+                otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, false);
+            }
+            if (otherPoint.isPresent() && (otherPoint.get().getX() == points.getFirst().getLocationX() || otherPoint.get().getY() == points.getFirst().getLocationY())) {
+                closestPoint = otherPoint;
+            }
 
             // Snap
-            if(closestPoint.isPresent()){
+            if (closestPoint.isPresent()) {
                 p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
                 p.setColor(SNAP_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
@@ -223,12 +239,11 @@ public class DrawCutStraight extends DrawCutWrapper{
             }
             // Test if on board
             VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-            if(mainWindow.getController().isPointOnPanel(pointDTO)){
+            if (mainWindow.getController().isPointOnPanel(pointDTO)) {
                 // Inside of the board
                 p.setColor(VALID_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
-            }
-            else{
+            } else {
                 // Outside of the board
                 p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);

@@ -372,6 +372,10 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
 
+    public Optional<VertexDTO> getGridPointNearCuts(VertexDTO point, double threshold) {
+        return this.grid.getPointNearAllCuts(point, this.cncMachine, threshold, Optional.empty());
+    }
+
     /**
      * Returns an optionnal closest point to all intersections on the board
      *
@@ -383,6 +387,9 @@ public class Controller implements IUnitConverter, IMemorizer {
         return this.grid.isPointNearIntersections(point, threshold);
     }
 
+    public void setIntersectionMagnetic(){
+        this.grid.setIntersectionIfGrid(this.cncMachine);
+    }
     /**
      * Computes all of the intersection points  on the board, stores them in the grid class
      */

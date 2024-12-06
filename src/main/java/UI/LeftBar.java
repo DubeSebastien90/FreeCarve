@@ -2,6 +2,7 @@ package UI;
 
 import Domain.CutType;
 import UI.Listeners.SaveProjectActionListener;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;
 
@@ -20,6 +21,7 @@ public class LeftBar extends JScrollPane {
     private final UIConfig uiConfig = UIConfig.INSTANCE;
     private final ToolBar toolBar;
     private final MainWindow mainWindow;
+    private final JButton otherMagnetButton = createSVGButton("magnet", false, "Aimanter la grille", uiConfig.getToolIconSize());
 
     /**
      * Constructs a new {@code LeftBar} object and initialize it with a new {@code ToolBar}
@@ -30,6 +32,7 @@ public class LeftBar extends JScrollPane {
         setViewportView(toolBar);
         setBorder(null);
         setVisible(true);
+        otherMagnetButton.setBackground(UIManager.getColor("SubWindow.background"));
         activateAllListener();
     }
 
@@ -226,6 +229,14 @@ public class LeftBar extends JScrollPane {
     private void gridActionListener() {
         toolBar.getTool(ToolBar.Tool.GRID).addActionListener(e -> {
             mainWindow.getController().setGridAvtive(!mainWindow.getController().getGrid().isActive());
+            toolBar.getTool(ToolBar.Tool.MAGNET).setEnabled(mainWindow.getController().getGrid().isActive());
+            if (!mainWindow.getController().getGrid().isActive()) {
+                FlatSVGIcon icon = new FlatSVGIcon("UI/" + "magnet" + ".svg", uiConfig.getToolIconSize(), uiConfig.getToolIconSize());
+                FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter(color -> UIManager.getColor("Button.foreground"));
+                icon.setColorFilter(filter);
+                toolBar.getTool(ToolBar.Tool.MAGNET).setIcon(icon);
+                mainWindow.getController().setGridMagnetism(false);
+            }
             mainWindow.getMiddleContent().getPanel().repaint();
             if (mainWindow.getMiddleContent().getCurrent() == MiddleContent.MiddleWindowType.CONFIG) {
                 mainWindow.getMiddleContent().getConfigChoiceWindow().getRendering2DWindow().scale();
@@ -233,6 +244,17 @@ public class LeftBar extends JScrollPane {
         });
         toolBar.getTool(ToolBar.Tool.MAGNET).addActionListener(e -> {
             mainWindow.getController().setGridMagnetism(!mainWindow.getController().getGrid().isMagnetic());
+            if (mainWindow.getController().getGrid().isMagnetic()) {
+                FlatSVGIcon icon = new FlatSVGIcon("UI/" + "magnet" + ".svg", uiConfig.getToolIconSize(), uiConfig.getToolIconSize());
+                FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter(color -> UIManager.getColor("Button.secondaryBackground"));
+                icon.setColorFilter(filter);
+                toolBar.getTool(ToolBar.Tool.MAGNET).setIcon(icon);
+            } else {
+                FlatSVGIcon icon = new FlatSVGIcon("UI/" + "magnet" + ".svg", uiConfig.getToolIconSize(), uiConfig.getToolIconSize());
+                FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter(color -> UIManager.getColor("Button.foreground"));
+                icon.setColorFilter(filter);
+                toolBar.getTool(ToolBar.Tool.MAGNET).setIcon(icon);
+            }
         });
     }
 
@@ -275,8 +297,8 @@ public class LeftBar extends JScrollPane {
     /**
      * Sets the rectangular cut tool
      */
-    private void rectangularActionListener(){
-        toolBar.getTool(ToolBar.Tool.RECTANGLE).addActionListener(e->{
+    private void rectangularActionListener() {
+        toolBar.getTool(ToolBar.Tool.RECTANGLE).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
                 middle.getCutWindow().getRendering2DWindow().cut(CutType.RECTANGULAR);
@@ -284,8 +306,8 @@ public class LeftBar extends JScrollPane {
         });
     }
 
-    private void retaillerActionListener(){
-        toolBar.getTool(ToolBar.Tool.RETAILLER).addActionListener(e->{
+    private void retaillerActionListener() {
+        toolBar.getTool(ToolBar.Tool.RETAILLER).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
                 middle.getCutWindow().getRendering2DWindow().cut(CutType.RETAILLER);
@@ -293,8 +315,8 @@ public class LeftBar extends JScrollPane {
         });
     }
 
-    private void lActionListener(){
-        toolBar.getTool(ToolBar.Tool.COUPEL).addActionListener(e->{
+    private void lActionListener() {
+        toolBar.getTool(ToolBar.Tool.COUPEL).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
                 middle.getCutWindow().getRendering2DWindow().cut(CutType.L_SHAPE);
@@ -305,8 +327,8 @@ public class LeftBar extends JScrollPane {
     /**
      * Sets the undo action listener
      */
-    private void undoActionListener(){
-        toolBar.getTool(ToolBar.Tool.UNDO).addActionListener(e->{
+    private void undoActionListener() {
+        toolBar.getTool(ToolBar.Tool.UNDO).addActionListener(e -> {
             mainWindow.getController().undo();
         });
     }
@@ -314,8 +336,8 @@ public class LeftBar extends JScrollPane {
     /**
      * Sets the redo action listener
      */
-    private void redoActionListener(){
-        toolBar.getTool(ToolBar.Tool.REDO).addActionListener(e->{
+    private void redoActionListener() {
+        toolBar.getTool(ToolBar.Tool.REDO).addActionListener(e -> {
             mainWindow.getController().redo();
         });
     }
