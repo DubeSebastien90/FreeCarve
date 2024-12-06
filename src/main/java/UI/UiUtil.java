@@ -153,18 +153,6 @@ public class UiUtil {
         return iconName;
     }
 
-    public static String getUnitSymbole(Units units){
-        String unitSymbol = "";
-        switch (units){
-            case Units.M -> unitSymbol = "m";
-            case Units.MM -> unitSymbol = "mm";
-            case Units.CM -> unitSymbol = "cm";
-            case Units.FEET -> unitSymbol = "'";
-            case Units.INCH -> unitSymbol = "\"";
-        }
-        return unitSymbol;
-    }
-
     public static void drawArrow(Graphics2D g, Rendering2DWindow renderer, VertexDTO p1, VertexDTO p2, Color arrowColor, int arrowDiameter){
         if(arrowDiameter < 0){throw new IllegalArgumentException("The arrow diameter cannot be negative");}
 
