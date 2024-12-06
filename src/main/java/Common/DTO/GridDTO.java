@@ -1,19 +1,19 @@
 package Common.DTO;
 
 public class GridDTO {
-    private final int size;
+    private final double size;
     private final int magnetPrecision;
     private final boolean magnetic;
     private final boolean active;
 
-    public GridDTO(int size, int magnetPrecision, boolean magnetic, boolean active) {
+    public GridDTO(double size, int magnetPrecision, boolean magnetic, boolean active) {
         this.size = size;
         this.magnetPrecision = magnetPrecision;
         this.magnetic = magnetic;
         this.active = active;
     }
 
-    public int getSize() {
+    public double getSize() {
         return this.size;
     }
 

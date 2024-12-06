@@ -179,7 +179,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param precision The precision with which the grid should be calculated.
      * @return The list of intersections of the grid.
      */
-    public List<VertexDTO> putGrid(int precision, int magnetPrecision) {
+    public List<VertexDTO> putGrid(double precision, int magnetPrecision) {
         if (this.grid == null) {
             this.grid = new Grid(precision, magnetPrecision);
         } else {

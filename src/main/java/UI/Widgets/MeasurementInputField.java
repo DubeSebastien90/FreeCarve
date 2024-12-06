@@ -14,7 +14,8 @@ import com.formdev.flatlaf.ui.FlatRoundBorder;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.NumberFormatter;
-import java.awt.event.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
@@ -33,6 +34,7 @@ public class MeasurementInputField extends BasicWindow {
     private DimensionDTO minDimension;
     private final IUnitConverter unitConverter;
     private final IMemorizer memorizer;
+    private boolean haveUnit = true;
 
     private UiUnits currentUnit;
 
@@ -40,8 +42,26 @@ public class MeasurementInputField extends BasicWindow {
         this(mainWindow, nameOfInput, value, 0, mainWindow.getController().convertUnit(new DimensionDTO(15, Units.FEET), unit.getUnit()).value(), unit);
     }
 
+    public MeasurementInputField(MainWindow mainWindow, String nameOfInput, double value, UiUnits unit, boolean chooseUnits) {
+        this(mainWindow, nameOfInput, value, 0, mainWindow.getController().convertUnit(new DimensionDTO(15, Units.FEET), unit.getUnit()).value(), unit, chooseUnits);
+    }
+
     public MeasurementInputField(MainWindow mainWindow, String nameOfInput, double value, double minimumValue, double maximumValue, UiUnits unit) {
         super(false);
+        this.setBackground(null);
+        this.setOpaque(false);
+        this.unitConverter = mainWindow.getController();
+        this.memorizer = mainWindow.getController();
+        this.currentUnit = unit;
+        this.minDimension = new DimensionDTO(minimumValue, unit.getUnit());
+        this.maxDimension = new DimensionDTO(maximumValue, unit.getUnit());
+        this.init(nameOfInput, value);
+        setCurrentUnit(UIConfig.INSTANCE.getDefaultUnit());
+    }
+
+    public MeasurementInputField(MainWindow mainWindow, String nameOfInput, double value, double minimumValue, double maximumValue, UiUnits unit, boolean chooseUnits) {
+        super(false);
+        haveUnit = chooseUnits;
         this.setBackground(null);
         this.setOpaque(false);
         this.unitConverter = mainWindow.getController();
@@ -63,9 +83,6 @@ public class MeasurementInputField extends BasicWindow {
         nameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         nameLabel.setBorder(new EmptyBorder(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding()));
 
-        this.unitComboBox = new JComboBox<>(UiUnits.values());
-        this.unitComboBox.setSelectedItem(currentUnit);
-        this.unitComboBox.addItemListener(new UnitChangeListener());
 
         this.numericInput = new JFormattedTextField(DecimalFormat.getNumberInstance());
         this.numericInput.setColumns(5);
@@ -75,14 +92,20 @@ public class MeasurementInputField extends BasicWindow {
 
         this.add(nameLabel);
         this.add(this.numericInput);
-        this.add(this.unitComboBox);
+        if (haveUnit) {
+            this.unitComboBox = new JComboBox<>(UiUnits.values());
+            this.unitComboBox.setSelectedItem(currentUnit);
+            this.unitComboBox.addItemListener(new UnitChangeListener());
+            this.add(this.unitComboBox);
+        }
     }
 
     /**
      * Change the value of the numeric input field without triggering the listeners, otherwise i could create and infinite loop
+     *
      * @param valueInMM the new value in MM
      */
-    public void setValueInMMWithoutTrigerringListeners(double valueInMM){
+    public void setValueInMMWithoutTrigerringListeners(double valueInMM) {
         DimensionDTO dValueInMM = new DimensionDTO(valueInMM, Units.MM);
         DimensionDTO valueInGoodUnit = unitConverter.convertUnit(dValueInMM, currentUnit.getUnit());
 
@@ -107,7 +130,10 @@ public class MeasurementInputField extends BasicWindow {
     }
 
     public double getMMValue() {
-        return unitConverter.convertUnit(new DimensionDTO(((Number)numericInput.getValue()).doubleValue(), currentUnit.getUnit()), Units.MM).value();
+        if (haveUnit) {
+            return unitConverter.convertUnit(new DimensionDTO(((Number) numericInput.getValue()).doubleValue(), currentUnit.getUnit()), Units.MM).value();
+        }
+        return ((Number) numericInput.getValue()).doubleValue();
     }
 
     public DimensionDTO getMaxDimension() {
@@ -131,24 +157,27 @@ public class MeasurementInputField extends BasicWindow {
     }
 
     public void setCurrentUnit(UiUnits newUnit) {
-        double currentValue = ((Number)numericInput.getValue()).doubleValue();
+        if (haveUnit) {
+            double currentValue = ((Number) numericInput.getValue()).doubleValue();
 
-        DimensionDTO result = unitConverter.convertUnit(new DimensionDTO(currentValue, currentUnit.getUnit()), newUnit.getUnit());
+            DimensionDTO result = unitConverter.convertUnit(new DimensionDTO(currentValue, currentUnit.getUnit()), newUnit.getUnit());
 
-        this.currentUnit = newUnit;
-        unitComboBox.setSelectedItem(currentUnit);
+            this.currentUnit = newUnit;
+            unitComboBox.setSelectedItem(currentUnit);
 
-        numericInput.setValue(result.value());
-        setMaxDimension(maxDimension);
-        setMinDimension(minDimension);
+            numericInput.setValue(result.value());
+            setMaxDimension(maxDimension);
+            setMinDimension(minDimension);
+        }
     }
+
     private class UnitChangeListener implements ItemListener {
         @Override
         public void itemStateChanged(ItemEvent event) {
             if (event.getStateChange() == ItemEvent.SELECTED) {
                 UiUnits newUnit = (UiUnits) event.getItem();
                 UiUnits oldUnit = currentUnit; // Make explicit copy for undo redo
-                memorizer.executeAndMemorize(()->setCurrentUnit(newUnit), ()->setCurrentUnit(oldUnit));
+                memorizer.executeAndMemorize(() -> setCurrentUnit(newUnit), () -> setCurrentUnit(oldUnit));
             }
         }
     }

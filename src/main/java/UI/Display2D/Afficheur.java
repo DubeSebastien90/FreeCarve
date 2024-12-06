@@ -8,6 +8,7 @@ import UI.Widgets.PersoPoint;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
@@ -85,7 +86,7 @@ public class Afficheur {
             drawing.getCreateCursorPoint().drawMM(graphics2D, renderer, false);
         }
 
-        if (drawing.getState() == Drawing.DrawingState.MODIFY_ANCHOR){
+        if (drawing.getState() == Drawing.DrawingState.MODIFY_ANCHOR) {
             drawing.getCurrentModifiedCut().drawWhileModifyingAnchor(graphics2D, renderer, drawing.getCreateCursorPoint());
             drawing.getModifyingAnchorCursorPoint().drawMM(graphics2D, renderer, false);
         }
@@ -124,14 +125,16 @@ public class Afficheur {
         size = size * (rend.getZoom());
         ArrayList<Double> areammBoard = rend.getAreammBoard();
         for (double i = areammBoard.get(0); i < areammBoard.get(1); i += size) {
-            graphics2D.drawLine((int) i, areammBoard.get(3).intValue(), (int) i, areammBoard.get(2).intValue());
+            Line2D.Double line = new Line2D.Double(i, areammBoard.get(3).intValue(), i, areammBoard.get(2).intValue());
+            graphics2D.draw(line);
         }
         for (double i = areammBoard.get(3); i > areammBoard.get(2); i -= size) {
-            graphics2D.drawLine(areammBoard.get(0).intValue(), (int) i, areammBoard.get(1).intValue(), (int) i);
+            Line2D.Double line = new Line2D.Double(areammBoard.get(0).intValue(), i, areammBoard.get(1).intValue(), i);
+            graphics2D.draw(line);
         }
     }
 
-    void drawMask(Graphics2D graphics2D){
+    void drawMask(Graphics2D graphics2D) {
         Rectangle2D panneauOffset = rend.convertBoardTomm(rend.getBoard());
         int rectX = (int) panneauOffset.getX();
         int rectY = (int) panneauOffset.getY();

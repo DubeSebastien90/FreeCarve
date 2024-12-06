@@ -17,23 +17,23 @@ import java.util.Optional;
  * @since 2024-10-20
  */
 public class Grid {
-    private int size;
+    private double size;
     private int magnetPrecision;
     private boolean magnetic = false;
     private boolean active = false;
     private List<VertexDTO> intersectionPoints;
 
-    Grid(int size, int magnetPrecision) {
+    Grid(double size, int magnetPrecision) {
         this.size = size;
         this.magnetPrecision = magnetPrecision;
         intersectionPoints = new ArrayList<>();
     }
 
-    public int getSize() {
+    public double getSize() {
         return this.size;
     }
 
-    void setSize(int size) {
+    void setSize(double size) {
         this.size = size;
     }
 

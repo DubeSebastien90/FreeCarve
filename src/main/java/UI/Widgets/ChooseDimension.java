@@ -83,7 +83,7 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
 
         if (gridDisplayed) {
             gridPrecision = new MeasurementInputField(rend.getMainWindow(), "Taille grille", rend.getMainWindow().getController().getGrid().getSize(), UiUnits.MILLIMETERS);
-            magnetPrecision = new MeasurementInputField(rend.getMainWindow(), "Précision aimant", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), UiUnits.MILLIMETERS);
+            magnetPrecision = new MeasurementInputField(rend.getMainWindow(), "Précision aimant", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), UiUnits.MILLIMETERS, false);
             gbc.gridy = 4;
             add(gridPrecision, gbc);
             gbc.gridy = 5;
@@ -104,7 +104,7 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
         if (gridPrecision != null) {
             gridPrecision.getNumericInput().addPropertyChangeListener("value", evt -> {
                 // TODO clarify what precision means and why it's an int
-                rend.getMainWindow().getController().putGrid((int) gridPrecision.getMMValue(), rend.getMainWindow().getController().getGrid().getMagnetPrecision());
+                rend.getMainWindow().getController().putGrid(gridPrecision.getMMValue(), rend.getMainWindow().getController().getGrid().getMagnetPrecision());
                 rend.repaint();
             });
         }
