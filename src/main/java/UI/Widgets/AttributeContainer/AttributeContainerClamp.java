@@ -72,7 +72,7 @@ public class AttributeContainerClamp extends AttributeContainer{
         gc.gridy = 0;
         gc.weightx = 1;
         gc.weighty = 1;
-
+        gc.fill = GridBagConstraints.HORIZONTAL;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         add(centerPosition, gc);
 
