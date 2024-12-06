@@ -229,7 +229,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
                         for (DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
                             for (PersoPoint point : cutWrapper.getPersoPoints()) {
                                 Point2D temp = mmTopixel(new Point2D.Double(point.getLocationX(), point.getLocationY()));
-                                if (!foundSomething && mainWindow.getController().mouse_on_top(e.getX(), e.getY(), temp.getX(), temp.getY(), point.getRadius() * zoom)) {
+                                if (!foundSomething && mainWindow.getController().mouse_on_top(e.getX(), e.getY(), temp.getX(), temp.getY(), cutWrapper.getPointsRadius())) {
                                     drawing.initModifyPoint(cutWrapper, point);
                                     foundSomething = true;
                                 }
@@ -306,7 +306,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
                     for(DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
                         for (PersoPoint point : cutWrapper.getPersoPoints()) {
                             Point2D temp = mmTopixel(new Point2D.Double(point.getLocationX(), point.getLocationY()));
-                            if(!foundSomething && mainWindow.getController().mouse_on_top(e.getX(),e.getY(),temp.getX(),temp.getY(),point.getRadius() * zoom)) {
+                            if(!foundSomething && mainWindow.getController().mouse_on_top(e.getX(),e.getY(),temp.getX(),temp.getY(),cutWrapper.getPointsRadius())) {
                                 foundSomething = true;
                                 point.setHoveredView(true);
                             } else{

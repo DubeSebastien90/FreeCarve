@@ -37,6 +37,7 @@ public abstract class DrawCutWrapper {
     protected DrawCutState state = DrawCutState.NOT_SELECTED;
     protected DrawCutState previousState = DrawCutState.NOT_SELECTED;
     protected boolean hoveredView = false;
+    protected double pointsRadius;
 
     public enum DrawCutState {
         SELECTED,
@@ -78,7 +79,7 @@ public abstract class DrawCutWrapper {
         if(cut.getState() == CutState.NOT_VALID){
             setState(DrawCutState.INVALID, renderer);
         }
-
+        pointsRadius = strokeWidth/2 + 8*renderer.getZoom();
     }
 
     /**
@@ -147,14 +148,18 @@ public abstract class DrawCutWrapper {
         }
 
         //draw points
-        for (PersoPoint point : points) {
-            graphics2D.setColor(point.getColor());
-            Point2D temp = renderer.mmTopixel(new Point2D.Double(point.getLocationX(), point.getLocationY()));
-            if(renderer.isPointonPanel() && mainWindow.getController().mouse_on_top(renderer.getMousePt().getX(),renderer.getMousePt().getY(),temp.getX(),temp.getY(),point.getRadius() * renderer.getZoom())){
+        for (VertexDTO point : renderer.getMainWindow().getController().getAbsolutePointsPosition(cut)) {
+            Point2D temp = renderer.mmTopixel(new Point2D.Double(point.getX(), point.getY()));
+            PersoPoint _point = new PersoPoint(point.getX(), point.getY(), this.pointsRadius/renderer.getZoom(), true);
+            if(renderer.isPointonPanel() && mainWindow.getController().mouse_on_top(renderer.getMousePt().getX(),renderer.getMousePt().getY(),temp.getX(),temp.getY(), _point.getRadius()*renderer.getZoom())){
                 graphics2D.setColor(HOVER_VIEW_COLOR);
             }
-            point.drawMM(graphics2D, renderer);
+            _point.drawMM(graphics2D, renderer);
         }
+    }
+
+    public double getPointsRadius(){
+        return this.pointsRadius;
     }
 
     public void setHoveredView(boolean hoveredView) {
@@ -255,6 +260,7 @@ public abstract class DrawCutWrapper {
 
     public void setStrokeSize(double newSize) {
         this.stroke = new BasicStroke((float) newSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        this.pointsRadius = newSize/2 + 8*mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getZoom();
     }
 
     /**

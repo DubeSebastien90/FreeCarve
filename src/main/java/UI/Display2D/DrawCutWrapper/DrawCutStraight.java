@@ -28,21 +28,12 @@ public class DrawCutStraight extends DrawCutWrapper {
 
     @Override
     public void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer) {
-<<<<<<< HEAD
-        if (!cut.getRefsDTO().isEmpty()) { // drawing the first anchor point
-            VertexDTO offset = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
-            PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
-            referenceAnchorPoint.setColor(strokeColor);
-            referenceAnchorPoint.drawMM(graphics2D, renderer, false);
-        }
-=======
             if (!cut.getRefsDTO().isEmpty()) { // drawing the first anchor point
                 VertexDTO offset = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
                 PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
                 referenceAnchorPoint.setColor(strokeColor);
                 referenceAnchorPoint.drawMM(graphics2D, renderer);
             }
->>>>>>> 4cca22d (better component detection on rendering2Dwindow)
     }
 
     public DrawCutStraight(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {

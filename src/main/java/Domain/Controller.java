@@ -573,7 +573,7 @@ public class Controller implements IUnitConverter, IMemorizer {
         return RoundedCut.isRoundedCutHoveredByMouse(cutDTO, cursor, cncMachine);
     }
 
-<<<<<<< HEAD
+
     public void flushAllUndoRedo(){
         undoRedoManager.flushAll();
     }
@@ -585,11 +585,11 @@ public class Controller implements IUnitConverter, IMemorizer {
      */
     public List<InvalidCutState> getInvalidCutStates(UUID cutID) {
         return cncMachine.getPanel().getInvalidCutStates(cncMachine, cutID);
-=======
+    }
+
     public boolean mouse_on_top(double mouse_x, double mouse_y, double pointX, double pointY, double pointRadius) {
         double dist = Math.sqrt(Math.pow(mouse_x - pointX, 2) + Math.pow(mouse_y - pointY, 2));
         return dist <= pointRadius;
->>>>>>> 4cca22d (better component detection on rendering2Dwindow)
     }
 }
 
