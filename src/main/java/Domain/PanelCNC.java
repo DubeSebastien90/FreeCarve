@@ -27,7 +27,7 @@ class PanelCNC {
     private final IMemorizer memorizer;
     private static final int MAX_FEET_WIDTH = 10;
     private static final int MAX_FEET_HEIGHT = 5;
-    private static final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 5); // dimension in mm
+    private static final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 50); // dimension in mm
 
     PanelCNC(IMemorizer memorizer) {
         this(defaultPanelDimension, memorizer);
