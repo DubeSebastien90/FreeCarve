@@ -10,6 +10,7 @@ import UI.Widgets.PointsBox;
 import UI.Widgets.SingleValueBox;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class AttributeContainerClamp extends AttributeContainer{
     SingleValueBox widthOfRectangle;
@@ -35,21 +36,29 @@ public class AttributeContainerClamp extends AttributeContainer{
     }
 
     private double getWidthEdgeEdge(){
-        return cutDTO.getPoints().get(1).getX();
+        return Math.abs(cutDTO.getPoints().get(0).getX() - cutDTO.getPoints().get(2).getX());
     }
 
     private double getHeightEdgeEdge(){
-        return cutDTO.getPoints().get(1).getY();
+        return Math.abs(cutDTO.getPoints().get(0).getY() - cutDTO.getPoints().get(2).getY());
     }
+
+
 
     @Override
     public void setupEventListeners() {
-
+        addCenterEventListener(centerPosition);
+        addWidthEventListener(widthOfRectangle);
+        addHeightEventListener(heightOfRectangle);
     }
 
     @Override
     public void updatePanel(CutDTO newCutDTO) {
-
+        cutDTO = newCutDTO;
+        centerPosition.getxInput().setValueInMMWithoutTrigerringListeners(getCenterPoint().getX());
+        centerPosition.getyInput().setValueInMMWithoutTrigerringListeners(getCenterPoint().getY());
+        widthOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(getWidthEdgeEdge());
+        heightOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(getHeightEdgeEdge());
     }
 
     private void init_layout(){
@@ -78,5 +87,56 @@ public class AttributeContainerClamp extends AttributeContainer{
         gc.gridy = 2;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         add(heightOfRectangle, gc);
+    }
+
+    private void addHeightEventListener(SingleValueBox sb){
+        sb.getInput().getNumericInput().addPropertyChangeListener("value", evt -> {
+            double value = (double) evt.getNewValue();
+            CutDTO newClamp = new CutDTO(cutDTO.getId(),
+                    cutDTO.getDepth(),
+                    cutDTO.getBitIndex(),
+                    cutDTO.getCutType(),
+                    mainWindow.getController().generateRectanglePoints(getCenterPoint(), getWidthEdgeEdge(), value),
+                    new ArrayList<>(), cutDTO.getState());
+            mainWindow.getController().modifyCut(newClamp);
+
+        });
+    }
+
+    private void addWidthEventListener(SingleValueBox sb){
+        sb.getInput().getNumericInput().addPropertyChangeListener("value", evt -> {
+            double value = (double) evt.getNewValue();
+            CutDTO newClamp = new CutDTO(cutDTO.getId(),
+                    cutDTO.getDepth(),
+                    cutDTO.getBitIndex(),
+                    cutDTO.getCutType(),
+                    mainWindow.getController().generateRectanglePoints(getCenterPoint(), value, getHeightEdgeEdge()),
+                    new ArrayList<>(), cutDTO.getState());
+            mainWindow.getController().modifyCut(newClamp);
+        });
+    }
+
+    private void addCenterEventListener(PointsBox pb){
+        pb.getxInput().getNumericInput().addPropertyChangeListener("value", evt -> {
+            double value = (double) evt.getNewValue();
+            CutDTO newClamp = new CutDTO(cutDTO.getId(),
+                    cutDTO.getDepth(),
+                    cutDTO.getBitIndex(),
+                    cutDTO.getCutType(),
+                    mainWindow.getController().generateRectanglePoints(new VertexDTO(value, getCenterPoint().getY(), getCenterPoint().getZ()), getWidthEdgeEdge(), getHeightEdgeEdge()),
+                    new ArrayList<>(), cutDTO.getState());
+            mainWindow.getController().modifyCut(newClamp);
+        });
+
+        pb.getyInput().getNumericInput().addPropertyChangeListener("value", evt -> {
+            double value = (double) evt.getNewValue();
+            CutDTO newClamp = new CutDTO(cutDTO.getId(),
+                    cutDTO.getDepth(),
+                    cutDTO.getBitIndex(),
+                    cutDTO.getCutType(),
+                    mainWindow.getController().generateRectanglePoints(new VertexDTO(getCenterPoint().getX(), value, getCenterPoint().getZ()), getWidthEdgeEdge(), getHeightEdgeEdge()),
+                    new ArrayList<>(), cutDTO.getState());
+            mainWindow.getController().modifyCut(newClamp);
+        });
     }
 }
