@@ -83,8 +83,8 @@ public class DrawCutL extends DrawCutWrapper{
         p1Height = p1Height.add(offset);
         p2Height = p2Height.add(offset);
 
-        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, relativeOffset.getX(),  ARROW_COLOR, ARROW_DIMENSION,  DIMENSION_COLOR);
-        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, relativeOffset.getY(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, Math.abs(relativeOffset.getX()),  ARROW_COLOR, ARROW_DIMENSION,  DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, Math.abs(relativeOffset.getY()), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
     }
 
     @Override

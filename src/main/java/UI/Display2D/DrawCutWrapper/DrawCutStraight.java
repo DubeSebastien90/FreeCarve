@@ -92,6 +92,14 @@ public class DrawCutStraight extends DrawCutWrapper{
             }
             UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, horizontalOffset, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
         }
+        else if(cut.getCutType() == CutType.LINE_FREE){
+            VertexDTO anchor = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
+            VertexDTO relativeP1 = cut.getPoints().getFirst();
+
+            VertexDTO p2 = anchor.add(relativeP1);
+
+            UiUtil.drawArrowWidthNumberXY(graphics2D, rendering2DWindow, anchor, p2, relativeP1.getX(), relativeP1.getY(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+        }
 
     }
 

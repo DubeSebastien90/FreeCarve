@@ -37,7 +37,7 @@ public class DrawCutFactory {
             return new DrawCutBorder(cut, renderer, mainWindow);
         }
 
-        return new DrawFreeCut(cut, renderer, mainWindow);
+        return new DrawCutStraight(cut, renderer, mainWindow);
     }
 
     /**
@@ -70,7 +70,7 @@ public class DrawCutFactory {
         }
 
 
-        return new DrawFreeCut(type, renderer, mainWindow);
+        return new DrawCutStraight(type, renderer, mainWindow);
     }
 
     /**
