@@ -30,6 +30,9 @@ public class DrawCutFactory {
         else if(cut.getCutType() == CutType.RECTANGULAR){
             return new DrawCutRectangular(cut, renderer, mainWindow);
         }
+        else if(cut.getCutType() == CutType.L_SHAPE){
+            return new DrawCutL(cut, renderer, mainWindow);
+        }
         else if(cut.getCutType() == CutType.RETAILLER){
             return new DrawCutBorder(cut, renderer, mainWindow);
         }
@@ -65,6 +68,7 @@ public class DrawCutFactory {
         else if(type == CutType.RETAILLER){
             return new DrawCutBorder(type, renderer, mainWindow);
         }
+
 
         return new DrawFreeCut(type, renderer, mainWindow);
     }

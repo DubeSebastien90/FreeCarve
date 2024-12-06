@@ -6,6 +6,7 @@ import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
+import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
@@ -43,7 +44,21 @@ public class DrawCutBorder extends DrawCutWrapper{
 
     @Override
     public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
+        List<VertexDTO> absPoints = mainWindow.getController().getAbsolutePointsPosition(cut);
+        VertexDTO downLeft = cut.getPoints().get(0);
+        VertexDTO upRight = cut.getPoints().get(1);
+        double bitDiameter = mainWindow.getController().getBitDiameter(cut.getBitIndex());
 
+        VertexDTO centralPoint = absPoints.get(0).add(absPoints.get(2)).mul(0.5);
+
+        VertexDTO yP1 = new VertexDTO(centralPoint).sub(downLeft);
+        VertexDTO yP2 = new VertexDTO(yP1.getX(), yP1.getY() + downLeft.getY() + upRight.getY(), 0);
+
+        VertexDTO xP1 = new VertexDTO(centralPoint).sub(downLeft);
+        VertexDTO xP2 = new VertexDTO(xP1.getX() + downLeft.getX() + upRight.getX(),  xP1.getY(), 0);
+
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  xP1, xP2, downLeft.getX() + upRight.getX(),  ARROW_COLOR,ARROW_DIMENSION, DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  yP1, yP2, downLeft.getY()+ upRight.getY(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
     }
 
     @Override

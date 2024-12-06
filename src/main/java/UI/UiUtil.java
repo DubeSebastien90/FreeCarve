@@ -165,7 +165,7 @@ public class UiUtil {
         return unitSymbol;
     }
 
-    public static void drawArrowWidthNumber(Graphics2D g, Rendering2DWindow renderer, VertexDTO p1, VertexDTO p2, double value, Color arrowColor, int arrowDiameter, Color textColor){
+    public static void drawArrow(Graphics2D g, Rendering2DWindow renderer, VertexDTO p1, VertexDTO p2, Color arrowColor, int arrowDiameter){
         if(arrowDiameter < 0){throw new IllegalArgumentException("The arrow diameter cannot be negative");}
 
         g.setColor(arrowColor);
@@ -174,8 +174,6 @@ public class UiUtil {
         // Draw arrow
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(p1.getX(), p1.getY()));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(p2.getX(), p2.getY()));
-        VertexDTO middlePoint = p1.add(p2).mul(0.5);
-        Point2D tempMiddle = renderer.mmTopixel(new Point2D.Double(middlePoint.getX(), middlePoint.getY()));
         g.drawLine((int) temp1.getX(), (int) temp1.getY(), (int) temp2.getX(), (int) temp2.getY());
 
         int arrowHeadSize = 10;
@@ -190,8 +188,14 @@ public class UiUtil {
         g.drawLine((int)temp2.getX(), (int)temp2.getY(), x3, y3);
         g.drawLine((int)temp2.getX(), (int)temp2.getY(), x4, y4);
 
+    }
 
-//         Draw infoBox
+    public static void drawNumber(Graphics2D g, Rendering2DWindow renderer, VertexDTO p1, VertexDTO p2, double value, Color boxColor,Color textColor){
+
+        VertexDTO middlePoint = p1.add(p2).mul(0.5);
+        Point2D tempMiddle = renderer.mmTopixel(new Point2D.Double(middlePoint.getX(), middlePoint.getY()));
+
+        //Draw infoBox
         DecimalFormat df = new DecimalFormat("0.00");
         String formattedNumber = df.format(value);
         formattedNumber += getUnitSymbole(UIConfig.INSTANCE.getDefaultUnit().unit);
@@ -203,6 +207,7 @@ public class UiUtil {
         double rectHeight = textHeight + 2*padding;
         int rectX = (int) (tempMiddle.getX() - rectWidth/2);
         int rectY = (int) (tempMiddle.getY() - rectHeight/2);
+        g.setColor(boxColor);
         g.fillRect(rectX, rectY, (int) rectWidth, (int) rectHeight);
 
         int textX = (int) (rectX + (rectWidth - textWidth) / 2);
@@ -210,5 +215,49 @@ public class UiUtil {
 
         g.setColor(textColor);
         g.drawString(formattedNumber, textX, textY);
+    }
+
+
+
+    public static void drawNumberXY(Graphics2D g, Rendering2DWindow renderer, VertexDTO p1, VertexDTO p2, double valueX, double valueY, Color boxColor, Color textColor){
+        VertexDTO middlePoint = p1.add(p2).mul(0.5);
+        Point2D tempMiddle = renderer.mmTopixel(new Point2D.Double(middlePoint.getX(), middlePoint.getY()));
+
+        //Draw infoBox
+        DecimalFormat df = new DecimalFormat("0.00");
+        String formattedNumberX = df.format(valueX);
+        String formattedNumberY = df.format(valueY);
+        formattedNumberX = "X: " + formattedNumberX;
+        formattedNumberY = "Y: " + formattedNumberY;
+        formattedNumberX += getUnitSymbole(UIConfig.INSTANCE.getDefaultUnit().unit);
+        formattedNumberY += getUnitSymbole(UIConfig.INSTANCE.getDefaultUnit().unit);
+        FontMetrics fontMetrics = g.getFontMetrics();
+        int textWidth = Math.max(fontMetrics.stringWidth(formattedNumberX), fontMetrics.stringWidth(formattedNumberY));
+        int textHeight = fontMetrics.getHeight();
+
+        double padding = 4;
+        double rectWidth = textWidth + 2*padding;
+        double rectHeight = textHeight * 2 + 3*padding;
+        int rectX = (int) (tempMiddle.getX() - rectWidth/2);
+        int rectY = (int) (tempMiddle.getY() - rectHeight/2);
+        g.setColor(boxColor);
+        g.fillRect(rectX, rectY, (int) rectWidth, (int) rectHeight);
+
+        int textX = (int) (rectX + (rectWidth - textWidth) / 2);
+        int textY = (int) (rectY + (rectHeight - textHeight) /2 + fontMetrics.getAscent());
+
+        g.setColor(textColor);
+        g.drawString(formattedNumberX, textX, textY - textHeight/2);
+        g.drawString(formattedNumberY, textX, textY + textHeight/2);
+    }
+
+    public static void drawArrowWidthNumber(Graphics2D g, Rendering2DWindow renderer, VertexDTO p1, VertexDTO p2, double value, Color arrowColor, int arrowDiameter,Color textColor){
+        drawArrow(g, renderer, p1, p2, arrowColor, arrowDiameter);
+        drawNumber(g, renderer, p1, p2, value, arrowColor, textColor);
+    }
+
+    public static void drawArrowWidthNumberXY(Graphics2D g, Rendering2DWindow renderer, VertexDTO p1, VertexDTO p2, double valueX, double valueY, Color arrowColor, int arrowDiameter,Color textColor){
+        drawArrow(g, renderer, p1, p2, arrowColor, arrowDiameter);
+        drawNumberXY(g, renderer, p1, p2, valueX, valueY, arrowColor, textColor);
     }
 }

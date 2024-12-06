@@ -6,6 +6,7 @@ import Common.DTO.VertexDTO;
 import UI.Display2D.Drawing;
 import UI.MainWindow;
 import UI.Display2D.Rendering2DWindow;
+import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
@@ -55,6 +56,11 @@ public class DrawFreeCut extends DrawCutWrapper {
     @Override
     public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
 
+        VertexDTO anchor = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
+        VertexDTO relativeP1 = cut.getPoints().getFirst();
+        VertexDTO p2 = anchor.add(relativeP1);
+        System.out.println(p2);
+        UiUtil.drawArrowWidthNumberXY(graphics2D, rendering2DWindow, anchor, p2, relativeP1.getX(), relativeP1.getY(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
     }
 
     @Override

@@ -7,6 +7,7 @@ import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
+import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
@@ -68,7 +69,57 @@ public class DrawCutRectangular extends DrawCutWrapper{
 
     @Override
     public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
+        List<VertexDTO> absPoints = mainWindow.getController().getAbsolutePointsPosition(cut);
+        VertexDTO relativeOffset = cut.getPoints().getFirst();
+        VertexDTO relativeDimensions = cut.getPoints().get(1);
 
+        int index1 = 0;
+        int index2 = 2;
+
+        if(relativeOffset.getX() < 0 && relativeOffset.getY() < 0){
+            index1 = 2;
+            index2 = 0;
+        }
+        else if(relativeOffset.getX() < 0 && relativeOffset.getY() > 0){
+            index1 = 3;
+            index2 = 1;
+        }
+        else if(relativeOffset.getX() > 0 && relativeOffset.getY() < 0){
+            index1 = 1;
+            index2 = 3;
+        }
+
+        VertexDTO absoluteCentralPoint = absPoints.get(index2).add(absPoints.get(index1)).mul(0.5);
+        double bitDiameter = mainWindow.getController().getBitDiameter(cut.getBitIndex());
+
+
+        VertexDTO p1 = absoluteCentralPoint.sub(relativeOffset);
+        VertexDTO p2 = absoluteCentralPoint;
+        UiUtil.drawArrow(graphics2D, rendering2DWindow, p1, p2, ARROW_COLOR, ARROW_DIMENSION);
+
+        VertexDTO dirOpposite= absPoints.get(index2).sub(absPoints.get(index1));
+        double dirOppositeX = Math.signum(dirOpposite.getX());
+        double dirOppositeY = Math.signum(dirOpposite.getY());
+        VertexDTO dirOppositeTo1 = new VertexDTO(dirOppositeX, dirOppositeY, 0);
+
+        VertexDTO p1Width = absPoints.get(index2);
+        VertexDTO p2Width = absPoints.get(index2).sub(new VertexDTO(relativeDimensions.getX() * dirOppositeX, 0, 0));
+        VertexDTO p1Height = absPoints.get(index2);
+        VertexDTO p2Height = absPoints.get(index2).sub(new VertexDTO(0, relativeDimensions.getY() * dirOppositeY, 0));
+
+        p1Width = p1Width.sub(dirOppositeTo1.mul(bitDiameter/2));
+        p2Width = p2Width.sub(dirOppositeTo1.mul(bitDiameter/2));
+
+        p1Height = p1Height.sub(dirOppositeTo1.mul(bitDiameter/2));
+        p2Height = p2Height.sub(dirOppositeTo1.mul(bitDiameter/2));
+
+
+        UiUtil.drawArrow(graphics2D, rendering2DWindow, p1Width, p2Width, ARROW_COLOR, ARROW_DIMENSION);
+        UiUtil.drawArrow(graphics2D, rendering2DWindow, p1Height, p2Height, ARROW_COLOR, ARROW_DIMENSION);
+
+        UiUtil.drawNumberXY(graphics2D, rendering2DWindow, p1, p2, relativeOffset.getX(), relativeOffset.getY(), ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, relativeDimensions.getX(),  ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, relativeDimensions.getY(), ARROW_COLOR, DIMENSION_COLOR);
     }
 
     @Override

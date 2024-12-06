@@ -150,6 +150,8 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
                 c.updateAttributeContainerPanel(cutDTO.get());
             }
 
+            changeAttributeEventOccurred(event);
+
         }
     }
 
