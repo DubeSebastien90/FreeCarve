@@ -341,4 +341,5 @@ public class LeftBar extends JScrollPane {
             mainWindow.getController().redo();
         });
     }
+
 }

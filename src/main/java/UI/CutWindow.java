@@ -1,29 +1,20 @@
 package UI;
 
-import Common.DTO.BitDTO;
 import Common.DTO.CutDTO;
+import UI.Display2D.Rendering2DWindow;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
 import UI.Listeners.PanelObservers;
 import UI.SubWindows.AttributePanel;
-import UI.SubWindows.BasicWindow;
 import UI.SubWindows.BitSelectionPanel;
 import UI.SubWindows.CutListPanel;
-import UI.Display2D.Rendering2DWindow;
 import UI.Widgets.Attributable;
 import UI.Widgets.CutBox;
-import org.w3c.dom.Attr;
 
 import javax.swing.*;
-import javax.swing.text.html.Option;
-import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.awt.event.ActionListener;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,7 +55,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         this.panelObservers.addObserver(attributePanel);
         this.panelObservers.addObserver(rendering2DWindow);
 
-        mainWindow.getController().addRefreshListener(()->this.rendering2DWindow.updateCuts());
+        mainWindow.getController().addRefreshListener(() -> this.rendering2DWindow.updateCuts());
     }
 
     public Rendering2DWindow getRenderer() {
@@ -78,14 +69,16 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         return mainSplitPane;
     }
 
-    public CutListPanel getCutListPanel(){
+    public CutListPanel getCutListPanel() {
         return this.cutListPanel;
     }
 
     /**
      * @return the {@code Rendering2DWindow} present in the {@code CutWIndo}
      */
-    public Rendering2DWindow getRendering2DWindow() {return rendering2DWindow;}
+    public Rendering2DWindow getRendering2DWindow() {
+        return rendering2DWindow;
+    }
 
     public JPanel getScreen(int i) {
         switch (i) {
@@ -98,37 +91,46 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
 
     /**
      * Set the selected element of the CutWindow and changed the AttributePanel accordingly
+     *
      * @param event ChangeAttributeEvent being called by a child class
      */
     @Override
     public void changeAttributeEventOccurred(ChangeAttributeEvent event) {
 
         // Change the cut that is selected
-        if (event.getAttribute() instanceof  CutBox){
+        if (event.getAttribute() instanceof CutBox) {
             CutBox eventCasted = (CutBox) event.getAttribute();
             UUID id = eventCasted.getCutUUID();
-            if(eventCasted.getTempState() == CutBox.CutBoxState.HOVER){
+            if (eventCasted.getTempState() == CutBox.CutBoxState.HOVER) {
                 this.rendering2DWindow.getDrawing().changeHoverWrapperById(id);
-            }
-            else if(eventCasted.getState() == CutBox.CutBoxState.SELECTED && eventCasted.getTempState() == CutBox.CutBoxState.SELECTED){
+            } else if (eventCasted.getState() == CutBox.CutBoxState.SELECTED && eventCasted.getTempState() == CutBox.CutBoxState.SELECTED) {
+                mainWindow.getLeftBar().getToolBar().enableTool(LeftBar.ToolBar.Tool.TRASH);
+                ActionListener[] actions = mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.TRASH).getActionListeners();
+                for (ActionListener act : actions) {
+                    mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.TRASH).removeActionListener(act);
+                }                mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.TRASH).addActionListener(e -> {
+                    deleteCutEventOccured(new ChangeCutEvent(eventCasted, eventCasted.getCutUUID()));
+                });
+
                 this.rendering2DWindow.getDrawing().changeSelectedWrapperById(id);
                 this.selectedAttributable = event.getAttribute();
                 this.attributePanel.updateAttribute(this.selectedAttributable);
-            }
-            else if(eventCasted.getState() == CutBox.CutBoxState.NOT_VALID && eventCasted.getTempState() == CutBox.CutBoxState.NOT_VALID){
+            } else if (eventCasted.getState() == CutBox.CutBoxState.NOT_VALID && eventCasted.getTempState() == CutBox.CutBoxState.NOT_VALID) {
                 this.rendering2DWindow.getDrawing().changeAllInvalid();
-                if(eventCasted == selectedAttributable){
+                if (eventCasted == selectedAttributable) {
                     this.attributePanel.updateAttribute(null); // hide attribute panel if it was selected
                     this.selectedAttributable = null;
                 }
-            }
-            else{
+            } else {
                 this.rendering2DWindow.getDrawing().changeNotSelectedWrapperById(id);
-                if(eventCasted == selectedAttributable){
+                if (eventCasted == selectedAttributable) {
                     this.attributePanel.updateAttribute(null); // hide attribute panel if it was selected
                     this.selectedAttributable = null;
+                    mainWindow.getLeftBar().getToolBar().disableTool(LeftBar.ToolBar.Tool.TRASH);
                 }
             }
+        } else {
+            mainWindow.getLeftBar().getToolBar().disableTool(LeftBar.ToolBar.Tool.TRASH);
         }
     }
 
@@ -136,17 +138,18 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
      * One attribute got modified ::
      * needs to change the cutbox appropriately
      * needs to change the 2d renderer
+     *
      * @param event
      */
     @Override
-    public void modifiedAttributeEventOccured(ChangeAttributeEvent event){
+    public void modifiedAttributeEventOccured(ChangeAttributeEvent event) {
         this.rendering2DWindow.updateCuts();
 
-        if(event.getAttribute() instanceof CutBox){
+        if (event.getAttribute() instanceof CutBox) {
             CutBox c = (CutBox) event.getAttribute();
             UUID cutId = c.getCutUUID();
             Optional<CutDTO> cutDTO = mainWindow.getController().findSpecificCut(cutId);
-            if(cutDTO.isPresent()){
+            if (cutDTO.isPresent()) {
                 c.updateAttributeContainerPanel(cutDTO.get());
             }
 
@@ -156,17 +159,17 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     }
 
     @Override
-    public void addCutEventOccured(ChangeCutEvent event){
+    public void addCutEventOccured(ChangeCutEvent event) {
 
         this.cutListPanel.update();
 
         Optional<CutBox> cutBox = this.cutListPanel.getCutBoxWithId(event.getCutId());
-        if(cutBox.isPresent()){
+        if (cutBox.isPresent()) {
             this.changeAttributeEventOccurred(new ChangeAttributeEvent(CutWindow.class, cutBox.get()));
             cutBox.get().select();
         }
 
-        SwingUtilities.invokeLater(()->{ // Invoke later necessary to wait for the repaint
+        SwingUtilities.invokeLater(() -> { // Invoke later necessary to wait for the repaint
             JScrollBar scrollBar = this.cutListPanel.getScrollPane().getVerticalScrollBar();
             scrollBar.setValue(scrollBar.getMaximum());
         });
@@ -175,14 +178,14 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     @Override
     public void deleteCutEventOccured(ChangeCutEvent event) {
         mainWindow.getController().removeCut(event.getCutId());
+        mainWindow.getLeftBar().getToolBar().disableTool(LeftBar.ToolBar.Tool.TRASH);
         this.cutListPanel.remove(event.getCutId());
         this.rendering2DWindow.updateCuts();
         this.rendering2DWindow.getDrawing().changeAllInvalid();
         if (event.getSource() == this.selectedAttributable) {// this means it's the same object, so the attributable will be deleted
             this.attributePanel.updateAttribute(null);
             this.selectedAttributable = null;
-        }
-        else{
+        } else {
 
             this.attributePanel.updateAttribute(selectedAttributable); // if not the same object ,update the attribute panel with the new cutbox information
         }
@@ -232,7 +235,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     /**
      * Calls all the {@code PanelObservers} to update their respective panels
      */
-    public void notifyObservers(){
+    public void notifyObservers() {
         this.panelObservers.notifyObservers();
     }
 }

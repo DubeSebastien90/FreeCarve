@@ -2,12 +2,9 @@ package UI.Widgets;
 
 import Common.DTO.BitDTO;
 import Common.Exceptions.InvalidBitException;
-import UI.MainWindow;
+import UI.*;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.BitConfigurationPanel;
-import UI.UIConfig;
-import UI.UiUnits;
-import UI.UiUtil;
 import com.formdev.flatlaf.ui.FlatEmptyBorder;
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 
@@ -15,6 +12,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Represents a display panel that shows and allows editing of bit information.
@@ -56,6 +54,15 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
      * and the modify button. Sets up layout constraints and adds components to the panel.
      */
     private void init() {
+        mainWindow.getLeftBar().getToolBar().enableTool(LeftBar.ToolBar.Tool.TRASH);
+        ActionListener[] actions = mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.TRASH).getActionListeners();
+        for (ActionListener act : actions) {
+            mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.TRASH).removeActionListener(act);
+        }
+        mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.TRASH).addActionListener(e -> {
+            removeBit();
+        });
+
         widthTextArea = new MeasurementInputField(mainWindow, "Diamètre   ", bit.getDiameter(), UiUnits.MILLIMETERS);
         BasicWindow nameContainer = new BasicWindow(false);
         nameTextArea = new JTextArea(bit.getName());
@@ -214,7 +221,7 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
     }
 
     private void removeBit() {
-        if (widthTextArea.getMMValue() == 0.0)
+        if (mainWindow.getController().getConfiguredBitsMap().size() == 1)
             //Todo: Gérer message qui dit qu'on ne peut pas delete si aucun bit configuré
             return;
 
@@ -223,7 +230,7 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
             this.mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().setSelectedBit(
                     (Integer) this.mainWindow.getController().getConfiguredBitsMap().keySet().toArray()[0]
             );
-        } catch (InvalidBitException e) {
+        } catch (InvalidBitException | ArrayIndexOutOfBoundsException e) {
             //Todo: Gérer le message d'erreur, might never happen
             return;
         }

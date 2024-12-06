@@ -138,6 +138,7 @@ public class MiddleContent {
                 exportWindow.calculateGcode();
                 exportWindow.getRenderer().requestFocusInWindow();
                 db.setButtonBlueToIndex(2);
+                lb.getToolBar().disableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.COUPEL, Tool.GRID, Tool.FREE_LINE, Tool.VERTICAL, Tool.HORIZONTAL, Tool.RECTANGLE, Tool.RETAILLER, Tool.SCALE, Tool.FORBIDDEN, Tool.TRASH});
             }
         }
     }

@@ -133,6 +133,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
         saveToolsButton.addActionListener(new SaveToolsActionListener(mainWindow));
 
         loadToolsButton.addActionListener(e->{
+            mainWindow.getLeftBar().getToolBar().disableTool(LeftBar.ToolBar.Tool.TRASH);
             File file = Utils.chooseFile("Charger outils", "defaut.CNC", mainWindow.getFrame(), FileCache.INSTANCE.getLastToolSave(), "Fichier outils (CNC)", "CNC");
             if (file != null) {
                 try {
@@ -190,6 +191,9 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
     @Override
     public void changeAttributeEventOccurred(ChangeAttributeEvent event) {
         Attributable selectedAttributable = event.getAttribute();
+        if (selectedAttributable.getClass() != BitInfoDisplay.class){
+            mainWindow.getLeftBar().getToolBar().disableTool(LeftBar.ToolBar.Tool.TRASH);
+        }
         this.attributePanel.updateAttribute(selectedAttributable);
     }
 

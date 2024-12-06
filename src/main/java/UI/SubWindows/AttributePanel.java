@@ -2,6 +2,7 @@ package UI.SubWindows;
 
 import Common.Interfaces.IPanelObserver;
 import Common.Interfaces.IRefreshable;
+import UI.LeftBar;
 import UI.MainWindow;
 import UI.UIConfig;
 import UI.Widgets.Attributable;
