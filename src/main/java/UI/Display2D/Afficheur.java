@@ -110,6 +110,7 @@ public class Afficheur {
                     wrapper.getState() == DrawCutWrapper.DrawCutState.HOVER){
                 if(wrapper.getCutDTO().getState() != CutState.NOT_VALID){
                     wrapper.drawDimensions(graphics2D, renderer);
+                    wrapper.drawAnchor(graphics2D, renderer);
                 }
 
             }
