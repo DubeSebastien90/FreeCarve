@@ -149,6 +149,11 @@ public abstract class DrawCutWrapper {
      */
     public abstract void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor);
 
+    /**
+     * Draw function called when you want to draw the dimensions of the cuts on the board
+     * @param graphics2D ref to graphics
+     * @param rendering2DWindow ref to renderer instance
+     */
     public abstract void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow);
 
     public void drawWhileModifyingAnchor(Graphics graphics, Rendering2DWindow rendering2DWindow, PersoPoint cursorPoint){

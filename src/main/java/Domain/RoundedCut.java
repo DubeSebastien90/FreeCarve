@@ -24,6 +24,10 @@ public class RoundedCut {
         this.bitDiameter = bitDiameter;
     }
 
+    /**
+     * Compute the internal rectangle that composese the rounded cut
+     * @return
+     */
     List<VertexDTO> getInternalRectanglePoints(){
         VertexDTO diff = p2.sub(p1).normalize();
         Pair<VertexDTO, VertexDTO> results = VertexDTO.perpendicularPointsAroundP1(VertexDTO.zero(), diff);
@@ -36,6 +40,11 @@ public class RoundedCut {
         return List.of(new VertexDTO[]{rect1, rect2, rect3, rect4});
     }
 
+    /**
+     * Check if a point is inside the internal rectangle
+     * @param point point to test
+     * @return true if inside
+     */
     boolean pointInInternalRectangle(VertexDTO point){
         List<VertexDTO> rectPoints = getInternalRectanglePoints();
         VertexDTO ab = rectPoints.get(1).sub(rectPoints.get(0));
@@ -58,6 +67,11 @@ public class RoundedCut {
                 (cross1 < 0 && cross2 < 0 && cross3 < 0 && cross4 < 0));
     }
 
+    /**
+     * Check if the point is in either of the 2 circles at the end of the cut
+     * @param point point to test
+     * @return true if inside one of the circle
+     */
     boolean pointInCircles(VertexDTO point){
         double circleRadius = bitDiameter/2;
         double distanceFromP1 = p1.getDistance(point);
@@ -65,10 +79,22 @@ public class RoundedCut {
         return distanceFromP2 <= circleRadius || distanceFromP1 <= circleRadius;
     }
 
+    /**
+     * Test if the point is in the internal rectangle or in the circles
+     * @param point point to test
+     * @return true if inside any
+     */
     public boolean pointInRoundedCut(VertexDTO point){
         return pointInInternalRectangle(point) || pointInCircles(point);
     }
 
+    /**
+     * Test the rounded cut created from a cutDTO if a point is inside of it
+     * @param cutDTO cutDTO to build all of the roundedCut with
+     * @param cursor point to test
+     * @param cncMachine ref to CNCMachine
+     * @return
+     */
     public static boolean isRoundedCutHoveredByMouse(CutDTO cutDTO, VertexDTO cursor, CNCMachine cncMachine){
         List<VertexDTO> points = cncMachine.getAbsolutePointsPositionOfCutDTO(cutDTO);
         double bitDiameter = cncMachine.getBitStorage().getBitDiameter(cutDTO.getBitIndex());
