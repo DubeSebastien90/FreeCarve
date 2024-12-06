@@ -182,7 +182,7 @@ public class CutPointsFactory {
      */
     public static List<VertexDTO> generateVerticalPointsRelativeEdgeEdgeFromAbsolute(VertexDTO p1Abs, VertexDTO p2Abs, int bitIndex, List<RefCutDTO> refs, Controller controller, CNCMachine cncMachine){
         int bit1Index = bitIndex;
-        int bit2Index = refs.getFirst().getCut().getBitIndex();
+        int bit2Index = refs.get(0).getCut().getBitIndex();
         VertexDTO anchor = refs.getFirst().getAbsoluteOffset(controller);
         double diameter1 = cncMachine.getBitStorage().getBitDiameter(bit1Index);
         double diameter2 = cncMachine.getBitStorage().getBitDiameter(bit2Index);

@@ -3,6 +3,7 @@ package UI.Display2D;
 import Common.CutState;
 import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
+import Common.DTO.VertexDTO;
 import Domain.CutType;
 import UI.Display2D.DrawCutWrapper.DrawCutFactory;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
@@ -17,6 +18,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -214,7 +217,7 @@ public class Drawing {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseMoved(e);
-                System.out.println("pointMoveListener");
+                //System.out.println("pointMoveListener");
             }
         };
 
@@ -222,6 +225,16 @@ public class Drawing {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseMoved(e);
+                List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(currentModifiedCut.getCutDTO());
+                Point2D mmE = renderer.pixelTomm(e.getPoint());
+                VertexDTO p1 = new VertexDTO(mmE.getX(), listPoints.get(0).getY(),0);
+                VertexDTO p2 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(),0);
+                List<VertexDTO> relativePts = mainWindow.getController().generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1,p2,currentModifiedCut.getCutDTO().getBitIndex(),currentModifiedCut.getCutDTO().getRefsDTO());
+                CutDTO c = currentModifiedCut.getCutDTO();
+                mainWindow.getController().modifyCut(new CutDTO(c.getId(),c.getDepth(),c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()));
+                //update
+                Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(c.getId());
+                mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
             }
         };
 

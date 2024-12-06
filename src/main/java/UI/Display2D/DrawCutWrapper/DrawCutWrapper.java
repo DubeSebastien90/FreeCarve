@@ -6,10 +6,13 @@ import Common.Exceptions.BitNotSelectedException;
 import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
+import UI.Events.ChangeAttributeEvent;
 import UI.MainWindow;
+import UI.Widgets.CutBox;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +160,6 @@ public abstract class DrawCutWrapper {
             graphics2D.setColor(c);
             Point2D temp = renderer.mmTopixel(new Point2D.Double(point.getX(), point.getY()));
             PersoPoint _point = new PersoPoint(point.getX(), point.getY(), this.pointsRadius/renderer.getZoom(), true);
-            System.out.println(_point.getLocationX());
             if(renderer.getDrawing().getState() == Drawing.DrawingState.IDLE && renderer.isPointonPanel() && mainWindow.getController().mouse_on_top(renderer.getMousePt().getX(),renderer.getMousePt().getY(),temp.getX(),temp.getY(), _point.getRadius()*renderer.getZoom())){
                 graphics2D.setColor(HOVER_VIEW_COLOR);
             }
@@ -399,5 +401,9 @@ public abstract class DrawCutWrapper {
                     .or(() -> closestPoint2);
         }
         return oldClosest;
+    }
+
+    public void moveUpdate(MouseEvent e, Rendering2DWindow renderer, MainWindow mainWindow) {
+
     }
 }
