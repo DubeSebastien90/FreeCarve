@@ -420,8 +420,8 @@ public class LeftBar extends JScrollPane {
     public void forbiddenZonesActionListener() {
         toolBar.getTool(ToolBar.Tool.FORBIDDEN).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
-            if (middle.getCurrent() == MiddleContent.MiddleWindowType.CONFIG) {
-                middle.getCutWindow().getRendering2DWindow().drawForbiddenZone();
+            if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
+                middle.getCutWindow().getRendering2DWindow().cut(CutType.CLAMP);
             }
         });
     }

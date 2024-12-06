@@ -25,7 +25,7 @@ public class CutDTOTest {
         pointsList.add(temp1);
         pointsList.add(temp2);
         cut = new CutDTO(new UUID(10000, 10000), 5.0f, 0,
-                CutType.BORDER, pointsList, new ArrayList<RefCutDTO>(), CutState.VALID);
+                CutType.CLAMP, pointsList, new ArrayList<RefCutDTO>(), CutState.VALID);
 
         VertexDTO temp3 = new VertexDTO(1, 2, 3);
         VertexDTO temp4 = new VertexDTO(4, 5, 6);
@@ -45,7 +45,7 @@ public class CutDTOTest {
         // Act
 
         // Assert
-        Assertions.assertEquals(cut.getCutType(), CutType.BORDER);
+        Assertions.assertEquals(cut.getCutType(), CutType.CLAMP);
         Assertions.assertEquals(cut.getPoints(), pointsList);
         Assertions.assertEquals(cut.getBitIndex(), 0);
         Assertions.assertEquals(cut.getDepth(), 5.0f);
