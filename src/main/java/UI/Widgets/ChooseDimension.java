@@ -23,7 +23,7 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
     private MeasurementInputField yTextField;
     private MeasurementInputField zTextField;
     private MeasurementInputField gridPrecision;
-    private MeasurementInputField magnetPrecision;
+    private PixelNoUnitInputField magnetPrecision;
 
     /**
      * Constructs a ChooseDimension panel for modifying the width and height of the specified Rendering2DWindow.
@@ -83,7 +83,7 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
 
         if (gridDisplayed) {
             gridPrecision = new MeasurementInputField(rend.getMainWindow(), "Taille grille", rend.getMainWindow().getController().getGrid().getSize(), UiUnits.MILLIMETERS);
-            magnetPrecision = new MeasurementInputField(rend.getMainWindow(), "Précision aimant", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), UiUnits.MILLIMETERS, false);
+            magnetPrecision = new PixelNoUnitInputField(rend.getMainWindow(), "Précision aimant", rend.getMainWindow().getController().getGrid().getMagnetPrecision());
             gbc.gridy = 4;
             add(gridPrecision, gbc);
             gbc.gridy = 5;
@@ -110,7 +110,7 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
         }
         if (magnetPrecision != null) {
             magnetPrecision.getNumericInput().addPropertyChangeListener("value", evt -> {
-                rend.getMainWindow().getController().putGrid(rend.getMainWindow().getController().getGrid().getSize(), (int) magnetPrecision.getMMValue());
+                rend.getMainWindow().getController().putGrid(rend.getMainWindow().getController().getGrid().getSize(), ((Number) magnetPrecision.getNumericInput().getValue()).intValue());
                 rend.repaint();
             });
         }

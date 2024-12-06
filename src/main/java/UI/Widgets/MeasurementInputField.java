@@ -34,7 +34,6 @@ public class MeasurementInputField extends BasicWindow {
     private DimensionDTO minDimension;
     private final IUnitConverter unitConverter;
     private final IMemorizer memorizer;
-    private boolean haveUnit = true;
 
     private UiUnits currentUnit;
 
@@ -42,26 +41,8 @@ public class MeasurementInputField extends BasicWindow {
         this(mainWindow, nameOfInput, value, 0, mainWindow.getController().convertUnit(new DimensionDTO(15, Units.FEET), unit.getUnit()).value(), unit);
     }
 
-    public MeasurementInputField(MainWindow mainWindow, String nameOfInput, double value, UiUnits unit, boolean chooseUnits) {
-        this(mainWindow, nameOfInput, value, 0, mainWindow.getController().convertUnit(new DimensionDTO(15, Units.FEET), unit.getUnit()).value(), unit, chooseUnits);
-    }
-
     public MeasurementInputField(MainWindow mainWindow, String nameOfInput, double value, double minimumValue, double maximumValue, UiUnits unit) {
         super(false);
-        this.setBackground(null);
-        this.setOpaque(false);
-        this.unitConverter = mainWindow.getController();
-        this.memorizer = mainWindow.getController();
-        this.currentUnit = unit;
-        this.minDimension = new DimensionDTO(minimumValue, unit.getUnit());
-        this.maxDimension = new DimensionDTO(maximumValue, unit.getUnit());
-        this.init(nameOfInput, value);
-        setCurrentUnit(UIConfig.INSTANCE.getDefaultUnit());
-    }
-
-    public MeasurementInputField(MainWindow mainWindow, String nameOfInput, double value, double minimumValue, double maximumValue, UiUnits unit, boolean chooseUnits) {
-        super(false);
-        haveUnit = chooseUnits;
         this.setBackground(null);
         this.setOpaque(false);
         this.unitConverter = mainWindow.getController();
@@ -92,12 +73,11 @@ public class MeasurementInputField extends BasicWindow {
 
         this.add(nameLabel);
         this.add(this.numericInput);
-        if (haveUnit) {
-            this.unitComboBox = new JComboBox<>(UiUnits.values());
-            this.unitComboBox.setSelectedItem(currentUnit);
-            this.unitComboBox.addItemListener(new UnitChangeListener());
-            this.add(this.unitComboBox);
-        }
+        this.unitComboBox = new JComboBox<>(UiUnits.values());
+        this.unitComboBox.setSelectedItem(currentUnit);
+        this.unitComboBox.addItemListener(new UnitChangeListener());
+        this.add(this.unitComboBox);
+
     }
 
     /**
@@ -130,10 +110,7 @@ public class MeasurementInputField extends BasicWindow {
     }
 
     public double getMMValue() {
-        if (haveUnit) {
-            return unitConverter.convertUnit(new DimensionDTO(((Number) numericInput.getValue()).doubleValue(), currentUnit.getUnit()), Units.MM).value();
-        }
-        return ((Number) numericInput.getValue()).doubleValue();
+        return unitConverter.convertUnit(new DimensionDTO(((Number) numericInput.getValue()).doubleValue(), currentUnit.getUnit()), Units.MM).value();
     }
 
     public DimensionDTO getMaxDimension() {
@@ -157,18 +134,17 @@ public class MeasurementInputField extends BasicWindow {
     }
 
     public void setCurrentUnit(UiUnits newUnit) {
-        if (haveUnit) {
-            double currentValue = ((Number) numericInput.getValue()).doubleValue();
+        double currentValue = ((Number) numericInput.getValue()).doubleValue();
 
-            DimensionDTO result = unitConverter.convertUnit(new DimensionDTO(currentValue, currentUnit.getUnit()), newUnit.getUnit());
+        DimensionDTO result = unitConverter.convertUnit(new DimensionDTO(currentValue, currentUnit.getUnit()), newUnit.getUnit());
 
-            this.currentUnit = newUnit;
-            unitComboBox.setSelectedItem(currentUnit);
+        this.currentUnit = newUnit;
+        unitComboBox.setSelectedItem(currentUnit);
 
-            numericInput.setValue(result.value());
-            setMaxDimension(maxDimension);
-            setMinDimension(minDimension);
-        }
+        numericInput.setValue(result.value());
+        setMaxDimension(maxDimension);
+        setMinDimension(minDimension);
+
     }
 
     private class UnitChangeListener implements ItemListener {
