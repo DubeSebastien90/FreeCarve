@@ -24,12 +24,13 @@ public class GcodeGenerator {
      * @param panelDTO The {@code PanelDTO} which needs to be converted into GCode
      * @return The {@code String equivalent of the GCode}
      */
-    public static String convertToGCode(Controller controller, PanelDTO panelDTO) {
+    public static String convertToGCode(Controller controller) {
         StringBuilder instructions = new StringBuilder();
+        PanelDTO panelDTO = controller.getPanelDTO();
 
         //definition of constants
-        final String rotationSpeed = "S1200"; // rotation speed
-        final String movementSpeed = "F50"; // movement speed
+        final String rotationSpeed = "S" + controller.getCNCrotationSpeed(); // rotation speed
+        final String movementSpeed = "F" + controller.getCNCCuttingSpeed(); // movement speed
         final String lineEnd = ";\n";
 
         //initiate CNC State
@@ -38,25 +39,28 @@ public class GcodeGenerator {
         instructions.append("G28" + lineEnd); //go to (0,0)
         instructions.append("G90" + lineEnd); //Absolute position used for the program
         instructions.append("G92 Z0" + lineEnd);
-        instructions.append(movementSpeed + lineEnd); //Define speed of the CNC
+        instructions.append(movementSpeed).append(lineEnd); //Define speed of the CNC
 
         List<CutDTO> cutlist = panelDTO.getCutsDTO();
         for (CutDTO cut : cutlist) {
             if (cut.getState() == CutState.VALID && cut.getCutType() != CutType.CLAMP) {
                 instructions.append("T").append(cut.getBitIndex() + 1).append(" M06").append(lineEnd); //select the tool
+                int cmp = 0;
                 for (VertexDTO vertex : controller.getAbsolutePointsPosition(cut)) {
                     double cutX = Math.max(Math.min(vertex.getX(), panelDTO.getPanelDimension().getX()), 0);
                     double cutY = Math.max(Math.min(vertex.getY(), panelDTO.getPanelDimension().getY()), 0);
-                    if (vertex == cut.getPoints().get(0)) {
+                    if (cmp == 0) {
                         instructions.append("G00 X").append(cutX).append(" Y").append(cutY).append(lineEnd); //go to position of first point
-                        instructions.append("M03 " + rotationSpeed + lineEnd); //starts the rotation of the tool
+                        instructions.append("M03 ").append(rotationSpeed).append(lineEnd); //starts the rotation of the tool
                         instructions.append("G82 X").append(cutX).append(" Y").append(cutY).append(" Z").append(-cut.getDepth()).append(lineEnd); //drill the first hole
+                        instructions.append("G01 X").append(cutX).append(" Y").append(cutY).append(" Z").append(-cut.getDepth()).append(lineEnd); //cut to the point location
+                        cmp++;
                     } else {
-                        instructions.append("G09 X").append(cutX).append(" Y").append(cutY).append(" Z").append(-cut.getDepth()).append(lineEnd); //cut to the point location
+                        instructions.append("G01 X").append(cutX).append(" Y").append(cutY).append(" Z").append(-cut.getDepth()).append(lineEnd); //cut to the point location
                     }
                 }
                 instructions.append("M05" + lineEnd); //stop the tool
-                instructions.append("G00 Z0" + lineEnd); //go to the predefined Z safe spot
+                instructions.append("G01 Z0" + lineEnd); //go to the predefined Z safe spot
             }
         }
         //end program

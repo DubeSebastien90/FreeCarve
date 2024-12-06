@@ -27,7 +27,7 @@ public class GcodeGeneratorTest {
         PanelDTO panelDTO = new PanelDTO(c, new VertexDTO(300, 300, 5), 300, 300, UUID.randomUUID());
         Controller controller = Controller.initialize();
         //Act
-        String actual = GcodeGenerator.convertToGCode(controller, panelDTO);
+        String actual = GcodeGenerator.convertToGCode(controller);
         String expectedGcode = """
                 G21;
                 G17;

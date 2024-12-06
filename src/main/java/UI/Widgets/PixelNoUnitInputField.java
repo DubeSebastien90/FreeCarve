@@ -25,22 +25,21 @@ public class PixelNoUnitInputField extends BasicWindow {
     private double maxDimension;
     private double minDimension;
 
-    public PixelNoUnitInputField(MainWindow mainWindow, String nameOfInput, int value) {
-        this(mainWindow, nameOfInput, value, 1, Integer.MAX_VALUE);
+    public PixelNoUnitInputField(MainWindow mainWindow, String nameOfInput, int value, String unit) {
+        this(mainWindow, nameOfInput, value, 1, Integer.MAX_VALUE, unit);
     }
 
-    public PixelNoUnitInputField(MainWindow mainWindow, String nameOfInput, int value, int minimumValue, int maximumValue) {
+    public PixelNoUnitInputField(MainWindow mainWindow, String nameOfInput, int value, int minimumValue, int maximumValue, String unit) {
         super(false);
         this.setBackground(null);
         this.setOpaque(false);
-
         this.minDimension = minimumValue;
         this.maxDimension = maximumValue;
-        this.init(nameOfInput, value);
+        this.init(nameOfInput, value, unit);
     }
 
 
-    private void init(String nameOfInput, int value) {
+    private void init(String nameOfInput, int value, String unit) {
         NumberFormat numberFormat = NumberFormat.getIntegerInstance();
         numberFormat.setGroupingUsed(false);
 
@@ -69,7 +68,7 @@ public class PixelNoUnitInputField extends BasicWindow {
 
         this.add(nameLabel);
         this.add(this.numericInput);
-        this.unitComboBox = new JLabel("px");
+        this.unitComboBox = new JLabel(unit);
         this.add(this.unitComboBox);
     }
 

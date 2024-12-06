@@ -83,7 +83,7 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
 
         if (gridDisplayed) {
             gridPrecision = new MeasurementInputField(rend.getMainWindow(), "Taille grille", rend.getMainWindow().getController().getGrid().getSize(), UiUnits.MILLIMETERS);
-            magnetPrecision = new PixelNoUnitInputField(rend.getMainWindow(), "Précision aimant", rend.getMainWindow().getController().getGrid().getMagnetPrecision());
+            magnetPrecision = new PixelNoUnitInputField(rend.getMainWindow(), "Précision aimant", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), "px");
             gbc.gridy = 4;
             add(gridPrecision, gbc);
             gbc.gridy = 5;

@@ -17,6 +17,8 @@ class CNCMachine {
     private PanelCNC panel;
     private BitStorage bitStorage;
     private final IMemorizer memorizer;
+    private int cuttingSpeed = 3; // in mm per minute
+    private int rotationSpeed = 20000; // in revolution per second
 
     /**
      * Constructs a default new {@code CNCMachine}.
@@ -35,6 +37,22 @@ class CNCMachine {
         this.panel = panel;
         setBitStorage(bitStorage);
         this.memorizer = memorizer;
+    }
+
+    public int getCuttingSpeed() {
+        return cuttingSpeed;
+    }
+
+    public void setCuttingSpeed(int cuttingSpeed) {
+        this.cuttingSpeed = cuttingSpeed;
+    }
+
+    public int getRotationSpeed() {
+        return rotationSpeed;
+    }
+
+    public void setRotationSpeed(int rotationSpeed) {
+        this.rotationSpeed = rotationSpeed;
     }
 
     public PanelCNC getPanel() {

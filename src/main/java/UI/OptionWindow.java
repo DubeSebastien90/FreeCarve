@@ -1,6 +1,7 @@
 package UI;
 
 import UI.Widgets.MeasurementInputField;
+import UI.Widgets.PixelNoUnitInputField;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,6 +40,22 @@ public class OptionWindow extends JPanel {
         });
         unit.setMaximumSize(new Dimension(1200, 50));
         add(unit);
+
+
+        PixelNoUnitInputField gcodeRotationRate = new PixelNoUnitInputField(mainWindow, "Rotation outil CNC", mainWindow.getController().getCNCrotationSpeed(), "rotation per second");
+        gcodeRotationRate.getNumericInput().addPropertyChangeListener("value", evt -> {
+            mainWindow.getController().setCNCrotationSpeed(((Number) evt.getNewValue()).intValue());
+        });
+        gcodeRotationRate.setMaximumSize(new Dimension(1200, 50));
+        add(gcodeRotationRate);
+
+        PixelNoUnitInputField gcodeFeedRate = new PixelNoUnitInputField(mainWindow, "Vitesse coupe CNC", mainWindow.getController().getCNCCuttingSpeed(), "mm per second");
+        gcodeFeedRate.getNumericInput().addPropertyChangeListener("value", evt -> {
+            mainWindow.getController().setCNCCuttingSpeed(((Number) evt.getNewValue()).intValue());
+        });
+        gcodeFeedRate.setMaximumSize(new Dimension(1200, 50));
+        add(gcodeFeedRate);
+
 
         JButton returnButton = new JButton("Revenir à l'application principale");
         returnButton.addActionListener(e -> mainWindow.showTrueMode());
