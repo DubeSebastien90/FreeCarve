@@ -5,6 +5,7 @@ import Domain.CutType;
 
 import Common.DTO.GridDTO;
 import Common.DTO.VertexDTO;
+import UI.Display2D.DrawCutWrapper.DrawCutRectangular;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
@@ -20,6 +21,7 @@ import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * The {@code Rendering2DWindow} class is used to construct and display a board which represent the panel on the CNC. This
@@ -330,7 +332,6 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         afficheur.drawRectangle(graphics2D);
         afficheur.drawPoints(graphics2D);
         afficheur.drawCuts(graphics2D, this, drawing, mainWindow);
-        afficheur.drawForbiddenZone(graphics2D, mainWindow);
         if (mainWindow.getController().getGrid().isActive()) {
             afficheur.drawGrid(graphics2D);
         }
@@ -542,10 +543,6 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         updateCuts();
         this.revalidate();
         this.repaint();
-    }
-
-    public void drawForbiddenZone(){
-        System.out.println("drawForbiddenZone");
     }
 }
 

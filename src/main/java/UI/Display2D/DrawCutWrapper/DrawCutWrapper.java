@@ -54,6 +54,7 @@ public abstract class DrawCutWrapper {
     protected final Color DIMENSION_COLOR = Color.BLACK;
     protected final int ARROW_DIMENSION = 2;
 
+    public static final double CLAMP_STROKE_WIDTH = 1.0;
 
     /**
      * Basic constructor with CutDTO

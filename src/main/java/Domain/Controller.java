@@ -227,7 +227,6 @@ public class Controller implements IUnitConverter, IMemorizer {
         BitDTO[] result = ProjectFileManager.loadBits(path);
         BitDTO[] copy = getBitsDTO();
         undoRedoManager.executeAndMemorize(() -> cncMachine.setBitStorage(new BitStorage(result)), () -> cncMachine.setBitStorage(new BitStorage(copy)));
-        ;
     }
 
     /**
