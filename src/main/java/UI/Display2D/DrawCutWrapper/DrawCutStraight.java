@@ -2,6 +2,7 @@ package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
 import Common.DTO.DimensionDTO;
+import Common.DTO.RefCutDTO;
 import Common.DTO.PanelDTO;
 
 import Common.DTO.VertexDTO;
@@ -122,10 +123,29 @@ public class DrawCutStraight extends DrawCutWrapper {
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
         if (refs.isEmpty()) {
             VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
-            refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
-        } else {
-            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
+            RefCutDTO ref = mainWindow.getController().getRefCutsAndBorderOnPoint(p1).getFirst();
+            if(refs.size() <= 0){
+                refs.add(ref);
+            }
+            else{
+                refs.set(0, ref);
+            }
+
+        }
+        else{
+            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  0.0f);
             temporaryCreationPoints.add(newPoint);
+            List<RefCutDTO> listRefs = mainWindow.getController().getRefCutsAndBorderOnPoint(newPoint);
+            System.out.println("REF VERT : " + listRefs.size());
+            if(!listRefs.isEmpty() && !temporaryCreationPoints.isEmpty()){
+                int refIndex = temporaryCreationPoints.size();
+                if(refs.size() > refIndex){
+                    refs.set(refIndex, listRefs.getFirst());
+                }
+                else{
+                    refs.add(listRefs.getFirst());
+                }
+            }
 
         }
         return temporaryCreationPoints.size() >= 2; // returns true if all the points are added

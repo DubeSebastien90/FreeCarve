@@ -375,7 +375,25 @@ public class CutPointsFactory {
      * @return
      */
     private static List<VertexDTO> generateAbsoluteLineFreePoints(Cut c, CNCMachine cncMachine){
-        return  c.getCopyPointsWithOffset(c.getRefs().getFirst().getAbsoluteOffset(cncMachine));
+        VertexDTO anchor = c.getRefs().getFirst().getAbsoluteOffset(cncMachine);
+
+        if(c.getRefs().size() == 1){
+            return c.getCopyPointsWithOffset(anchor);
+        }
+        else if(c.getRefs().size() == 2){
+            VertexDTO relativeP1Anchor = c.getRefs().get(1).getAbsoluteOffset(cncMachine);
+            VertexDTO firstPoint = new VertexDTO(relativeP1Anchor.getX(), relativeP1Anchor.getY(), 0);
+            VertexDTO secondPoint = anchor.add(c.getPoints().get(1));
+            return List.of(firstPoint, secondPoint);
+        }
+        else if(c.getRefs().size() == 3){
+            VertexDTO relativeP1Anchor = c.getRefs().get(1).getAbsoluteOffset(cncMachine);
+            VertexDTO relativeP2Anchor = c.getRefs().get(2).getAbsoluteOffset(cncMachine);
+            VertexDTO firstPoint = new VertexDTO(relativeP1Anchor.getX(), relativeP1Anchor.getY(), 0);
+            VertexDTO secondPoint = new VertexDTO(relativeP2Anchor.getX(), relativeP2Anchor.getY(), 0);
+            return List.of(firstPoint, secondPoint);
+        }
+        return  c.getCopyPointsWithOffset(anchor);
     }
 
     /**
@@ -396,6 +414,22 @@ public class CutPointsFactory {
             anchor = anchor.add(directionAnchor.mul(diameter2/2));
         }
 
+        if(c.getRefs().size() == 1){
+            return c.getCopyPointsWithOffset(anchor);
+        }
+        else if(c.getRefs().size() == 2){
+            VertexDTO relativeP1Anchor = c.getRefs().get(1).getAbsoluteOffset(cncMachine);
+            VertexDTO firstPoint = new VertexDTO(anchor.getX() + c.getPoints().get(0).getX(), relativeP1Anchor.getY(), 0);
+            VertexDTO secondPoint = anchor.add(c.getPoints().get(1));
+            return List.of(firstPoint, secondPoint);
+        }
+        else if(c.getRefs().size() == 3){
+            VertexDTO relativeP1Anchor = c.getRefs().get(1).getAbsoluteOffset(cncMachine);
+            VertexDTO relativeP2Anchor = c.getRefs().get(2).getAbsoluteOffset(cncMachine);
+            VertexDTO firstPoint = new VertexDTO(anchor.getX() + c.getPoints().get(0).getX(), relativeP1Anchor.getY(), 0);
+            VertexDTO secondPoint = new VertexDTO(anchor.getX() + c.getPoints().get(1).getX(), relativeP2Anchor.getY(), 0);
+            return List.of(firstPoint, secondPoint);
+        }
         return c.getCopyPointsWithOffset(anchor);
     }
 
@@ -411,12 +445,29 @@ public class CutPointsFactory {
         VertexDTO anchor = c.getRefs().getFirst().getAbsoluteOffset(cncMachine);
         double diameter1 = cncMachine.getBitStorage().getBitDiameter(bit1Index);
         double diameter2 = cncMachine.getBitStorage().getBitDiameter(bit2Index);
+
         if(c.getPoints().getFirst().getY() != 0){
             VertexDTO directionAnchor = (new VertexDTO(0, c.getPoints().getFirst().getY(), 0)).normalize();
             anchor = anchor.add(directionAnchor.mul(diameter1/2));
             anchor = anchor.add(directionAnchor.mul(diameter2/2));
         }
 
+        if(c.getRefs().size() == 1){
+            return c.getCopyPointsWithOffset(anchor);
+        }
+        else if(c.getRefs().size() == 2){
+            VertexDTO relativeP1Anchor = c.getRefs().get(1).getAbsoluteOffset(cncMachine);
+            VertexDTO firstPoint = new VertexDTO(relativeP1Anchor.getX(), anchor.getY() + c.getPoints().get(0).getY(), 0);
+            VertexDTO secondPoint = anchor.add(c.getPoints().get(1));
+            return List.of(firstPoint, secondPoint);
+        }
+        else if(c.getRefs().size() == 3) {
+            VertexDTO relativeP1Anchor = c.getRefs().get(1).getAbsoluteOffset(cncMachine);
+            VertexDTO relativeP2Anchor = c.getRefs().get(2).getAbsoluteOffset(cncMachine);
+            VertexDTO firstPoint = new VertexDTO(relativeP1Anchor.getX(), anchor.getY() + c.getPoints().get(0).getY(), 0);
+            VertexDTO secondPoint = new VertexDTO(relativeP2Anchor.getX(), anchor.getY() + c.getPoints().get(1).getY(), 0);
+            return List.of(firstPoint, secondPoint);
+        }
         return c.getCopyPointsWithOffset(anchor);
     }
 
