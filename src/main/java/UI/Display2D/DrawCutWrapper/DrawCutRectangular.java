@@ -177,11 +177,15 @@ public class DrawCutRectangular extends DrawCutWrapper{
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
         mainWindow.getController().setIntersectionMagnetic();
-
+        double threshold;
+        if (mainWindow.getController().getGrid().isMagnetic()) {
+            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
+        } else {
+            threshold = renderer.scalePixelToMM(snapThreshold);
+        }
         if (refs.isEmpty()) {
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-            double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getPointNearIntersections(p1, threshold);
 
@@ -204,7 +208,6 @@ public class DrawCutRectangular extends DrawCutWrapper{
         } else if (this.points.isEmpty()) { // First point after anchor
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-            double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
@@ -220,7 +223,6 @@ public class DrawCutRectangular extends DrawCutWrapper{
 
             // For the snap area
             // Get the possible closest point
-            double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
 
