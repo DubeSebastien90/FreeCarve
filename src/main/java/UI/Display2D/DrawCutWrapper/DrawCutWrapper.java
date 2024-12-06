@@ -47,6 +47,7 @@ public abstract class DrawCutWrapper {
     protected final Color INVALID_COLOR = Color.RED;
     protected final Color ANCHOR_COLOR = Color.BLACK;
     protected final Color SNAP_COLOR = Color.YELLOW;
+    protected final Color SELECTED_COLOR = Color.GREEN;
     protected final Color VALID_COLOR = Color.GREEN;
     protected final Color HOVER_COLOR = Color.BLUE;
     protected final Color ARROW_COLOR = Color.white;
@@ -118,13 +119,7 @@ public abstract class DrawCutWrapper {
         graphics2D.setColor(this.strokeColor);
 
         boolean canSelect = mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getDrawing().getState() == Drawing.DrawingState.IDLE && (renderer.isPointonPanel());
-        //draw refs
 
-        for (RefCutDTO ref : cut.getRefsDTO()) {
-            VertexDTO absPoints = ref.getAbsoluteOffset(mainWindow.getController());
-            PersoPoint p = new PersoPoint(absPoints.getX(), absPoints.getY(), this.cursorRadius, true);
-            p.drawMM(graphics2D, renderer, false);
-        }
         //draw line
         Color c = Color.black;
         for(int i =0; i  < points.size() - 1; i++){
@@ -142,6 +137,14 @@ public abstract class DrawCutWrapper {
             point.drawMM(graphics2D, renderer, canSelect);
         }
     }
+
+    /**
+     * Draw the anchor of the specific cut
+     *
+     * @param graphics2D ref to graphics
+     * @param renderer ref to renderer
+     */
+    public abstract void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer);
 
     /**
      * Draw the cut that is still being created
@@ -245,7 +248,7 @@ public abstract class DrawCutWrapper {
     public void setState(DrawCutState newState, Rendering2DWindow renderer) {
         this.state = newState;
         if (newState == DrawCutState.SELECTED) {
-            this.strokeColor = SNAP_COLOR;
+            this.strokeColor = SELECTED_COLOR;
             this.previousState = DrawCutState.SELECTED;
         } else if (newState == DrawCutState.HOVER) {
             this.strokeColor = HOVER_COLOR;

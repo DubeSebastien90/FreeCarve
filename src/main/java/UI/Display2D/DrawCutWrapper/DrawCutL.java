@@ -30,6 +30,24 @@ public class DrawCutL extends DrawCutWrapper {
         super(type, renderer, mainWindow);
     }
 
+    @Override
+    public void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer) {
+        VertexDTO p1 = cut.getRefsDTO().get(0).getAbsoluteFirstPoint(mainWindow.getController());
+        VertexDTO p2 = cut.getRefsDTO().get(0).getAbsoluteSecondPoint(mainWindow.getController());
+        VertexDTO p3 = cut.getRefsDTO().get(1).getAbsoluteFirstPoint(mainWindow.getController());
+        VertexDTO p4 = cut.getRefsDTO().get(1).getAbsoluteSecondPoint(mainWindow.getController());
+
+        Optional<VertexDTO> anchor = VertexDTO.isLineIntersectNoLimitation(p1, p2, p3, p4);
+
+
+        if (anchor.isPresent()) {
+            PersoPoint referenceAnchorPoint = new PersoPoint(anchor.get().getX(), anchor.get().getY(), cursorRadius, true);
+            referenceAnchorPoint.setColor(strokeColor);
+            referenceAnchorPoint.drawMM(graphics2D, renderer, false);
+        }
+
+    }
+
     public DrawCutL(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(cut, renderer, mainWindow);
     }

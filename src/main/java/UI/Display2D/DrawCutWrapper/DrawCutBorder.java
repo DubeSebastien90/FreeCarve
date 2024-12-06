@@ -43,6 +43,11 @@ public class DrawCutBorder extends DrawCutWrapper {
     }
 
     @Override
+    public void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer) {
+        // No need to draw anchors
+    }
+
+    @Override
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
 
     }

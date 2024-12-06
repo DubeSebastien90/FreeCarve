@@ -75,6 +75,10 @@ public class Afficheur {
             double scaledStroke = renderer.scaleMMToPixel(diameter);
             cutWrapper.setStrokeSize(scaledStroke);
             cutWrapper.draw(graphics2D, renderer);
+
+            if(cutWrapper.getState() == DrawCutWrapper.DrawCutState.SELECTED || cutWrapper.getState() == DrawCutWrapper.DrawCutState.HOVER && cutWrapper.getCutDTO().getState() == CutState.VALID){
+                cutWrapper.drawAnchor(graphics2D, renderer);
+            }
         }
 
         if (drawing.getState() == Drawing.DrawingState.CREATE_CUT) {
