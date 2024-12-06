@@ -131,9 +131,12 @@ public abstract class DrawCutWrapper {
                 c = this.points.get(i).getColor();
             }
         }
-        for (int i = 0; i < points.size() - 1; i++) {
+        if (mainWindow.getController().isRoundedCutDTOHoveredByCursor(this.cut,new VertexDTO(renderer.getMmMousePt().getX(),renderer.getMmMousePt().getY(),0))){
+            c= Color.MAGENTA;
+        }
+        for(int i =0; i  < points.size() - 1; i++){
             graphics2D.setColor(c);
-            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i + 1), canSelect);
+            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1));
         }
 
         //draw points

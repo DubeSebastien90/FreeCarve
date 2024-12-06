@@ -64,10 +64,10 @@ public class DrawCutRectangular extends DrawCutWrapper{
             PersoPoint p2 = new PersoPoint(points.getFirst());
             p1.movePoint(cursor.getLocationX(), this.points.getFirst().getLocationY());
             p2.movePoint(this.points.getFirst().getLocationX(), cursor.getLocationY());
-            points.getFirst().drawLineMM(graphics2D, renderer, p1, false);
-            points.getFirst().drawLineMM(graphics2D, renderer, p2, false);
-            p1.drawLineMM(graphics2D, renderer, cursor, false);
-            p2.drawLineMM(graphics2D, renderer, cursor, false);
+            points.getFirst().drawLineMM(graphics2D, renderer, p1);
+            points.getFirst().drawLineMM(graphics2D, renderer, p2);
+            p1.drawLineMM(graphics2D, renderer, cursor);
+            p2.drawLineMM(graphics2D, renderer, cursor);
 
             p1.drawMM(graphics2D, renderer, false); // drawing the points
             p2.drawMM(graphics2D, renderer, false); //drawing the points

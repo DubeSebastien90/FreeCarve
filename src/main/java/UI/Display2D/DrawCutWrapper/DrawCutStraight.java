@@ -49,14 +49,13 @@ public class DrawCutStraight extends DrawCutWrapper {
             points.add(new PersoPoint(p.getX(), p.getY(), 10.0f, true, strokeColor));
         }
 
-        for (int i = 0; i < points.size() - 1; i++) {
-            points.get(i).drawLineMM(graphics2D, renderer, points.get(i + 1), false);
-
+        for (int i =0; i < points.size()-1; i++){
+            points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1));
         }
 
         graphics2D.setColor(cursor.getColor());
-        if (!points.isEmpty()) {
-            points.getLast().drawLineMM(graphics2D, renderer, cursor, false);
+        if (!points.isEmpty()){
+            points.getLast().drawLineMM(graphics2D, renderer, cursor);
         }
 
         for (PersoPoint point : this.points) { // drawing the points

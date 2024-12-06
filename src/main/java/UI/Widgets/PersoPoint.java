@@ -119,16 +119,10 @@ public class PersoPoint {
      * @param renderer
      * @param to         PersoPoint to draw to
      */
-    public boolean drawLineMM(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint to, boolean canSelect) {
+    public void drawLineMM(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint to) {
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(to.locationX, to.locationY));
-        boolean selected = false;
-        if (canSelect && mouse_on_top_line(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp1, temp2, (radius * renderer.getZoom()) / PRECISION)) {
-            selected = true;
-            graphics2D.setColor(Color.MAGENTA);
-        }
         graphics2D.drawLine((int) (temp1.getX()), (int) (temp1.getY()), (int) (temp2.getX()), (int) (temp2.getY()));
-        return selected;
     }
 
     public static boolean mouse_on_top_line(double mouseX, double mouseY, Point2D point_from, Point2D point_to, double _radius) {
