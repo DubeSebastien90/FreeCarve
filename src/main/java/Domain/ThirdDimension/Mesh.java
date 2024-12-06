@@ -173,24 +173,26 @@ public class Mesh extends Transform {
 
         CSG panneau = new Cube(panel.getPanelDimension().getX(), panel.getPanelDimension().getY(), panel.getPanelDimension().getZ()).toCSG();
         for (CutDTO cut : panel.getCutsDTO()) {
-            if (cut.getCutType() == CutType.LINE_VERTICAL) {
-                panneau = panneau.difference(createVerticalCut(controller, cut, bits, panel));
-            } else if (cut.getCutType() == CutType.LINE_HORIZONTAL) {
-                panneau = panneau.difference(createHorizontalCut(controller, cut, bits, panel));
-            } else if (cut.getCutType() == CutType.RECTANGULAR) {
-                CSG[] cuts = createRectangularCut(controller, cut, bits, panel);
-                for (CSG si : cuts) {
-                    panneau = panneau.difference(si);
+            if (cut.getState() == CutState.VALID) {
+                if (cut.getCutType() == CutType.LINE_VERTICAL) {
+                    panneau = panneau.difference(createVerticalCut(controller, cut, bits, panel));
+                } else if (cut.getCutType() == CutType.LINE_HORIZONTAL) {
+                    panneau = panneau.difference(createHorizontalCut(controller, cut, bits, panel));
+                } else if (cut.getCutType() == CutType.RECTANGULAR) {
+                    CSG[] cuts = createRectangularCut(controller, cut, bits, panel);
+                    for (CSG si : cuts) {
+                        panneau = panneau.difference(si);
+                    }
+                } else if (cut.getCutType() == CutType.RETAILLER) {
+                    panneau = panneau.difference(createRectangularCut(controller, cut, bits, panel));
+                } else if (cut.getCutType() == CutType.L_SHAPE) {
+                    CSG[] cuts = createLCut(controller, cut, bits, panel);
+                    for (CSG si : cuts) {
+                        panneau = panneau.difference(si);
+                    }
+                } else if (cut.getCutType() == CutType.LINE_FREE) {
+                    panneau = panneau.difference(createFreeCut(controller, cut, bits, panel));
                 }
-            } else if (cut.getCutType() == CutType.RETAILLER) {
-                panneau = panneau.difference(createBorderCut(controller, cut, bits, panel));
-            } else if (cut.getCutType() == CutType.L_SHAPE) {
-                CSG[] cuts = createLCut(controller, cut, bits, panel);
-                for (CSG si : cuts) {
-                    panneau = panneau.difference(si);
-                }
-            } else if (cut.getCutType() == CutType.LINE_FREE) {
-                panneau = panneau.difference(createFreeCut(controller, cut, bits, panel));
             }
         }
         Mesh finalMesh = new Mesh(new Vertex(50, 50, 0), 0.5, new Color(222, 184, 135), convertStringToVertex(panneau.toStlString()));
