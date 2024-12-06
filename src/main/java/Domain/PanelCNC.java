@@ -161,7 +161,13 @@ class PanelCNC {
         Map<Integer, BitDTO> configuredBits = bitStorage.getConfiguredBits();
         for (Cut c : cutList) {
             if (!c.getRefs().isEmpty()){
-                c.setCutState(configuredBits.containsKey(c.getBitIndex()) ? CutState.VALID : CutState.NOT_VALID);
+                if(configuredBits.containsKey((c.getBitIndex()))){
+                    c.setCutState(CutState.VALID);
+                }
+                else{
+                    c.setCutState(CutState.NOT_VALID);
+                    c.setInvalidCutState(InvalidCutState.BAD_BIT);
+                }
             }
         }
     }

@@ -2,6 +2,7 @@ package UI.Widgets;
 
 import Common.CutState;
 import Common.DTO.CutDTO;
+import Common.InvalidCutState;
 import Domain.CutType;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeCutEvent;
@@ -10,9 +11,7 @@ import UI.MainWindow;
 import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
 import UI.UiUtil;
-import UI.Widgets.AttributeContainer.AttributeContainer;
-import UI.Widgets.AttributeContainer.AttributeContainerError;
-import UI.Widgets.AttributeContainer.AttributeContainerFactory;
+import UI.Widgets.AttributeContainer.*;
 import com.formdev.flatlaf.ui.FlatButtonBorder;
 
 import javax.swing.*;
@@ -46,6 +45,7 @@ public class CutBox implements Attributable {
     private CutBoxState realState = CutBoxState.NOT_SELECTED;
     private CutListPanel cutListPanel;
     private AttributeContainer attributeContainer;
+    private AttributeContainerError invalidAttributeContainer;
 
     public enum CutBoxState {
         SELECTED,
@@ -112,7 +112,9 @@ public class CutBox implements Attributable {
             return attributeContainer;
         }
         else{
-            return new AttributeContainerError(mainWindow, cutListPanel, cut, this);
+            this.invalidAttributeContainer = AttributeContainerFactory.createError(mainWindow, cutListPanel, this.cut, this);
+            this.invalidAttributeContainer.setupEventListeners();
+            return invalidAttributeContainer;
         }
     }
 

@@ -5,6 +5,7 @@ import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
+import Common.InvalidCutState;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,8 +26,7 @@ class Cut {
     private UUID id;
     private List<RefCut> refs;
     private CutState cutState;
-
-
+    private InvalidCutState invalidCutState;
 
     public Cut(CutDTO uiCut, List<Cut> cutAndBorderList) {
         this.type = uiCut.getCutType();
@@ -35,6 +35,7 @@ class Cut {
         this.depth = uiCut.getDepth();
         this.id = uiCut.getId();
         this.cutState = uiCut.getState();
+        this.invalidCutState = uiCut.getInvalidCutState();
 
         refs = new ArrayList<>();
         for(RefCutDTO ref : uiCut.getRefsDTO()){
@@ -49,6 +50,7 @@ class Cut {
         this.depth = uiCut.getDepth();
         this.id = uiCut.getId();
         this.cutState = uiCut.getState();
+        this.invalidCutState = uiCut.getInvalidCutState();
 
         refs = new ArrayList<>();
         for(RefCutDTO ref : uiCut.getRefsDTO()){
@@ -73,6 +75,7 @@ class Cut {
         this.id = UUID.randomUUID();
         this.refs = new ArrayList<>();
         this.cutState = CutState.VALID;
+        this.invalidCutState = InvalidCutState.OUT_OF_BOUND;
     }
 
     /**
@@ -97,6 +100,7 @@ class Cut {
         this.id = UUID.randomUUID();
         this.refs = refCut;
         this.cutState = CutState.VALID;
+        this.invalidCutState = InvalidCutState.OUT_OF_BOUND;
     }
 
     public Cut(RequestCutDTO requestCutDTO) {
@@ -104,7 +108,7 @@ class Cut {
     }
 
     public CutDTO getDTO() {
-        return new CutDTO(id, depth, bitIndex, type, points.stream().toList(), refs.stream().map(RefCut::getDTO).collect(Collectors.toList()), cutState);
+        return new CutDTO(id, depth, bitIndex, type, points.stream().toList(), refs.stream().map(RefCut::getDTO).collect(Collectors.toList()), cutState, invalidCutState);
     }
 
     public List<VertexDTO> getPoints() {
@@ -135,6 +139,7 @@ class Cut {
         this.points = getAbsolutePointsPosition(cncMachine);
         this.refs = new ArrayList<>();
         this.cutState = CutState.NOT_VALID;
+        setInvalidCutState(InvalidCutState.NO_REFERENCE);
     }
 
     public int getBitIndex() {
@@ -169,7 +174,15 @@ class Cut {
 
     public CutState getCutState(){return this.cutState;}
 
-    public void setCutState(CutState cutState){this.cutState = cutState;}
+    public InvalidCutState getInvalidCutState(){return this.invalidCutState;}
+
+    public void setCutState(CutState cutState){
+        this.cutState = cutState;
+    }
+
+    public void setInvalidCutState(InvalidCutState cutState){
+        this.invalidCutState = cutState;
+    }
 
     /**
      * Get the copied absolute points of the cut, based on it's references

@@ -1,6 +1,7 @@
 package UI.Widgets;
 
 import Common.DTO.BitDTO;
+import UI.UIConfig;
 
 import javax.swing.*;
 import java.util.Map;
@@ -46,7 +47,8 @@ public class BitChoiceBox extends GenericAttributeBox {
         }
 
         comboBox = new JComboBox(model);
-        comboBox.setSelectedIndex(index);
+        setErrorCheckSelectedIndex(index);
+
         GridBagConstraints gc = new GridBagConstraints();
 
         gc.gridx = 0; gc.gridy = 1;
@@ -63,7 +65,30 @@ public class BitChoiceBox extends GenericAttributeBox {
         }
 
         comboBox.setModel(model);
-        comboBox.setSelectedIndex(index);
+        setErrorCheckSelectedIndex(index);
+    }
+
+    private void setErrorCheckSelectedIndex(int newIndex){
+
+        int realIndex = -1;
+        System.out.println("modelSize : " + comboBox.getModel().getSize());
+        for(int i = 0; i < comboBox.getModel().getSize(); i++){
+            System.out.println("realIndex"  + realIndex);
+            ComboBitItem item = (ComboBitItem) comboBox.getModel().getElementAt(i);
+            if(item.getIndex() == newIndex){
+                realIndex = i;
+                break;
+            }
+        }
+
+        if(realIndex != -1){
+            comboBox.setSelectedIndex(realIndex);
+            comboBox.setBackground(null);
+        }
+        else{
+            comboBox.setSelectedIndex(-1);
+            comboBox.setBackground(UIConfig.INSTANCE.getErrorColor());
+        }
     }
 
     /**

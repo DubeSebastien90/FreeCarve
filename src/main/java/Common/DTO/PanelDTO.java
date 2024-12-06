@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import Common.CutState;
+import Common.InvalidCutState;
 import Common.Util;
 import Domain.CutType;
 
@@ -36,7 +37,7 @@ public class PanelDTO implements Serializable {
         borderPoints.add(new VertexDTO(panelDimension.getX(), panelDimension.getY(), 0 ));
         borderPoints.add(new VertexDTO(panelDimension.getX(), 0,0 ));
         borderPoints.add(new VertexDTO(0, 0,0 ));
-        this.borderCut = new CutDTO(borderUUID, panelDimension.getZ(), 0, CutType.RECTANGULAR, borderPoints, new ArrayList<RefCutDTO>(), CutState.VALID);
+        this.borderCut = new CutDTO(borderUUID, panelDimension.getZ(), 0, CutType.RECTANGULAR, borderPoints, new ArrayList<RefCutDTO>(), CutState.VALID, InvalidCutState.BAD_BIT);
 
     }
 

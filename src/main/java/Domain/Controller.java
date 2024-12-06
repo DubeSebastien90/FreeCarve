@@ -149,6 +149,13 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
+     * Validates the current cuts
+     */
+    public void validateCuts(){
+        cncMachine.getPanel().validateCuts(cncMachine.getBitStorage());
+    }
+
+    /**
      * Modify a {@code Bit} in the bit list of the project.
      *
      * @param index The index of the {@code bit}

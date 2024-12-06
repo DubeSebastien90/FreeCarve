@@ -3,6 +3,7 @@ package UI.Display2D.DrawCutWrapper;
 import Common.CutState;
 import Common.DTO.*;
 import Common.Exceptions.BitNotSelectedException;
+import Common.InvalidCutState;
 import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
@@ -89,13 +90,13 @@ public abstract class DrawCutWrapper {
         try {
             BitDTO bit = validateSelectedBit(selectedBit);
 
-            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, selectedBit, type, new ArrayList<VertexDTO>(), refs, CutState.VALID);
+            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, selectedBit, type, new ArrayList<VertexDTO>(), refs, CutState.VALID, InvalidCutState.DEFAULT);
             this.strokeWidth = mainWindow.getController().getBitsDTO()[cut.getBitIndex()].getDiameter() * renderer.getZoom();
             this.stroke = new BasicStroke((float) renderer.scalePixelToMM(strokeWidth),
                     BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         } catch (BitNotSelectedException e) {
             e.printStackTrace(); // Est-ce qu'on veut une barre d'action ou on affiche les commandes a faire?
-            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>(), refs, CutState.VALID);
+            this.cut = new CutDTO(new UUID(1000, 1000), 0.0f, -1, type, new ArrayList<VertexDTO>(), refs, CutState.VALID, InvalidCutState.DEFAULT);
             this.stroke = new BasicStroke((float) renderer.scalePixelToMM(strokeWidth),
                     BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         }

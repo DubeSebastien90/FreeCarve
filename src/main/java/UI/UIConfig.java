@@ -3,6 +3,8 @@ package UI;
 import Common.DTO.DimensionDTO;
 import Common.Units;
 
+import java.awt.*;
+
 /**
  * The {@code UIConfig} enum encapsulates a singleton instance of the configurations
  * and parameters of the UI
@@ -26,9 +28,12 @@ public enum UIConfig {
     private final int scrollbarSpeed = 16;
     private final int defaultPadding = 10;
     private final int MAX_NB_BITS = 12;
+    private final Color ERROR_COLOR = Color.red;
 
     private UIConfig() {
     }
+
+    public Color getErrorColor(){return ERROR_COLOR;}
 
     /**
      * @return the title of the application

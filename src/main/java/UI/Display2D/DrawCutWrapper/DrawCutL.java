@@ -59,7 +59,7 @@ public class DrawCutL extends DrawCutWrapper {
             VertexDTO p1 = new VertexDTO(cursor.getLocationX(), cursor.getLocationY(), 0.0f);
             List<VertexDTO> relativeEdgeEdgePoints = new ArrayList<>();
             relativeEdgeEdgePoints = mainWindow.getController().generateLPointsRelativeEdgeEdgeFromAbsolute(p1, cut.getBitIndex(), refs);
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints, refs, this.cut.getState());
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints, refs, this.cut.getState(), cut.getInvalidCutState());
         }
 
         this.update(renderer);
@@ -139,7 +139,7 @@ public class DrawCutL extends DrawCutWrapper {
     public Optional<UUID> end() {
         List<VertexDTO> relativeEdgeEdgePoints = new ArrayList<>();
         relativeEdgeEdgePoints = mainWindow.getController().generateLPointsRelativeEdgeEdgeFromAbsolute(temporaryCreationPoints.getFirst(), cut.getBitIndex(), refs);
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints , refs, this.cut.getState());
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints , refs, this.cut.getState(), cut.getInvalidCutState());
         return createCut();
     }
 

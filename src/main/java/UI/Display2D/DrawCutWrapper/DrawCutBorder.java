@@ -80,7 +80,7 @@ public class DrawCutBorder extends DrawCutWrapper {
 
         if (!refs.isEmpty()) {
             List<VertexDTO> newPoints = mainWindow.getController().generateBorderPointsRelativeEdgeEdgeFromAbsolute(cut.getBitIndex());
-            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs, this.cut.getState());
+            this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), newPoints, refs, this.cut.getState(), this.cut.getInvalidCutState());
             return true;
         }
         return false;

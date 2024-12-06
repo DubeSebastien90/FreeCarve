@@ -2,6 +2,7 @@ package Domain.ThirdDimension;
 
 import Common.CutState;
 import Common.DTO.*;
+import Common.InvalidCutState;
 import Domain.Controller;
 import Domain.CutType;
 import Domain.IO.STLParser;
@@ -288,10 +289,10 @@ public class Mesh extends Transform {
         List<VertexDTO> arr4 = new ArrayList<>();
         arr4.add(points.get(3));
         arr4.add(points.get(2));
-        CSG cut1 = createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr1, what, CutState.VALID), bits, panel);
-        CSG cut2 = createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr2, what, CutState.VALID), bits, panel);
-        CSG cut3 = createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr3, what, CutState.VALID), bits, panel);
-        CSG cut4 = createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr4, what, CutState.VALID), bits, panel);
+        CSG cut1 = createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr1, what, CutState.VALID, InvalidCutState.DEFAULT), bits, panel);
+        CSG cut2 = createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr2, what, CutState.VALID, InvalidCutState.DEFAULT), bits, panel);
+        CSG cut3 = createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr3, what, CutState.VALID, InvalidCutState.DEFAULT), bits, panel);
+        CSG cut4 = createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr4, what, CutState.VALID, InvalidCutState.DEFAULT), bits, panel);
         return new CSG[]{cut1, cut2, cut3, cut4};
     }
 
@@ -316,20 +317,20 @@ public class Mesh extends Transform {
             if (cut.getRefsDTO().get(0).getIndex() == 1) {
                 arr1.add(new VertexDTO(0, panel.getPanelDimension().getY() - point.getX(), point.getZ()));
                 arr1.add(new VertexDTO(panel.getPanelDimension().getX(), panel.getPanelDimension().getY() - point.getX(), point.getZ()));
-                return createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr1, what, CutState.VALID), bits, panel);
+                return createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr1, what, CutState.VALID, InvalidCutState.DEFAULT), bits, panel);
             }
             arr1.add(new VertexDTO(0, point.getX(), point.getZ()));
             arr1.add(new VertexDTO(panel.getPanelDimension().getX(), point.getX(), point.getZ()));
-            return createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr1, what, CutState.VALID), bits, panel);
+            return createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr1, what, CutState.VALID, InvalidCutState.DEFAULT), bits, panel);
         }
         if (cut.getRefsDTO().get(0).getIndex() == 2) {
             arr1.add(new VertexDTO(panel.getPanelDimension().getX() - point.getX(), 0, point.getZ()));
             arr1.add(new VertexDTO(panel.getPanelDimension().getX() - point.getX(), panel.getPanelDimension().getY(), point.getZ()));
-            return createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr1, what, CutState.VALID), bits, panel);
+            return createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr1, what, CutState.VALID, InvalidCutState.DEFAULT), bits, panel);
         }
         arr1.add(new VertexDTO(point.getX(), 0, point.getZ()));
         arr1.add(new VertexDTO(point.getX(), panel.getPanelDimension().getY(), point.getZ()));
-        return createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr1, what, CutState.VALID), bits, panel);
+        return createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr1, what, CutState.VALID, InvalidCutState.DEFAULT), bits, panel);
     }
 
     /**
@@ -354,8 +355,8 @@ public class Mesh extends Transform {
         arr1.add(points.get(1));
         arr2.add(points.get(1));
         arr2.add(points.get(0));
-        CSG cut1 = createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr1, what, CutState.VALID), bits, panel);
-        CSG cut2 = createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr2, what, CutState.VALID), bits, panel);
+        CSG cut1 = createVerticalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_VERTICAL, arr1, what, CutState.VALID, InvalidCutState.DEFAULT), bits, panel);
+        CSG cut2 = createHorizontalCut(controller, new CutDTO(new UUID(1, 1), cut.getDepth(), cut.getBitIndex(), CutType.LINE_HORIZONTAL, arr2, what, CutState.VALID, InvalidCutState.DEFAULT), bits, panel);
         return new CSG[]{cut1, cut2};
     }
 

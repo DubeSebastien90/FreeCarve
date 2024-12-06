@@ -173,7 +173,7 @@ public class DrawCutStraight extends DrawCutWrapper {
         } else if (cut.getCutType() == CutType.LINE_FREE) {
             relativeEdgeEdgePoints = mainWindow.getController().generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(temporaryCreationPoints.getFirst(), temporaryCreationPoints.get(1), cut.getBitIndex(), refs);
         }
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints, refs, this.cut.getState());
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints, refs, this.cut.getState(), cut.getInvalidCutState());
         return createCut();
     }
 

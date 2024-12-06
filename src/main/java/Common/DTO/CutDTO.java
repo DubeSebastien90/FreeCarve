@@ -1,6 +1,7 @@
 package Common.DTO;
 
 import Common.CutState;
+import Common.InvalidCutState;
 import Domain.CutType;
 
 import java.io.Serializable;
@@ -21,6 +22,7 @@ public class CutDTO implements Serializable {
     private CutType type;
     private List<RefCutDTO> refs; // reference to another cut
     private CutState cutState;
+    private InvalidCutState invalidCutState;
 
     /**
      * Basic constructor of the {@code CutDTO}
@@ -30,7 +32,7 @@ public class CutDTO implements Serializable {
      * @param bitIndex index of the bit used to make the cut
      * @param type     type of the cut {@code CutType}
      */
-    public CutDTO(UUID idCut, double depth, int bitIndex, CutType type, List<VertexDTO> points, List<RefCutDTO> refs, CutState cutState) {
+    public CutDTO(UUID idCut, double depth, int bitIndex, CutType type, List<VertexDTO> points, List<RefCutDTO> refs, CutState cutState, InvalidCutState invalidCutState) {
         this.idCut = idCut;
         this.depth = depth;
         this.bitIndex = bitIndex;
@@ -38,6 +40,7 @@ public class CutDTO implements Serializable {
         this.points = points;
         this.refs = refs;
         this.cutState = cutState;
+        this.invalidCutState = invalidCutState;
     }
 
     public CutDTO(UUID uuid, RequestCutDTO requestCutDTO) {
@@ -57,6 +60,7 @@ public class CutDTO implements Serializable {
         this.type = other.type;
         this.points = new ArrayList<>();
         this.cutState = other.getState();
+        this.invalidCutState = other.getInvalidCutState();
         for (VertexDTO p : other.getPoints()) {
             this.points.add(new VertexDTO(p));
         }
@@ -83,6 +87,8 @@ public class CutDTO implements Serializable {
         return this.type;
     }
 
+    public InvalidCutState getInvalidCutState() {return this.invalidCutState;}
+
     public CutState getState() {
         return this.cutState;
     }
@@ -101,7 +107,7 @@ public class CutDTO implements Serializable {
             newPoints.add(new VertexDTO(point.getX() + offset.getX(),
                     point.getY() + offset.getY(), point.getZ() + offset.getZ()));
         }
-        return new CutDTO(this.idCut, this.depth, this.bitIndex, this.type, newPoints, refs, this.cutState);
+        return new CutDTO(this.idCut, this.depth, this.bitIndex, this.type, newPoints, refs, this.cutState, this.invalidCutState);
     }
 
     @Override

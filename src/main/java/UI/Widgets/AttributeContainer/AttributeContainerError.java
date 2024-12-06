@@ -13,15 +13,17 @@ import java.awt.*;
 public class AttributeContainerError extends AttributeContainer {
 
     ErrorBox errorBox;
+    int gridIndex = 0;
 
-    public AttributeContainerError(MainWindow mainWindow, CutListPanel cutListPanel, CutDTO cutDTO, CutBox cutBox) {
+    public AttributeContainerError(MainWindow mainWindow, CutListPanel cutListPanel, CutDTO cutDTO, CutBox cutBox, String erroMessage) {
         super(mainWindow, cutListPanel, cutDTO, cutBox);
-        init_attribute(mainWindow, cutDTO);
+        super.init_attribute();
+        init_attribute(mainWindow, cutDTO, erroMessage);
         init_layout();
     }
 
-    private void init_attribute(MainWindow mainWindow, CutDTO cutDTO){
-        errorBox = new ErrorBox(true, "Error", "Coupe Invalide");
+    private void init_attribute(MainWindow mainWindow, CutDTO cutDTO, String erroMessage){
+        errorBox = new ErrorBox(true, "Error", erroMessage);
     }
 
     private void init_layout(){
@@ -31,12 +33,17 @@ public class AttributeContainerError extends AttributeContainer {
         GridBagConstraints gc = new GridBagConstraints();
         setLayout(layout);
         gc.gridx = 0;
-        gc.gridy = 0;
+        gc.gridy = useGridIndex();
         gc.weightx = 1;
         gc.weighty = 1;
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         add(errorBox, gc);
+    }
+
+    protected int useGridIndex(){
+        gridIndex +=1;
+        return gridIndex -1;
     }
 
     @Override

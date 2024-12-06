@@ -190,7 +190,7 @@ public class Drawing {
                         if (currentModifiedCut.areRefsValid()) {
                             CutDTO c = currentModifiedCut.getCutDTO();
                             List<RefCutDTO> newRefs = currentModifiedCut.getRefs();
-                            c = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), c.getPoints(), newRefs, c.getState());
+                            c = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), c.getPoints(), newRefs, c.getState(), c.getInvalidCutState());
                             CutListPanel cutListPanel = mainWindow.getMiddleContent().getCutWindow().getCutListPanel();
                             mainWindow.getController().modifyCut(c);
 

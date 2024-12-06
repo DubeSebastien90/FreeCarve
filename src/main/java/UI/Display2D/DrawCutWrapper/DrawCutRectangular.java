@@ -185,7 +185,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
         VertexDTO p1 = temporaryCreationPoints.getFirst();
         VertexDTO p3 = temporaryCreationPoints.get(1);
         List<VertexDTO> relativeEdgeEdgePoints = mainWindow.getController().generateRectanglePointsRelativeEdgeEdgeFromAbsolute(p1, p3, this.cut.getBitIndex(), refs);
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints , refs, this.cut.getState());
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints , refs, this.cut.getState(), cut.getInvalidCutState());
         return createCut();
     }
 
