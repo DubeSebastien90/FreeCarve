@@ -84,8 +84,12 @@ public class DrawCutClamp extends DrawCutWrapper{
     public Optional<UUID> end() {
         VertexDTO p1 = temporaryCreationPoints.getFirst();
         VertexDTO p3 = temporaryCreationPoints.get(1);
-        List<VertexDTO> points = generateRectanglePoints(p1, p3);
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), points, refs, CutState.VALID);
+
+        VertexDTO center = new VertexDTO((p1.getX() + p3.getX()) / 2, (p1.getY() + p3.getY()) / 2, 0.0f);
+        double height = Math.abs(p1.getY() - p3.getY());
+        double width = Math.abs(p1.getX() - p3.getX());
+        List<VertexDTO> pointsWithCenter = mainWindow.getController().generateRectanglePoints(center, width, height);
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), pointsWithCenter, refs, CutState.VALID);
         return createCut();
     }
 
@@ -157,14 +161,28 @@ public class DrawCutClamp extends DrawCutWrapper{
         graphics2D.setStroke(new BasicStroke((float) CLAMP_STROKE_WIDTH));
         graphics2D.setColor(INVALID_COLOR);
 
+        PersoPoint topLeft = points.stream().min((p1, p2) -> {
+            if (p1.getLocationX() == p2.getLocationX()) {
+                return Double.compare(p1.getLocationY(), p2.getLocationY());
+            }
+            return Double.compare(p1.getLocationX(), p2.getLocationX());
+        }).get();
+
+        PersoPoint bottomRight = points.stream().max((p1, p2) -> {
+            if (p1.getLocationX() == p2.getLocationX()) {
+                return Double.compare(p1.getLocationY(), p2.getLocationY());
+            }
+            return Double.compare(p1.getLocationX(), p2.getLocationX());
+        }).get();
+
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(points.get(0).getLocationX(), points.get(0).getLocationY()));
-        Point2D temp2 = renderer.mmTopixel(new Point2D.Double(points.get(1).getLocationX(), points.get(1).getLocationY()));
+        Point2D temp2 = renderer.mmTopixel(new Point2D.Double(points.get(2).getLocationX(), points.get(2).getLocationY()));
 
-        int x = (int) Math.min(temp1.getX(), temp2.getX());
-        int y = (int) Math.min(temp1.getY(), temp2.getY());
-        int width = (int) Math.abs(temp1.getX() - temp2.getX());
-        int height = (int) Math.abs(temp1.getY() - temp2.getY());
+        int height = (int) Math.abs(temp2.getY() - temp1.getY());
+        int width = (int) Math.abs(temp2.getX() - temp1.getX());
+        int xMin = (int) temp1.getX();
+        int yMin = (int) temp2.getY();
 
-        graphics2D.fillRect(x, y, width, height);
+        graphics2D.fillRect(xMin, yMin, width, height);
     }
 }
