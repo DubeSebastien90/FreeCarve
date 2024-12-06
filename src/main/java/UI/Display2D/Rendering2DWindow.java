@@ -69,7 +69,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         offsetY = 100;
         offsetX = 100;
         //
-        mainWindow.getController().putGrid(70, 5);
+        mainWindow.getController().putGrid(76.2, 5);
         addMouseListener();
         addMouseMotionListener();
         addMouseWheelListener();
