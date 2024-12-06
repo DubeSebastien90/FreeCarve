@@ -7,6 +7,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import javax.swing.*;
 
 import static UI.UiUtil.createSVGButton;
+import static UI.UiUtil.getIcon;
 
 /**
  * The {@code LeftBar} class extends {@code JScrollPane} and is basically a scrollpane with a {@code ToolBar} in it.
@@ -211,7 +212,11 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.SCALE).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CONFIG) {
-                mainWindow.getMiddleContent().getConfigChoiceWindow().getRendering2DWindow().scale();
+                if (middle.getConfigChoiceWindow().getRendering2DWindow().getPoints().isEmpty()) {
+                    mainWindow.getMiddleContent().getConfigChoiceWindow().getRendering2DWindow().scale();
+                } else {
+                    mainWindow.getMiddleContent().getConfigChoiceWindow().getRendering2DWindow().clearPoints();
+                }
             }
         });
     }
@@ -231,28 +236,24 @@ public class LeftBar extends JScrollPane {
             mainWindow.getController().setGridAvtive(!mainWindow.getController().getGrid().isActive());
             toolBar.getTool(ToolBar.Tool.MAGNET).setEnabled(mainWindow.getController().getGrid().isActive());
             if (!mainWindow.getController().getGrid().isActive()) {
-                FlatSVGIcon icon = new FlatSVGIcon("UI/" + "magnet" + ".svg", uiConfig.getToolIconSize(), uiConfig.getToolIconSize());
-                FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter(color -> UIManager.getColor("Button.foreground"));
-                icon.setColorFilter(filter);
+                FlatSVGIcon icon = getIcon("magnet", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
                 toolBar.getTool(ToolBar.Tool.MAGNET).setIcon(icon);
                 mainWindow.getController().setGridMagnetism(false);
+                FlatSVGIcon icon2 = getIcon("grid", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
+                toolBar.getTool(ToolBar.Tool.GRID).setIcon(icon2);
+            } else {
+                FlatSVGIcon icon2 = getIcon("grid", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
+                toolBar.getTool(ToolBar.Tool.GRID).setIcon(icon2);
             }
             mainWindow.getMiddleContent().getPanel().repaint();
-            if (mainWindow.getMiddleContent().getCurrent() == MiddleContent.MiddleWindowType.CONFIG) {
-                mainWindow.getMiddleContent().getConfigChoiceWindow().getRendering2DWindow().scale();
-            }
         });
         toolBar.getTool(ToolBar.Tool.MAGNET).addActionListener(e -> {
             mainWindow.getController().setGridMagnetism(!mainWindow.getController().getGrid().isMagnetic());
             if (mainWindow.getController().getGrid().isMagnetic()) {
-                FlatSVGIcon icon = new FlatSVGIcon("UI/" + "magnet" + ".svg", uiConfig.getToolIconSize(), uiConfig.getToolIconSize());
-                FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter(color -> UIManager.getColor("Button.secondaryBackground"));
-                icon.setColorFilter(filter);
+                FlatSVGIcon icon = getIcon("magnet", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
                 toolBar.getTool(ToolBar.Tool.MAGNET).setIcon(icon);
             } else {
-                FlatSVGIcon icon = new FlatSVGIcon("UI/" + "magnet" + ".svg", uiConfig.getToolIconSize(), uiConfig.getToolIconSize());
-                FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter(color -> UIManager.getColor("Button.foreground"));
-                icon.setColorFilter(filter);
+                FlatSVGIcon icon = getIcon("magnet", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
                 toolBar.getTool(ToolBar.Tool.MAGNET).setIcon(icon);
             }
         });

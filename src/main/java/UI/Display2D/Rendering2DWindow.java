@@ -10,8 +10,10 @@ import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
 import UI.LeftBar;
 import UI.MainWindow;
+import UI.UIConfig;
 import UI.Widgets.PersoPoint;
 import UI.UiUtil;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +22,8 @@ import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+
+import static UI.UiUtil.getIcon;
 
 /**
  * The {@code Rendering2DWindow} class is used to construct and display a board which represent the panel on the CNC. This
@@ -311,7 +315,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
             zoom -= zoom / zoomFactor;
             offsetX = (mousePt.getX() - (mmMousePt.getX() * zoom)) / zoom;
             offsetY = ((-1 * (mousePt.getY() - getHeight())) - (mmMousePt.getY() * zoom)) / zoom;
-            points.clear();
+            clearPoints();
             repaint();
         });
     }
@@ -328,13 +332,13 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         UiUtil.makeJPanelRoundCorner(this, graphics2D);
         super.paintComponent(graphics2D);
         afficheur.drawRectangle(graphics2D);
-        afficheur.drawPoints(graphics2D);
         afficheur.drawCuts(graphics2D, this, drawing, mainWindow);
         if (mainWindow.getController().getGrid().isActive()) {
             afficheur.drawGrid(graphics2D);
         }
         afficheur.drawCutAnchors(graphics2D, this, drawing, mainWindow);
         afficheur.drawMask(graphics2D);
+        afficheur.drawPoints(graphics2D);
         afficheur.drawCutDimensions(graphics2D, this, drawing, mainWindow);
         afficheur.drawMousePos(graphics2D);
     }
@@ -446,7 +450,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
      * @param zoomFactor The zooming delta. A negative one will make the board seems bigger.
      */
     public void zoomOrigin(double zoomFactor) {
-        points.clear();
+        clearPoints();
         zoom -= zoom / zoomFactor;
         repaint();
     }
@@ -482,7 +486,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
     boolean isPointClose(MouseEvent e, PersoPoint point) {
         double dx = e.getX() - point.getLocationX();
         double dy = e.getY() - point.getLocationY();
-        return Math.sqrt(dx * dx + dy * dy) < 10;
+        return Math.sqrt(dx * dx + dy * dy) < point.getRadius()+5;
     }
 
     /**
@@ -491,6 +495,8 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
      * the board responds to resize events.
      */
     public void scale() {
+        FlatSVGIcon icon2 = getIcon("scale", UIConfig.INSTANCE.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
+        mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.SCALE).setIcon(icon2);
         scaling.initiateScaling();
         activateScaleListener();
         repaint();
@@ -516,9 +522,12 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
     /**
      * Deactivate the scaleListener so the board won't resize when points are dragged.
      */
-    private void clearPoints() {
+    public void clearPoints() {
+        FlatSVGIcon icon2 = getIcon("scale", UIConfig.INSTANCE.getToolIconSize(), UIManager.getColor("Button.foreground"));
+        mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.SCALE).setIcon(icon2);
         points.clear();
         removeMouseMotionListener(scaling.getScaleListener());
+        this.repaint();
     }
 
     public boolean isPointonPanel() {
