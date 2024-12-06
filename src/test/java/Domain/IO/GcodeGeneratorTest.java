@@ -4,7 +4,6 @@ import Common.CutState;
 import Common.DTO.*;
 import Domain.Controller;
 import Domain.CutType;
-import com.kitfox.svg.A;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -22,11 +21,10 @@ public class GcodeGeneratorTest {
         list.add(new VertexDTO(100, 100, 0));
         list.add(new VertexDTO(50, 100, 0));
         list.add(new VertexDTO(50, 50, 0));
-        CutDTO cut1 = new CutDTO(new UUID(1, 1), 2, 1, CutType.LINE_FREE, list, new ArrayList<RefCutDTO>(), CutState.VALID);
-        List<CutDTO> c = List.of(new CutDTO[]{cut1});
-        PanelDTO panelDTO = new PanelDTO(c, new VertexDTO(300, 300, 5), 300, 300, UUID.randomUUID());
+        RequestCutDTO cut1 = new RequestCutDTO( list, CutType.LINE_FREE, 1, 5, new ArrayList<>());
         Controller controller = Controller.initialize();
-        //Act
+        controller.requestCut(cut1);
+        //act
         String actual = GcodeGenerator.convertToGCode(controller);
         String expectedGcode = """
                 G21;
@@ -34,15 +32,15 @@ public class GcodeGeneratorTest {
                 G28;
                 G90;
                 G92 Z0;
-                F50;
+                F3;
                 T2 M06;
                 G00 X100.0 Y100.0;
-                M03 S1200;
-                G82 X100.0 Y100.0 Z-2.0;
-                G09 X50.0 Y100.0 Z-2.0;
-                G09 X50.0 Y50.0 Z-2.0;
-                M05;
-                G00 Z0;
+                M03 S20000;
+                G82 X100.0 Y100.0 Z-5.5;
+                G01 X100.0 Y100.0 Z-5.5;
+                G01 X50.0 Y100.0 Z-5.5;
+                G01 X50.0 Y50.0 Z-5.5;
+                G01 Z0;
                 M05;
                 G28;
                 G00 X0 Y0;
