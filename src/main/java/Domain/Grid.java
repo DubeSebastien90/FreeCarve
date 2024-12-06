@@ -291,10 +291,6 @@ public class Grid {
         return closestPoint;
     }
 
-//    public Optional<VertexDTO> getClosestPointIntersections(VertexDTO point, PanelCNC board, double threshold, Optional<VertexDTO> closestPoint){
-//        for (VertexDTO)
-//    }
-
     /**
      * Returns an optionnal closest point to the board outlines + cuts based on a reference point
      *
