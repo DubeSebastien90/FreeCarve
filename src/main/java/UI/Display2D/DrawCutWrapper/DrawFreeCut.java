@@ -11,7 +11,6 @@ import UI.Widgets.PersoPoint;
 import java.awt.*;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.List;
 
 /**
  * Simple straight line drawing class that inherits from DrawCutWrapper
@@ -51,6 +50,11 @@ public class DrawFreeCut extends DrawCutWrapper {
             referenceAnchorPoint.setColor(ANCHOR_COLOR);
             referenceAnchorPoint.drawMM(graphics2D, renderer, false);
         }
+    }
+
+    @Override
+    public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
+
     }
 
     @Override

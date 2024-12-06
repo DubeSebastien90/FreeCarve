@@ -6,6 +6,7 @@ import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
+import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
@@ -55,6 +56,33 @@ public class DrawCutStraight extends DrawCutWrapper{
             PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
             referenceAnchorPoint.setColor(ANCHOR_COLOR);
             referenceAnchorPoint.drawMM(graphics2D, renderer, false);
+        }
+
+    }
+
+    @Override
+    public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
+        VertexDTO anchorAbsolutePosition = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
+        double anchorDiameter = mainWindow.getController().getBitDiameter(cut.getRefsDTO().getFirst().getIndex());
+        if(cut.getCutType() == CutType.LINE_HORIZONTAL){
+            double verticalOffset = Math.abs(cut.getPoints().getFirst().getY());
+            double absoluteY = mainWindow.getController().getAbsolutePointsPosition(cut).getFirst().getY();
+            VertexDTO anchorToCut = new VertexDTO(anchorAbsolutePosition.getX(), absoluteY, 0);
+            VertexDTO diffNormalized = anchorToCut.sub(anchorAbsolutePosition).normalize();
+
+            VertexDTO p1 = anchorAbsolutePosition.add(diffNormalized.mul(anchorDiameter));
+            VertexDTO p2 = p1.add(diffNormalized.mul(verticalOffset));
+            UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, verticalOffset, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+        }
+        else if(cut.getCutType() == CutType.LINE_VERTICAL){
+            double horizontalOffset = Math.abs(cut.getPoints().getFirst().getX());
+            double absoluteX = mainWindow.getController().getAbsolutePointsPosition(cut).getFirst().getX();
+            VertexDTO anchorToCut = new VertexDTO(absoluteX, anchorAbsolutePosition.getY(), 0);
+            VertexDTO diffNormalized = anchorToCut.sub(anchorAbsolutePosition).normalize();
+
+            VertexDTO p1 = anchorAbsolutePosition.add(diffNormalized.mul(anchorDiameter));
+            VertexDTO p2 = p1.add(diffNormalized.mul(horizontalOffset));
+            UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, horizontalOffset, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
         }
 
     }

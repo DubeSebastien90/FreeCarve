@@ -564,5 +564,15 @@ public class Controller implements IUnitConverter, IMemorizer {
     public boolean isRefCircular(RefCutDTO refCutDTO, CutDTO cutToTest) {
         return RefCut.isRefCircular(refCutDTO, cutToTest);
     }
+
+    /**
+     * Test if a cursor point has collided with the rounded cut width a width of it's bit diameter
+     * @param cutDTO cut to test
+     * @param cursor cursor point to test
+     * @return true if the point is inside one of the cut
+     */
+    public boolean isRoundedCutDTOHoveredByCursor(CutDTO cutDTO, VertexDTO cursor){
+        return RoundedCut.isRoundedCutHoveredByMouse(cutDTO, cursor, cncMachine);
+    }
 }
 

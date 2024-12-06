@@ -1,5 +1,6 @@
 package UI.Display2D;
 
+import Common.DTO.VertexDTO;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.MainWindow;
 import UI.Widgets.PersoPoint;
@@ -86,6 +87,18 @@ public class Afficheur {
         if (drawing.getState() == Drawing.DrawingState.MODIFY_ANCHOR){
             drawing.getCurrentModifiedCut().drawWhileModifyingAnchor(graphics2D, renderer, drawing.getCreateCursorPoint());
             drawing.getModifyingAnchorCursorPoint().drawMM(graphics2D, renderer, false);
+        }
+
+
+        if(drawing.getState() == Drawing.DrawingState.IDLE){ // Draw the arrow dimensions if the drawing state is idle and mouse is hovering on point
+            for(DrawCutWrapper wrapper : drawing.getCutWrappers()){
+                VertexDTO cursor = new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0);
+               if(mainWindow.getController().isRoundedCutDTOHoveredByCursor(wrapper.getCutDTO(), cursor) ||
+                        wrapper.getState() == DrawCutWrapper.DrawCutState.SELECTED ||
+                        wrapper.getState() == DrawCutWrapper.DrawCutState.HOVER){
+                   wrapper.drawDimensions(graphics2D, renderer);
+               }
+            }
         }
     }
 

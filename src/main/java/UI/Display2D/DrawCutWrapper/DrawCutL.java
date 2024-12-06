@@ -63,6 +63,11 @@ public class DrawCutL extends DrawCutWrapper{
     }
 
     @Override
+    public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
+
+    }
+
+    @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
 
         if(refs.isEmpty()){

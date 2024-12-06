@@ -9,12 +9,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="A24-IFT-GLO-Equipe2" />
         <module name="Expresso" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="A24-IFT-GLO-Equipe2" target="21" />
-    </bytecodeTargetLevel>
   </component>
 </project>

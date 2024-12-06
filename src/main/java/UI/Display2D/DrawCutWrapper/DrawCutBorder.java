@@ -9,7 +9,6 @@ import UI.MainWindow;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
@@ -39,6 +38,11 @@ public class DrawCutBorder extends DrawCutWrapper{
 
     @Override
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
+
+    }
+
+    @Override
+    public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
 
     }
 

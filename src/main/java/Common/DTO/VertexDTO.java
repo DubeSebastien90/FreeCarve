@@ -92,6 +92,10 @@ public class VertexDTO implements Serializable {
         return getX() * other.getX() + getY() * other.getY() + getZ() * other.getZ();
     }
 
+    public static double crossProduct(VertexDTO u, VertexDTO v){
+        return u.getX() * v.getY() - u.getY() * v.getX();
+    }
+
     public static boolean isValueAroundTolerance(double groundTruthValue, double comparisonValue){
         return comparisonValue > groundTruthValue-doubleTolerance && comparisonValue < groundTruthValue+doubleTolerance;
     }

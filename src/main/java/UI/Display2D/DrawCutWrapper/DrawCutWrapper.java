@@ -51,6 +51,9 @@ public abstract class DrawCutWrapper {
     protected final Color SNAP_COLOR = Color.YELLOW;
     protected final Color VALID_COLOR = Color.GREEN;
     protected final Color HOVER_COLOR = Color.BLUE;
+    protected final Color ARROW_COLOR = Color.white;
+    protected final Color DIMENSION_COLOR = Color.BLACK;
+    protected final int ARROW_DIMENSION = 2;
 
 
     /**
@@ -145,6 +148,8 @@ public abstract class DrawCutWrapper {
      * @param cursor cursor to draw
      */
     public abstract void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor);
+
+    public abstract void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow);
 
     public void drawWhileModifyingAnchor(Graphics graphics, Rendering2DWindow rendering2DWindow, PersoPoint cursorPoint){
         System.out.println("MODIFIE POINT DE REF");
