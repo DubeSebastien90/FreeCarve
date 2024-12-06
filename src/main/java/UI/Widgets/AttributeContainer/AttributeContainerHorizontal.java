@@ -83,9 +83,9 @@ public class AttributeContainerHorizontal extends AttributeContainer {
      */
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO) {
         super.init_attribute();
-        distanceFromEdgeToEdge = new SingleValueBox(mainWindow,true, "Distance relative de la sous-pièce", "Y", yEdgeEdge() * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit());
-        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow,true, "Taille de la sous-pièce", "Y", Math.abs(yEdgeEdge()) * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit());
-        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Position absolue (GCODE)", "Y", yCenterCenter() * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit());
+        distanceFromEdgeToEdge = new SingleValueBox(mainWindow,true, "Distance relative de la sous-pièce", "Y", yEdgeEdge());
+        absoluteDistanceFromEdgeToEdge = new SingleValueBoxNotEditable(mainWindow,true, "Taille de la sous-pièce", "Y", Math.abs(yEdgeEdge()));
+        distanceCenterToCenter = new SingleValueBoxNotEditable(mainWindow, true, "Position absolue (GCODE)", "Y", yCenterCenter());
     }
 
     @Override

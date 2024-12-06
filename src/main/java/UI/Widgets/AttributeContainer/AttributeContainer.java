@@ -47,7 +47,7 @@ public abstract class AttributeContainer extends BasicWindow {
 
     protected void init_attribute(){
 
-        depthBox = new SingleValueBox(mainWindow, true, "Profondeur", "Profondeur", cutDTO.getDepth(), UIConfig.INSTANCE.getDefaultUnit());
+        depthBox = new SingleValueBox(mainWindow, true, "Profondeur", "Profondeur", cutDTO.getDepth());
 
         Map<Integer, BitDTO> configuredBitsMap = mainWindow.getController().getConfiguredBitsMap();
 

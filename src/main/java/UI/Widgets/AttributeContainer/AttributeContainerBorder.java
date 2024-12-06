@@ -30,8 +30,8 @@ public class AttributeContainerBorder extends AttributeContainer{
 
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO){
         super.init_attribute();
-        widthEdgeEdge = new SingleValueBox(mainWindow, true, "Largeur interne de la retaille", "Marge",borderEdgeEdgeWidth(), UIConfig.INSTANCE.getDefaultUnit(), 0, Double.MAX_VALUE);
-        heightEdgeEdge = new SingleValueBox(mainWindow, true, "Hauteur interne de la retaille", "Marge", borderEdgeEdgeHeight(), UIConfig.INSTANCE.getDefaultUnit(), 0, Double.MAX_VALUE);
+        widthEdgeEdge = new SingleValueBox(mainWindow, true, "Largeur interne de la retaille", "Marge",borderEdgeEdgeWidth(), 0, Double.MAX_VALUE);
+        heightEdgeEdge = new SingleValueBox(mainWindow, true, "Hauteur interne de la retaille", "Marge", borderEdgeEdgeHeight(), 0, Double.MAX_VALUE);
     }
 
     private void init_layout(){

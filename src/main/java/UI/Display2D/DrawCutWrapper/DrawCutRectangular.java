@@ -1,8 +1,10 @@
 package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
+import Common.DTO.DimensionDTO;
 import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
+import Common.Units;
 import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
@@ -118,10 +120,14 @@ public class DrawCutRectangular extends DrawCutWrapper{
         UiUtil.drawArrow(graphics2D, rendering2DWindow, p1Width, p2Width, ARROW_COLOR, ARROW_DIMENSION);
         UiUtil.drawArrow(graphics2D, rendering2DWindow, p1Height, p2Height, ARROW_COLOR, ARROW_DIMENSION);
 
-        UiUtil.drawNumberXY(graphics2D, rendering2DWindow, p1, p2, relativeOffset.getX()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(),
-                relativeOffset.getY()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, DIMENSION_COLOR);
-        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, relativeDimensions.getX()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(),  ARROW_COLOR, DIMENSION_COLOR);
-        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, relativeDimensions.getY()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, DIMENSION_COLOR);
+        DimensionDTO xOffsetUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeOffset.getX(), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+        DimensionDTO yOffsetUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeOffset.getY() , Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+        DimensionDTO xDimensionUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeDimensions.getX(), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+        DimensionDTO yDimensionUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeDimensions.getY() , Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+
+        UiUtil.drawNumberXY(graphics2D, rendering2DWindow, p1, p2, xOffsetUnit.value(), yOffsetUnit.value(), ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, xDimensionUnit.value(),  ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, yDimensionUnit.value(), ARROW_COLOR, DIMENSION_COLOR);
     }
 
     @Override

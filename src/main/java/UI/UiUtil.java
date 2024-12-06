@@ -198,7 +198,7 @@ public class UiUtil {
         //Draw infoBox
         DecimalFormat df = new DecimalFormat("0.00");
         String formattedNumber = df.format(value);
-        formattedNumber += getUnitSymbole(UIConfig.INSTANCE.getDefaultUnit().unit);
+        formattedNumber += UIConfig.INSTANCE.getDefaultUnit().toString();
         FontMetrics fontMetrics = g.getFontMetrics();
         int textWidth = fontMetrics.stringWidth(formattedNumber);
         int textHeight = fontMetrics.getHeight();
@@ -229,8 +229,8 @@ public class UiUtil {
         String formattedNumberY = df.format(valueY);
         formattedNumberX = "X: " + formattedNumberX;
         formattedNumberY = "Y: " + formattedNumberY;
-        formattedNumberX += getUnitSymbole(UIConfig.INSTANCE.getDefaultUnit().unit);
-        formattedNumberY += getUnitSymbole(UIConfig.INSTANCE.getDefaultUnit().unit);
+        formattedNumberX += UIConfig.INSTANCE.getDefaultUnit().toString();
+        formattedNumberY += UIConfig.INSTANCE.getDefaultUnit().toString();
         FontMetrics fontMetrics = g.getFontMetrics();
         int textWidth = Math.max(fontMetrics.stringWidth(formattedNumberX), fontMetrics.stringWidth(formattedNumberY));
         int textHeight = fontMetrics.getHeight();

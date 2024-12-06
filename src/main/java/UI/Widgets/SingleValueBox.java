@@ -20,19 +20,19 @@ public class SingleValueBox extends GenericAttributeBox {
 
     private MeasurementInputField theInput;
 
-    public SingleValueBox(MainWindow mainWindow, boolean haveBackground, String name, String inputName, double value, UiUnits units) {
+    public SingleValueBox(MainWindow mainWindow, boolean haveBackground, String name, String inputName, double value) {
         super(haveBackground, name);
-        this.init(mainWindow, inputName, value, units);
+        this.init(mainWindow, inputName, value);
     }
 
-    public SingleValueBox(MainWindow mainWindow, boolean haveBackground, String name, String inputName, double value, UiUnits units, double minValue, double maxValue) {
+    public SingleValueBox(MainWindow mainWindow, boolean haveBackground, String name, String inputName, double value, double minValue, double maxValue) {
         super(haveBackground, name);
-        this.init(mainWindow, inputName, value, units, minValue, maxValue);
+        this.init(mainWindow, inputName, value, minValue, maxValue);
     }
 
-    private void init(MainWindow mainWindow, String name, double value, UiUnits units) {
+    private void init(MainWindow mainWindow, String name, double value) {
         GridBagConstraints gc = new GridBagConstraints();
-        this.theInput = new MeasurementInputField(mainWindow, name, value, -Double.MAX_VALUE, Double.MAX_VALUE, units);
+        this.theInput = new MeasurementInputField(mainWindow, name, value, -Double.MAX_VALUE, Double.MAX_VALUE, UiUnits.MILLIMETERS);
         gc.gridx = 0;
         gc.gridy = 1;
         gc.fill = GridBagConstraints.NONE;
@@ -40,9 +40,9 @@ public class SingleValueBox extends GenericAttributeBox {
         this.add(theInput, gc);
     }
 
-    private void init(MainWindow mainWindow, String name, double value, UiUnits units, double minValue, double maxValue) {
+    private void init(MainWindow mainWindow, String name, double value, double minValue, double maxValue) {
         GridBagConstraints gc = new GridBagConstraints();
-        this.theInput = new MeasurementInputField(mainWindow, name, value, minValue, maxValue, units);
+        this.theInput = new MeasurementInputField(mainWindow, name, value, minValue, maxValue, UiUnits.MILLIMETERS);
         gc.gridx = 0;
         gc.gridy = 1;
         gc.fill = GridBagConstraints.NONE;

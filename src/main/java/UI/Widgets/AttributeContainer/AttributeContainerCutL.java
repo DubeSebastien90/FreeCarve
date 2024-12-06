@@ -50,12 +50,12 @@ public class AttributeContainerCutL extends AttributeContainer{
 
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO){
         super.init_attribute();
-        offsetX = new SingleValueBox(mainWindow, true, "Largeur relative", "X",lEdgeEdgeX() * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit());
-        offsetY = new SingleValueBox(mainWindow, true, "Hauteur relative", "Y",lEdgeEdgeY() * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit());
-        absoluteOffsetX = new SingleValueBoxNotEditable(mainWindow, true, "Largeur absolue", "X",Math.abs(lEdgeEdgeX()) * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit());
-        absoluteOffsetY = new SingleValueBoxNotEditable(mainWindow, true, "Hauteur absolute", "Y",Math.abs(lEdgeEdgeY()) * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit());
-        offsetXCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Position absolue (GCODE)", "X",lCenterCenterX() * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit());
-        offsetYCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Position absolue (GCODE)", "Y",lCenterCenterY() * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit());
+        offsetX = new SingleValueBox(mainWindow, true, "Largeur relative", "X",lEdgeEdgeX() );
+        offsetY = new SingleValueBox(mainWindow, true, "Hauteur relative", "Y",lEdgeEdgeY() );
+        absoluteOffsetX = new SingleValueBoxNotEditable(mainWindow, true, "Largeur absolue", "X",Math.abs(lEdgeEdgeX()));
+        absoluteOffsetY = new SingleValueBoxNotEditable(mainWindow, true, "Hauteur absolute", "Y",Math.abs(lEdgeEdgeY()));
+        offsetXCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Position absolue (GCODE)", "X",lCenterCenterX());
+        offsetYCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Position absolue (GCODE)", "Y",lCenterCenterY());
     }
 
     private void init_layout(){

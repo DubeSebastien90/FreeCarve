@@ -1,8 +1,10 @@
 package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
+import Common.DTO.DimensionDTO;
 import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
+import Common.Units;
 import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
@@ -84,8 +86,11 @@ public class DrawCutL extends DrawCutWrapper{
         p1Height = p1Height.add(offset);
         p2Height = p2Height.add(offset);
 
-        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, Math.abs(relativeOffset.getX())  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(),  ARROW_COLOR, ARROW_DIMENSION,  DIMENSION_COLOR);
-        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, Math.abs(relativeOffset.getY())  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+        DimensionDTO widthUnit = mainWindow.getController().convertUnit(new DimensionDTO(Math.abs(relativeOffset.getX()), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+        DimensionDTO heightUnit = mainWindow.getController().convertUnit(new DimensionDTO(Math.abs(relativeOffset.getY()), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, widthUnit.value() ,  ARROW_COLOR, ARROW_DIMENSION,  DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, heightUnit.value(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
     }
 
     @Override

@@ -31,10 +31,10 @@ public class AttributeContainerRectangle extends AttributeContainer{
         super.init_attribute();
 
         offsetOfRectangle = new PointsBox(mainWindow, true, "Distance relative du rectangle", getAnchorCenterPoint());
-        widthOfRectangle = new SingleValueBox(mainWindow, true, "Largeur interne", "X", getWidthEdgeEdge() * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit(), 0, Double.MAX_VALUE);
-        heightOfRectangle = new SingleValueBox(mainWindow, true, "Hauteur interne", "Y", getHeightEdgeEdge() * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit(), 0 , Double.MAX_VALUE);
-        widthOfRectangleCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Largeur centrale (GCODE)", "X", getWidthCenterCenter() * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit());
-        heightOfRectangleCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Hauteur centrale (GCODE)", "Y", getHeightCenterCenter() * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), UIConfig.INSTANCE.getDefaultUnit());
+        widthOfRectangle = new SingleValueBox(mainWindow, true, "Largeur interne", "X", getWidthEdgeEdge(), 0, Double.MAX_VALUE);
+        heightOfRectangle = new SingleValueBox(mainWindow, true, "Hauteur interne", "Y", getHeightEdgeEdge(), 0 , Double.MAX_VALUE);
+        widthOfRectangleCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Largeur centrale (GCODE)", "X", getWidthCenterCenter());
+        heightOfRectangleCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Hauteur centrale (GCODE)", "Y", getHeightCenterCenter());
     }
     private VertexDTO getAnchorCenterPoint(){
         return cutDTO.getPoints().getFirst();

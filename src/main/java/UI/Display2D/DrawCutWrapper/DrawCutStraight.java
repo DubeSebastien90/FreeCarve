@@ -1,6 +1,7 @@
 package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
+import Common.DTO.DimensionDTO;
 import Common.DTO.VertexDTO;
 import Common.Units;
 import Domain.CutType;
@@ -78,7 +79,9 @@ public class DrawCutStraight extends DrawCutWrapper{
                 p1 = anchorAbsolutePosition;
                 p2 = anchorAbsolutePosition;
             }
-            UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, verticalOffset  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+            DimensionDTO yOffsetUnit = mainWindow.getController().convertUnit(new DimensionDTO(verticalOffset, Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+
+            UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, yOffsetUnit.value(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
         }
         else if(cut.getCutType() == CutType.LINE_VERTICAL){
             double horizontalOffset = Math.abs(cut.getPoints().getFirst().getX());
@@ -93,7 +96,8 @@ public class DrawCutStraight extends DrawCutWrapper{
                 p2 = anchorAbsolutePosition;
             }
 
-            UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, horizontalOffset * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+            DimensionDTO xOffsetUnit = mainWindow.getController().convertUnit(new DimensionDTO(horizontalOffset, Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+            UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, xOffsetUnit.value(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
         }
         else if(cut.getCutType() == CutType.LINE_FREE){
             VertexDTO anchor = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
@@ -101,8 +105,11 @@ public class DrawCutStraight extends DrawCutWrapper{
 
             VertexDTO p2 = anchor.add(relativeP1);
 
-            UiUtil.drawArrowWidthNumberXY(graphics2D, rendering2DWindow, anchor, p2, relativeP1.getX()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(),
-                    relativeP1.getY()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+            DimensionDTO xOffsetUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeP1.getX(), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+            DimensionDTO yOffsetUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeP1.getY(), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+
+            UiUtil.drawArrowWidthNumberXY(graphics2D, rendering2DWindow, anchor, p2, xOffsetUnit.value(),
+                    yOffsetUnit.value(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
         }
 
     }
