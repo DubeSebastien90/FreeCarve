@@ -117,7 +117,7 @@ public class UiUtil {
      */
     public static String getIconFileName(CutType type){
             return switch (type) {
-                case BORDER -> "forbidden";
+                case CLAMP -> "forbidden";
                 case L_SHAPE -> "coupeL";
                 case RECTANGULAR -> "rectangle";
                 case LINE_HORIZONTAL -> "horizontal";
@@ -136,7 +136,7 @@ public class UiUtil {
     public static String getIconName(CutType type){
         String iconName = "";
         switch(type){
-            case BORDER -> iconName = "Interdit";
+            case CLAMP -> iconName = "Interdit";
             case L_SHAPE -> iconName = "Coupe en L";
             case RECTANGULAR -> iconName = "Rectangle";
             case LINE_HORIZONTAL -> iconName = "Ligne horizontale";

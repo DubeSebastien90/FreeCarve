@@ -119,8 +119,8 @@ public class MiddleContent {
                 configChoiceWindow.getRendering2DWindow().setAll(cutWindow.getRenderer());
                 configChoiceWindow.requestFocusInWindow();
                 db.setButtonBlueToIndex(0);
-                lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.SCALE, Tool.FORBIDDEN, Tool.MAGNET, Tool.GRID});
-                lb.getToolBar().disableTools(new Tool[]{Tool.COUPEL, Tool.FREE_LINE, Tool.VERTICAL, Tool.HORIZONTAL, Tool.RECTANGLE, Tool.TRASH, Tool.RETAILLER});
+                lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.SCALE, Tool.MAGNET, Tool.GRID});
+                lb.getToolBar().disableTools(new Tool[]{Tool.COUPEL, Tool.FREE_LINE, Tool.VERTICAL, Tool.HORIZONTAL, Tool.RECTANGLE, Tool.TRASH, Tool.RETAILLER, Tool.FORBIDDEN});
             }
             case CUT -> {
                 ((CardLayout) panel.getLayout()).show(panel, "cut");
@@ -128,8 +128,8 @@ public class MiddleContent {
                 cutWindow.getRenderer().setAll(configChoiceWindow.getRendering2DWindow());
                 cutWindow.getScreen(1).requestFocusInWindow();
                 db.setButtonBlueToIndex(1);
-                lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.COUPEL, Tool.GRID, Tool.MAGNET, Tool.FREE_LINE, Tool.VERTICAL, Tool.HORIZONTAL, Tool.RECTANGLE, Tool.RETAILLER});
-                lb.getToolBar().disableTools(new Tool[]{Tool.SCALE, Tool.FORBIDDEN, Tool.TRASH});
+                lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.COUPEL, Tool.GRID, Tool.MAGNET, Tool.FREE_LINE, Tool.VERTICAL, Tool.HORIZONTAL, Tool.RECTANGLE, Tool.RETAILLER, Tool.FORBIDDEN});
+                lb.getToolBar().disableTools(new Tool[]{Tool.SCALE, Tool.TRASH});
             }
             case EXPORT -> {
                 ((CardLayout) panel.getLayout()).show(panel, "export");

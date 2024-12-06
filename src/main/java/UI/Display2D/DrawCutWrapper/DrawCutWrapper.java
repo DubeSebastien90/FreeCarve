@@ -52,6 +52,7 @@ public abstract class DrawCutWrapper {
     protected final Color VALID_COLOR = Color.GREEN;
     protected final Color HOVER_COLOR = Color.BLUE;
 
+    public static final double CLAMP_STROKE_WIDTH = 1.0;
 
     /**
      * Basic constructor with CutDTO

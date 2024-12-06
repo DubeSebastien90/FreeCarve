@@ -218,7 +218,7 @@ public class Grid {
 
         // Testing all of the cuts
         for (Cut wrapper : cncMachine.getPanel().getCutList()) {
-            if(wrapper.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
+            if(wrapper.getCutState() == CutState.NOT_VALID || wrapper.getType() == CutType.CLAMP ){continue;} // don't check for invalid lines
             List<VertexDTO> points = wrapper.getAbsolutePointsPosition(cncMachine);
             if (points.size() > 1) {
                 for (int i = 0; i < points.size() - 1; i++) {
@@ -320,7 +320,7 @@ public class Grid {
         List<Cut> allLineList = cncMachine.getPanel().getCutList();
 
         for(Cut cut : allLineList){
-            if(cut.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
+            if(cut.getCutState() == CutState.NOT_VALID || cut.getType() == CutType.CLAMP){continue;} // don't check for invalid lines
             List<VertexDTO> points = cut.getAbsolutePointsPosition(cncMachine);
             for(int i =0; i < points.size() - 1; i++){
                 Optional<Pair<VertexDTO, Double>> isPointOnLine = isPointOnLineGetRef(point, points.get(i), points.get(i+1));
@@ -362,10 +362,10 @@ public class Grid {
 
         for(Cut cuts : allLineList){
             List<VertexDTO> points = cuts.getAbsolutePointsPosition(cncMachine);
-            if(cuts.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
+            if(cuts.getCutState() == CutState.NOT_VALID || cuts.getType() == CutType.CLAMP){continue;} // don't check for invalid lines
             if(points.size() > 1){
                 for(Cut cuts2 : allLineList){
-                    if(cuts2.getCutState() == CutState.NOT_VALID){continue;} // don't check for invalid lines
+                    if(cuts2.getCutState() == CutState.NOT_VALID || cuts2.getType() == CutType.CLAMP){continue;} // don't check for invalid lines
                     List<VertexDTO> points2 = cuts2.getAbsolutePointsPosition(cncMachine);
                     if(points2.size() > 1){
                         for(int i =0; i < points.size()-1; i++){

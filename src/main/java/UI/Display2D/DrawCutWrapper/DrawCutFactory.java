@@ -33,6 +33,9 @@ public class DrawCutFactory {
         else if(cut.getCutType() == CutType.RETAILLER){
             return new DrawCutBorder(cut, renderer, mainWindow);
         }
+        else if(cut.getCutType() == CutType.CLAMP){
+            return new DrawCutClamp(cut, renderer, mainWindow);
+        }
 
         return new DrawFreeCut(cut, renderer, mainWindow);
     }
@@ -64,6 +67,9 @@ public class DrawCutFactory {
         }
         else if(type == CutType.RETAILLER){
             return new DrawCutBorder(type, renderer, mainWindow);
+        }
+        else if(type == CutType.CLAMP){
+            return new DrawCutClamp(type, renderer, mainWindow);
         }
 
         return new DrawFreeCut(type, renderer, mainWindow);
