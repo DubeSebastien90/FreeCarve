@@ -148,9 +148,16 @@ public abstract class DrawCutWrapper {
         }
 
         //draw points
+        for(int i =0; i  < points.size() - 1; i++){
+            if(this.points.get(i).getColor() != HOVER_VIEW_COLOR){
+                c = this.points.get(i).getColor();
+            }
+        }
         for (VertexDTO point : renderer.getMainWindow().getController().getAbsolutePointsPosition(cut)) {
+            graphics2D.setColor(c);
             Point2D temp = renderer.mmTopixel(new Point2D.Double(point.getX(), point.getY()));
             PersoPoint _point = new PersoPoint(point.getX(), point.getY(), this.pointsRadius/renderer.getZoom(), true);
+            System.out.println(_point.getLocationX());
             if(renderer.isPointonPanel() && mainWindow.getController().mouse_on_top(renderer.getMousePt().getX(),renderer.getMousePt().getY(),temp.getX(),temp.getY(), _point.getRadius()*renderer.getZoom())){
                 graphics2D.setColor(HOVER_VIEW_COLOR);
             }
