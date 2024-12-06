@@ -71,9 +71,7 @@ public class BitChoiceBox extends GenericAttributeBox {
     private void setErrorCheckSelectedIndex(int newIndex){
 
         int realIndex = -1;
-        System.out.println("modelSize : " + comboBox.getModel().getSize());
         for(int i = 0; i < comboBox.getModel().getSize(); i++){
-            System.out.println("realIndex"  + realIndex);
             ComboBitItem item = (ComboBitItem) comboBox.getModel().getElementAt(i);
             if(item.getIndex() == newIndex){
                 realIndex = i;

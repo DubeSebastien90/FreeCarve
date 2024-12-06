@@ -150,6 +150,10 @@ public class CutBox implements Attributable {
      */
     public void updateAttributeContainerPanel(CutDTO newCutDTO){
         this.attributeContainer.updatePanel(newCutDTO);
+
+        if(this.invalidAttributeContainer != null){
+            this.invalidAttributeContainer.updatePanel(newCutDTO);
+        }
     }
 
     /**

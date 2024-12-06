@@ -140,7 +140,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
      */
     @Override
     public void modifiedAttributeEventOccured(ChangeAttributeEvent event){
-
+        mainWindow.getController().validateCuts();
         this.rendering2DWindow.updateCuts();
 
         if(event.getAttribute() instanceof CutBox){
