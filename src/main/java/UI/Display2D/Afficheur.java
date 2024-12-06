@@ -76,9 +76,6 @@ public class Afficheur {
             cutWrapper.setStrokeSize(scaledStroke);
             cutWrapper.draw(graphics2D, renderer);
 
-            if(cutWrapper.getState() == DrawCutWrapper.DrawCutState.SELECTED || cutWrapper.getState() == DrawCutWrapper.DrawCutState.HOVER && cutWrapper.getCutDTO().getState() == CutState.VALID){
-                cutWrapper.drawAnchor(graphics2D, renderer);
-            }
         }
 
         if (drawing.getState() == Drawing.DrawingState.CREATE_CUT) {
@@ -97,6 +94,22 @@ public class Afficheur {
 
     }
 
+
+    void drawCutAnchors(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing, MainWindow mainWindow){
+        for(DrawCutWrapper wrapper : drawing.getCutWrappers()){
+
+            VertexDTO cursor = new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0);
+            if(mainWindow.getController().isRoundedCutDTOHoveredByCursor(wrapper.getCutDTO(), cursor) ||
+                    wrapper.getState() == DrawCutWrapper.DrawCutState.SELECTED ||
+                    wrapper.getState() == DrawCutWrapper.DrawCutState.HOVER){
+                if(wrapper.getCutDTO().getState() != CutState.NOT_VALID){
+                    wrapper.drawAnchor(graphics2D, renderer);
+                }
+
+            }
+        }
+    }
+
     /**
      * Draws the arrows and the informations about the cuts
      */
@@ -110,7 +123,6 @@ public class Afficheur {
                     wrapper.getState() == DrawCutWrapper.DrawCutState.HOVER){
                 if(wrapper.getCutDTO().getState() != CutState.NOT_VALID){
                     wrapper.drawDimensions(graphics2D, renderer);
-                    wrapper.drawAnchor(graphics2D, renderer);
                 }
 
             }
