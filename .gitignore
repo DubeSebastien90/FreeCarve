@@ -42,3 +42,8 @@ build/
 ### Visual Paradigm ###
 *.vpp.bak*
 *.vpp.lck
+
+
+## FREE CARVE
+working/*.PAN
+working/*.CNC
