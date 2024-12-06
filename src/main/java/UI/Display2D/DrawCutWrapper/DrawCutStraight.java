@@ -4,7 +4,6 @@ import Common.DTO.CutDTO;
 import Common.DTO.DimensionDTO;
 import Common.DTO.RefCutDTO;
 import Common.DTO.PanelDTO;
-
 import Common.DTO.VertexDTO;
 import Common.Units;
 import Domain.CutType;
@@ -44,17 +43,17 @@ public class DrawCutStraight extends DrawCutWrapper {
             points.add(new PersoPoint(p.getX(), p.getY(), 10.0f, true, strokeColor));
         }
 
-        for (int i =0; i < points.size()-1; i++){
-            points.get(i).drawLineMM(graphics2D, renderer, points.get(i+1), false);
+        for (int i = 0; i < points.size() - 1; i++) {
+            points.get(i).drawLineMM(graphics2D, renderer, points.get(i + 1), false);
 
         }
 
         graphics2D.setColor(cursor.getColor());
-        if (!points.isEmpty()){
+        if (!points.isEmpty()) {
             points.getLast().drawLineMM(graphics2D, renderer, cursor, false);
         }
 
-        for (PersoPoint point : this.points){ // drawing the points
+        for (PersoPoint point : this.points) { // drawing the points
             point.drawMM(graphics2D, renderer, false);
 
         }
@@ -72,39 +71,37 @@ public class DrawCutStraight extends DrawCutWrapper {
     public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
         VertexDTO anchorAbsolutePosition = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
         double anchorDiameter = mainWindow.getController().getBitDiameter(cut.getRefsDTO().getFirst().getCut().getBitIndex());
-        if(cut.getCutType() == CutType.LINE_HORIZONTAL){
+        if (cut.getCutType() == CutType.LINE_HORIZONTAL) {
             double verticalOffset = Math.abs(cut.getPoints().getFirst().getY());
             double absoluteY = mainWindow.getController().getAbsolutePointsPosition(cut).getFirst().getY();
             VertexDTO anchorToCut = new VertexDTO(anchorAbsolutePosition.getX(), absoluteY, 0);
             VertexDTO diffNormalized = anchorToCut.sub(anchorAbsolutePosition).normalize();
-            VertexDTO p1 = anchorAbsolutePosition.add(diffNormalized.mul(anchorDiameter/2));
+            VertexDTO p1 = anchorAbsolutePosition.add(diffNormalized.mul(anchorDiameter / 2));
             VertexDTO p2 = p1.add(diffNormalized.mul(verticalOffset));
 
-            if(verticalOffset == 0){ // when the anchor and the cut is colinear
+            if (verticalOffset == 0) { // when the anchor and the cut is colinear
                 p1 = anchorAbsolutePosition;
                 p2 = anchorAbsolutePosition;
             }
             DimensionDTO yOffsetUnit = mainWindow.getController().convertUnit(new DimensionDTO(verticalOffset, Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
 
             UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, yOffsetUnit.value(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
-        }
-        else if(cut.getCutType() == CutType.LINE_VERTICAL){
+        } else if (cut.getCutType() == CutType.LINE_VERTICAL) {
             double horizontalOffset = Math.abs(cut.getPoints().getFirst().getX());
             double absoluteX = mainWindow.getController().getAbsolutePointsPosition(cut).getFirst().getX();
             VertexDTO anchorToCut = new VertexDTO(absoluteX, anchorAbsolutePosition.getY(), 0);
             VertexDTO diffNormalized = anchorToCut.sub(anchorAbsolutePosition).normalize();
-            VertexDTO p1 = anchorAbsolutePosition.add(diffNormalized.mul(anchorDiameter/2));
+            VertexDTO p1 = anchorAbsolutePosition.add(diffNormalized.mul(anchorDiameter / 2));
             VertexDTO p2 = p1.add(diffNormalized.mul(horizontalOffset));
 
-            if(horizontalOffset == 0){// when the anchor and the cut is colinear
+            if (horizontalOffset == 0) {// when the anchor and the cut is colinear
                 p1 = anchorAbsolutePosition;
                 p2 = anchorAbsolutePosition;
             }
 
             DimensionDTO xOffsetUnit = mainWindow.getController().convertUnit(new DimensionDTO(horizontalOffset, Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
             UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, xOffsetUnit.value(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
-        }
-        else if(cut.getCutType() == CutType.LINE_FREE){
+        } else if (cut.getCutType() == CutType.LINE_FREE) {
             VertexDTO anchor = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
             VertexDTO relativeP1 = cut.getPoints().getFirst();
 
@@ -174,6 +171,7 @@ public class DrawCutStraight extends DrawCutWrapper {
     @Override
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
+        double tolerance = 0.000001;
         double threshold;
         if (mainWindow.getController().getGrid().isMagnetic()) {
             threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
@@ -189,7 +187,7 @@ public class DrawCutStraight extends DrawCutWrapper {
             Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
             if (otherPoint.isPresent()) {
                 p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
-                if (closestPoint.isPresent() && (otherPoint.get().getX() == closestPoint.get().getX() || otherPoint.get().getY() == closestPoint.get().getY())) {
+                if (closestPoint.isPresent() && (Math.abs(otherPoint.get().getX() - closestPoint.get().getX()) < tolerance || Math.abs(otherPoint.get().getY() - closestPoint.get().getY()) < tolerance)) {
                     p.setColor(ANCHOR_COLOR);
                     p.setValid(PersoPoint.Valid.VALID);
                 } else {
@@ -209,7 +207,7 @@ public class DrawCutStraight extends DrawCutWrapper {
             Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
             if (otherPoint.isPresent()) {
                 p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
-                if (closestPoint.isPresent() && (otherPoint.get().getX() == closestPoint.get().getX() || otherPoint.get().getY() == closestPoint.get().getY())) {
+                if (closestPoint.isPresent() && (Math.abs(otherPoint.get().getX() - closestPoint.get().getX()) < tolerance || Math.abs(otherPoint.get().getY() - closestPoint.get().getY()) < tolerance)) {
                     p.setColor(ANCHOR_COLOR);
                     p.setValid(PersoPoint.Valid.VALID);
                 } else {
@@ -241,8 +239,8 @@ public class DrawCutStraight extends DrawCutWrapper {
             );
             Optional<VertexDTO> otherPoint = Optional.empty();
             PanelDTO board = mainWindow.getController().getPanelDTO();
-            if (((p1.getX()) % mainWindow.getController().getGrid().getSize() == 0) || ((p1.getY()) % mainWindow.getController().getGrid().getSize() == 0) || p1.getX() == board.getPanelDimension().getX() || p1.getY() == board.getPanelDimension().getY()) {
-                otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, false);
+            if (Math.abs((p1.getX()) % mainWindow.getController().getGrid().getSize()) < tolerance || Math.abs((p1.getY()) % mainWindow.getController().getGrid().getSize()) < tolerance || p1.getX() == board.getPanelDimension().getX() || p1.getY() == board.getPanelDimension().getY()) {
+                otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
             }
             if (otherPoint.isPresent() && (otherPoint.get().getX() == points.getFirst().getLocationX() || otherPoint.get().getY() == points.getFirst().getLocationY())) {
                 closestPoint = otherPoint;
