@@ -2,10 +2,12 @@ package UI.Display2D.DrawCutWrapper;
 
 import Common.DTO.CutDTO;
 import Common.DTO.VertexDTO;
+import Common.Units;
 import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
+import UI.UIConfig;
 import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
@@ -76,7 +78,7 @@ public class DrawCutStraight extends DrawCutWrapper{
                 p1 = anchorAbsolutePosition;
                 p2 = anchorAbsolutePosition;
             }
-            UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, verticalOffset, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+            UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, verticalOffset  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
         }
         else if(cut.getCutType() == CutType.LINE_VERTICAL){
             double horizontalOffset = Math.abs(cut.getPoints().getFirst().getX());
@@ -90,7 +92,8 @@ public class DrawCutStraight extends DrawCutWrapper{
                 p1 = anchorAbsolutePosition;
                 p2 = anchorAbsolutePosition;
             }
-            UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, horizontalOffset, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+
+            UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, p1, p2, horizontalOffset * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
         }
         else if(cut.getCutType() == CutType.LINE_FREE){
             VertexDTO anchor = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
@@ -98,7 +101,8 @@ public class DrawCutStraight extends DrawCutWrapper{
 
             VertexDTO p2 = anchor.add(relativeP1);
 
-            UiUtil.drawArrowWidthNumberXY(graphics2D, rendering2DWindow, anchor, p2, relativeP1.getX(), relativeP1.getY(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+            UiUtil.drawArrowWidthNumberXY(graphics2D, rendering2DWindow, anchor, p2, relativeP1.getX()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(),
+                    relativeP1.getY()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
         }
 
     }

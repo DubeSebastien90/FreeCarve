@@ -6,6 +6,7 @@ import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
+import UI.UIConfig;
 import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
@@ -57,8 +58,10 @@ public class DrawCutBorder extends DrawCutWrapper{
         VertexDTO xP1 = new VertexDTO(centralPoint).sub(downLeft);
         VertexDTO xP2 = new VertexDTO(xP1.getX() + downLeft.getX() + upRight.getX(),  xP1.getY(), 0);
 
-        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  xP1, xP2, downLeft.getX() + upRight.getX(),  ARROW_COLOR,ARROW_DIMENSION, DIMENSION_COLOR);
-        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  yP1, yP2, downLeft.getY()+ upRight.getY(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  xP1, xP2, (downLeft.getX() + upRight.getX())  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(),
+                ARROW_COLOR,ARROW_DIMENSION, DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  yP1, yP2, (downLeft.getY()+ upRight.getY())  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(),
+                ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
     }
 
     @Override

@@ -17,4 +17,8 @@ public enum Units {
     public double getRatio(){
         return ratio;
     }
+
+    public double getInverseRatio(){
+        return 1/ratio;
+    }
 }

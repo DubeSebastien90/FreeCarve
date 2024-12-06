@@ -7,6 +7,7 @@ import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
+import UI.UIConfig;
 import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
@@ -83,8 +84,8 @@ public class DrawCutL extends DrawCutWrapper{
         p1Height = p1Height.add(offset);
         p2Height = p2Height.add(offset);
 
-        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, Math.abs(relativeOffset.getX()),  ARROW_COLOR, ARROW_DIMENSION,  DIMENSION_COLOR);
-        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, Math.abs(relativeOffset.getY()), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, Math.abs(relativeOffset.getX())  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(),  ARROW_COLOR, ARROW_DIMENSION,  DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, Math.abs(relativeOffset.getY())  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
     }
 
     @Override

@@ -7,6 +7,7 @@ import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
+import UI.UIConfig;
 import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
@@ -117,9 +118,10 @@ public class DrawCutRectangular extends DrawCutWrapper{
         UiUtil.drawArrow(graphics2D, rendering2DWindow, p1Width, p2Width, ARROW_COLOR, ARROW_DIMENSION);
         UiUtil.drawArrow(graphics2D, rendering2DWindow, p1Height, p2Height, ARROW_COLOR, ARROW_DIMENSION);
 
-        UiUtil.drawNumberXY(graphics2D, rendering2DWindow, p1, p2, relativeOffset.getX(), relativeOffset.getY(), ARROW_COLOR, DIMENSION_COLOR);
-        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, relativeDimensions.getX(),  ARROW_COLOR, DIMENSION_COLOR);
-        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, relativeDimensions.getY(), ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawNumberXY(graphics2D, rendering2DWindow, p1, p2, relativeOffset.getX()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(),
+                relativeOffset.getY()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, relativeDimensions.getX()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(),  ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, relativeDimensions.getY()  * UIConfig.INSTANCE.getDefaultUnit().getUnit().getInverseRatio(), ARROW_COLOR, DIMENSION_COLOR);
     }
 
     @Override
