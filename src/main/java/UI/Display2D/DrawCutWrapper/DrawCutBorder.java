@@ -33,6 +33,7 @@ public class DrawCutBorder extends DrawCutWrapper {
         super(cut, renderer, mainWindow);
     }
 
+
 //    @Override
 //    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
 //        this.update(renderer);
@@ -44,6 +45,7 @@ public class DrawCutBorder extends DrawCutWrapper {
 //        }
 //
 //    }
+
 
     @Override
     public void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer) {
