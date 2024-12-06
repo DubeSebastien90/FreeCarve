@@ -10,6 +10,7 @@ import UI.MainWindow;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,7 @@ public abstract class DrawCutWrapper {
     protected List<VertexDTO> temporaryCreationPoints;
     protected DrawCutState state = DrawCutState.NOT_SELECTED;
     protected DrawCutState previousState = DrawCutState.NOT_SELECTED;
+    protected boolean hoveredView = false;
 
     public enum DrawCutState {
         SELECTED,
@@ -52,7 +54,8 @@ public abstract class DrawCutWrapper {
     protected final Color HOVER_COLOR = Color.BLUE;
     protected final Color ARROW_COLOR = Color.white;
     protected final Color DIMENSION_COLOR = Color.BLACK;
-    protected final Color CLAMP_COLOR = new Color(255, 0, 0, 200);
+    protected final Color CLAMP_COLOR = new Color(255,0,0,200);
+    protected final Color HOVER_VIEW_COLOR = Color.MAGENTA;
     protected final int ARROW_DIMENSION = 2;
     protected final double CLAMP_STROKE_WIDTH = 1.0;
 
@@ -121,17 +124,21 @@ public abstract class DrawCutWrapper {
         this.update(renderer);
         graphics2D.setStroke(stroke);
         graphics2D.setColor(this.strokeColor);
-
-        boolean canSelect = mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getDrawing().getState() == Drawing.DrawingState.IDLE && (renderer.isPointonPanel());
+        //draw refs
+        for (RefCutDTO ref : cut.getRefsDTO()) {
+            VertexDTO absPoints = ref.getAbsoluteOffset(mainWindow.getController());
+            PersoPoint p = new PersoPoint(absPoints.getX(), absPoints.getY(), this.cursorRadius, true);
+            p.drawMM(graphics2D, renderer);
+        }
 
         //draw line
         Color c = Color.black;
-        for (int i = 0; i < points.size() - 1; i++) {
-            if (this.points.get(i).getColor() != Color.MAGENTA) {
+        for(int i =0; i  < points.size() - 1; i++){
+            if(this.points.get(i).getColor() != HOVER_VIEW_COLOR){
                 c = this.points.get(i).getColor();
             }
         }
-        if (mainWindow.getController().isRoundedCutDTOHoveredByCursor(this.cut,new VertexDTO(renderer.getMmMousePt().getX(),renderer.getMmMousePt().getY(),0))){
+        if (hoveredView) {
             c= Color.MAGENTA;
         }
         for(int i =0; i  < points.size() - 1; i++){
@@ -141,8 +148,17 @@ public abstract class DrawCutWrapper {
 
         //draw points
         for (PersoPoint point : points) {
-            point.drawMM(graphics2D, renderer, canSelect);
+            graphics2D.setColor(point.getColor());
+            Point2D temp = renderer.mmTopixel(new Point2D.Double(point.getLocationX(), point.getLocationY()));
+            if(renderer.isPointonPanel() && mainWindow.getController().mouse_on_top(renderer.getMousePt().getX(),renderer.getMousePt().getY(),temp.getX(),temp.getY(),point.getRadius() * renderer.getZoom())){
+                graphics2D.setColor(HOVER_VIEW_COLOR);
+            }
+            point.drawMM(graphics2D, renderer);
         }
+    }
+
+    public void setHoveredView(boolean hoveredView) {
+        this.hoveredView = hoveredView;
     }
 
     /**

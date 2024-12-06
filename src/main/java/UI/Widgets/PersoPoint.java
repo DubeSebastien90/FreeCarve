@@ -20,6 +20,7 @@ public class PersoPoint {
     private double radius;
     private Valid valid;
     public final double PRECISION = 1.7;
+    private boolean hoveredView;
 
     private Color color = Color.BLACK;
     private boolean filled;
@@ -59,6 +60,7 @@ public class PersoPoint {
         this.filled = filled;
         this.color = color;
         this.valid = Valid.NOT_VALID;
+        this.hoveredView = false;
     }
 
     /**
@@ -73,6 +75,15 @@ public class PersoPoint {
         this.filled = persoPoint.filled;
         this.color = persoPoint.color;
         this.valid = persoPoint.valid;
+        this.hoveredView = persoPoint.hoveredView;
+    }
+
+    public void setHoveredView(boolean hoveredView) {
+        this.hoveredView = hoveredView;
+    }
+
+    public boolean isHoveredView() {
+        return hoveredView;
     }
 
     /**
@@ -93,23 +104,10 @@ public class PersoPoint {
      * @param graphics2D
      * @param renderer
      */
-    public boolean drawMM(Graphics2D graphics2D, Rendering2DWindow renderer, boolean canSelect) {
-        boolean selected = false;
+    public void drawMM(Graphics2D graphics2D, Rendering2DWindow renderer) {
         Point2D temp = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
         double diamPixel = this.radius * renderer.getZoom() * 2;
-        if (mouse_on_top(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp.getX(), temp.getY(), diamPixel / 2) && canSelect) {
-            graphics2D.setColor(Color.MAGENTA);
-            selected = true;
-        } else {
-            graphics2D.setColor(this.color);
-        }
         graphics2D.fillOval((int) (temp.getX() - diamPixel / 2.0), ((int) (temp.getY() - diamPixel / 2.0)),((int) diamPixel), ((int) diamPixel));
-        return selected;
-    }
-
-    public static boolean mouse_on_top(double mouse_x, double mouse_y, double pointX, double pointY, double pointRadius) {
-        double dist = Math.sqrt(Math.pow(mouse_x - pointX, 2) + Math.pow(mouse_y - pointY, 2));
-        return dist <= pointRadius;
     }
 
     /**
@@ -123,49 +121,6 @@ public class PersoPoint {
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(locationX, locationY));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(to.locationX, to.locationY));
         graphics2D.drawLine((int) (temp1.getX()), (int) (temp1.getY()), (int) (temp2.getX()), (int) (temp2.getY()));
-    }
-
-    public static boolean mouse_on_top_line(double mouseX, double mouseY, Point2D point_from, Point2D point_to, double _radius) {
-
-        double dx = point_to.getX() - point_from.getX();
-        double dy = point_to.getY() - point_from.getY();
-
-        double length = Math.sqrt(dx * dx + dy * dy);
-
-        double ux = dx / length;
-        double uy = dy / length;
-
-        double nx = -uy * _radius;
-        double ny = ux * _radius;
-
-        double x1 = point_from.getX() - nx;
-        double y1 = point_from.getY() - ny;
-
-        double x2 = point_from.getX() + nx;
-        double y2 = point_from.getY() + ny;
-
-        double x3 = point_to.getX() + nx;
-        double y3 = point_to.getY() + ny;
-
-        double x4 = point_to.getX() - nx;
-        double y4 = point_to.getY() - ny;
-
-        return pointInRectangle(mouseX, mouseY, x1, y1, x2, y2, x3, y3, x4, y4);
-    }
-
-    public static boolean pointInRectangle(double px, double py,
-                                     double x1, double y1,
-                                     double x2, double y2,
-                                     double x3, double y3,
-                                     double x4, double y4) {
-
-        double cross1 = (px - x1) * (y2 - y1) - (py - y1) * (x2 - x1);
-        double cross2 = (px - x2) * (y3 - y2) - (py - y2) * (x3 - x2);
-        double cross3 = (px - x3) * (y4 - y3) - (py - y3) * (x4 - x3);
-        double cross4 = (px - x4) * (y1 - y4) - (py - y4) * (x1 - x4);
-
-        return (cross1 >= 0 && cross2 >= 0 && cross3 >= 0 && cross4 >= 0) ||
-                (cross1 <= 0 && cross2 <= 0 && cross3 <= 0 && cross4 <= 0);
     }
 
     /**

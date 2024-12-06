@@ -86,12 +86,12 @@ public class Afficheur {
             drawing.getCurrentDrawingCut().setStrokeSize(scaledStroke);
 
             drawing.getCurrentDrawingCut().drawWhileChanging(graphics2D, renderer, drawing.getCreateCursorPoint());
-            drawing.getCreateCursorPoint().drawMM(graphics2D, renderer, false);
+            drawing.getCreateCursorPoint().drawMM(graphics2D, renderer);
         }
 
         if (drawing.getState() == Drawing.DrawingState.MODIFY_ANCHOR) {
             drawing.getCurrentModifiedCut().drawWhileModifyingAnchor(graphics2D, renderer, drawing.getCreateCursorPoint());
-            drawing.getModifyingAnchorCursorPoint().drawMM(graphics2D, renderer, false);
+            drawing.getModifyingAnchorCursorPoint().drawMM(graphics2D, renderer);
         }
 
     }

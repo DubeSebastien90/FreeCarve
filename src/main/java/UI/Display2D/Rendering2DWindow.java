@@ -53,6 +53,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
     private final Afficheur afficheur;
     private final Scaling scaling;
     private final Drawing drawing;
+    private final Rendering2DWindow renderer = this;
 
 
     /**
@@ -79,6 +80,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
         afficheur = new Afficheur(this);
         scaling = new Scaling(this);
         drawing = new Drawing(this, mainWindow);
+        drawing.setState(Drawing.DrawingState.IDLE);
         drawing.updateCuts();
     }
 
@@ -227,18 +229,14 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
                         for (DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
                             for (PersoPoint point : cutWrapper.getPersoPoints()) {
                                 Point2D temp = mmTopixel(new Point2D.Double(point.getLocationX(), point.getLocationY()));
-                                if (!foundSomething && PersoPoint.mouse_on_top(e.getX(), e.getY(), temp.getX(), temp.getY(), point.getRadius() * zoom)) {
+                                if (!foundSomething && mainWindow.getController().mouse_on_top(e.getX(), e.getY(), temp.getX(), temp.getY(), point.getRadius() * zoom)) {
                                     drawing.initModifyPoint(cutWrapper, point);
                                     foundSomething = true;
                                 }
                             }
-                            for (int i = 0; i < cutWrapper.getPersoPoints().size() - 1; i++) {
-                                Point2D temp1 = mmTopixel(new Point2D.Double(cutWrapper.getPersoPoints().get(i).getLocationX(), cutWrapper.getPersoPoints().get(i).getLocationY()));
-                                Point2D temp2 = mmTopixel(new Point2D.Double(cutWrapper.getPersoPoints().get(i + 1).getLocationX(), cutWrapper.getPersoPoints().get(i + 1).getLocationY()));
-                                if (!foundSomething && PersoPoint.mouse_on_top_line(e.getX(), e.getY(), temp1, temp2, 10)) {
-                                    drawing.initModifyCut(cutWrapper);
-                                    foundSomething = true;
-                                }
+                            if (!foundSomething && mainWindow.getController().isRoundedCutDTOHoveredByCursor(cutWrapper.getCutDTO(), new VertexDTO(mmMousePt.getX(),mmMousePt.getY(),0))){
+                                drawing.initModifyCut(cutWrapper);
+                                foundSomething = true;
                             }
                         }
                     }
@@ -300,6 +298,30 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
                     mousePt = e.getPoint();
                     mmMousePt.setLocation((mousePt.getX() - (offsetX * zoom)) / zoom, ((-1 * (mousePt.getY() - getHeight())) - (offsetY * zoom)) / zoom);
                     repaint();
+                }
+
+                //select the part
+                if(drawing.getState() == Drawing.DrawingState.IDLE) {
+                    boolean foundSomething = false;
+                    for(DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
+                        for (PersoPoint point : cutWrapper.getPersoPoints()) {
+                            Point2D temp = mmTopixel(new Point2D.Double(point.getLocationX(), point.getLocationY()));
+                            if(!foundSomething && mainWindow.getController().mouse_on_top(e.getX(),e.getY(),temp.getX(),temp.getY(),point.getRadius() * zoom)) {
+                                foundSomething = true;
+                                point.setHoveredView(true);
+                            } else{
+                                point.setHoveredView(false);
+                            }
+                        }
+                    }
+                    for (DrawCutWrapper drawCutWrapper : drawing.getCutWrappers()){
+                        if (!foundSomething && mainWindow.getController().isRoundedCutDTOHoveredByCursor(drawCutWrapper.getCutDTO(),new VertexDTO(mmMousePt.getX(), mmMousePt.getY(),0))){
+                            drawCutWrapper.setHoveredView(true);
+                            foundSomething = true;
+                        } else{
+                            drawCutWrapper.setHoveredView(false);
+                        }
+                    }
                 }
             }
 

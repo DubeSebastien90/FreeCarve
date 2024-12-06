@@ -47,12 +47,12 @@ public class DrawCutClamp extends DrawCutWrapper{
             p1.drawLineMM(graphics2D, renderer, cursor);
             p2.drawLineMM(graphics2D, renderer, cursor);
 
-            p1.drawMM(graphics2D, renderer, false); // drawing the points
-            p2.drawMM(graphics2D, renderer, false); //drawing the points
+            p1.drawMM(graphics2D, renderer); // drawing the points
+            p2.drawMM(graphics2D, renderer); //drawing the points
         }
 
         for (PersoPoint point : this.points){ // drawing the points
-            point.drawMM(graphics2D, renderer, false);
+            point.drawMM(graphics2D, renderer);
         }
     }
 
@@ -202,6 +202,6 @@ public class DrawCutClamp extends DrawCutWrapper{
         VertexDTO center = new VertexDTO((p1.getX() + p3.getX()) / 2, (p1.getY() + p3.getY()) / 2, 0.0f);
         PersoPoint referenceAnchorPoint = new PersoPoint(center.getX(), center.getY(), cursorRadius, true);
         referenceAnchorPoint.setColor(ANCHOR_COLOR);
-        referenceAnchorPoint.drawMM(graphics2D, renderer, false);
+        referenceAnchorPoint.drawMM(graphics2D, renderer);
     }
 }
