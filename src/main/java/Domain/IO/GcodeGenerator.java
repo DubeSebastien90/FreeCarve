@@ -1,9 +1,11 @@
 package Domain.IO;
 
+import Common.CutState;
 import Common.DTO.CutDTO;
 import Common.DTO.PanelDTO;
-import Common.DTO.ProjectStateDTO;
 import Common.DTO.VertexDTO;
+import Domain.Controller;
+import Domain.CutType;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class GcodeGenerator {
      * @param panelDTO The {@code PanelDTO} which needs to be converted into GCode
      * @return The {@code String equivalent of the GCode}
      */
-    public static String convertToGCode(PanelDTO panelDTO) {
+    public static String convertToGCode(Controller controller, PanelDTO panelDTO) {
         StringBuilder instructions = new StringBuilder();
 
         //definition of constants
@@ -40,18 +42,22 @@ public class GcodeGenerator {
 
         List<CutDTO> cutlist = panelDTO.getCutsDTO();
         for (CutDTO cut : cutlist) {
-            instructions.append("T").append(cut.getBitIndex() + 1).append(" M06").append(lineEnd); //select the tool
-            for (VertexDTO vertex : cut.getPoints()) {
-                if (vertex == cut.getPoints().get(0)) {
-                    instructions.append("G00 X").append(vertex.getX()).append(" Y").append(vertex.getY()).append(lineEnd); //go to position of first point
-                    instructions.append("M03 " + rotationSpeed + lineEnd); //starts the rotation of the tool
-                    instructions.append("G82 X").append(vertex.getX()).append(" Y").append(vertex.getY()).append(" Z").append(-cut.getDepth()).append(lineEnd); //drill the first hole
-                } else {
-                    instructions.append("G09 X").append(vertex.getX()).append(" Y").append(vertex.getY()).append(" Z").append(-cut.getDepth()).append(lineEnd); //cut to the point location
+            if (cut.getState() == CutState.VALID && cut.getCutType() != CutType.CLAMP) {
+                instructions.append("T").append(cut.getBitIndex() + 1).append(" M06").append(lineEnd); //select the tool
+                for (VertexDTO vertex : controller.getAbsolutePointsPosition(cut)) {
+                    double cutX = Math.max(Math.min(vertex.getX(), panelDTO.getPanelDimension().getX()), 0);
+                    double cutY = Math.max(Math.min(vertex.getY(), panelDTO.getPanelDimension().getY()), 0);
+                    if (vertex == cut.getPoints().get(0)) {
+                        instructions.append("G00 X").append(cutX).append(" Y").append(cutY).append(lineEnd); //go to position of first point
+                        instructions.append("M03 " + rotationSpeed + lineEnd); //starts the rotation of the tool
+                        instructions.append("G82 X").append(cutX).append(" Y").append(cutY).append(" Z").append(-cut.getDepth()).append(lineEnd); //drill the first hole
+                    } else {
+                        instructions.append("G09 X").append(cutX).append(" Y").append(cutY).append(" Z").append(-cut.getDepth()).append(lineEnd); //cut to the point location
+                    }
                 }
+                instructions.append("M05" + lineEnd); //stop the tool
+                instructions.append("G00 Z0" + lineEnd); //go to the predefined Z safe spot
             }
-            instructions.append("M05" + lineEnd); //stop the tool
-            instructions.append("G00 Z0" + lineEnd); //go to the predefined Z safe spot
         }
         //end program
         instructions.append("M05" + lineEnd); // stops the bit rotation

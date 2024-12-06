@@ -2,6 +2,7 @@ package Domain.IO;
 
 import Common.CutState;
 import Common.DTO.*;
+import Domain.Controller;
 import Domain.CutType;
 import com.kitfox.svg.A;
 import org.junit.jupiter.api.Assertions;
@@ -24,9 +25,9 @@ public class GcodeGeneratorTest {
         CutDTO cut1 = new CutDTO(new UUID(1, 1), 2, 1, CutType.LINE_FREE, list, new ArrayList<RefCutDTO>(), CutState.VALID);
         List<CutDTO> c = List.of(new CutDTO[]{cut1});
         PanelDTO panelDTO = new PanelDTO(c, new VertexDTO(300, 300, 5), 300, 300, UUID.randomUUID());
-
+        Controller controller = Controller.initialize();
         //Act
-        String actual = GcodeGenerator.convertToGCode(panelDTO);
+        String actual = GcodeGenerator.convertToGCode(controller, panelDTO);
         String expectedGcode = """
                 G21;
                 G17;

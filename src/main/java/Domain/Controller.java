@@ -283,7 +283,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return The String that represent the GCode instructions.
      */
     public String convertToGCode() {
-        return GcodeGenerator.convertToGCode(getPanelDTO());
+        return GcodeGenerator.convertToGCode(this, getPanelDTO());
     }
 
 
