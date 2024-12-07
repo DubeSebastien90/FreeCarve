@@ -1,10 +1,10 @@
 package UI;
 
-import javax.swing.*;
-import java.awt.*;
-
 import UI.Display2D.Rendering2DWindow;
 import UI.LeftBar.ToolBar.Tool;
+
+import javax.swing.*;
+import java.awt.*;
 
 
 /**
@@ -76,7 +76,7 @@ public class MiddleContent {
 
 
         this.panel.setLayout(new CardLayout());
-        panel.add(configChoiceWindow, "config");
+        panel.add(configChoiceWindow.getMainSplitPane(), "config");
         panel.add(cutWindow.getCutWindow(), "cut");
         panel.add(exportWindow.getMainSplitPane(), "export");
 
@@ -117,7 +117,7 @@ public class MiddleContent {
                 ((CardLayout) panel.getLayout()).show(panel, "config");
                 current = MiddleWindowType.CONFIG;
                 configChoiceWindow.getRendering2DWindow().setAll(cutWindow.getRenderer());
-                configChoiceWindow.requestFocusInWindow();
+                configChoiceWindow.getMainSplitPane().requestFocusInWindow();
                 db.setButtonBlueToIndex(0);
                 lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.SCALE, Tool.FORBIDDEN, Tool.GRID});
                 lb.getToolBar().disableTools(new Tool[]{Tool.COUPEL, Tool.FREE_LINE, Tool.VERTICAL, Tool.HORIZONTAL, Tool.RECTANGLE, Tool.TRASH, Tool.RETAILLER});

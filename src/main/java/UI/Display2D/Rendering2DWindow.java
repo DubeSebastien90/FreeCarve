@@ -290,7 +290,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
                     offsetX -= ((mousePt.getX() - e.getPoint().x) / zoom);
                     offsetY += ((mousePt.getY() - e.getPoint().y) / zoom);
                     mousePt = e.getPoint();
-                    points.clear();
+                    clearPoints();
                     repaint();
                 }
             }

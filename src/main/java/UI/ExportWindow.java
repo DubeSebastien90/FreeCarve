@@ -22,10 +22,7 @@ import java.awt.*;
 public class ExportWindow {
 
     private JSplitPane mainSplitPane;
-    private JSplitPane splitPane1;
-    private JSplitPane splitPane2;
 
-    private CNCCutSpecChooser cncCutSpecChooser;
     private final BigButton nextButton = new BigButton("Export");
     private Rendering3DWindow rendering3DWindow;
     private final MainWindow mainWindow;
@@ -83,12 +80,12 @@ public class ExportWindow {
 
         rendering3DWindow = new Rendering3DWindow(mainWindow.getController().getCameraId(), mainWindow);
 
-        cncCutSpecChooser = new CNCCutSpecChooser(mainWindow);
+        CNCCutSpecChooser cncCutSpecChooser = new CNCCutSpecChooser(mainWindow);
 
-        splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gcodeWindow, nextButton);
-        splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, cncCutSpecChooser, splitPane1);
+        JSplitPane splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gcodeWindow, nextButton);
+        JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, cncCutSpecChooser, splitPane1);
         mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rendering3DWindow, splitPane2);
-        splitPane2.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 10*2);
+        splitPane2.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 10 * 2);
         splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 2);
         mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 3 * 2);
         mainSplitPane.setResizeWeight(1);
@@ -110,9 +107,7 @@ public class ExportWindow {
 
     public static class CNCCutSpecChooser extends GenericAttributeBox implements Attributable {
 
-        private MainWindow mainWindow;
-        private PixelNoUnitInputField rotationSpeed;
-        private PixelNoUnitInputField feedRate;
+        private final MainWindow mainWindow;
 
         public CNCCutSpecChooser(MainWindow mainWindow) {
             super(false, "Spécifications CNC");
@@ -125,8 +120,8 @@ public class ExportWindow {
          * with real-time resizing functionality.
          */
         private void init() {
-            rotationSpeed = new PixelNoUnitInputField(mainWindow, "Vitesse de rotation", 1);
-            feedRate = new PixelNoUnitInputField(mainWindow, "Vitesse de coupe", 1);
+            PixelNoUnitInputField rotationSpeed = new PixelNoUnitInputField(mainWindow, "Vitesse de rotation", 1);
+            PixelNoUnitInputField feedRate = new PixelNoUnitInputField(mainWindow, "Vitesse de coupe", 1);
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.weightx = 1.0;
             gbc.weighty = 1.0;

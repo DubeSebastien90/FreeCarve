@@ -1,26 +1,21 @@
 package UI;
 
-import Common.DTO.BitDTO;
 import Common.Exceptions.InvalidFileExtensionException;
-import UI.Events.ChangeCutEvent;
-import UI.Events.ChangeCutListener;
+import UI.Display2D.Rendering2DWindow;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
+import UI.Events.ChangeCutEvent;
+import UI.Events.ChangeCutListener;
 import UI.Listeners.SaveToolsActionListener;
 import UI.SubWindows.AttributePanel;
 import UI.SubWindows.BitConfigurationPanel;
-import UI.Display2D.Rendering2DWindow;
-
+import UI.Widgets.Attributable;
 import UI.Widgets.BigButton;
-
-import UI.Widgets.*;
+import UI.Widgets.BitInfoDisplay;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Represents a configuration choice window that allows users to select
@@ -32,26 +27,22 @@ import java.util.Map;
  * @version 1.0
  * @since 2024-10-25
  */
-public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, ChangeAttributeListener {
+public class ConfigChoiceWindow implements ChangeCutListener, ChangeAttributeListener {
     private final Rendering2DWindow rend;
     private final BigButton nextButton = new BigButton("Suivant");
-    private final JButton saveToolsButton = UiUtil.createSVGButton("upload", true, 50);
-    private final JButton loadToolsButton = UiUtil.createSVGButton("download", true, 50);
     private final MainWindow mainWindow;
     private final BitConfigurationPanel bitWindow;
     private final AttributePanel attributePanel;
+    private JSplitPane mainSplitPane;
 
     /**
      * Constructs a ConfigChoiceWindow and initializes its components and layout.
      */
     public ConfigChoiceWindow(MainWindow mainWindow) {
-        this.setLayout(new GridBagLayout());
         rend = new Rendering2DWindow(mainWindow, this, this);
         bitWindow = new BitConfigurationPanel(this, mainWindow);
         attributePanel = new AttributePanel(true, mainWindow);
         this.mainWindow = mainWindow;
-        setFocusable(true);
-        requestFocusInWindow();
         init();
         setButtonEventHandlers();
     }
@@ -65,62 +56,26 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
         return this.rend;
     }
 
+    public JSplitPane getMainSplitPane() {
+        return mainSplitPane;
+    }
+
+    public AttributePanel getAttributePanel() {
+        return attributePanel;
+    }
+
     /**
      * Initializes the layout and adds the necessary components to the window.
      * This method sets up the grid bag constraints for arranging components.
      */
     public void init() {
-        GridBagConstraints gbc = new GridBagConstraints();
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rend, attributePanel);
-        splitPane.setResizeWeight(.8);
 
-        attributePanel.setPreferredSize(new Dimension(0, 0));
 
-        gbc.insets = new Insets(0, 0, 0, 10);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridheight = 2;
-        gbc.gridwidth = 5;
-        gbc.weightx = 2;
-        gbc.weighty = 0.90;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(splitPane, gbc);
-
-        gbc.insets = new Insets(5, 0, 0, 10);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridheight = 2;
-        gbc.gridwidth = 2;
-        gbc.weightx = 2;
-        gbc.weighty = 0.10;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(bitWindow, gbc);
-
-        gbc.gridx = 3;
-        gbc.gridy = 2;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 2;
-        gbc.weighty = 0.25;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(nextButton, gbc);
-
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.gridx = 3;
-        gbc.gridy = 3;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weighty = 0.05;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(saveToolsButton, gbc);
-
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.gridx = 4;
-        gbc.gridy = 3;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weighty = 0.05;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(loadToolsButton, gbc);
+        JSplitPane splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, attributePanel, bitWindow);
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rend, splitPane1);
+        splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 3);
+        mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 3 * 2);
+        mainSplitPane.setResizeWeight(0);
 
     }
 
@@ -128,41 +83,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
      * Sets the event handler for the buttons
      */
     private void setButtonEventHandlers() {
-        nextButton.getButton().addActionListener(e-> mainWindow.getMiddleContent().nextWindow());
-
-        saveToolsButton.addActionListener(new SaveToolsActionListener(mainWindow));
-
-        loadToolsButton.addActionListener(e->{
-            mainWindow.getLeftBar().getToolBar().disableTool(LeftBar.ToolBar.Tool.TRASH);
-            File file = Utils.chooseFile("Charger outils", "defaut.CNC", mainWindow.getFrame(), FileCache.INSTANCE.getLastToolSave(), "Fichier outils (CNC)", "CNC");
-            if (file != null) {
-                try {
-                    mainWindow.getController().loadTools(file);
-                } catch (InvalidFileExtensionException ex) {
-                    System.out.println("Invalid file extension");
-                } catch (IOException ex) {
-                    System.out.println("Unable to load file");
-                } catch (ClassNotFoundException ex) {
-                    System.out.println("File content is not valid");
-                }
-                bitWindow.refresh();
-                attributePanel.update();
-                mainWindow.getMiddleContent().getCutWindow().notifyObservers();
-                FileCache.INSTANCE.setLastToolSave(file);
-            }
-        });
-    }
-
-    /**
-     * Paints the component. This method calls the superclass's paint method
-     * and revalidates the next button.
-     *
-     * @param graphics The graphics context used for painting.
-     */
-    @Override
-    public void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
-        nextButton.revalidate();
+        nextButton.getButton().addActionListener(e -> mainWindow.getMiddleContent().nextWindow());
     }
 
     public int getSelectedBit() {
@@ -183,6 +104,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
     public void deleteCutEventOccured(ChangeCutEvent event) {
         //todo if usefull to remove a cut in the ConfigChoiceWindow
     }
+
     /**
      * Set the selected element of the CutWindow and changed the AttributePanel accordingly
      *
@@ -191,7 +113,7 @@ public class ConfigChoiceWindow extends JPanel implements ChangeCutListener, Cha
     @Override
     public void changeAttributeEventOccurred(ChangeAttributeEvent event) {
         Attributable selectedAttributable = event.getAttribute();
-        if (selectedAttributable.getClass() != BitInfoDisplay.class){
+        if (selectedAttributable.getClass() != BitInfoDisplay.class) {
             mainWindow.getLeftBar().getToolBar().disableTool(LeftBar.ToolBar.Tool.TRASH);
         }
         this.attributePanel.updateAttribute(selectedAttributable);
