@@ -45,6 +45,7 @@ public class OptionWindow extends JPanel {
         PixelNoUnitInputField gcodeRotationRate = new PixelNoUnitInputField(mainWindow, "Rotation outil CNC", mainWindow.getController().getCNCrotationSpeed(), "rotation per second");
         gcodeRotationRate.getNumericInput().addPropertyChangeListener("value", evt -> {
             mainWindow.getController().setCNCrotationSpeed(((Number) evt.getNewValue()).intValue());
+
         });
         gcodeRotationRate.setMaximumSize(new Dimension(1200, 50));
         add(gcodeRotationRate);

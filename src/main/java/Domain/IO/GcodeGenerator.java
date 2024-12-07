@@ -21,7 +21,7 @@ public class GcodeGenerator {
     /**
      * Converts a {@code ProjectState} into a series of GCode instructions. These instructions can later be saved as a file.
      *
-     * @param panelDTO The {@code PanelDTO} which needs to be converted into GCode
+     * @param controller The Controller which contain the {@code PanelDTO} which needs to be converted into GCode
      * @return The {@code String equivalent of the GCode}
      */
     public static String convertToGCode(Controller controller) {

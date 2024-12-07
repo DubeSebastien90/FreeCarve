@@ -52,6 +52,10 @@ public class MiddleContent {
         return this.cutWindow;
     }
 
+    public ExportWindow getExportWindow() {
+        return exportWindow;
+    }
+
     /**
      * @return The currently displayed window
      */

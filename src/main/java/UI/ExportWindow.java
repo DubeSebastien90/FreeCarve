@@ -120,8 +120,18 @@ public class ExportWindow {
          * with real-time resizing functionality.
          */
         private void init() {
-            PixelNoUnitInputField rotationSpeed = new PixelNoUnitInputField(mainWindow, "Vitesse de rotation", 1);
-            PixelNoUnitInputField feedRate = new PixelNoUnitInputField(mainWindow, "Vitesse de coupe", 1);
+            PixelNoUnitInputField rotationSpeed = new PixelNoUnitInputField(mainWindow, "Vitesse de rotation", mainWindow.getController().getCNCrotationSpeed(), "rot. par sec.");
+            rotationSpeed.getNumericInput().addPropertyChangeListener("value", evt -> {
+                mainWindow.getController().setCNCrotationSpeed(((Number) evt.getNewValue()).intValue());
+                mainWindow.getMiddleContent().getExportWindow().calculateGcode();
+            });
+            PixelNoUnitInputField feedRate = new PixelNoUnitInputField(mainWindow, "Vitesse de coupe", mainWindow.getController().getCNCCuttingSpeed(), "mm / s");
+            feedRate.getNumericInput().addPropertyChangeListener("value", evt -> {
+                mainWindow.getController().setCNCCuttingSpeed(((Number) evt.getNewValue()).intValue());
+                mainWindow.getMiddleContent().getExportWindow().calculateGcode();
+
+            });
+
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.weightx = 1.0;
             gbc.weighty = 1.0;
