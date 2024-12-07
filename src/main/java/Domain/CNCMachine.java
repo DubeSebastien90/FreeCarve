@@ -5,10 +5,12 @@ import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import Common.Interfaces.IMemorizer;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Class that represents the CNC machine
@@ -65,7 +67,7 @@ class CNCMachine {
 
     void setPanel(PanelCNC panel) {
         this.panel = panel;
-        this.panel.validateCuts(bitStorage);
+        this.panel.validateCuts(this);
     }
 
     public BitStorage getBitStorage() {
@@ -74,18 +76,20 @@ class CNCMachine {
 
     public void setBitStorage(BitStorage bitStorage) {
         this.bitStorage = bitStorage;
-        this.panel.validateCuts(bitStorage);
+        this.panel.validateCuts(this);
     }
 
     public Optional<UUID> requestCut(RequestCutDTO requestCutDTO){
         Optional<UUID> id = panel.requestCut(requestCutDTO);
         this.panel.verifyCuts(this);
+        this.panel.validateCuts(this);
         return id;
     }
 
     public Optional<UUID> modifyCut(CutDTO cutDTO){
         Optional<UUID> id = panel.modifyCut(cutDTO);
         this.panel.verifyCuts(this);
+        this.panel.validateCuts(this);
         return id;
     }
 

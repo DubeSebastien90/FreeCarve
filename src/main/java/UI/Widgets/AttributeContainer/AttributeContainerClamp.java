@@ -26,8 +26,8 @@ public class AttributeContainerClamp extends AttributeContainer{
 
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO){
         centerPosition = new PointsBox(mainWindow, true, "Position du centre", getCenterPoint());
-        widthOfRectangle = new SingleValueBox(mainWindow, true, "Largeur interne", "X", getWidthEdgeEdge(), UIConfig.INSTANCE.getDefaultUnit(), 0, Double.MAX_VALUE);
-        heightOfRectangle = new SingleValueBox(mainWindow, true, "Hauteur interne", "Y", getHeightEdgeEdge(), UIConfig.INSTANCE.getDefaultUnit(), 0 , Double.MAX_VALUE);
+        widthOfRectangle = new SingleValueBox(mainWindow, true, "Largeur interne", "X", getWidthEdgeEdge(), 0, Double.MAX_VALUE);
+        heightOfRectangle = new SingleValueBox(mainWindow, true, "Hauteur interne", "Y", getHeightEdgeEdge(), 0 , Double.MAX_VALUE);
     }
 
     private VertexDTO getCenterPoint(){

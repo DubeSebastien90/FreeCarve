@@ -105,4 +105,54 @@ public class RoundedCut {
         return false;
     }
 
+    /**
+     * Test if the current rounded cut intersect with another rounded cut
+     * @param other other rounded cut to test
+     * @return true if intersect
+     */
+    public boolean intersectRoundedCut(RoundedCut other){
+        // Check if the internal rectangle of the other cut is in the current cut
+        for (VertexDTO point : this.getInternalRectanglePoints()) {
+            if (other.pointInRoundedCut(point)) {
+                return true;
+            }
+        }
+
+        for (VertexDTO point : other.getInternalRectanglePoints()) {
+            if (this.pointInRoundedCut(point)) {
+                return true;
+            }
+        }
+
+        List<VertexDTO> rect1 = this.getInternalRectanglePoints();
+        List<VertexDTO> rect2 = other.getInternalRectanglePoints();
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (VertexDTO.isLineIntersectLimited(rect1.get(i), rect1.get((i + 1) % 4), rect2.get(j), rect2.get((j + 1) % 4)).isPresent()) {
+                    return true;
+                }
+            }
+        }
+
+        double thisRadius = this.bitDiameter/2;
+        double otherRadius = other.bitDiameter/2;
+
+        double distance1 = this.p1.getDistance(other.p1);
+        double distance2 = this.p1.getDistance(other.p2);
+        double distance3 = this.p2.getDistance(other.p1);
+        double distance4 = this.p2.getDistance(other.p2);
+
+        if(distance1 <= thisRadius + otherRadius ||
+                distance2 <= thisRadius + otherRadius ||
+                distance3 <= thisRadius + otherRadius ||
+                distance4 <= thisRadius + otherRadius){
+            return true;
+        }
+
+        return false;
+    }
+
+
+
 }

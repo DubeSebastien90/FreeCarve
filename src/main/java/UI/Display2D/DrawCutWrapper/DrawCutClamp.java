@@ -41,18 +41,23 @@ public class DrawCutClamp extends DrawCutWrapper{
             PersoPoint p2 = new PersoPoint(points.getFirst());
             p1.movePoint(cursor.getLocationX(), this.points.getFirst().getLocationY());
             p2.movePoint(this.points.getFirst().getLocationX(), cursor.getLocationY());
-            points.getFirst().drawLineMM(graphics2D, renderer, p1, this.strokeWidth);
-            points.getFirst().drawLineMM(graphics2D, renderer, p2, this.strokeWidth);
-            p1.drawLineMM(graphics2D, renderer, cursor, this.strokeWidth);
-            p2.drawLineMM(graphics2D, renderer, cursor, this.strokeWidth);
+            points.getFirst().drawLineMM(graphics2D, renderer, p1, false);
+            points.getFirst().drawLineMM(graphics2D, renderer, p2, false);
+            p1.drawLineMM(graphics2D, renderer, cursor, false);
+            p2.drawLineMM(graphics2D, renderer, cursor, false);
 
-            p1.drawMM(graphics2D, renderer); // drawing the points
-            p2.drawMM(graphics2D, renderer); //drawing the points
+            p1.drawMM(graphics2D, renderer, false); // drawing the points
+            p2.drawMM(graphics2D, renderer, false); //drawing the points
         }
 
         for (PersoPoint point : this.points){ // drawing the points
-            point.drawMM(graphics2D, renderer);
+            point.drawMM(graphics2D, renderer, false);
         }
+    }
+
+    @Override
+    public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
+
     }
 
     @Override
@@ -184,5 +189,10 @@ public class DrawCutClamp extends DrawCutWrapper{
         int yMin = (int) temp2.getY();
 
         graphics2D.fillRect(xMin, yMin, width, height);
+    }
+
+    @Override
+    public void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer) {
+
     }
 }
