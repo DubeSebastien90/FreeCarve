@@ -1,6 +1,8 @@
 package UI;
 
+import Common.DTO.CutDTO;
 import Domain.CutType;
+import UI.Display2D.Drawing;
 import UI.Listeners.SaveProjectActionListener;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
@@ -266,7 +268,15 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.FREE_LINE).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
-                middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_FREE);
+                CutDTO cut = middle.getCutWindow().getRendering2DWindow().getDrawing().getCurrentDrawingCut().getCutDTO();
+                if (cut != null && cut.getCutType() == CutType.LINE_FREE) {
+                    FlatSVGIcon icon = getIcon("modify", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
+                    toolBar.getTool(ToolBar.Tool.FREE_LINE).setIcon(icon);
+                } else {
+                    FlatSVGIcon icon = getIcon("modify", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
+                    toolBar.getTool(ToolBar.Tool.FREE_LINE).setIcon(icon);
+                    middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_FREE);
+                }
             }
         });
     }

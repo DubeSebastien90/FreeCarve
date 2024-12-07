@@ -1,16 +1,12 @@
 package UI;
 
+import UI.Display2D.Rendering2DWindow;
 import UI.Listeners.ExportGcodeActionListener;
-import UI.SubWindows.BasicWindow;
+import UI.SubWindows.*;
 import UI.Widgets.BigButton;
-import UI.SubWindows.Rendering3DWindow;
-import com.sun.tools.javac.Main;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 
 /**
  * Represents an export window that displays a 3D renderer for visualizing
@@ -20,9 +16,21 @@ import java.io.File;
  * @version 1.0
  * @since 2024-10-25
  */
-public class ExportWindow extends JPanel {
+public class ExportWindow {
 
-    private BigButton nextButton = new BigButton("Export");
+    private JSplitPane mainSplitPane;
+    private JSplitPane splitPane1;
+    private JSplitPane cutInformationSplitPane;
+    private JPanel panel2;
+    private JPanel panel3;
+    private JPanel bitPanel;
+    private CutListPanel cutListPanel;
+    private AttributePanel attributePanel;
+    private Rendering2DWindow rendering2DWindow;
+    private BitSelectionPanel bitSelectionPanel;
+
+
+    private final BigButton nextButton = new BigButton("Export");
     private Rendering3DWindow rendering3DWindow;
     private final MainWindow mainWindow;
     private final JScrollPane gcodeWindow = new JScrollPane();
@@ -34,11 +42,14 @@ public class ExportWindow extends JPanel {
      * Constructs an ExportWindow and initializes its layout and components.
      */
     public ExportWindow(MainWindow mainWindow) {
-        this.setLayout(new GridBagLayout());
         this.mainWindow = mainWindow;
         init();
         calculateGcode();
         setButtonAction();
+    }
+
+    public JSplitPane getMainSplitPane() {
+        return mainSplitPane;
     }
 
     /**
@@ -56,78 +67,52 @@ public class ExportWindow extends JPanel {
      * those meshes.
      */
     public void init() {
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        rendering3DWindow = new Rendering3DWindow(mainWindow.getController().getCameraId(), mainWindow);
-        gbc.insets = new Insets(0, 0, 0, 10);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridheight = 3;
-        gbc.weightx = 5;
-        gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(new BasicWindow(true), gbc);
-        gbc.insets = new Insets(0, 0, 5, 5);
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.weightx = 3;
-        gbc.weighty = 0.40;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(rendering3DWindow, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.gridheight = 1;
-        gbc.weightx = 3;
-        gbc.weighty = 0.40;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(gcodeWindow, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.gridheight = 1;
-        gbc.weightx = 3;
-        gbc.weighty = 0.20;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(nextButton, gbc);
-
-
         gcodeDisplay.setEditable(false);
-        gcodeDisplay.setFont(new Font("Consolas", Font.PLAIN, 20));
+        gcodeDisplay.setFont(new Font("Consolas", Font.PLAIN, 15));
         gcodeDisplay.setLineWrap(true);
         gcodeDisplay.setWrapStyleWord(true);
-        gcodeDisplay.setBorder(null);
+        gcodeDisplay.setMargin(new Insets(5, 5, 5, 5));
         gcodeDisplay.setBackground(null);
-        GridBagConstraints g = new GridBagConstraints();
-        g.anchor = GridBagConstraints.WEST;
-        g.fill = GridBagConstraints.BOTH;
-        realGcodeContainer.add(gcodeDisplay, g);
+        gcodeDisplay.setBorder(null);
+
+        realGcodeContainer.setLayout(new BorderLayout());
+        realGcodeContainer.add(gcodeDisplay, BorderLayout.CENTER);
+
+        gcodeWindow.add(realGcodeContainer);
         gcodeWindow.setViewportView(realGcodeContainer);
+        gcodeWindow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        gcodeWindow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        gcodeWindow.setBorder(null);
         gcodeWindow.getViewport().setViewPosition(new Point(0, 0));
+
+        rendering3DWindow = new Rendering3DWindow(mainWindow.getController().getCameraId(), mainWindow);
+
+//        attributePanel = new AttributePanel(true, mainWindow);
+//        panel2 = attributePanel;
+
+//        cutListPanel = new CutListPanel(true, this, this, mainWindow);
+//        panel3 = cutListPanel;
+
+        splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gcodeWindow, nextButton);
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rendering3DWindow, splitPane1);
+
+        //cutInformationSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 8);
+        splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 10 * 7);
+        mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 3 * 2);
+        mainSplitPane.setResizeWeight(1);
     }
 
     public void calculateGcode() {
         String gcode = mainWindow.getController().convertToGCode();
         gcodeDisplay.setText(gcode);
         gcodeWindow.repaint();
-        this.repaint();
+        mainSplitPane.revalidate();
+        mainSplitPane.repaint();
     }
 
     private void setButtonAction() {
         nextButton.getButton().addActionListener(new ExportGcodeActionListener(mainWindow));
     }
 
-    /**
-     * Paints the component. This method calls the superclass's paint method
-     * and revalidates the export button.
-     *
-     * @param graphics The graphics context used for painting.
-     */
-    @Override
-    public void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
-        nextButton.revalidate();
-    }
+
 }

@@ -1,24 +1,24 @@
 package UI.Display2D;
 
-import Common.Interfaces.IPanelObserver;
-import Domain.CutType;
-
 import Common.DTO.GridDTO;
 import Common.DTO.VertexDTO;
+import Common.Interfaces.IPanelObserver;
+import Domain.CutType;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
 import UI.LeftBar;
 import UI.MainWindow;
 import UI.UIConfig;
-import UI.Widgets.PersoPoint;
 import UI.UiUtil;
+import UI.Widgets.PersoPoint;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -192,6 +192,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
     public MainWindow getMainWindow() {
         return this.mainWindow;
     }
+
 
     public void setAll(Rendering2DWindow rendering2DWindow) {
         this.board = rendering2DWindow.getBoard();
@@ -486,7 +487,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
     boolean isPointClose(MouseEvent e, PersoPoint point) {
         double dx = e.getX() - point.getLocationX();
         double dy = e.getY() - point.getLocationY();
-        return Math.sqrt(dx * dx + dy * dy) < point.getRadius()+5;
+        return Math.sqrt(dx * dx + dy * dy) < point.getRadius() + 5;
     }
 
     /**

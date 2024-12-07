@@ -78,7 +78,7 @@ public class MiddleContent {
         this.panel.setLayout(new CardLayout());
         panel.add(configChoiceWindow, "config");
         panel.add(cutWindow.getCutWindow(), "cut");
-        panel.add(exportWindow, "export");
+        panel.add(exportWindow.getMainSplitPane(), "export");
 
         current = MiddleWindowType.CONFIG;
         changePanel(current);

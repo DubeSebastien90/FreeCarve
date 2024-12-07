@@ -53,6 +53,10 @@ public class Drawing {
         MODIFY_CUT,
     }
 
+    public void setCurrentDrawingCut(DrawCutWrapper currentDrawingCut) {
+        this.currentDrawingCut = currentDrawingCut;
+    }
+
     /**
      * Create the {@code Drawing} utility class
      *

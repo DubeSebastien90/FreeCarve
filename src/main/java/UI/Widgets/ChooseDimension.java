@@ -93,12 +93,15 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
 
     private void addEventListenerToPointBox() {
         xTextField.getNumericInput().addPropertyChangeListener("value", evt -> {
+            rend.clearPoints();
             rend.resizePanneau(xTextField.getMMValue(), rend.getBoard().getHeight());
         });
         yTextField.getNumericInput().addPropertyChangeListener("value", evt -> {
+            rend.clearPoints();
             rend.resizePanneau(rend.getBoard().getWidth(), yTextField.getMMValue());
         });
         zTextField.getNumericInput().addPropertyChangeListener("value", evt -> {
+            rend.clearPoints();
             rend.getMainWindow().getController().resizePanel(rend.getBoard().getWidth(), rend.getBoard().getHeight(), zTextField.getMMValue());
         });
         if (gridPrecision != null) {
