@@ -63,8 +63,9 @@ public class Scaling {
                     super.mouseDragged(e);
                     PersoPoint p = rend.getPoints().get(1);
                     double ratio = 1 / zoom;
-                    double newWidth = Math.max((e.getX() - offsetX * zoom) * ratio + p.getRadius() / 2, 0);
-                    double newHeight = Math.max((rend.getHeight() - e.getY() - offsetY * zoom) * ratio - p.getRadius() / 2, 0);
+                    double newWidth = Math.max((e.getX()*ratio - offsetX), 0);
+                    double newHeight = Math.max((rend.getHeight() - e.getY() - offsetY * zoom) * ratio , 0);
+
                     p.movePoint(Math.min(p.getLocationX()-p.getRadius()/2, rend.getMainWindow().getController().getPanelDTO().getMaxMMWidth()-p.getRadius()/2), p.getLocationY()-p.getRadius()/2);
                     rend.getPoints().get(0).movePoint(offsetX * zoom - p.getRadius() / 2, p.getLocationY());
                     rend.getPoints().get(2).movePoint(p.getLocationX(), rend.getHeight() - offsetY * zoom - p.getRadius() / 2);
