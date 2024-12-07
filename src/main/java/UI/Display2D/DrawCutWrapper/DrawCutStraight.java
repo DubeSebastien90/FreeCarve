@@ -128,6 +128,12 @@ public class DrawCutStraight extends DrawCutWrapper {
 
     @Override
     public void modifyAnchorPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
+        //todo
+    }
+
+    @Override
+    public  void cursorUpdateModifyAnchor(Rendering2DWindow renderer, Drawing drawing){
+        //todo
     }
 
     @Override
@@ -179,36 +185,6 @@ public class DrawCutStraight extends DrawCutWrapper {
         }
         this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints, refs, this.cut.getState(), cut.getInvalidCutState());
         return createCut();
-    }
-
-    @Override
-    public  void cursorUpdateModifyAnchor(Rendering2DWindow renderer, Drawing drawing){
-        PersoPoint p = this.cursorPoint;
-        double tolerance = 0.000001;
-        double threshold;
-        if (mainWindow.getController().getGrid().isMagnetic()) {
-            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
-        } else {
-            threshold = renderer.scalePixelToMM(snapThreshold);
-        }
-
-        p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-        VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-        Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
-        Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
-        if (otherPoint.isPresent()) {
-            p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
-            if (closestPoint.isPresent() && (Math.abs(otherPoint.get().getX() - closestPoint.get().getX()) < tolerance || Math.abs(otherPoint.get().getY() - closestPoint.get().getY()) < tolerance)) {
-                p.setColor(ANCHOR_COLOR);
-                p.setValid(PersoPoint.Valid.VALID);
-            } else {
-                p.setColor(INVALID_COLOR);
-                p.setValid(PersoPoint.Valid.NOT_VALID);
-            }
-        } else {
-            p.setColor(INVALID_COLOR);
-            p.setValid(PersoPoint.Valid.NOT_VALID);
-        }
     }
 
     @Override

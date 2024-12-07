@@ -47,3 +47,6 @@ build/
 ## FREE CARVE
 working/*.PAN
 working/*.CNC
+*.PAN
+*.CNC
+*.GCODE

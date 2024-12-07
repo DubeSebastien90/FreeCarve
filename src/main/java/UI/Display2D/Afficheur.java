@@ -88,7 +88,6 @@ public class Afficheur {
         }
 
         if (drawing.getState() == Drawing.DrawingState.MODIFY_ANCHOR) {
-            drawing.getCurrentModifiedCut().drawWhileModifyingAnchor(graphics2D, renderer, drawing.getCreateCursorPoint());
             drawing.getModifyingAnchorCursorPoint().drawMM(graphics2D, renderer, false);
         }
 
