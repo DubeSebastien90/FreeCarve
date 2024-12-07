@@ -106,6 +106,7 @@ public class ExportWindow {
 
     public void refreshGcodeParam() {
         cncCutSpecChooser.refreshAttributes();
+        calculateGcode();
     }
 
 

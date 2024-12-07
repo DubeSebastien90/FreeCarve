@@ -154,7 +154,7 @@ public class FolderWindow extends JPanel {
      * it triggers the action to proceed to the next window in the main interface.
      */
     private void setButtonActionListener() {
-        newButton.addActionListener(e -> mainWindow.showTrueMode());
-        openButton.addActionListener(e -> mainWindow.showTrueMode());
+        newButton.addActionListener(e -> mainWindow.showInProjectWindow());
+        openButton.addActionListener(e -> mainWindow.showInProjectWindow());
     }
 }

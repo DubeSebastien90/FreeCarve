@@ -33,6 +33,7 @@ public class MainWindow {
     private LeftBar leftBar;
     private MiddleContent middleContent;
     private Controller controller;
+    private boolean inProject = false;
 
     /**
      * Starts the {@code MainWindow} by making it's {@code JFrame} visible
@@ -151,6 +152,7 @@ public class MainWindow {
      * Displays the File selection/ project selection window with an instance of {@link FolderWindow }
      */
     public void showFileSelectionWindow() {
+        inProject = false;
         frame.setSize(700, 700);
         frame.setLocationRelativeTo(null);
         frame.setContentPane(new FolderWindow(this));
@@ -164,6 +166,15 @@ public class MainWindow {
      * pane back to the main inside panel.
      */
     public void showTrueMode() {
+        if (inProject) {
+            showInProjectWindow();
+        } else {
+            showFileSelectionWindow();
+        }
+    }
+
+    public void showInProjectWindow() {
+        inProject = true;
         frame.setContentPane(mainInsidePanel);
         frame.setSize(uiConfig.getDefaultWindowWidth(), uiConfig.getDefaultWindowHeight());
         frame.setLocationRelativeTo(null);
