@@ -308,6 +308,14 @@ class PanelCNC {
         return true;
     }
 
+    /**
+     * Check if a cut intersects a clamp zone
+     *
+     * @param cutPoints The absolute points of a cut
+     * @param clampZone The clamp zone
+     * @param diameter The diameter of the cut
+     * @return True if it intersects, false otherwise
+     */
     public boolean cutIntersectsClampZone(List<VertexDTO> cutPoints, Cut clampZone, double diameter){
         RoundedCut clampRound1 = new RoundedCut(clampZone.getPoints().get(0), clampZone.getPoints().get(1), 0);
         RoundedCut clampRound2 = new RoundedCut(clampZone.getPoints().get(1), clampZone.getPoints().get(2), 0);
@@ -329,6 +337,11 @@ class PanelCNC {
         return false;
     }
 
+    /**
+     * Verify if the cuts are valid with the clamps
+     *
+     * @param cncMachine the current cncMachine
+     */
     public void verifyCuts(CNCMachine cncMachine){
         for (Cut cut: this.getCutList()){
             if(cut.getType() == CutType.CLAMP)
@@ -341,6 +354,13 @@ class PanelCNC {
         }
     }
 
+    /**
+     * Check if a cut is in a clamp zone
+     *
+     * @param cut The cut
+     * @param clampZone The clamp zone
+     * @return True if it is in the clamp zone, false otherwise
+     */
     public boolean cutInClampZone(Cut cut, Cut clampZone) {
         VertexDTO topLeft = clampZone.getPoints().get(1);
         VertexDTO bottomRight = clampZone.getPoints().get(3);
