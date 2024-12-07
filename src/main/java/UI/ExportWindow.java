@@ -1,9 +1,12 @@
 package UI;
 
-import UI.Display2D.Rendering2DWindow;
 import UI.Listeners.ExportGcodeActionListener;
-import UI.SubWindows.*;
+import UI.SubWindows.BasicWindow;
+import UI.SubWindows.Rendering3DWindow;
+import UI.Widgets.Attributable;
 import UI.Widgets.BigButton;
+import UI.Widgets.GenericAttributeBox;
+import UI.Widgets.PixelNoUnitInputField;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,16 +23,9 @@ public class ExportWindow {
 
     private JSplitPane mainSplitPane;
     private JSplitPane splitPane1;
-    private JSplitPane cutInformationSplitPane;
-    private JPanel panel2;
-    private JPanel panel3;
-    private JPanel bitPanel;
-    private CutListPanel cutListPanel;
-    private AttributePanel attributePanel;
-    private Rendering2DWindow rendering2DWindow;
-    private BitSelectionPanel bitSelectionPanel;
+    private JSplitPane splitPane2;
 
-
+    private CNCCutSpecChooser cncCutSpecChooser;
     private final BigButton nextButton = new BigButton("Export");
     private Rendering3DWindow rendering3DWindow;
     private final MainWindow mainWindow;
@@ -87,19 +83,16 @@ public class ExportWindow {
 
         rendering3DWindow = new Rendering3DWindow(mainWindow.getController().getCameraId(), mainWindow);
 
-//        attributePanel = new AttributePanel(true, mainWindow);
-//        panel2 = attributePanel;
-
-//        cutListPanel = new CutListPanel(true, this, this, mainWindow);
-//        panel3 = cutListPanel;
+        cncCutSpecChooser = new CNCCutSpecChooser(mainWindow);
 
         splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gcodeWindow, nextButton);
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rendering3DWindow, splitPane1);
-
-        //cutInformationSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 8);
-        splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 10 * 7);
+        splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, cncCutSpecChooser, splitPane1);
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rendering3DWindow, splitPane2);
+        splitPane2.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 10*2);
+        splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 2);
         mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 3 * 2);
         mainSplitPane.setResizeWeight(1);
+
     }
 
     public void calculateGcode() {
@@ -115,4 +108,50 @@ public class ExportWindow {
     }
 
 
+    public static class CNCCutSpecChooser extends GenericAttributeBox implements Attributable {
+
+        private MainWindow mainWindow;
+        private PixelNoUnitInputField rotationSpeed;
+        private PixelNoUnitInputField feedRate;
+
+        public CNCCutSpecChooser(MainWindow mainWindow) {
+            super(false, "Spécifications CNC");
+            this.mainWindow = mainWindow;
+            init();
+        }
+
+        /**
+         * Initializes the dimension setting UI with labels and input fields for width (x) and height (y),
+         * with real-time resizing functionality.
+         */
+        private void init() {
+            rotationSpeed = new PixelNoUnitInputField(mainWindow, "Vitesse de rotation", 1);
+            feedRate = new PixelNoUnitInputField(mainWindow, "Vitesse de coupe", 1);
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.weightx = 1.0;
+            gbc.weighty = 1.0;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            add(rotationSpeed, gbc);
+            gbc.gridy = 2;
+            add(feedRate, gbc);
+        }
+
+        /**
+         * @return JLabel representing the name of this component.
+         */
+        @Override
+        public JLabel showName() {
+            return new JLabel("");
+        }
+
+        /**
+         * @return JPanel representation of this component's attribute view.
+         */
+        @Override
+        public JPanel showAttribute() {
+            return this;
+        }
+    }
 }
