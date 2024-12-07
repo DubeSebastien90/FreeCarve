@@ -110,7 +110,7 @@ public class RoundedCut {
      * @param other other rounded cut to test
      * @return true if intersect
      */
-    public boolean intersectRoundedCut(RoundedCut other){
+    public boolean intersectRoundedCut(RoundedCut other) {
         // Check if the internal rectangle of the other cut is in the current cut
         for (VertexDTO point : this.getInternalRectanglePoints()) {
             if (other.pointInRoundedCut(point)) {
@@ -149,10 +149,6 @@ public class RoundedCut {
                 distance4 <= thisRadius + otherRadius){
             return true;
         }
-
         return false;
     }
-
-
-
 }
