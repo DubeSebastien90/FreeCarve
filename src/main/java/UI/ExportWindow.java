@@ -22,7 +22,7 @@ import java.awt.*;
 public class ExportWindow {
 
     private JSplitPane mainSplitPane;
-
+    private CNCCutSpecChooser cncCutSpecChooser;
     private final BigButton nextButton = new BigButton("Export");
     private Rendering3DWindow rendering3DWindow;
     private final MainWindow mainWindow;
@@ -80,7 +80,7 @@ public class ExportWindow {
 
         rendering3DWindow = new Rendering3DWindow(mainWindow.getController().getCameraId(), mainWindow);
 
-        CNCCutSpecChooser cncCutSpecChooser = new CNCCutSpecChooser(mainWindow);
+        cncCutSpecChooser = new CNCCutSpecChooser(mainWindow);
 
         JSplitPane splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gcodeWindow, nextButton);
         JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, cncCutSpecChooser, splitPane1);
@@ -104,9 +104,15 @@ public class ExportWindow {
         nextButton.getButton().addActionListener(new ExportGcodeActionListener(mainWindow));
     }
 
+    public void refreshGcodeParam() {
+        cncCutSpecChooser.refreshAttributes();
+    }
+
 
     public static class CNCCutSpecChooser extends GenericAttributeBox implements Attributable {
 
+        private PixelNoUnitInputField rotationSpeed;
+        private PixelNoUnitInputField feedRate;
         private final MainWindow mainWindow;
 
         public CNCCutSpecChooser(MainWindow mainWindow) {
@@ -120,12 +126,12 @@ public class ExportWindow {
          * with real-time resizing functionality.
          */
         private void init() {
-            PixelNoUnitInputField rotationSpeed = new PixelNoUnitInputField(mainWindow, "Vitesse de rotation", mainWindow.getController().getCNCrotationSpeed(), "rot. par sec.");
+            rotationSpeed = new PixelNoUnitInputField(mainWindow, "Vitesse de rotation", mainWindow.getController().getCNCrotationSpeed(), "rot. par sec.");
             rotationSpeed.getNumericInput().addPropertyChangeListener("value", evt -> {
                 mainWindow.getController().setCNCrotationSpeed(((Number) evt.getNewValue()).intValue());
                 mainWindow.getMiddleContent().getExportWindow().calculateGcode();
             });
-            PixelNoUnitInputField feedRate = new PixelNoUnitInputField(mainWindow, "Vitesse de coupe", mainWindow.getController().getCNCCuttingSpeed(), "mm / s");
+            feedRate = new PixelNoUnitInputField(mainWindow, "Vitesse de coupe", mainWindow.getController().getCNCCuttingSpeed(), "mm / s");
             feedRate.getNumericInput().addPropertyChangeListener("value", evt -> {
                 mainWindow.getController().setCNCCuttingSpeed(((Number) evt.getNewValue()).intValue());
                 mainWindow.getMiddleContent().getExportWindow().calculateGcode();
@@ -141,6 +147,11 @@ public class ExportWindow {
             add(rotationSpeed, gbc);
             gbc.gridy = 2;
             add(feedRate, gbc);
+        }
+
+        public void refreshAttributes() {
+            rotationSpeed.getNumericInput().setText("" + mainWindow.getController().getCNCrotationSpeed());
+            feedRate.getNumericInput().setText("" + mainWindow.getController().getCNCCuttingSpeed());
         }
 
         /**
