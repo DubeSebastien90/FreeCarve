@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
  */
 class PanelCNC {
     private final List<Cut> cutList;
-    private final List<ClampZone> clamps;
     private VertexDTO panelDimension;
     private Cut borderCut; // This is to generalise the concept of reference cut, the panelCNC has a rectangular Cut that represents it's borders. When the panel is resized, you need to resize the cut as well
     private final IMemorizer memorizer;
@@ -42,7 +41,6 @@ class PanelCNC {
      */
     PanelCNC(VertexDTO panelDimension, IMemorizer memorizer) {
         this.cutList = new ArrayList<>();
-        this.clamps = new ArrayList<>();
         resize(panelDimension.getX(), panelDimension.getY(), panelDimension.getZ());
         this.memorizer = memorizer;
         updateBorderCut();
@@ -52,7 +50,6 @@ class PanelCNC {
         this.panelDimension = panelDTO.getPanelDimension();
         this.memorizer = memorizer;
         this.borderCut = new Cut(panelDTO.getBorderCut(), new ArrayList<>());
-        this.clamps = new ArrayList<>();
         List<Cut> cuts = new ArrayList<>();
         cuts.add(borderCut);
         for (CutDTO cutDTO : panelDTO.getCutsDTO()){
@@ -106,7 +103,6 @@ class PanelCNC {
      */
     Optional<UUID> modifyCut(CutDTO cut) {
         for (int i = 0; i < this.cutList.size(); i++) {
-
             if (cut.getId() == this.cutList.get(i).getId()) {
                 this.cutList.get(i).modifyCut(cut, this.getCutAndBorderList());
                 return Optional.of(cut.getId());
@@ -182,18 +178,6 @@ class PanelCNC {
         return Optional.empty();
     }
 
-    List<ClampZone> getClamps() {
-        return clamps;
-    }
-
-    List<ClampZoneDTO> getClampsDTO() {
-        List<ClampZoneDTO> clampsDTO = new ArrayList<>();
-        for(ClampZone clamp : clamps){
-            clampsDTO.add(new ClampZoneDTO(clamp.getZone()[0], clamp.getZone()[1], Optional.of(clamp.getId())));
-        }
-        return clampsDTO;
-    }
-
     Cut createPanelCut(CutDTO cutDTO){
         return new Cut(cutDTO, this.getCutAndBorderList());
     }
@@ -207,65 +191,6 @@ class PanelCNC {
         addAll.addAll(this.cutList);
         addAll.add(borderCut);
         return addAll;
-    }
-
-    /**
-     * Adds a new {@code ClampZone}
-     *
-     * @param clamp The new {@code CLampZone}
-     */
-    Optional<UUID> addClamps(ClampZoneDTO clamp) throws ClampZoneException {
-        for (VertexDTO points : clamp.getZone()) {
-            if (!isPointOnPanel(points)) {
-                return Optional.empty();
-            }
-        }
-        ClampZone newClamp = new ClampZone(clamp);
-        memorizer.executeAndMemorize(()->this.clamps.add(newClamp), ()->this.clamps.removeIf(e->e.getId() == newClamp.getId()));
-        return Optional.of(newClamp.getId());
-    }
-
-    /**
-     * Removes a {@code ClampZone} from the current {@code ProjectState} board
-     * @param id The id of the {@code ClampZone} the needs to be removed
-     * @return Boolean : true if clamp is removed, false if it can't be removed
-     */
-    boolean removeClamp(UUID id){
-        for(ClampZone clamp : clamps){
-            if(clamp.getId() == id){
-                memorizer.executeAndMemorize(()->this.clamps.remove(clamp), ()->this.clamps.add(clamp));
-                return true;
-            }
-        }
-        return false;
-    }
-
-    boolean modifyClamp(ClampZoneDTO clamp) throws ClampZoneException {
-        for (VertexDTO points : clamp.getZone()) {
-            if (!isPointOnPanel(points)) {
-                return false;
-            }
-        }
-        for (ClampZone c : clamps) {
-            if (c.getId() == clamp.getClampId().orElseThrow(() ->new ClampZoneException("La zone interdite n'existe pas"))) {
-                ClampZoneDTO copy = new ClampZoneDTO(c.getZone()[0], c.getZone()[1], Optional.of(c.getId()));
-                memorizer.executeAndMemorize(()-> {
-                    try {
-                        c.modifyClamp(clamp);
-                    } catch (ClampZoneException e) {
-                        System.out.println("Modification impossible"); // Might never happen but was obliged to surround
-                    }
-                }, ()-> {
-                    try {
-                        c.modifyClamp(copy);
-                    } catch (ClampZoneException e) {
-                        System.out.println("Modification impossible"); // Might never happen but was obliged to surround
-                    }
-                });
-                return true;
-            }
-        }
-        return false;
     }
 
     VertexDTO getPanelDimension() {
@@ -365,7 +290,7 @@ class PanelCNC {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof PanelCNC panelCNC)) return false;
-        return Objects.equals(cutList, panelCNC.cutList) && Objects.equals(clamps, panelCNC.clamps) && Objects.equals(panelDimension, panelCNC.panelDimension) && Objects.equals(borderCut, panelCNC.borderCut);
+        return Objects.equals(cutList, panelCNC.cutList) && Objects.equals(panelDimension, panelCNC.panelDimension) && Objects.equals(borderCut, panelCNC.borderCut);
     }
 
     private boolean validateCutWithClamps(CNCMachine cncMachine, Cut cut){

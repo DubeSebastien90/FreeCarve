@@ -246,38 +246,6 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
-     * Adds a {@code ClampZone} to the current {@code PanelCNC}
-     *
-     * @param points the list of points that define the {@code ClampZone}
-     * @return The id of the clampZone if it could be created.
-     */
-    public Optional<UUID> addClampZone(ClampZoneDTO clampZoneDTO) throws ClampZoneException {
-        return cncMachine.getPanel().addClamps(clampZoneDTO);
-    }
-
-    /**
-     * Modifies an existing clampZone
-     *
-     * @param clamp The new ClampZone
-     */
-    public void modifyClampZone(ClampZoneDTO clamp) throws ClampZoneException {
-        cncMachine.getPanel().modifyClamp(clamp);
-    }
-
-    public List<ClampZoneDTO> getClampZones(){
-        return cncMachine.getPanel().getClampsDTO();
-    }
-
-    /**
-     * Removes a ClampZone form the current {@code PanelCNC}
-     *
-     * @param id The id of the {@code ClampZone} that needs to be removed.
-     */
-    public void removeClampZone(UUID id) {
-        cncMachine.getPanel().removeClamp(id);
-    }
-
-    /**
      * Converts the current {@code CNCMachine} as GCode instructions.
      *
      * @return The String that represent the GCode instructions.

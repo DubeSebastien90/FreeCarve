@@ -172,11 +172,11 @@ public class RoundedCutTest {
     void intersectRoundedCut_WhenCutsNotIntersects_ReturnFalse(){
         // Arrange
         VertexDTO p1 = new VertexDTO(50, 45, 0);
-        VertexDTO p2 = new VertexDTO(100, 50, 0);
-        double bitDiameter = 15;
+        VertexDTO p2 = new VertexDTO(100, 45, 0);
+        double bitDiameter = 5;
 
-        VertexDTO p3 = new VertexDTO(50, 45, 0);
-        VertexDTO p4 = new VertexDTO(50, 100, 0);
+        VertexDTO p3 = new VertexDTO(45, 0, 0);
+        VertexDTO p4 = new VertexDTO(45, 100, 0);
         double bitDiameter2 = 0;
 
         // Act
