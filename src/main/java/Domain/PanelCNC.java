@@ -348,7 +348,6 @@ class PanelCNC {
                 continue;
 
             if(!validateCutWithClamps(cncMachine, cut)){
-                System.out.println("Cut is invalid: " + cut.getId());
                 cut.setInvalidAndNoRef(cncMachine);
             }
         }
