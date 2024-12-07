@@ -7,10 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class PanelCNCTest {
     private PanelCNC panelCNC;
@@ -186,5 +183,213 @@ public class PanelCNCTest {
         // Assert
         Assertions.assertEquals(0.2f, panelCNC.getClamps().get(0).getZone()[1].getX());
         Assertions.assertEquals(0.2f, panelCNC.getClamps().get(0).getZone()[1].getX());
+    }
+
+    @Test
+    void cutInClampZone_WhenPointInClampZone_ReturnsTrue(){
+        // Arrange
+        VertexDTO p1 = new VertexDTO(0, 0, 0);
+        VertexDTO p2 = new VertexDTO(0, 1, 0);
+        VertexDTO p3 = new VertexDTO(1, 1, 1);
+        VertexDTO p4 = new VertexDTO(1, 0, 1);
+
+        RequestCutDTO rq = new RequestCutDTO(new ArrayList<VertexDTO>(List.of(p1, p2, p3, p4)),
+                CutType.CLAMP,
+                0,
+                0,
+                new ArrayList<RefCutDTO>());
+
+        Cut cut = new Cut(CutType.LINE_HORIZONTAL,
+                new ArrayList<VertexDTO>(
+                        List.of(new VertexDTO(0, 0, 0), new VertexDTO(0.5, 0, 0))
+                ),
+                0,
+                0);
+
+
+        panelCNC.requestCut(rq);
+
+        // Act
+        boolean result = panelCNC.cutInClampZone(cut, panelCNC.getCutList().get(0));
+
+        // Assert
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void cutInClampZone_WhenCutOutsideClamp_ReturnsFalse(){
+        // Arrange
+        VertexDTO p1 = new VertexDTO(0, 0, 0);
+        VertexDTO p2 = new VertexDTO(0, 1, 0);
+        VertexDTO p3 = new VertexDTO(1, 1, 1);
+        VertexDTO p4 = new VertexDTO(1, 0, 1);
+
+        RequestCutDTO rq = new RequestCutDTO(new ArrayList<VertexDTO>(List.of(p1, p2, p3, p4)),
+                CutType.CLAMP,
+                0,
+                0,
+                new ArrayList<RefCutDTO>());
+
+        Cut cut = new Cut(CutType.LINE_HORIZONTAL,
+                new ArrayList<VertexDTO>(
+                        List.of(new VertexDTO(2, 2, 0), new VertexDTO(3, 2, 0))
+                ),
+                0,
+                0);
+
+
+        panelCNC.requestCut(rq);
+
+        // Act
+        boolean result = panelCNC.cutInClampZone(cut, panelCNC.getCutList().get(0));
+
+        // Assert
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    void cutIntersectsClamp_WhenCutIntersects_ReturnTrue(){
+        // Arrange
+        VertexDTO p1 = new VertexDTO(0, 0, 0);
+        VertexDTO p2 = new VertexDTO(0, 1, 0);
+        VertexDTO p3 = new VertexDTO(1, 1, 1);
+        VertexDTO p4 = new VertexDTO(1, 0, 1);
+        Cut clampRQ = new Cut(CutType.CLAMP,
+                new ArrayList<VertexDTO>(List.of(p1, p2, p3, p4)),
+                0,
+                0,
+                new ArrayList<RefCut>());
+
+        VertexDTO cutP1 = new VertexDTO(0.5, 0.5, 0);
+        VertexDTO cutP2 = new VertexDTO(2.5, 0.5, 1);
+        Cut cut = new Cut(CutType.LINE_HORIZONTAL,
+                new ArrayList<VertexDTO>(List.of(cutP1, cutP2)),
+                0,
+                5,
+                new ArrayList<RefCut>());
+
+        // Act
+        boolean result = panelCNC.cutIntersectsClampZone(cut.getPoints(), clampRQ, 5);
+
+        // Assert
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void cutIntersectsClamp_WhenRectangleCutsEdgeIntersects_ReturnTrue(){
+        // Arrange
+        VertexDTO p1 = new VertexDTO(0, 0, 0);
+        VertexDTO p2 = new VertexDTO(0, 1, 0);
+        VertexDTO p3 = new VertexDTO(1, 1, 1);
+        VertexDTO p4 = new VertexDTO(1, 0, 1);
+        Cut clampRQ = new Cut(CutType.CLAMP,
+                new ArrayList<VertexDTO>(List.of(p1, p2, p3, p4)),
+                0,
+                0,
+                new ArrayList<RefCut>());
+
+        VertexDTO cutP1 = new VertexDTO(1.5, 2, 0);
+        VertexDTO cutP2 = new VertexDTO(1.5, 0, 0);
+        VertexDTO cutP3 = new VertexDTO(4, 0, 1);
+        VertexDTO cutP4 = new VertexDTO(4, 2, 1);
+        List<VertexDTO> cutPoints = new ArrayList<VertexDTO>(List.of(cutP1, cutP2, cutP3, cutP4));
+        Cut cut = new Cut(CutType.RECTANGULAR,
+                cutPoints,
+                0,
+                1,
+                new ArrayList<RefCut>());
+
+        // Act
+        boolean result = panelCNC.cutIntersectsClampZone(cutPoints, clampRQ, 2);
+
+        // Assert
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void cutIntersectsClamp_WhenVerticalCutDoesntIntersect_ReturnsFalse(){
+        // Arrange
+        VertexDTO p1 = new VertexDTO(0, 0, 0);
+        VertexDTO p2 = new VertexDTO(0, 1, 0);
+        VertexDTO p3 = new VertexDTO(1, 1, 1);
+        VertexDTO p4 = new VertexDTO(1, 0, 1);
+        Cut clampRQ = new Cut(CutType.CLAMP,
+                new ArrayList<VertexDTO>(List.of(p1, p2, p3, p4)),
+                0,
+                0,
+                new ArrayList<RefCut>());
+
+        VertexDTO cutP1 = new VertexDTO(2.5, 0.5, 0);
+        VertexDTO cutP2 = new VertexDTO(2.5, 2.5, 1);
+        Cut cut = new Cut(CutType.LINE_VERTICAL,
+                new ArrayList<VertexDTO>(List.of(cutP1, cutP2)),
+                0,
+                2,
+                new ArrayList<RefCut>());
+
+        // Act
+        boolean result = panelCNC.cutIntersectsClampZone(cut.getPoints(), clampRQ, 2);
+
+        // Assert
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    void cutInClampZone_WhenCutInsideClamp_ReturnTrue(){
+        // Arrange
+        VertexDTO p1 = new VertexDTO(0, 0, 0);
+        VertexDTO p2 = new VertexDTO(0, 10, 0);
+        VertexDTO p3 = new VertexDTO(10, 10, 1);
+        VertexDTO p4 = new VertexDTO(10, 0, 1);
+        Cut clampRQ = new Cut(CutType.CLAMP,
+                new ArrayList<VertexDTO>(List.of(p1, p2, p3, p4)),
+                0,
+                0,
+                new ArrayList<RefCut>());
+
+        VertexDTO cutP1 = new VertexDTO(8, 5, 1);
+        VertexDTO cutP2 = new VertexDTO(2, 5, 1);
+        Cut cut = new Cut(CutType.LINE_HORIZONTAL,
+                new ArrayList<VertexDTO>(List.of(cutP1, cutP2)),
+                0,
+                5,
+                new ArrayList<RefCut>());
+
+        // Act
+        boolean result = panelCNC.cutInClampZone(cut, clampRQ);
+
+        // Assert
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void cutInClampZone_WhenRectangularCutInside_ReturnTrue(){
+        // Arrange
+        VertexDTO p1 = new VertexDTO(0, 0, 0);
+        VertexDTO p2 = new VertexDTO(0, 10, 0);
+        VertexDTO p3 = new VertexDTO(10, 10, 1);
+        VertexDTO p4 = new VertexDTO(10, 0, 1);
+        Cut clampRQ = new Cut(CutType.CLAMP,
+                new ArrayList<VertexDTO>(List.of(p1, p2, p3, p4)),
+                0,
+                0,
+                new ArrayList<RefCut>());
+
+        VertexDTO cutP1 = new VertexDTO(2, 8, 1);
+        VertexDTO cutP2 = new VertexDTO(2, 5, 1);
+        VertexDTO cutP3 = new VertexDTO(8, 2, 1);
+        VertexDTO cutP4 = new VertexDTO(8, 8, 1);
+        List<VertexDTO> cutPoints = new ArrayList<VertexDTO>(List.of(cutP1, cutP2, cutP3, cutP4));
+        Cut cut = new Cut(CutType.RECTANGULAR,
+                cutPoints,
+                0,
+                5,
+                new ArrayList<RefCut>());
+
+        // Act
+        boolean result = panelCNC.cutInClampZone(cut, clampRQ);
+
+        // Assert
+        Assertions.assertTrue(result);
     }
 }

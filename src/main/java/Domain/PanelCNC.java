@@ -361,19 +361,73 @@ class PanelCNC {
         }
     }
 
-    public void verifyCuts(CNCMachine cncMachine){
-        for (ClampZone clampZone: clamps){
-            for (Cut cut: cutList){
-                if(clampZone.intersectCut(cut, cncMachine)){
-                    cut.setInvalidAndNoRef(cncMachine);
-                }
-            }
-        }
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof PanelCNC panelCNC)) return false;
         return Objects.equals(cutList, panelCNC.cutList) && Objects.equals(clamps, panelCNC.clamps) && Objects.equals(panelDimension, panelCNC.panelDimension) && Objects.equals(borderCut, panelCNC.borderCut);
+    }
+
+    private boolean validateCutWithClamps(CNCMachine cncMachine, Cut cut){
+        ArrayList<Cut> clampZones = this.getCutList().stream()
+                .filter(currentCut -> currentCut.getType() == CutType.CLAMP)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        for (Cut clampZone : clampZones){
+            if (cut.getType() != CutType.CLAMP &&
+                    (cutIntersectsClampZone(cut.getAbsolutePointsPosition(cncMachine), clampZone, cncMachine.getBitStorage().getBitDiameter(cut.getBitIndex())) ||
+                            cutInClampZone(cut, clampZone))){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean cutIntersectsClampZone(List<VertexDTO> cutPoints, Cut clampZone, double diameter){
+        RoundedCut clampRound1 = new RoundedCut(clampZone.getPoints().get(0), clampZone.getPoints().get(1), 0);
+        RoundedCut clampRound2 = new RoundedCut(clampZone.getPoints().get(1), clampZone.getPoints().get(2), 0);
+        RoundedCut clampRound3 = new RoundedCut(clampZone.getPoints().get(2), clampZone.getPoints().get(3), 0);
+        RoundedCut clampRound4 = new RoundedCut(clampZone.getPoints().get(3), clampZone.getPoints().get(0), 0);
+
+        for (int i = 0; i < cutPoints.size() - 1; i++){
+            RoundedCut cutRound = new RoundedCut(cutPoints.get(i),
+                    cutPoints.get(i+1),
+                    diameter);
+
+            if (clampRound1.intersectRoundedCut(cutRound) ||
+                    clampRound2.intersectRoundedCut(cutRound) ||
+                    clampRound3.intersectRoundedCut(cutRound) ||
+                    clampRound4.intersectRoundedCut(cutRound)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void verifyCuts(CNCMachine cncMachine){
+        for (Cut cut: this.getCutList()){
+            if(cut.getType() == CutType.CLAMP)
+                continue;
+
+            if(!validateCutWithClamps(cncMachine, cut)){
+                System.out.println("Cut is invalid: " + cut.getId());
+                cut.setInvalidAndNoRef(cncMachine);
+            }
+        }
+    }
+
+    public boolean cutInClampZone(Cut cut, Cut clampZone) {
+        VertexDTO topLeft = clampZone.getPoints().get(1);
+        VertexDTO bottomRight = clampZone.getPoints().get(3);
+
+        for (VertexDTO point : cut.getPoints()) {
+            if (point.getX() >= topLeft.getX() &&
+                    point.getX() <= bottomRight.getX() &&
+                    point.getY() <= topLeft.getY() &&
+                    point.getY() >= bottomRight.getY()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
