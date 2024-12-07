@@ -268,14 +268,15 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.FREE_LINE).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
-                CutDTO cut = middle.getCutWindow().getRendering2DWindow().getDrawing().getCurrentDrawingCut().getCutDTO();
-                if (cut != null && cut.getCutType() == CutType.LINE_FREE) {
-                    FlatSVGIcon icon = getIcon("modify", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
-                    toolBar.getTool(ToolBar.Tool.FREE_LINE).setIcon(icon);
+                Drawing cutWrap = middle.getCutWindow().getRendering2DWindow().getDrawing();
+                CutDTO cut = cutWrap.getCurrentDrawingCut().getCutDTO();
+                deactivateAllCuts();
+                if (cut != null && cutWrap.getState() != Drawing.DrawingState.IDLE && cut.getCutType() == CutType.LINE_FREE) {
+                    middle.getCutWindow().getRendering2DWindow().getDrawing().deactivateCreateCutListener();
                 } else {
+                    middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_FREE);
                     FlatSVGIcon icon = getIcon("modify", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
                     toolBar.getTool(ToolBar.Tool.FREE_LINE).setIcon(icon);
-                    middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_FREE);
                 }
             }
         });
@@ -288,7 +289,16 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.VERTICAL).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
-                middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_VERTICAL);
+                Drawing cutWrap = middle.getCutWindow().getRendering2DWindow().getDrawing();
+                CutDTO cut = cutWrap.getCurrentDrawingCut().getCutDTO();
+                deactivateAllCuts();
+                if (cut != null && cutWrap.getState() != Drawing.DrawingState.IDLE && cut.getCutType() == CutType.LINE_VERTICAL) {
+                    middle.getCutWindow().getRendering2DWindow().getDrawing().deactivateCreateCutListener();
+                } else {
+                    middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_VERTICAL);
+                    FlatSVGIcon icon = getIcon("vertical", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
+                    toolBar.getTool(ToolBar.Tool.VERTICAL).setIcon(icon);
+                }
             }
         });
     }
@@ -300,7 +310,16 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.HORIZONTAL).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
-                middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_HORIZONTAL);
+                Drawing cutWrap = middle.getCutWindow().getRendering2DWindow().getDrawing();
+                CutDTO cut = cutWrap.getCurrentDrawingCut().getCutDTO();
+                deactivateAllCuts();
+                if (cut != null && cutWrap.getState() != Drawing.DrawingState.IDLE && cut.getCutType() == CutType.LINE_HORIZONTAL) {
+                    middle.getCutWindow().getRendering2DWindow().getDrawing().deactivateCreateCutListener();
+                } else {
+                    middle.getCutWindow().getRendering2DWindow().cut(CutType.LINE_HORIZONTAL);
+                    FlatSVGIcon icon = getIcon("horizontal", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
+                    toolBar.getTool(ToolBar.Tool.HORIZONTAL).setIcon(icon);
+                }
             }
         });
     }
@@ -312,8 +331,16 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.RECTANGLE).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
-                middle.getCutWindow().getRendering2DWindow().cut(CutType.RECTANGULAR);
-            }
+                Drawing cutWrap = middle.getCutWindow().getRendering2DWindow().getDrawing();
+                CutDTO cut = cutWrap.getCurrentDrawingCut().getCutDTO();
+                deactivateAllCuts();
+                if (cut != null && cutWrap.getState() != Drawing.DrawingState.IDLE && cut.getCutType() == CutType.RECTANGULAR) {
+                    middle.getCutWindow().getRendering2DWindow().getDrawing().deactivateCreateCutListener();
+                } else {
+                    middle.getCutWindow().getRendering2DWindow().cut(CutType.RECTANGULAR);
+                    FlatSVGIcon icon = getIcon("rectangle", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
+                    toolBar.getTool(ToolBar.Tool.RECTANGLE).setIcon(icon);
+                }            }
         });
     }
 
@@ -321,8 +348,16 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.RETAILLER).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
-                middle.getCutWindow().getRendering2DWindow().cut(CutType.RETAILLER);
-            }
+                Drawing cutWrap = middle.getCutWindow().getRendering2DWindow().getDrawing();
+                CutDTO cut = cutWrap.getCurrentDrawingCut().getCutDTO();
+                deactivateAllCuts();
+                if (cut != null && cutWrap.getState() != Drawing.DrawingState.IDLE && cut.getCutType() == CutType.RETAILLER) {
+                    middle.getCutWindow().getRendering2DWindow().getDrawing().deactivateCreateCutListener();
+                } else {
+                    middle.getCutWindow().getRendering2DWindow().cut(CutType.RETAILLER);
+                    FlatSVGIcon icon = getIcon("retailler", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
+                    toolBar.getTool(ToolBar.Tool.RETAILLER).setIcon(icon);
+                }            }
         });
     }
 
@@ -330,8 +365,16 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.COUPEL).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
-                middle.getCutWindow().getRendering2DWindow().cut(CutType.L_SHAPE);
-            }
+                Drawing cutWrap = middle.getCutWindow().getRendering2DWindow().getDrawing();
+                CutDTO cut = cutWrap.getCurrentDrawingCut().getCutDTO();
+                deactivateAllCuts();
+                if (cut != null && cutWrap.getState() != Drawing.DrawingState.IDLE && cut.getCutType() == CutType.L_SHAPE) {
+                    middle.getCutWindow().getRendering2DWindow().getDrawing().deactivateCreateCutListener();
+                } else {
+                    middle.getCutWindow().getRendering2DWindow().cut(CutType.L_SHAPE);
+                    FlatSVGIcon icon = getIcon("coupeL", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
+                    toolBar.getTool(ToolBar.Tool.COUPEL).setIcon(icon);
+                }            }
         });
     }
 
@@ -353,4 +396,20 @@ public class LeftBar extends JScrollPane {
         });
     }
 
+    public void deactivateAllCuts() {
+        FlatSVGIcon icon = getIcon("modify", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
+        toolBar.getTool(ToolBar.Tool.FREE_LINE).setIcon(icon);
+        FlatSVGIcon icon1 = getIcon("vertical", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
+        toolBar.getTool(ToolBar.Tool.VERTICAL).setIcon(icon1);
+        FlatSVGIcon icon2 = getIcon("horizontal", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
+        toolBar.getTool(ToolBar.Tool.HORIZONTAL).setIcon(icon2);
+        FlatSVGIcon icon3 = getIcon("rectangle", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
+        toolBar.getTool(ToolBar.Tool.RECTANGLE).setIcon(icon3);
+        FlatSVGIcon icon4 = getIcon("coupeL", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
+        toolBar.getTool(ToolBar.Tool.COUPEL).setIcon(icon4);
+        FlatSVGIcon icon5 = getIcon("retailler", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
+        toolBar.getTool(ToolBar.Tool.RETAILLER).setIcon(icon5);
+        FlatSVGIcon icon6 = getIcon("forbidden", uiConfig.getToolIconSize(), UIManager.getColor("Button.foreground"));
+        toolBar.getTool(ToolBar.Tool.FORBIDDEN).setIcon(icon6);
+    }
 }

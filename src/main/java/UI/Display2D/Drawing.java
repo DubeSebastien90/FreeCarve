@@ -3,23 +3,20 @@ package UI.Display2D;
 import Common.CutState;
 import Common.DTO.CutDTO;
 import Common.DTO.RefCutDTO;
-import Common.DTO.VertexDTO;
 import Domain.CutType;
 import UI.Display2D.DrawCutWrapper.DrawCutFactory;
+import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeCutEvent;
 import UI.MainWindow;
-import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.SubWindows.CutListPanel;
 import UI.Widgets.CutBox;
 import UI.Widgets.PersoPoint;
 
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -243,7 +240,7 @@ public class Drawing {
 
     }
 
-    public void initModifyPoint(DrawCutWrapper cutToChangePoint, PersoPoint pointToChange){
+    public void initModifyPoint(DrawCutWrapper cutToChangePoint, PersoPoint pointToChange) {
         currentModifiedCut = cutToChangePoint;
         currentModifiedPoint = pointToChange;
         setState(Drawing.DrawingState.MODIFY_POINT);
@@ -290,9 +287,11 @@ public class Drawing {
     }
 
     public void setState(DrawingState state) {
+        if (state != DrawingState.CREATE_CUT) {
+            mainWindow.getLeftBar().deactivateAllCuts();
+        }
         this.state = state;
     }
-
 
 
     /**
@@ -313,7 +312,7 @@ public class Drawing {
     /**
      * Deactivate the cutListener
      */
-    private void deactivateCreateCutListener() {
+    public void deactivateCreateCutListener() {
         renderer.removeMouseMotionListener(createCutMoveListener);
         renderer.removeMouseListener(createCutActionListener);
         currentDrawingCut.destroyCursorPoint();

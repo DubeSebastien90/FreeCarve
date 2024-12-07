@@ -1,12 +1,10 @@
 package UI;
 
-import Common.Exceptions.InvalidFileExtensionException;
 import UI.Display2D.Rendering2DWindow;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
-import UI.Listeners.SaveToolsActionListener;
 import UI.SubWindows.AttributePanel;
 import UI.SubWindows.BitConfigurationPanel;
 import UI.Widgets.Attributable;
@@ -14,8 +12,7 @@ import UI.Widgets.BigButton;
 import UI.Widgets.BitInfoDisplay;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
+
 
 /**
  * Represents a configuration choice window that allows users to select
