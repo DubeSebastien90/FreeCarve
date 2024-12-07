@@ -167,7 +167,7 @@ public class Drawing {
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
                 if (currentModifiedCut.getCursorPoint() != null) {
-                    currentModifiedCut.cursorUpdate(renderer, Drawing.this);
+                    currentModifiedCut.cursorUpdateModifyAnchor(renderer, Drawing.this);
                     renderer.repaint();
                 }
             }
@@ -186,7 +186,7 @@ public class Drawing {
                         deactivateModifyAnchorCutListener();
                     } else // Cut valid
                     {
-                        currentModifiedCut.addPoint(Drawing.this, renderer, new PersoPoint(currentModifiedCut.getCursorPoint()));
+                        currentModifiedCut.modifyAnchorPoint(Drawing.this, renderer, new PersoPoint(currentModifiedCut.getCursorPoint()));
                         if (currentModifiedCut.areRefsValid()) {
                             CutDTO c = currentModifiedCut.getCutDTO();
                             List<RefCutDTO> newRefs = currentModifiedCut.getRefs();
@@ -231,8 +231,6 @@ public class Drawing {
         if (modifiedCut.isPresent()) {
             currentModifiedCut = modifiedCut.get();
             deactivateModifyAnchorCutListener();
-            ;
-            currentModifiedCut.emptyRefs();
             setState(DrawingState.MODIFY_ANCHOR);
             activateModifyAnchorCutListener();
         }

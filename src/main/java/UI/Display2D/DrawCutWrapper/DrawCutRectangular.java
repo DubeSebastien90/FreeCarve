@@ -148,6 +148,44 @@ public class DrawCutRectangular extends DrawCutWrapper{
     }
 
     @Override
+    public void cursorUpdateModifyAnchor(Rendering2DWindow renderer, Drawing drawing) {
+        PersoPoint p = this.cursorPoint;
+        mainWindow.getController().setIntersectionMagnetic();
+        double threshold;
+        if (mainWindow.getController().getGrid().isMagnetic()) {
+            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
+        } else {
+            threshold = renderer.scalePixelToMM(snapThreshold);
+        }
+
+        p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
+
+        VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+        Optional<VertexDTO> closestPoint = mainWindow.getController().getPointNearIntersections(p1, threshold);
+
+        if (closestPoint.isPresent()) {
+            p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
+            p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+            List<RefCutDTO> refsDTO = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+
+            if (refsDTO.size() >= 2) {
+                p.setColor(ANCHOR_COLOR);
+                p.setValid(PersoPoint.Valid.VALID);
+            } else {
+                p.setColor(INVALID_COLOR);
+                p.setValid(PersoPoint.Valid.NOT_VALID);
+            }
+        } else {
+            p.setColor(INVALID_COLOR);
+            p.setValid(PersoPoint.Valid.NOT_VALID);
+        }
+    }
+
+    @Override
+    public void modifyAnchorPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
+    }
+
+    @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
 
         if (refs.isEmpty()) {

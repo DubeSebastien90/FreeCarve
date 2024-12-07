@@ -136,6 +136,7 @@ public class AttributeContainerCutL extends AttributeContainer{
         offsetYCenterCenter.getInput().setValueInMMWithoutTrigerringListeners( lCenterCenterY());
 
         depthBox.getInput().setValueInMMWithoutTrigerringListeners(cutDTO.getDepth());
+        bitChoiceBox.refresh(mainWindow.getController().getConfiguredBitsMap(), cutDTO.getBitIndex());
         revalidate();
         repaint();
     }

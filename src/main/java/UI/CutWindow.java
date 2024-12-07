@@ -142,15 +142,15 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     public void modifiedAttributeEventOccured(ChangeAttributeEvent event){
         mainWindow.getController().validateCuts();
         this.rendering2DWindow.updateCuts();
-
+        this.rendering2DWindow.getDrawing().changeAllInvalid();
         if(event.getAttribute() instanceof CutBox){
             CutBox c = (CutBox) event.getAttribute();
             UUID cutId = c.getCutUUID();
             Optional<CutDTO> cutDTO = mainWindow.getController().findSpecificCut(cutId);
             if(cutDTO.isPresent()){
+                c.updatePanel(cutDTO.get());
                 c.updateAttributeContainerPanel(cutDTO.get());
             }
-
             changeAttributeEventOccurred(event);
         }
 

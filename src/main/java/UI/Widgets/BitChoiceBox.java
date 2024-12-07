@@ -47,7 +47,7 @@ public class BitChoiceBox extends GenericAttributeBox {
         }
 
         comboBox = new JComboBox(model);
-        setErrorCheckSelectedIndex(index);
+        refresh(bitList, index);
 
         GridBagConstraints gc = new GridBagConstraints();
 
@@ -73,12 +73,11 @@ public class BitChoiceBox extends GenericAttributeBox {
         int realIndex = -1;
         for(int i = 0; i < comboBox.getModel().getSize(); i++){
             ComboBitItem item = (ComboBitItem) comboBox.getModel().getElementAt(i);
-            if(item.getIndex() == newIndex){
+            if(newIndex == item.getIndex()){
                 realIndex = i;
                 break;
             }
         }
-
         if(realIndex != -1){
             comboBox.setSelectedIndex(realIndex);
             comboBox.setBackground(null);

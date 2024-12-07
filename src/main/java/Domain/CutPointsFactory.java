@@ -1,7 +1,9 @@
 package Domain;
 
+import Common.CutState;
 import Common.DTO.RefCutDTO;
 import Common.DTO.VertexDTO;
+import Common.InvalidCutState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,10 @@ public class CutPointsFactory {
      * @return List<VertexDTO> of the copied absolute points
      */
     public static List<VertexDTO> generateAbsolutePointsPosition(Cut c, CNCMachine cncMachine) {
+
+        if(c.getCutState() == CutState.NOT_VALID && c.getInvalidCutState() == InvalidCutState.NO_REFERENCE){
+            return c.getCopyPoints();
+        }
         if (c.getRefs().isEmpty()){
             return c.getCopyPoints();
         }

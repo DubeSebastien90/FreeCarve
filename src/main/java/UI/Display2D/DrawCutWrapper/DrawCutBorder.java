@@ -76,6 +76,16 @@ public class DrawCutBorder extends DrawCutWrapper {
     }
 
     @Override
+    public void cursorUpdateModifyAnchor(Rendering2DWindow renderer, Drawing drawing) {
+
+    }
+
+    @Override
+    public void modifyAnchorPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
+
+    }
+
+    @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
 
         if (!refs.isEmpty()) {

@@ -24,4 +24,15 @@ public class AttributeContainerErrorNoReference extends  AttributeContainerError
         gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
         add(modifyAnchorBox, gc);
     }
+
+    @Override
+    public void setupEventListeners() {
+        addEventListenerModifyAnchor(modifyAnchorBox);
+    }
+
+    @Override
+    public void updatePanel(CutDTO newCutDTO) {
+        cutDTO = new CutDTO(newCutDTO);
+
+    }
 }

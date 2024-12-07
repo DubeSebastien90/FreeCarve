@@ -164,9 +164,16 @@ public abstract class DrawCutWrapper {
     public abstract void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow);
 
     public void drawWhileModifyingAnchor(Graphics graphics, Rendering2DWindow rendering2DWindow, PersoPoint cursorPoint){
-
         System.out.println("MODIFIE POINT DE REF");
     }
+
+    /**
+     * Updates the cursor for the modifyAnchor
+     *
+     * @param renderer reference to the renderer
+     * @param drawing  reference to the drawing
+     */
+    public abstract void cursorUpdateModifyAnchor(Rendering2DWindow renderer, Drawing drawing);
 
     /**
      * Add point to the cut being done
@@ -176,6 +183,8 @@ public abstract class DrawCutWrapper {
      * @return boolean : True if done, False is not done
      */
     public abstract boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM);
+
+    public abstract void modifyAnchorPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM);
 
     public abstract boolean areRefsValid();
 

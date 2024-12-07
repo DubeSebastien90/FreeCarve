@@ -33,6 +33,14 @@ public class AttributeContainerErrorBadBit extends AttributeContainerError{
     }
 
 
+    @Override
+    public void updatePanel(CutDTO newCutDTO) {
+        cutDTO = new CutDTO(newCutDTO);
+        System.out.println("new bit index" + cutDTO.getBitIndex());
+        bitChoiceBox.refresh(mainWindow.getController().getConfiguredBitsMap(), cutDTO.getBitIndex());
+    }
+
+
 
 
 }

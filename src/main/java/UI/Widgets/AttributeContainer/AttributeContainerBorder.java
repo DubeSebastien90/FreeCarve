@@ -90,6 +90,7 @@ public class AttributeContainerBorder extends AttributeContainer{
         cutDTO = new CutDTO(newCutDTO);
         widthEdgeEdge.getInput().setValueInMMWithoutTrigerringListeners(borderEdgeEdgeWidth());
         heightEdgeEdge.getInput().setValueInMMWithoutTrigerringListeners(borderEdgeEdgeHeight());
+        bitChoiceBox.refresh(mainWindow.getController().getConfiguredBitsMap(), cutDTO.getBitIndex());
         revalidate();
         repaint();
     }

@@ -51,13 +51,7 @@ public abstract class AttributeContainer extends BasicWindow {
 
         Map<Integer, BitDTO> configuredBitsMap = mainWindow.getController().getConfiguredBitsMap();
 
-        int index = 0;
-        for(Map.Entry<Integer, BitDTO> entry : configuredBitsMap.entrySet()){
-            if(entry.getKey().equals(cutDTO.getBitIndex())){
-                break;
-            }
-            index++;
-        }
+        int index = cutDTO.getBitIndex();
         bitChoiceBox = new BitChoiceBox(true, "Outil", configuredBitsMap, index);
 
         ArrayList<JLabel> labelList = new ArrayList<>();

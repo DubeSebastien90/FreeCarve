@@ -99,6 +99,7 @@ public class AttributeContainerVertical extends AttributeContainer {
         absoluteDistanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(xEdgeEdge()));
         distanceCenterToCenter.getInput().setValueInMMWithoutTrigerringListeners( xCenterCenter());
         depthBox.getInput().setValueInMMWithoutTrigerringListeners(cutDTO.getDepth());
+        bitChoiceBox.refresh(mainWindow.getController().getConfiguredBitsMap(), cutDTO.getBitIndex());
         revalidate();
         repaint();
     }

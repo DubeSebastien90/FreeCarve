@@ -214,24 +214,27 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
     }
 
     private void removeBit() {
-        if (widthTextArea.getMMValue() == 0.0)
-            //Todo: Gérer message qui dit qu'on ne peut pas delete si aucun bit configuré
-            return;
+        int numberBits = this.mainWindow.getController().getConfiguredBitsMap().keySet().toArray().length;
+        if(numberBits > 1){
+            if (widthTextArea.getMMValue() == 0.0)
+                //Todo: Gérer message qui dit qu'on ne peut pas delete si aucun bit configuré
+                return;
 
-        try {
-            mainWindow.getController().removeBit(bitConfigurationPanel.getSelectedBit());
-            this.mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().setSelectedBit(
-                    (Integer) this.mainWindow.getController().getConfiguredBitsMap().keySet().toArray()[0]
-            );
-        } catch (InvalidBitException e) {
-            //Todo: Gérer le message d'erreur, might never happen
-            return;
+            try {
+                mainWindow.getController().removeBit(bitConfigurationPanel.getSelectedBit());
+                this.mainWindow.getMiddleContent().getCutWindow().getBitSelectionPanel().setSelectedBit(
+                        (Integer) this.mainWindow.getController().getConfiguredBitsMap().keySet().toArray()[0]
+                );
+            } catch (InvalidBitException e) {
+                //Todo: Gérer le message d'erreur, might never happen
+                return;
+            }
+            nameTextArea.setText("Aucun outil assigné");
+            widthTextArea.getNumericInput().setValue(0.0);
+            bitConfigurationPanel.refresh();
+            mainWindow.getMiddleContent().getCutWindow().notifyObservers();
+            //mainWindow.getMiddleContent().getCutWindow().getCutListPanel().refreshAttributeContainer();
         }
-        nameTextArea.setText("Aucun outil assigné");
-        widthTextArea.getNumericInput().setValue(0.0);
-        bitConfigurationPanel.refresh();
-        mainWindow.getMiddleContent().getCutWindow().notifyObservers();
-        //mainWindow.getMiddleContent().getCutWindow().getCutListPanel().refreshAttributeContainer();
     }
 
     /**

@@ -161,6 +161,7 @@ public class AttributeContainerRectangle extends AttributeContainer{
         heightOfRectangle.getInput().setValueInMMWithoutTrigerringListeners(getHeightEdgeEdge());
         widthOfRectangleCenterCenter.getInput().setValueInMMWithoutTrigerringListeners(getWidthCenterCenter());
         heightOfRectangleCenterCenter.getInput().setValueInMMWithoutTrigerringListeners(getHeightCenterCenter());
+        bitChoiceBox.refresh(mainWindow.getController().getConfiguredBitsMap(), cutDTO.getBitIndex());
     }
 
     private void addEventListenerToResizeInternalWidth(SingleValueBox sb){

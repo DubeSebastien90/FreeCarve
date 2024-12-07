@@ -103,6 +103,7 @@ public class AttributeContainerFree extends AttributeContainer {
         offsetOfSecondPoint.getxInput().setValueInMMWithoutTrigerringListeners(edgeEdgeSecondPoint().getX());
         offsetOfSecondPoint.getyInput().setValueInMMWithoutTrigerringListeners(edgeEdgeSecondPoint().getY());
         depthBox.getInput().setValueInMMWithoutTrigerringListeners(cutDTO.getDepth());
+        bitChoiceBox.refresh(mainWindow.getController().getConfiguredBitsMap(), cutDTO.getBitIndex());
         revalidate();
         repaint();
     }

@@ -103,6 +103,7 @@ public class AttributeContainerHorizontal extends AttributeContainer {
         absoluteDistanceFromEdgeToEdge.getInput().setValueInMMWithoutTrigerringListeners(Math.abs(yEdgeEdge()));
         distanceCenterToCenter.getInput().setValueInMMWithoutTrigerringListeners( yCenterCenter());
         depthBox.getInput().setValueInMMWithoutTrigerringListeners(cutDTO.getDepth());
+        bitChoiceBox.refresh(mainWindow.getController().getConfiguredBitsMap(), cutDTO.getBitIndex());
         revalidate();
         repaint();
     }
