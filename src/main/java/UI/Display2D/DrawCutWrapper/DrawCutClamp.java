@@ -171,7 +171,6 @@ public class DrawCutClamp extends DrawCutWrapper{
         this.update(renderer);
         graphics2D.setStroke(new BasicStroke((float) CLAMP_STROKE_WIDTH));
         graphics2D.setColor(CLAMP_COLOR);
-
         PersoPoint topLeft = points.stream().min((p1, p2) -> {
             if (p1.getLocationX() == p2.getLocationX()) {
                 return Double.compare(p1.getLocationY(), p2.getLocationY());

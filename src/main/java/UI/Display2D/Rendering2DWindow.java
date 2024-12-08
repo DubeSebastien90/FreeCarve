@@ -4,6 +4,7 @@ import Common.DTO.GridDTO;
 import Common.DTO.VertexDTO;
 import Common.Interfaces.IPanelObserver;
 import Domain.CutType;
+
 import UI.Display2D.DrawCutWrapper.DrawCutRectangular;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.Events.ChangeAttributeListener;
