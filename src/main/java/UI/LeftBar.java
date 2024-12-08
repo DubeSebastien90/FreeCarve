@@ -421,8 +421,16 @@ public class LeftBar extends JScrollPane {
         toolBar.getTool(ToolBar.Tool.FORBIDDEN).addActionListener(e -> {
             MiddleContent middle = mainWindow.getMiddleContent();
             if (middle.getCurrent() == MiddleContent.MiddleWindowType.CUT) {
-                middle.getCutWindow().getRendering2DWindow().cut(CutType.CLAMP);
-            }
+                Drawing cutWrap = middle.getCutWindow().getRendering2DWindow().getDrawing();
+                CutDTO cut = cutWrap.getCurrentDrawingCut().getCutDTO();
+                deactivateAllCuts();
+                if (cut != null && cutWrap.getState() != Drawing.DrawingState.IDLE && cut.getCutType() == CutType.CLAMP) {
+                    middle.getCutWindow().getRendering2DWindow().getDrawing().deactivateCreateCutListener();
+                } else {
+                    middle.getCutWindow().getRendering2DWindow().cut(CutType.CLAMP);
+                    FlatSVGIcon icon = getIcon("forbidden", uiConfig.getToolIconSize(), UIManager.getColor("Button.secondaryBackground"));
+                    toolBar.getTool(ToolBar.Tool.FORBIDDEN).setIcon(icon);
+                }            }
         });
     }
 }

@@ -52,6 +52,7 @@ public abstract class DrawCutWrapper {
     protected final Color HOVER_COLOR = Color.BLUE;
     protected final Color ARROW_COLOR = Color.white;
     protected final Color DIMENSION_COLOR = Color.BLACK;
+    protected final Color CLAMP_COLOR = new Color(255,0,0,200);
     protected final int ARROW_DIMENSION = 2;
 
     public static final double CLAMP_STROKE_WIDTH = 1.0;

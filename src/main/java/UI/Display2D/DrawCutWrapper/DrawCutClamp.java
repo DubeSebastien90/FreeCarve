@@ -101,13 +101,20 @@ public class DrawCutClamp extends DrawCutWrapper{
     @Override
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
-
+        double tolerance = 0.000001;
+        double threshold;
+        if (mainWindow.getController().getGrid().isMagnetic()) {
+            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
+        } else {
+            threshold = renderer.scalePixelToMM(snapThreshold);
+        }
         if(points.isEmpty()){
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
-            double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
+            closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
+
 
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
@@ -127,10 +134,9 @@ public class DrawCutClamp extends DrawCutWrapper{
         }
         else{
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-
-            double threshold = renderer.scalePixelToMM(snapThreshold);
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
+            closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
 
             if(closestPoint.isPresent()){
                 p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
@@ -164,7 +170,7 @@ public class DrawCutClamp extends DrawCutWrapper{
     public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
         this.update(renderer);
         graphics2D.setStroke(new BasicStroke((float) CLAMP_STROKE_WIDTH));
-        graphics2D.setColor(INVALID_COLOR);
+        graphics2D.setColor(CLAMP_COLOR);
 
         PersoPoint topLeft = points.stream().min((p1, p2) -> {
             if (p1.getLocationX() == p2.getLocationX()) {
