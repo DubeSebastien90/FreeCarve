@@ -28,7 +28,7 @@ import java.util.UUID;
  *
  * @author Louis-Etienne Messier
  */
-public class DrawCutRectangular extends DrawCutWrapper{
+public class DrawCutRectangular extends DrawCutWrapper {
 
     public DrawCutRectangular(CutType type, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(type, renderer, mainWindow);
@@ -62,16 +62,16 @@ public class DrawCutRectangular extends DrawCutWrapper{
         VertexDTO p1;
         VertexDTO p2;
 
-        if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 0,1)){
+        if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 0, 1)) {
             p1 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
             p2 = new VertexDTO(listPoints.get(2).getX(), listPoints.get(3).getY(), 0);
-        } else if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 1,2)){
+        } else if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 1, 2)) {
             p1 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
             p2 = new VertexDTO(listPoints.get(2).getX(), listPoints.get(3).getY(), 0);
-        } else if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 2,3)){
+        } else if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 2, 3)) {
             p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
             p2 = new VertexDTO(mmE.getX(), listPoints.get(3).getY(), 0);
-        } else{
+        } else {
             p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
             p2 = new VertexDTO(listPoints.get(3).getX(), mmE.getY(), 0);
         }
@@ -91,16 +91,16 @@ public class DrawCutRectangular extends DrawCutWrapper{
         VertexDTO p1;
         VertexDTO p2;
 
-        if (indexPoint == 0){
+        if (indexPoint == 0) {
             p1 = new VertexDTO(mmE.getX(), listPoints.get(2).getY(), 0);
             p2 = new VertexDTO(listPoints.get(2).getX(), mmE.getY(), 0);
-        } else if (indexPoint == 1){
+        } else if (indexPoint == 1) {
             p1 = new VertexDTO(mmE.getX(), mmE.getY(), 0);
             p2 = new VertexDTO(listPoints.get(3).getX(), listPoints.get(3).getY(), 0);
-        } else if (indexPoint == 2){
+        } else if (indexPoint == 2) {
             p1 = new VertexDTO(listPoints.get(0).getX(), mmE.getY(), 0);
             p2 = new VertexDTO(mmE.getX(), listPoints.get(0).getY(), 0);
-        } else{
+        } else {
             p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
             p2 = new VertexDTO(mmE.getX(), mmE.getY(), 0);
         }
@@ -117,8 +117,8 @@ public class DrawCutRectangular extends DrawCutWrapper{
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
         graphics2D.setStroke(stroke);
         graphics2D.setColor(cursor.getColor());
-        if(!this.temporaryCreationPoints.isEmpty()){
-            this.points= new ArrayList<>();
+        if (!this.temporaryCreationPoints.isEmpty()) {
+            this.points = new ArrayList<>();
             VertexDTO absPos = temporaryCreationPoints.getFirst();
             this.points.add(new PersoPoint(absPos.getX(), absPos.getY(), 10.0f, true, strokeColor));
 
@@ -136,7 +136,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
             p2.drawMM(graphics2D, renderer); //drawing the points
         }
 
-        for (PersoPoint point : this.points){ // drawing the points
+        for (PersoPoint point : this.points) { // drawing the points
             point.drawMM(graphics2D, renderer);
 
         }
@@ -159,15 +159,13 @@ public class DrawCutRectangular extends DrawCutWrapper{
         int index1 = 0;
         int index2 = 2;
 
-        if(relativeOffset.getX() < 0 && relativeOffset.getY() < 0){
+        if (relativeOffset.getX() < 0 && relativeOffset.getY() < 0) {
             index1 = 2;
             index2 = 0;
-        }
-        else if(relativeOffset.getX() < 0 && relativeOffset.getY() > 0){
+        } else if (relativeOffset.getX() < 0 && relativeOffset.getY() > 0) {
             index1 = 3;
             index2 = 1;
-        }
-        else if(relativeOffset.getX() > 0 && relativeOffset.getY() < 0){
+        } else if (relativeOffset.getX() > 0 && relativeOffset.getY() < 0) {
             index1 = 1;
             index2 = 3;
         }
@@ -180,7 +178,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
         VertexDTO p2 = absoluteCentralPoint;
         UiUtil.drawArrow(graphics2D, rendering2DWindow, p1, p2, ARROW_COLOR, ARROW_DIMENSION);
 
-        VertexDTO dirOpposite= absPoints.get(index2).sub(absPoints.get(index1));
+        VertexDTO dirOpposite = absPoints.get(index2).sub(absPoints.get(index1));
         double dirOppositeX = Math.signum(dirOpposite.getX());
         double dirOppositeY = Math.signum(dirOpposite.getY());
         VertexDTO dirOppositeTo1 = new VertexDTO(dirOppositeX, dirOppositeY, 0);
@@ -190,24 +188,24 @@ public class DrawCutRectangular extends DrawCutWrapper{
         VertexDTO p1Height = absPoints.get(index2);
         VertexDTO p2Height = absPoints.get(index2).sub(new VertexDTO(0, relativeDimensions.getY() * dirOppositeY, 0));
 
-        p1Width = p1Width.sub(dirOppositeTo1.mul(bitDiameter/2));
-        p2Width = p2Width.sub(dirOppositeTo1.mul(bitDiameter/2));
+        p1Width = p1Width.sub(dirOppositeTo1.mul(bitDiameter / 2));
+        p2Width = p2Width.sub(dirOppositeTo1.mul(bitDiameter / 2));
 
-        p1Height = p1Height.sub(dirOppositeTo1.mul(bitDiameter/2));
-        p2Height = p2Height.sub(dirOppositeTo1.mul(bitDiameter/2));
+        p1Height = p1Height.sub(dirOppositeTo1.mul(bitDiameter / 2));
+        p2Height = p2Height.sub(dirOppositeTo1.mul(bitDiameter / 2));
 
 
         UiUtil.drawArrow(graphics2D, rendering2DWindow, p1Width, p2Width, ARROW_COLOR, ARROW_DIMENSION);
         UiUtil.drawArrow(graphics2D, rendering2DWindow, p1Height, p2Height, ARROW_COLOR, ARROW_DIMENSION);
 
         DimensionDTO xOffsetUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeOffset.getX(), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
-        DimensionDTO yOffsetUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeOffset.getY() , Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+        DimensionDTO yOffsetUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeOffset.getY(), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
         DimensionDTO xDimensionUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeDimensions.getX(), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
-        DimensionDTO yDimensionUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeDimensions.getY() , Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+        DimensionDTO yDimensionUnit = mainWindow.getController().convertUnit(new DimensionDTO(relativeDimensions.getY(), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
 
         UiUtil.drawNumberXY(graphics2D, rendering2DWindow, p1, p2, xOffsetUnit.value(), yOffsetUnit.value(), ARROW_COLOR, DIMENSION_COLOR);
-        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Width, p2Width, xDimensionUnit.value(),  ARROW_COLOR, DIMENSION_COLOR);
-        UiUtil.drawNumber(graphics2D, rendering2DWindow,  p1Height, p2Height, yDimensionUnit.value(), ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawNumber(graphics2D, rendering2DWindow, p1Width, p2Width, xDimensionUnit.value(), ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawNumber(graphics2D, rendering2DWindow, p1Height, p2Height, yDimensionUnit.value(), ARROW_COLOR, DIMENSION_COLOR);
     }
 
     @Override
@@ -216,21 +214,19 @@ public class DrawCutRectangular extends DrawCutWrapper{
         if (refs.isEmpty()) {
             VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
             refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
-            return  false;
-        }
-        else{
-            if(temporaryCreationPoints.isEmpty()){ // premier point a ajouter
-                VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  0.0f);
+            return false;
+        } else {
+            if (temporaryCreationPoints.isEmpty()) { // premier point a ajouter
+                VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
                 temporaryCreationPoints.add(newPoint);
                 return false;
-            }
-            else{
+            } else {
 
                 // Dans le cas contraire, c'est le dernier point, donc ajoute les 4 points finaux:
                 //  3 - 2*
                 //  |   |
                 //  4 - 1
-                VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  0.0f);
+                VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
                 temporaryCreationPoints.add(newPoint);
                 return true;
 
@@ -248,7 +244,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
         VertexDTO p1 = temporaryCreationPoints.getFirst();
         VertexDTO p3 = temporaryCreationPoints.get(1);
         List<VertexDTO> relativeEdgeEdgePoints = mainWindow.getController().generateRectanglePointsRelativeEdgeEdgeFromAbsolute(p1, p3, this.cut.getBitIndex(), refs);
-        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints , refs, this.cut.getState());
+        this.cut = new CutDTO(this.cut.getId(), this.cut.getDepth(), this.cut.getBitIndex(), this.cut.getCutType(), relativeEdgeEdgePoints, refs, this.cut.getState());
         return createCut();
     }
 
@@ -305,7 +301,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
 
-            closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint,true);
+            closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
 
             // Snap
             if (closestPoint.isPresent()) {

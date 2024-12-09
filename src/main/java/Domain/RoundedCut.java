@@ -9,8 +9,8 @@ import java.util.List;
 
 /**
  * This class is used as an abstraction of the actual physical representation of the cuts of the CNC machine :
- *                  - A line width a certain width
- *                  - Width rounded corners
+ * - A line width a certain width
+ * - Width rounded corners
  * The goal is to easily translate Absolute Cut points into easy collision detection of roundedCuts
  */
 public class RoundedCut {
@@ -19,7 +19,7 @@ public class RoundedCut {
     VertexDTO p2;
     double bitDiameter;
 
-    public RoundedCut(VertexDTO p1, VertexDTO p2, double bitDiameter){
+    public RoundedCut(VertexDTO p1, VertexDTO p2, double bitDiameter) {
         this.p1 = p1;
         this.p2 = p2;
         this.bitDiameter = bitDiameter;
@@ -27,13 +27,14 @@ public class RoundedCut {
 
     /**
      * Compute the internal rectangle that composese the rounded cut
+     *
      * @return
      */
-    List<VertexDTO> getInternalRectanglePoints(){
+    List<VertexDTO> getInternalRectanglePoints() {
         VertexDTO diff = p2.sub(p1).normalize();
         Pair<VertexDTO, VertexDTO> results = VertexDTO.perpendicularPointsAroundP1(VertexDTO.zero(), diff);
         VertexDTO perpendicularDiff = results.getSecond();
-        VertexDTO scaledPerpendicularDiff = perpendicularDiff.mul(bitDiameter/2);
+        VertexDTO scaledPerpendicularDiff = perpendicularDiff.mul(bitDiameter / 2);
         VertexDTO rect1 = p1.add(scaledPerpendicularDiff);
         VertexDTO rect2 = p1.add(scaledPerpendicularDiff.mul(-1));
         VertexDTO rect3 = p2.add(scaledPerpendicularDiff.mul(-1));
@@ -43,10 +44,11 @@ public class RoundedCut {
 
     /**
      * Check if a point is inside the internal rectangle
+     *
      * @param point point to test
      * @return true if inside
      */
-    boolean pointInInternalRectangle(VertexDTO point){
+    boolean pointInInternalRectangle(VertexDTO point) {
         List<VertexDTO> rectPoints = getInternalRectanglePoints();
         VertexDTO ab = rectPoints.get(1).sub(rectPoints.get(0));
         VertexDTO bc = rectPoints.get(2).sub(rectPoints.get(1));
@@ -64,17 +66,18 @@ public class RoundedCut {
         double cross4 = VertexDTO.crossProduct(da, dp);
 
 
-        return ( (cross1 > 0 && cross2 > 0 && cross3 > 0 && cross4 > 0) ||
+        return ((cross1 > 0 && cross2 > 0 && cross3 > 0 && cross4 > 0) ||
                 (cross1 < 0 && cross2 < 0 && cross3 < 0 && cross4 < 0));
     }
 
     /**
      * Check if the point is in either of the 2 circles at the end of the cut
+     *
      * @param point point to test
      * @return true if inside one of the circle
      */
-    boolean pointInCircles(VertexDTO point){
-        double circleRadius = bitDiameter/2;
+    boolean pointInCircles(VertexDTO point) {
+        double circleRadius = bitDiameter / 2;
         double distanceFromP1 = p1.getDistance(point);
         double distanceFromP2 = p2.getDistance(point);
         return distanceFromP2 <= circleRadius || distanceFromP1 <= circleRadius;
@@ -82,42 +85,42 @@ public class RoundedCut {
 
     /**
      * Test if the point is in the internal rectangle or in the circles
+     *
      * @param point point to test
      * @return true if inside any
      */
-    public boolean pointInRoundedCut(VertexDTO point){
+    public boolean pointInRoundedCut(VertexDTO point) {
         return pointInInternalRectangle(point) || pointInCircles(point);
     }
 
     /**
      * Test the rounded cut created from a cutDTO if a point is inside of it
-     * @param cutDTO cutDTO to build all of the roundedCut with
-     * @param cursor point to test
+     *
+     * @param cutDTO     cutDTO to build all of the roundedCut with
+     * @param cursor     point to test
      * @param cncMachine ref to CNCMachine
      * @return
      */
-    public static boolean isRoundedCutHoveredByMouse(CutDTO cutDTO, VertexDTO cursor, CNCMachine cncMachine){
+    public static boolean isRoundedCutHoveredByMouse(CutDTO cutDTO, VertexDTO cursor, CNCMachine cncMachine) {
         List<VertexDTO> points = cncMachine.getAbsolutePointsPositionOfCutDTO(cutDTO);
         double bitDiameter = cncMachine.getBitStorage().getBitDiameter(cutDTO.getBitIndex());
-        for(int i = 0; i < points.size()-1; i++){
-            RoundedCut roundedCut = new RoundedCut(points.get(i), points.get(i+1), bitDiameter);
-            if(roundedCut.pointInRoundedCut(cursor)) return true;
+        for (int i = 0; i < points.size() - 1; i++) {
+            RoundedCut roundedCut = new RoundedCut(points.get(i), points.get(i + 1), bitDiameter);
+            if (roundedCut.pointInRoundedCut(cursor)) return true;
         }
         return false;
     }
 
-    public static boolean isRoundedCutSegmentHoveredByMouse(CutDTO cutDTO, VertexDTO cursor, CNCMachine cncMachine, int pt1, int pt2){
-        if(Math.abs(pt1-pt2) == 1) {
-            List<VertexDTO> points = cncMachine.getAbsolutePointsPositionOfCutDTO(cutDTO);
-            double bitDiameter = cncMachine.getBitStorage().getBitDiameter(cutDTO.getBitIndex());
-            RoundedCut roundedCut = new RoundedCut(points.get(pt1), points.get(pt2), bitDiameter);
-            return roundedCut.pointInRoundedCut(cursor);
-        }
-        return false;
+    public static boolean isRoundedCutSegmentHoveredByMouse(CutDTO cutDTO, VertexDTO cursor, CNCMachine cncMachine, int pt1, int pt2) {
+        List<VertexDTO> points = cncMachine.getAbsolutePointsPositionOfCutDTO(cutDTO);
+        double bitDiameter = cncMachine.getBitStorage().getBitDiameter(cutDTO.getBitIndex());
+        RoundedCut roundedCut = new RoundedCut(points.get(pt1), points.get(pt2), bitDiameter);
+        return roundedCut.pointInRoundedCut(cursor);
     }
 
     /**
      * Test if the current rounded cut intersect with another rounded cut
+     *
      * @param other other rounded cut to test
      * @return true if intersect
      */
@@ -146,18 +149,18 @@ public class RoundedCut {
             }
         }
 
-        double thisRadius = this.bitDiameter/2;
-        double otherRadius = other.bitDiameter/2;
+        double thisRadius = this.bitDiameter / 2;
+        double otherRadius = other.bitDiameter / 2;
 
         double distance1 = this.p1.getDistance(other.p1);
         double distance2 = this.p1.getDistance(other.p2);
         double distance3 = this.p2.getDistance(other.p1);
         double distance4 = this.p2.getDistance(other.p2);
 
-        if(distance1 <= thisRadius + otherRadius ||
+        if (distance1 <= thisRadius + otherRadius ||
                 distance2 <= thisRadius + otherRadius ||
                 distance3 <= thisRadius + otherRadius ||
-                distance4 <= thisRadius + otherRadius){
+                distance4 <= thisRadius + otherRadius) {
             return true;
         }
         return false;

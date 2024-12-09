@@ -97,13 +97,14 @@ public class Afficheur {
     }
 
 
-    void drawCutAnchors(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing, MainWindow mainWindow){
-        for(DrawCutWrapper wrapper : drawing.getCutWrappers()){
+    void drawCutAnchors(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing, MainWindow mainWindow) {
+        for (DrawCutWrapper wrapper : drawing.getCutWrappers()) {
+
             VertexDTO cursor = new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0);
-            if(mainWindow.getController().isRoundedCutDTOHoveredByCursor(wrapper.getCutDTO(), cursor) ||
+            if (mainWindow.getController().isRoundedCutDTOHoveredByCursor(wrapper.getCutDTO(), cursor) ||
                     wrapper.getState() == DrawCutWrapper.DrawCutState.SELECTED ||
-                    wrapper.getState() == DrawCutWrapper.DrawCutState.HOVER){
-                if(wrapper.getCutDTO().getState() != CutState.NOT_VALID){
+                    wrapper.getState() == DrawCutWrapper.DrawCutState.HOVER) {
+                if (wrapper.getCutDTO().getState() != CutState.NOT_VALID) {
                     wrapper.drawAnchor(graphics2D, renderer);
                 }
             }
@@ -113,15 +114,15 @@ public class Afficheur {
     /**
      * Draws the arrows and the informations about the cuts
      */
-    void drawCutDimensions(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing, MainWindow mainWindow){
+    void drawCutDimensions(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing, MainWindow mainWindow) {
 
-        for(DrawCutWrapper wrapper : drawing.getCutWrappers()){
+        for (DrawCutWrapper wrapper : drawing.getCutWrappers()) {
 
             VertexDTO cursor = new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0);
-            if(mainWindow.getController().isRoundedCutDTOHoveredByCursor(wrapper.getCutDTO(), cursor) ||
+            if (mainWindow.getController().isRoundedCutDTOHoveredByCursor(wrapper.getCutDTO(), cursor) ||
                     wrapper.getState() == DrawCutWrapper.DrawCutState.SELECTED ||
-                    wrapper.getState() == DrawCutWrapper.DrawCutState.HOVER){
-                if(wrapper.getCutDTO().getState() != CutState.NOT_VALID){
+                    wrapper.getState() == DrawCutWrapper.DrawCutState.HOVER) {
+                if (wrapper.getCutDTO().getState() != CutState.NOT_VALID) {
                     wrapper.drawDimensions(graphics2D, renderer);
                 }
 
