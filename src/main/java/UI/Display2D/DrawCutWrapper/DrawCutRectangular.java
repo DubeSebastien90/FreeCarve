@@ -113,6 +113,7 @@ public class DrawCutRectangular extends DrawCutWrapper {
         mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
     }
 
+
     @Override
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
         graphics2D.setStroke(stroke);

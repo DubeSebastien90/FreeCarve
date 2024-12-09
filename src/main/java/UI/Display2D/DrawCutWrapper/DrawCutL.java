@@ -249,4 +249,5 @@ public class DrawCutL extends DrawCutWrapper {
         mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
     }
 
+
 }
