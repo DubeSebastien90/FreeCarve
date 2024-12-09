@@ -8,9 +8,11 @@ import Common.Units;
 import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
+import UI.Events.ChangeAttributeEvent;
 import UI.MainWindow;
 import UI.UIConfig;
 import UI.UiUtil;
+import UI.Widgets.CutBox;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
@@ -212,7 +214,24 @@ public class DrawCutL extends DrawCutWrapper {
 
     @Override
     public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint) {
+        List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
+        Point2D mmE = renderer.pixelTomm(pixP);
+        VertexDTO p1;
 
+        if (indexPoint == 1){
+            p1 = new VertexDTO(mmE.getX(), mmE.getY(), 0);
+        } else if (indexPoint == 0){
+            p1 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
+        } else{
+            p1 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
+        }
+        CutDTO c = getCutDTO();
+
+        List<VertexDTO> relativePts = mainWindow.getController().generateLPointsRelativeEdgeEdgeFromAbsolute(p1, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
+        mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()));
+
+        Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
+        mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
     }
 
 }
