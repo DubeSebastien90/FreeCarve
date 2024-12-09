@@ -46,6 +46,7 @@ public class Drawing {
     private Drawing drawing;
     private CutDTO prevCut;
     private int indexPoint = 0;
+    private List<VertexDTO> prevPts;
 
     public enum DrawingState {
         CREATE_CUT,
@@ -251,6 +252,7 @@ public class Drawing {
         currentModifiedCut = cutToChangePoint;
         currentModifiedCut.setPointDepart(renderer.getMmMousePt());
         prevCut = cutToChangePoint.getCutDTO();
+        prevPts = mainWindow.getController().getAbsolutePointsPosition(prevCut);
         currentModifiedPoint = pointToChange;
         for (int i = 0; i<currentModifiedCut.getPersoPoints().size(); i++) {
             if (currentModifiedCut.getPersoPoints().get(i) == pointToChange) {
@@ -275,6 +277,7 @@ public class Drawing {
         setState(DrawingState.MODIFY_CUT);
         activateModifyCutListener();
         prevCut = cutToChangePoint.getCutDTO();
+        prevPts = mainWindow.getController().getAbsolutePointsPosition(prevCut);
     }
 
     public void closeModifyCut() {
@@ -416,6 +419,10 @@ public class Drawing {
             }
         }
         return Optional.empty();
+    }
+
+    public List<VertexDTO> getPrevPts() {
+        return prevPts;
     }
 }
 
