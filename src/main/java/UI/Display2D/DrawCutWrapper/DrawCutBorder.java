@@ -14,6 +14,7 @@ import UI.Widgets.PersoPoint;
 
 import java.awt.*;
 
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -127,5 +128,10 @@ public class DrawCutBorder extends DrawCutWrapper {
             p.setColor(INVALID_COLOR);
             p.setValid(PersoPoint.Valid.NOT_VALID);
         }
+    }
+
+    @Override
+    public void moveUpdate(MouseEvent e, Rendering2DWindow renderer, MainWindow mainWindow) {
+
     }
 }

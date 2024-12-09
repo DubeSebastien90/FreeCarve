@@ -403,7 +403,5 @@ public abstract class DrawCutWrapper {
         return oldClosest;
     }
 
-    public void moveUpdate(MouseEvent e, Rendering2DWindow renderer, MainWindow mainWindow) {
-
-    }
+    public abstract void moveUpdate(MouseEvent e, Rendering2DWindow renderer, MainWindow mainWindow);
 }

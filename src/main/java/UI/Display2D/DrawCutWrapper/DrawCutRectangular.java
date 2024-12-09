@@ -14,6 +14,7 @@ import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +49,11 @@ public class DrawCutRectangular extends DrawCutWrapper{
 
     public DrawCutRectangular(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(cut, renderer, mainWindow);
+    }
+
+    @Override
+    public void moveUpdate(MouseEvent e, Rendering2DWindow renderer, MainWindow mainWindow) {
+
     }
 
     @Override
