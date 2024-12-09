@@ -92,7 +92,12 @@ class CNCMachine {
     public Optional<UUID> modifyCut(CutDTO cutDTO) {
         Optional<UUID> id = panel.modifyCut(cutDTO);
         this.panel.verifyCuts(this);
-        this.panel.validateCuts(this);
+        if (id.isPresent()) {
+            Optional<CutDTO> cou = panel.findSpecificCut(id.get());
+            if (cou.isPresent() && cou.get().getState() != CutState.NOT_VALID) {
+                this.panel.validateCuts(this);
+            }
+        }
         return id;
     }
 

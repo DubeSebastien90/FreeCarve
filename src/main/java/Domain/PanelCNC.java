@@ -152,7 +152,9 @@ class PanelCNC {
         Map<Integer, BitDTO> configuredBits = cncMachine.getBitStorage().getConfiguredBits();
         for (Cut c : cutList) {
             if (!c.getRefs().isEmpty()) {
-                c.setCutState(configuredBits.containsKey(c.getBitIndex()) ? CutState.VALID : CutState.NOT_VALID);
+                if (c.getCutState() != CutState.NOT_VALID) {
+                    c.setCutState(configuredBits.containsKey(c.getBitIndex()) ? CutState.VALID : CutState.NOT_VALID);
+                }
             }
         }
     }
@@ -344,7 +346,7 @@ class PanelCNC {
 
             if (!validateCutWithClamps(cncMachine, cut)) {
                 cut.setCutState(CutState.NOT_VALID);
-            }else{
+            } else {
                 cut.setCutState(CutState.VALID);
             }
         }
