@@ -150,6 +150,9 @@ public abstract class DrawCutWrapper {
             if (renderer.getDrawing().getState() == Drawing.DrawingState.IDLE && hoveredView && mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), i, i + 1)) {
                 c = HOVER_VIEW_COLOR;
             }
+            if (renderer.getDrawing().getState() == Drawing.DrawingState.MODIFY_CUT && mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), i, i + 1)){
+                c = HOVER_VIEW_COLOR;
+            }
             graphics2D.setColor(c);
             this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i + 1));
             c = c2;
