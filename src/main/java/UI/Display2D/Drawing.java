@@ -44,6 +44,7 @@ public class Drawing {
     private final MainWindow mainWindow;
     private DrawingState state;
     private Drawing drawing;
+    private CutDTO prevCut;
 
     public enum DrawingState {
         CREATE_CUT,
@@ -264,10 +265,12 @@ public class Drawing {
         currentModifiedCut.setPointDepart(renderer.getMmMousePt());
         setState(DrawingState.MODIFY_CUT);
         activateModifyCutListener();
+        prevCut = cutToChangePoint.getCutDTO();
     }
 
     public void closeModifyCut() {
         setState(DrawingState.IDLE);
+        //mainWindow.getController().executeAndMemorize(()->mainWindow.getController().modifyCut(currentModifiedCut.getCutDTO()), ()->mainWindow.getController().modifyCut(prevCut));
         currentModifiedCut.emptyRefs();
         deactivateModifyCutListener();
     }
