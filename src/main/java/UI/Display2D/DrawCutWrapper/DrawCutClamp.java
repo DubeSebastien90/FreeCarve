@@ -9,6 +9,7 @@ import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
+import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
@@ -57,7 +58,22 @@ public class DrawCutClamp extends DrawCutWrapper{
 
     @Override
     public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
+        VertexDTO midBottom = new VertexDTO((cut.getPoints().get(0).getX() + cut.getPoints().get(2).getX()) / 2,
+                (cut.getPoints().get(3).getY()) ,
+                0.0f);
 
+        VertexDTO centerPoint = new VertexDTO((cut.getPoints().get(0).getX() + cut.getPoints().get(2).getX()) / 2,
+                                                (cut.getPoints().get(0).getY() + cut.getPoints().get(2).getY()) / 2,
+                                                0.0f);
+        double width = Math.abs(cut.getPoints().get(0).getX() - cut.getPoints().get(2).getX());
+        double height = Math.abs(cut.getPoints().get(0).getY() - cut.getPoints().get(2).getY());
+
+        double xPos = centerPoint.getX();
+        double yPos = centerPoint.getY();
+
+        UiUtil.drawNumber(graphics2D, rendering2DWindow, cut.getPoints().get(1), cut.getPoints().get(2), width, ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawNumber(graphics2D, rendering2DWindow, cut.getPoints().get(0), cut.getPoints().get(1), height, ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawNumberXY(graphics2D, rendering2DWindow, midBottom, centerPoint, xPos, yPos, ARROW_COLOR, DIMENSION_COLOR);
     }
 
     @Override
@@ -101,7 +117,6 @@ public class DrawCutClamp extends DrawCutWrapper{
     @Override
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
-        double tolerance = 0.000001;
         double threshold;
         if (mainWindow.getController().getGrid().isMagnetic()) {
             threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
@@ -157,33 +172,11 @@ public class DrawCutClamp extends DrawCutWrapper{
 
     }
 
-    private List<VertexDTO> generateRectanglePoints(VertexDTO p1, VertexDTO p3) {
-        List<VertexDTO> points = new ArrayList<>();
-
-        points.add(new VertexDTO(p3.getX(), p3.getY(), 0.0f));
-        points.add(new VertexDTO(p1.getX(), p1.getY(), 0.0f));
-
-        return points;
-    }
-
     @Override
     public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
         this.update(renderer);
         graphics2D.setStroke(new BasicStroke((float) CLAMP_STROKE_WIDTH));
         graphics2D.setColor(CLAMP_COLOR);
-        PersoPoint topLeft = points.stream().min((p1, p2) -> {
-            if (p1.getLocationX() == p2.getLocationX()) {
-                return Double.compare(p1.getLocationY(), p2.getLocationY());
-            }
-            return Double.compare(p1.getLocationX(), p2.getLocationX());
-        }).get();
-
-        PersoPoint bottomRight = points.stream().max((p1, p2) -> {
-            if (p1.getLocationX() == p2.getLocationX()) {
-                return Double.compare(p1.getLocationY(), p2.getLocationY());
-            }
-            return Double.compare(p1.getLocationX(), p2.getLocationX());
-        }).get();
 
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(points.get(0).getLocationX(), points.get(0).getLocationY()));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(points.get(2).getLocationX(), points.get(2).getLocationY()));
@@ -198,6 +191,14 @@ public class DrawCutClamp extends DrawCutWrapper{
 
     @Override
     public void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer) {
+        // Opposites points of the rectangle
+        VertexDTO p1 = cut.getPoints().getFirst();
+        VertexDTO p3 = cut.getPoints().get(2);
 
+        // Anchor points
+        VertexDTO center = new VertexDTO((p1.getX() + p3.getX()) / 2, (p1.getY() + p3.getY()) / 2, 0.0f);
+        PersoPoint referenceAnchorPoint = new PersoPoint(center.getX(), center.getY(), cursorRadius, true);
+        referenceAnchorPoint.setColor(ANCHOR_COLOR);
+        referenceAnchorPoint.drawMM(graphics2D, renderer, false);
     }
 }
