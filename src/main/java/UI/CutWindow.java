@@ -189,6 +189,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
 
             this.attributePanel.updateAttribute(selectedAttributable); // if not the same object ,update the attribute panel with the new cutbox information
         }
+        mainWindow.getMiddleContent().getCutWindow().notifyObservers();
 
     }
 

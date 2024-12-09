@@ -1,16 +1,14 @@
 package Domain;
 
+import Common.CutState;
 import Common.DTO.CutDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import Common.Interfaces.IMemorizer;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Class that represents the CNC machine
@@ -37,7 +35,7 @@ class CNCMachine {
      * Constructs a new {@code CNCMachine}.
      *
      * @param bitStorage The storage for the bits
-     * @param panel   The panel.
+     * @param panel      The panel.
      */
     CNCMachine(BitStorage bitStorage, PanelCNC panel, IMemorizer memorizer) {
         this.panel = panel;
@@ -79,21 +77,26 @@ class CNCMachine {
         this.panel.validateCuts(this);
     }
 
-    public Optional<UUID> requestCut(RequestCutDTO requestCutDTO){
+    public Optional<UUID> requestCut(RequestCutDTO requestCutDTO) {
         Optional<UUID> id = panel.requestCut(requestCutDTO);
         this.panel.verifyCuts(this);
-        this.panel.validateCuts(this);
+        if (id.isPresent()) {
+            Optional<CutDTO> cou = panel.findSpecificCut(id.get());
+            if (cou.isPresent() && cou.get().getState() != CutState.NOT_VALID) {
+                this.panel.validateCuts(this);
+            }
+        }
         return id;
     }
 
-    public Optional<UUID> modifyCut(CutDTO cutDTO){
+    public Optional<UUID> modifyCut(CutDTO cutDTO) {
         Optional<UUID> id = panel.modifyCut(cutDTO);
         this.panel.verifyCuts(this);
         this.panel.validateCuts(this);
         return id;
     }
 
-    public void resetPanelCNC(){
+    public void resetPanelCNC() {
         PanelCNC copy = this.panel;
         memorizer.executeAndMemorize(() -> {
             this.panel = new PanelCNC(memorizer);
@@ -105,10 +108,11 @@ class CNCMachine {
 
     /**
      * From a CutDTO, returns it's absolute points position
+     *
      * @param cutDTO
      * @return
      */
-    public List<VertexDTO> getAbsolutePointsPositionOfCutDTO(CutDTO cutDTO){
+    public List<VertexDTO> getAbsolutePointsPositionOfCutDTO(CutDTO cutDTO) {
         Cut c = this.getPanel().createPanelCut(cutDTO);
         return c.getAbsolutePointsPosition(this);
     }

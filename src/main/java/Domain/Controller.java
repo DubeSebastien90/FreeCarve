@@ -1,7 +1,6 @@
 package Domain;
 
 import Common.DTO.*;
-import Common.Exceptions.ClampZoneException;
 import Common.Exceptions.InvalidBitException;
 import Common.Exceptions.InvalidFileExtensionException;
 import Common.Interfaces.*;

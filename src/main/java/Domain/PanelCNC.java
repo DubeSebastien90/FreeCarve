@@ -1,13 +1,7 @@
 package Domain;
 
-import Common.*;
+import Common.CutState;
 import Common.DTO.*;
-import Common.Exceptions.ClampZoneException;
-import Common.DTO.*;
-import Common.DTO.CutDTO;
-import Common.DTO.PanelDTO;
-import Common.DTO.RequestCutDTO;
-import Common.DTO.VertexDTO;
 import Common.Interfaces.IMemorizer;
 import Common.Util;
 
@@ -52,7 +46,7 @@ class PanelCNC {
         this.borderCut = new Cut(panelDTO.getBorderCut(), new ArrayList<>());
         List<Cut> cuts = new ArrayList<>();
         cuts.add(borderCut);
-        for (CutDTO cutDTO : panelDTO.getCutsDTO()){
+        for (CutDTO cutDTO : panelDTO.getCutsDTO()) {
             cuts.add(new Cut(cutDTO, cuts));
         }
         cuts.remove(borderCut);
@@ -124,6 +118,7 @@ class PanelCNC {
                 cleanupRemove(list.get(i), cncMachine);
                 list.remove(i);
                 //todo look for potential non removable cut
+                verifyCuts(cncMachine);
                 return true;
             }
         }
@@ -136,10 +131,10 @@ class PanelCNC {
      *
      * @param cut cut to cleanup in other cut
      */
-    void cleanupRemove(Cut cut, CNCMachine cncMachine){
-        for(Cut c : cutList){
-            for(RefCut ref : c.getRefs()){
-                if(ref.getCut() == cut){
+    void cleanupRemove(Cut cut, CNCMachine cncMachine) {
+        for (Cut c : cutList) {
+            for (RefCut ref : c.getRefs()) {
+                if (ref.getCut() == cut) {
                     c.setInvalidAndNoRef(cncMachine);
                     cleanupRemove(c, cncMachine);
                     break;
@@ -151,12 +146,12 @@ class PanelCNC {
     /**
      * Updates the validity state of the cuts depending on the bits
      *
-     * @param bitStorage the bit storage containing the bits
+     * @param cncMachine the machine
      */
-    void validateCuts(CNCMachine cncMachine){
+    void validateCuts(CNCMachine cncMachine) {
         Map<Integer, BitDTO> configuredBits = cncMachine.getBitStorage().getConfiguredBits();
         for (Cut c : cutList) {
-            if (!c.getRefs().isEmpty()){
+            if (!c.getRefs().isEmpty()) {
                 c.setCutState(configuredBits.containsKey(c.getBitIndex()) ? CutState.VALID : CutState.NOT_VALID);
             }
         }
@@ -178,7 +173,7 @@ class PanelCNC {
         return Optional.empty();
     }
 
-    Cut createPanelCut(CutDTO cutDTO){
+    Cut createPanelCut(CutDTO cutDTO) {
         return new Cut(cutDTO, this.getCutAndBorderList());
     }
 
@@ -293,15 +288,15 @@ class PanelCNC {
         return Objects.equals(cutList, panelCNC.cutList) && Objects.equals(panelDimension, panelCNC.panelDimension) && Objects.equals(borderCut, panelCNC.borderCut);
     }
 
-    private boolean validateCutWithClamps(CNCMachine cncMachine, Cut cut){
+    private boolean validateCutWithClamps(CNCMachine cncMachine, Cut cut) {
         ArrayList<Cut> clampZones = this.getCutList().stream()
                 .filter(currentCut -> currentCut.getType() == CutType.CLAMP)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        for (Cut clampZone : clampZones){
+        for (Cut clampZone : clampZones) {
             if (cut.getType() != CutType.CLAMP &&
                     (cutIntersectsClampZone(cut.getAbsolutePointsPosition(cncMachine), clampZone, cncMachine.getBitStorage().getBitDiameter(cut.getBitIndex())) ||
-                            cutInClampZone(cut, clampZone))){
+                            cutInClampZone(cncMachine, cut, clampZone))) {
                 return false;
             }
         }
@@ -313,24 +308,24 @@ class PanelCNC {
      *
      * @param cutPoints The absolute points of a cut
      * @param clampZone The clamp zone
-     * @param diameter The diameter of the cut
+     * @param diameter  The diameter of the cut
      * @return True if it intersects, false otherwise
      */
-    public boolean cutIntersectsClampZone(List<VertexDTO> cutPoints, Cut clampZone, double diameter){
-        RoundedCut clampRound1 = new RoundedCut(clampZone.getPoints().get(0), clampZone.getPoints().get(1), 0);
-        RoundedCut clampRound2 = new RoundedCut(clampZone.getPoints().get(1), clampZone.getPoints().get(2), 0);
-        RoundedCut clampRound3 = new RoundedCut(clampZone.getPoints().get(2), clampZone.getPoints().get(3), 0);
-        RoundedCut clampRound4 = new RoundedCut(clampZone.getPoints().get(3), clampZone.getPoints().get(0), 0);
+    public boolean cutIntersectsClampZone(List<VertexDTO> cutPoints, Cut clampZone, double diameter) {
+        RoundedCut clampRound1 = new RoundedCut(clampZone.getPoints().get(0), clampZone.getPoints().get(1), 0.01);
+        RoundedCut clampRound2 = new RoundedCut(clampZone.getPoints().get(1), clampZone.getPoints().get(2), 0.01);
+        RoundedCut clampRound3 = new RoundedCut(clampZone.getPoints().get(2), clampZone.getPoints().get(3), 0.01);
+        RoundedCut clampRound4 = new RoundedCut(clampZone.getPoints().get(3), clampZone.getPoints().get(0), 0.01);
 
-        for (int i = 0; i < cutPoints.size() - 1; i++){
+        for (int i = 0; i < cutPoints.size() - 1; i++) {
             RoundedCut cutRound = new RoundedCut(cutPoints.get(i),
-                    cutPoints.get(i+1),
+                    cutPoints.get(i + 1),
                     diameter);
 
             if (clampRound1.intersectRoundedCut(cutRound) ||
                     clampRound2.intersectRoundedCut(cutRound) ||
                     clampRound3.intersectRoundedCut(cutRound) ||
-                    clampRound4.intersectRoundedCut(cutRound)){
+                    clampRound4.intersectRoundedCut(cutRound)) {
                 return true;
             }
         }
@@ -342,13 +337,15 @@ class PanelCNC {
      *
      * @param cncMachine the current cncMachine
      */
-    public void verifyCuts(CNCMachine cncMachine){
-        for (Cut cut: this.getCutList()){
-            if(cut.getType() == CutType.CLAMP)
+    public void verifyCuts(CNCMachine cncMachine) {
+        for (Cut cut : this.getCutList()) {
+            if (cut.getType() == CutType.CLAMP)
                 continue;
 
-            if(!validateCutWithClamps(cncMachine, cut)){
-                cut.setInvalidAndNoRef(cncMachine);
+            if (!validateCutWithClamps(cncMachine, cut)) {
+                cut.setCutState(CutState.NOT_VALID);
+            }else{
+                cut.setCutState(CutState.VALID);
             }
         }
     }
@@ -356,15 +353,15 @@ class PanelCNC {
     /**
      * Check if a cut is in a clamp zone
      *
-     * @param cut The cut
+     * @param cut       The cut
      * @param clampZone The clamp zone
      * @return True if it is in the clamp zone, false otherwise
      */
-    public boolean cutInClampZone(Cut cut, Cut clampZone) {
+    public boolean cutInClampZone(CNCMachine cncMachine, Cut cut, Cut clampZone) {
         VertexDTO topLeft = clampZone.getPoints().get(1);
         VertexDTO bottomRight = clampZone.getPoints().get(3);
 
-        for (VertexDTO point : cut.getPoints()) {
+        for (VertexDTO point : cut.getAbsolutePointsPosition(cncMachine)) {
             if (point.getX() >= topLeft.getX() &&
                     point.getX() <= bottomRight.getX() &&
                     point.getY() <= topLeft.getY() &&

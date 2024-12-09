@@ -156,6 +156,7 @@ public class Drawing {
                                 updateCuts();
                                 renderer.getChangeCutListener().addCutEventOccured(new ChangeCutEvent(renderer, id.get()));
                                 setState(DrawingState.IDLE);
+                                mainWindow.getMiddleContent().getCutWindow().notifyObservers();
                             }
                         }
                     }

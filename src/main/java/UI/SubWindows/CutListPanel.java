@@ -143,6 +143,7 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
         cut.ifPresent(c::updatePanel);
 
         listener.modifiedAttributeEventOccured(event);
+        mainWindow.getMiddleContent().getCutWindow().notifyObservers();
     }
 
     /**

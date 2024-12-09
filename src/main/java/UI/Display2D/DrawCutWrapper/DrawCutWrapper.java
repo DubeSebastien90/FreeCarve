@@ -52,7 +52,7 @@ public abstract class DrawCutWrapper {
     protected final Color HOVER_COLOR = Color.BLUE;
     protected final Color ARROW_COLOR = Color.white;
     protected final Color DIMENSION_COLOR = Color.BLACK;
-    protected final Color CLAMP_COLOR = new Color(255,0,0,200);
+    protected final Color CLAMP_COLOR = new Color(255, 0, 0, 200);
     protected final int ARROW_DIMENSION = 2;
 
     public static final double CLAMP_STROKE_WIDTH = 1.0;
@@ -103,7 +103,7 @@ public abstract class DrawCutWrapper {
         }
 
         this.mainWindow = mainWindow;
-        cursorPoint  = null;
+        cursorPoint = null;
         temporaryCreationPoints = new ArrayList<>();
 
         this.update(renderer);
@@ -124,14 +124,14 @@ public abstract class DrawCutWrapper {
 
         //draw line
         Color c = Color.black;
-        for(int i =0; i  < points.size() - 1; i++){
-            if(this.points.get(i).getColor() != Color.MAGENTA){
+        for (int i = 0; i < points.size() - 1; i++) {
+            if (this.points.get(i).getColor() != Color.MAGENTA) {
                 c = this.points.get(i).getColor();
             }
         }
-        for(int i =0; i  < points.size() - 1; i++){
+        for (int i = 0; i < points.size() - 1; i++) {
             graphics2D.setColor(c);
-            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1), canSelect);
+            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i + 1), canSelect);
         }
 
         //draw points
@@ -144,7 +144,7 @@ public abstract class DrawCutWrapper {
      * Draw the anchor of the specific cut
      *
      * @param graphics2D ref to graphics
-     * @param renderer ref to renderer
+     * @param renderer   ref to renderer
      */
     public abstract void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer);
 
@@ -159,12 +159,13 @@ public abstract class DrawCutWrapper {
 
     /**
      * Draw function called when you want to draw the dimensions of the cuts on the board
-     * @param graphics2D ref to graphics
+     *
+     * @param graphics2D        ref to graphics
      * @param rendering2DWindow ref to renderer instance
      */
     public abstract void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow);
 
-    public void drawWhileModifyingAnchor(Graphics graphics, Rendering2DWindow rendering2DWindow, PersoPoint cursorPoint){
+    public void drawWhileModifyingAnchor(Graphics graphics, Rendering2DWindow rendering2DWindow, PersoPoint cursorPoint) {
 
         System.out.println("MODIFIE POINT DE REF");
     }
@@ -334,7 +335,8 @@ public abstract class DrawCutWrapper {
      */
     protected Optional<UUID> createCut() {
         RequestCutDTO rq = new RequestCutDTO(this.cut.getPoints(), this.cut.getCutType(), this.cut.getBitIndex(), mainWindow.getController().getPanelDTO().getDepth(), refs);
-        return mainWindow.getController().requestCut(rq);
+        Optional<UUID> id = mainWindow.getController().requestCut(rq);
+        return id;
     }
 
     /**

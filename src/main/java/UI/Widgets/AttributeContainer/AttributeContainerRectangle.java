@@ -6,14 +6,16 @@ import UI.Events.ChangeAttributeEvent;
 import UI.MainWindow;
 import UI.SubWindows.CutListPanel;
 import UI.UIConfig;
-import UI.Widgets.*;
+import UI.Widgets.CutBox;
+import UI.Widgets.PointsBox;
+import UI.Widgets.SingleValueBox;
+import UI.Widgets.SingleValueBoxNotEditable;
 
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.List;
 
-public class AttributeContainerRectangle extends AttributeContainer{
+public class AttributeContainerRectangle extends AttributeContainer {
 
     PointsBox offsetOfRectangle;
     SingleValueBox widthOfRectangle;
@@ -27,38 +29,39 @@ public class AttributeContainerRectangle extends AttributeContainer{
         init_layout();
     }
 
-    private void init_attribute(MainWindow mainWindow, CutDTO cutDTO){
+    private void init_attribute(MainWindow mainWindow, CutDTO cutDTO) {
         super.init_attribute();
 
         offsetOfRectangle = new PointsBox(mainWindow, true, "Distance relative du rectangle", getAnchorCenterPoint());
         widthOfRectangle = new SingleValueBox(mainWindow, true, "Largeur interne", "X", getWidthEdgeEdge(), 0, Double.MAX_VALUE);
-        heightOfRectangle = new SingleValueBox(mainWindow, true, "Hauteur interne", "Y", getHeightEdgeEdge(), 0 , Double.MAX_VALUE);
+        heightOfRectangle = new SingleValueBox(mainWindow, true, "Hauteur interne", "Y", getHeightEdgeEdge(), 0, Double.MAX_VALUE);
         widthOfRectangleCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Largeur centrale (GCODE)", "X", getWidthCenterCenter());
         heightOfRectangleCenterCenter = new SingleValueBoxNotEditable(mainWindow, true, "Hauteur centrale (GCODE)", "Y", getHeightCenterCenter());
     }
-    private VertexDTO getAnchorCenterPoint(){
+
+    private VertexDTO getAnchorCenterPoint() {
         return cutDTO.getPoints().getFirst();
     }
 
-    private double getWidthEdgeEdge(){
+    private double getWidthEdgeEdge() {
         return cutDTO.getPoints().get(1).getX();
     }
 
-    private double getHeightEdgeEdge(){
+    private double getHeightEdgeEdge() {
         return cutDTO.getPoints().get(1).getY();
     }
 
-    private double getWidthCenterCenter(){
+    private double getWidthCenterCenter() {
         double bitDiamter = mainWindow.getController().getBitDiameter(cutDTO.getBitIndex());
         return getWidthEdgeEdge() + bitDiamter;
     }
 
-    private double getHeightCenterCenter(){
+    private double getHeightCenterCenter() {
         double bitDiamter = mainWindow.getController().getBitDiameter(cutDTO.getBitIndex());
         return getHeightEdgeEdge() + bitDiamter;
     }
 
-    private void init_layout(){
+    private void init_layout() {
         setBackground(null);
         setOpaque(false);
         GridBagLayout layout = new GridBagLayout();
@@ -108,33 +111,31 @@ public class AttributeContainerRectangle extends AttributeContainer{
         add(modifyAnchorBox, gc);
     }
 
-    private CutDTO pointsWidthResizeEdgeEdge(double newWidthEdgeEdge){
+    private CutDTO pointsWidthResizeEdgeEdge(double newWidthEdgeEdge) {
         CutDTO c = new CutDTO(cutDTO);
         double height = getHeightEdgeEdge();
         c.getPoints().set(1, new VertexDTO(newWidthEdgeEdge, height, 0));
         return c;
     }
 
-    private CutDTO pointsHeightResizeEdgeEdge(double newHeightEdgeEdge){
+    private CutDTO pointsHeightResizeEdgeEdge(double newHeightEdgeEdge) {
         CutDTO c = new CutDTO(cutDTO);
         double width = getWidthEdgeEdge();
         c.getPoints().set(1, new VertexDTO(width, newHeightEdgeEdge, 0));
         return c;
     }
 
-    private CutDTO moveAllPointsCenterCenter(double newValue, VertexDTO.AXIS axis){
+    private CutDTO moveAllPointsCenterCenter(double newValue, VertexDTO.AXIS axis) {
         CutDTO c = new CutDTO(cutDTO);
 
         VertexDTO centerAnchorPoint = getAnchorCenterPoint();
 
         VertexDTO anchor = VertexDTO.zero();
-        if(axis == VertexDTO.AXIS.X){
+        if (axis == VertexDTO.AXIS.X) {
             anchor = new VertexDTO(newValue, centerAnchorPoint.getY(), centerAnchorPoint.getZ());
-        }
-        else if(axis == VertexDTO.AXIS.Y){
+        } else if (axis == VertexDTO.AXIS.Y) {
             anchor = new VertexDTO(centerAnchorPoint.getX(), newValue, centerAnchorPoint.getZ());
-        }
-        else if(axis == VertexDTO.AXIS.Z){
+        } else if (axis == VertexDTO.AXIS.Z) {
             anchor = new VertexDTO(centerAnchorPoint.getX(), centerAnchorPoint.getY(), newValue);
         }
         c.getPoints().set(0, anchor);
@@ -163,7 +164,7 @@ public class AttributeContainerRectangle extends AttributeContainer{
         heightOfRectangleCenterCenter.getInput().setValueInMMWithoutTrigerringListeners(getHeightCenterCenter());
     }
 
-    private void addEventListenerToResizeInternalWidth(SingleValueBox sb){
+    private void addEventListenerToResizeInternalWidth(SingleValueBox sb) {
         sb.getInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -175,7 +176,7 @@ public class AttributeContainerRectangle extends AttributeContainer{
         });
     }
 
-    private void addEventListenerToResizeInternalHeight(SingleValueBox sb){
+    private void addEventListenerToResizeInternalHeight(SingleValueBox sb) {
         sb.getInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -187,7 +188,7 @@ public class AttributeContainerRectangle extends AttributeContainer{
         });
     }
 
-    private void addEventListenerToMoveOffset(PointsBox pb){
+    private void addEventListenerToMoveOffset(PointsBox pb) {
         pb.getxInput().getNumericInput().addPropertyChangeListener("value", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
