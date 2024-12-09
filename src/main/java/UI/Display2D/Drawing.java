@@ -96,6 +96,9 @@ public class Drawing {
     /**
      * @return all the DrawCutWrappers instances
      */
+    /**
+     * @return all the DrawCutWrappers instances
+     */
     public List<DrawCutWrapper> getCutWrappers() {
         return this.cutWrappers;
     }
@@ -267,6 +270,9 @@ public class Drawing {
 
     public void closeModifyPoint() {
         setState(DrawingState.IDLE);
+        CutDTO copyUndo = new CutDTO(prevCut);
+        CutDTO copyRedo = new CutDTO(currentModifiedCut.getCutDTO());
+        mainWindow.getController().executeAndMemorize(()->mainWindow.getController().modifyCut(copyRedo), ()->mainWindow.getController().modifyCut(copyUndo));
         currentModifiedCut.emptyRefs();
         deactivateModifyPointCutListener();
     }
@@ -282,7 +288,9 @@ public class Drawing {
 
     public void closeModifyCut() {
         setState(DrawingState.IDLE);
-        //mainWindow.getController().executeAndMemorize(()->mainWindow.getController().modifyCut(currentModifiedCut.getCutDTO()), ()->mainWindow.getController().modifyCut(prevCut));
+        CutDTO copyUndo = new CutDTO(prevCut);
+        CutDTO copyRedo = new CutDTO(currentModifiedCut.getCutDTO());
+        mainWindow.getController().executeAndMemorize(()->mainWindow.getController().modifyCut(copyRedo), ()->mainWindow.getController().modifyCut(copyUndo));
         currentModifiedCut.emptyRefs();
         deactivateModifyCutListener();
     }
