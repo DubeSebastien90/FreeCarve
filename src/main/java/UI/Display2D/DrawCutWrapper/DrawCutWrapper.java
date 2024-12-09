@@ -41,6 +41,7 @@ public abstract class DrawCutWrapper {
     protected DrawCutState previousState = DrawCutState.NOT_SELECTED;
     protected boolean hoveredView = false;
     protected double pointsRadius;
+    protected Point2D pointDepart;
 
     public enum DrawCutState {
         SELECTED,
@@ -116,6 +117,10 @@ public abstract class DrawCutWrapper {
         temporaryCreationPoints = new ArrayList<>();
 
         this.update(renderer);
+    }
+
+    public void setPointDepart(Point2D pointDepart) {
+        this.pointDepart = pointDepart;
     }
 
     /**

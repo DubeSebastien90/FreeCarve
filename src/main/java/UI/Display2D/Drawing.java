@@ -261,6 +261,7 @@ public class Drawing {
 
     public void initModifyCut(DrawCutWrapper cutToChangePoint) {
         currentModifiedCut = cutToChangePoint;
+        currentModifiedCut.setPointDepart(renderer.getMmMousePt());
         setState(DrawingState.MODIFY_CUT);
         activateModifyCutListener();
     }
