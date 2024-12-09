@@ -196,7 +196,6 @@ public class DrawCutStraight extends DrawCutWrapper {
             cut = new CutDTO(newCut);
             mainWindow.getController().modifyCut(newCut);
         } else if(getCutType() == CutType.LINE_FREE){
-            List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
             Point2D mmE = renderer.pixelTomm(pixP);
             VertexDTO p1 = new VertexDTO(renderer.getDrawing().getPrevPts().get(0).getX()+mmE.getX()-pointDepart.getX(), renderer.getDrawing().getPrevPts().get(0).getY()+mmE.getY()-pointDepart.getY(), 0);
             VertexDTO p2 = new VertexDTO(renderer.getDrawing().getPrevPts().get(1).getX()+mmE.getX()-pointDepart.getX(), renderer.getDrawing().getPrevPts().get(1).getY()+mmE.getY()-pointDepart.getY(), 0);
