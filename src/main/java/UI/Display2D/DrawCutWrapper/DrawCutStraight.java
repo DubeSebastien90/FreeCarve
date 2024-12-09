@@ -238,7 +238,6 @@ public class DrawCutStraight extends DrawCutWrapper {
             CutDTO c = getCutDTO();
 
             List<VertexDTO> relativePts = mainWindow.getController().generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
-
             CutDTO newCut = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState());
             cut = new CutDTO(newCut);
             mainWindow.getController().modifyCut(newCut);
