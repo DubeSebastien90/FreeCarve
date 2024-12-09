@@ -58,6 +58,11 @@ public class DrawCutRectangular extends DrawCutWrapper{
     }
 
     @Override
+    public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint) {
+
+    }
+
+    @Override
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
         graphics2D.setStroke(stroke);
         graphics2D.setColor(cursor.getColor());

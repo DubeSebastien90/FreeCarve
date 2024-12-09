@@ -45,6 +45,7 @@ public class Drawing {
     private DrawingState state;
     private Drawing drawing;
     private CutDTO prevCut;
+    private int indexPoint = 0;
 
     public enum DrawingState {
         CREATE_CUT,
@@ -217,8 +218,8 @@ public class Drawing {
         pointMoveListener = new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                super.mouseMoved(e);
-                //System.out.println("pointMoveListener");
+                //super.mouseMoved(e);
+                currentModifiedCut.movePoint(e.getPoint(), renderer, mainWindow, indexPoint);
             }
         };
 
@@ -248,7 +249,15 @@ public class Drawing {
 
     public void initModifyPoint(DrawCutWrapper cutToChangePoint, PersoPoint pointToChange) {
         currentModifiedCut = cutToChangePoint;
+        currentModifiedCut.setPointDepart(renderer.getMmMousePt());
+        prevCut = cutToChangePoint.getCutDTO();
         currentModifiedPoint = pointToChange;
+        for (int i = 0; i<currentModifiedCut.getPersoPoints().size(); i++) {
+            if (currentModifiedCut.getPersoPoints().get(i) == pointToChange) {
+                indexPoint = i;
+                //System.out.println("lol" + i);
+            }
+        }
         setState(Drawing.DrawingState.MODIFY_POINT);
         activateModifyPointCutListener();
     }

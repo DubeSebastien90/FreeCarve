@@ -405,7 +405,5 @@ public abstract class DrawCutWrapper {
 
     public abstract void moveUpdate(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow);
 
-    public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow){
-
-    }
+    public abstract void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint);
 }

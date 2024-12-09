@@ -178,6 +178,11 @@ public class DrawCutClamp extends DrawCutWrapper{
     }
 
     @Override
+    public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint) {
+
+    }
+
+    @Override
     public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
         this.update(renderer);
         graphics2D.setStroke(new BasicStroke((float) CLAMP_STROKE_WIDTH));

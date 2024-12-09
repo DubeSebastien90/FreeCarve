@@ -210,4 +210,9 @@ public class DrawCutL extends DrawCutWrapper {
 
     }
 
+    @Override
+    public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint) {
+
+    }
+
 }
