@@ -15,6 +15,7 @@ import UI.Widgets.PersoPoint;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +53,7 @@ public class DrawCutRectangular extends DrawCutWrapper{
     }
 
     @Override
-    public void moveUpdate(MouseEvent e, Rendering2DWindow renderer, MainWindow mainWindow) {
+    public void moveUpdate(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow) {
 
     }
 

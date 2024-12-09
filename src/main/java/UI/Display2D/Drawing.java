@@ -224,18 +224,8 @@ public class Drawing {
         cutMoveListener = new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                super.mouseMoved(e);
-                currentModifiedCut.moveUpdate(e, renderer, mainWindow);
-                //List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(currentModifiedCut.getCutDTO());
-                //Point2D mmE = renderer.pixelTomm(e.getPoint());
-                //VertexDTO p1 = new VertexDTO(mmE.getX(), listPoints.get(0).getY(),0);
-                //VertexDTO p2 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(),0);
-                //List<VertexDTO> relativePts = mainWindow.getController().generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1,p2,currentModifiedCut.getCutDTO().getBitIndex(),currentModifiedCut.getCutDTO().getRefsDTO());
-                //CutDTO c = currentModifiedCut.getCutDTO();
-                //mainWindow.getController().modifyCut(new CutDTO(c.getId(),c.getDepth(),c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()));
-                //update
-                //Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(c.getId());
-                //mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
+                //super.mouseMoved(e);
+                currentModifiedCut.moveUpdate(e.getPoint(), renderer, mainWindow);
             }
         };
 

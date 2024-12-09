@@ -174,16 +174,26 @@ public class DrawCutStraight extends DrawCutWrapper {
 
 
     @Override
-    public void moveUpdate(MouseEvent e, Rendering2DWindow renderer, MainWindow mainWindow) {
-        List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
-        Point2D mmE = renderer.pixelTomm(e.getPoint());
-        VertexDTO p1 = new VertexDTO(mmE.getX(), listPoints.get(0).getY(),0);
-        VertexDTO p2 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(),0);
-        List<VertexDTO> relativePts = mainWindow.getController().generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1,p2,getCutDTO().getBitIndex(),getCutDTO().getRefsDTO());
-        CutDTO c = getCutDTO();
-        mainWindow.getController().modifyCut(new CutDTO(c.getId(),c.getDepth(),c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()));
+    public void moveUpdate(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow) {
+        if (getCutType() == CutType.LINE_VERTICAL) {
+            List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
+            Point2D mmE = renderer.pixelTomm(pixP);
+            VertexDTO p1 = new VertexDTO(mmE.getX(), listPoints.get(0).getY(), 0);
+            VertexDTO p2 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
+            List<VertexDTO> relativePts = mainWindow.getController().generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
+            CutDTO c = getCutDTO();
+            mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()));
+        } else if (getCutType() == CutType.LINE_HORIZONTAL) {
+            List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
+            Point2D mmE = renderer.pixelTomm(pixP);
+            VertexDTO p1 = new VertexDTO(listPoints.get(0).getX(), mmE.getY(), 0);
+            VertexDTO p2 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
+            List<VertexDTO> relativePts = mainWindow.getController().generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
+            CutDTO c = getCutDTO();
+            mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()));
+        }
         //update board
-        Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(c.getId());
+        Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
         mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
     }
 
