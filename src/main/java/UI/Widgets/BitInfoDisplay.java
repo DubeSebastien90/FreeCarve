@@ -113,6 +113,7 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
         gbc.gridy = 3;
         removeButton.setBackground(null);
         removeButton.setBorder(null);
+        gbc.insets = new Insets(5, 0, 0, 0);
         add(removeButton, gbc);
 //
 //        GridBagConstraints gbc = new GridBagConstraints();
