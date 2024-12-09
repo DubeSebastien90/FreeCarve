@@ -59,7 +59,7 @@ public abstract class DrawCutWrapper {
     protected final Color HOVER_COLOR = Color.BLUE;
     protected final Color ARROW_COLOR = Color.white;
     protected final Color DIMENSION_COLOR = Color.BLACK;
-    protected final Color CLAMP_COLOR = new Color(255,0,0,200);
+    protected final Color CLAMP_COLOR = new Color(255, 0, 0, 200);
     protected final Color HOVER_VIEW_COLOR = Color.MAGENTA;
     protected final int ARROW_DIMENSION = 2;
     protected final double CLAMP_STROKE_WIDTH = 1.0;
@@ -83,7 +83,7 @@ public abstract class DrawCutWrapper {
         if(cut.getState() == CutState.NOT_VALID){
             setState(DrawCutState.INVALID, renderer);
         }
-        pointsRadius = strokeWidth/2 + 8*renderer.getZoom();
+        pointsRadius = strokeWidth / 2 + 8 * renderer.getZoom();
     }
 
     /**
@@ -137,37 +137,39 @@ public abstract class DrawCutWrapper {
 
         //draw line
         Color c = Color.black;
-        for(int i =0; i  < points.size() - 1; i++){
-            if(this.points.get(i).getColor() != HOVER_VIEW_COLOR){
+        for (int i = 0; i < points.size() - 1; i++) {
+            if (this.points.get(i).getColor() != HOVER_VIEW_COLOR) {
                 c = this.points.get(i).getColor();
             }
         }
-        if (hoveredView) {
-            c= Color.MAGENTA;
-        }
-        for(int i =0; i  < points.size() - 1; i++){
+        for (int i = 0; i < points.size() - 1; i++) {
+            Color c2 = c;
+            if (hoveredView && mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), i, i + 1)) {
+                c = HOVER_VIEW_COLOR;
+            }
             graphics2D.setColor(c);
-            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1));
+            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i + 1));
+            c = c2;
         }
 
         //draw points
-        for(int i =0; i  < points.size() - 1; i++){
-            if(this.points.get(i).getColor() != HOVER_VIEW_COLOR){
+        for (int i = 0; i < points.size() - 1; i++) {
+            if (this.points.get(i).getColor() != HOVER_VIEW_COLOR) {
                 c = this.points.get(i).getColor();
             }
         }
         for (VertexDTO point : renderer.getMainWindow().getController().getAbsolutePointsPosition(cut)) {
             graphics2D.setColor(c);
             Point2D temp = renderer.mmTopixel(new Point2D.Double(point.getX(), point.getY()));
-            PersoPoint _point = new PersoPoint(point.getX(), point.getY(), this.pointsRadius/renderer.getZoom(), true);
-            if(renderer.getDrawing().getState() == Drawing.DrawingState.IDLE && renderer.isPointonPanel() && mainWindow.getController().mouse_on_top(renderer.getMousePt().getX(),renderer.getMousePt().getY(),temp.getX(),temp.getY(), _point.getRadius()*renderer.getZoom())){
+            PersoPoint _point = new PersoPoint(point.getX(), point.getY(), this.pointsRadius / renderer.getZoom(), true);
+            if (renderer.getDrawing().getState() == Drawing.DrawingState.IDLE && renderer.isPointonPanel() && mainWindow.getController().mouse_on_top(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp.getX(), temp.getY(), _point.getRadius() * renderer.getZoom())) {
                 graphics2D.setColor(HOVER_VIEW_COLOR);
             }
             _point.drawMM(graphics2D, renderer);
         }
     }
 
-    public double getPointsRadius(){
+    public double getPointsRadius() {
         return this.pointsRadius;
     }
 
@@ -269,7 +271,7 @@ public abstract class DrawCutWrapper {
 
     public void setStrokeSize(double newSize) {
         this.stroke = new BasicStroke((float) newSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-        this.pointsRadius = newSize/2 + 8*mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getZoom();
+        this.pointsRadius = newSize / 2 + 8 * mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getZoom();
     }
 
     /**

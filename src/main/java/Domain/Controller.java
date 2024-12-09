@@ -12,6 +12,7 @@ import Domain.ThirdDimension.Camera;
 import Domain.ThirdDimension.Mesh;
 import Domain.ThirdDimension.Scene;
 
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -585,6 +586,10 @@ public class Controller implements IUnitConverter, IMemorizer {
      */
     public List<InvalidCutState> getInvalidCutStates(UUID cutID) {
         return cncMachine.getPanel().getInvalidCutStates(cncMachine, cutID);
+    }
+
+    public boolean isRoundedCutDTOSegmentHoveredByCursor(CutDTO cutDTO, VertexDTO cursor, int pt1, int pt2) {
+        return RoundedCut.isRoundedCutSegmentHoveredByMouse(cutDTO, cursor, cncMachine, pt1, pt2);
     }
 
     public boolean mouse_on_top(double mouse_x, double mouse_y, double pointX, double pointY, double pointRadius) {

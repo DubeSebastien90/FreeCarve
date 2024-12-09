@@ -4,6 +4,7 @@ import Common.DTO.CutDTO;
 import Common.DTO.VertexDTO;
 import Common.Pair;
 
+import java.awt.geom.Point2D;
 import java.util.List;
 
 /**
@@ -101,6 +102,16 @@ public class RoundedCut {
         for(int i = 0; i < points.size()-1; i++){
             RoundedCut roundedCut = new RoundedCut(points.get(i), points.get(i+1), bitDiameter);
             if(roundedCut.pointInRoundedCut(cursor)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isRoundedCutSegmentHoveredByMouse(CutDTO cutDTO, VertexDTO cursor, CNCMachine cncMachine, int pt1, int pt2){
+        if(Math.abs(pt1-pt2) == 1) {
+            List<VertexDTO> points = cncMachine.getAbsolutePointsPositionOfCutDTO(cutDTO);
+            double bitDiameter = cncMachine.getBitStorage().getBitDiameter(cutDTO.getBitIndex());
+            RoundedCut roundedCut = new RoundedCut(points.get(pt1), points.get(pt2), bitDiameter);
+            return roundedCut.pointInRoundedCut(cursor);
         }
         return false;
     }
