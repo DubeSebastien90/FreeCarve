@@ -98,10 +98,12 @@ public class ImperialFractionalNumberFormatter extends JFormattedTextField.Abstr
 
     public void setMinimum(double minimum) {
         this.min = minimum;
+        lastValue = Math.clamp(lastValue, min, max);
     }
 
     public void setMaximum(double maximum) {
         this.max = maximum;
+        lastValue = Math.clamp(lastValue, min, max);
     }
 
 }
