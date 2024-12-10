@@ -132,7 +132,7 @@ public class ExportWindow {
                 mainWindow.getController().setCNCrotationSpeed(((Number) evt.getNewValue()).intValue());
                 mainWindow.getMiddleContent().getExportWindow().calculateGcode();
             });
-            feedRate = new PixelNoUnitInputField(mainWindow, "Vitesse de coupe", mainWindow.getController().getCNCCuttingSpeed(), "mm / s");
+            feedRate = new PixelNoUnitInputField(mainWindow, "Vitesse de coupe", mainWindow.getController().getCNCCuttingSpeed(), "m / min");
             feedRate.getNumericInput().addPropertyChangeListener("value", evt -> {
                 mainWindow.getController().setCNCCuttingSpeed(((Number) evt.getNewValue()).intValue());
                 mainWindow.getMiddleContent().getExportWindow().calculateGcode();

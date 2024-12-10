@@ -63,7 +63,7 @@ public class OptionWindow extends JPanel {
         });
         cncPanel.add(gcodeRotationRate);
 
-        PixelNoUnitInputField gcodeFeedRate = new PixelNoUnitInputField(mainWindow, "Vitesse coupe CNC", mainWindow.getController().getCNCCuttingSpeed(), "mm per second");
+        PixelNoUnitInputField gcodeFeedRate = new PixelNoUnitInputField(mainWindow, "Vitesse coupe CNC", mainWindow.getController().getCNCCuttingSpeed(), "m/min");
         configurePixelField(gcodeFeedRate, evt -> {
             mainWindow.getController().setCNCCuttingSpeed(((Number) evt.getNewValue()).intValue());
             mainWindow.getMiddleContent().getExportWindow().refreshGcodeParam();
