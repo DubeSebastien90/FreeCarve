@@ -13,7 +13,7 @@ import com.formdev.flatlaf.ui.FlatRoundBorder;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.NumberFormatter;
+import javax.swing.text.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
@@ -64,8 +64,7 @@ public class MeasurementInputField extends BasicWindow {
         nameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         nameLabel.setBorder(new EmptyBorder(0, 0, 0, UIConfig.INSTANCE.getDefaultPadding()));
 
-
-        this.numericInput = new JFormattedTextField(DecimalFormat.getNumberInstance());
+        this.numericInput = new JFormattedTextField(new UnitFormatFactory());
         this.numericInput.setColumns(5);
         this.numericInput.setBorder(new FlatRoundBorder());
         this.numericInput.setValue(value);
@@ -118,8 +117,13 @@ public class MeasurementInputField extends BasicWindow {
     }
 
     public void setMaxDimension(DimensionDTO maxDimension) {
-        NumberFormatter numberFormatter = (NumberFormatter) numericInput.getFormatter();
-        numberFormatter.setMaximum(unitConverter.convertUnit(maxDimension, maxDimension.unit()).value());
+        JFormattedTextField.AbstractFormatter formatter = numericInput.getFormatter();
+
+        if (formatter instanceof NumberFormatter numberFormatter) {
+            numberFormatter.setMaximum(unitConverter.convertUnit(maxDimension, currentUnit.getUnit()).value());
+        } else if (formatter instanceof ImperialFractionalNumberFormatter imperialFormatter) {
+            imperialFormatter.setMaximum(unitConverter.convertUnit(maxDimension, currentUnit.getUnit()).value());
+        }
         this.maxDimension = maxDimension;
     }
 
@@ -128,8 +132,13 @@ public class MeasurementInputField extends BasicWindow {
     }
 
     public void setMinDimension(DimensionDTO minDimension) {
-        NumberFormatter numberFormatter = (NumberFormatter) numericInput.getFormatter();
-        numberFormatter.setMinimum(unitConverter.convertUnit(minDimension, minDimension.unit()).value());
+        JFormattedTextField.AbstractFormatter formatter = numericInput.getFormatter();
+
+        if (formatter instanceof NumberFormatter numberFormatter) {
+            numberFormatter.setMinimum(unitConverter.convertUnit(maxDimension, maxDimension.unit()).value());
+        } else if (formatter instanceof ImperialFractionalNumberFormatter imperialFormatter) {
+            imperialFormatter.setMinimum(unitConverter.convertUnit(maxDimension, maxDimension.unit()).value());
+        }
         this.minDimension = minDimension;
     }
 
@@ -145,6 +154,20 @@ public class MeasurementInputField extends BasicWindow {
         setMaxDimension(maxDimension);
         setMinDimension(minDimension);
 
+    }
+
+    private class UnitFormatFactory extends JFormattedTextField.AbstractFormatterFactory {
+
+        @Override
+        public JFormattedTextField.AbstractFormatter getFormatter(JFormattedTextField tf) {
+            JFormattedTextField.AbstractFormatter factory;
+            if (currentUnit == UiUnits.INCHES) {
+                factory = new ImperialFractionalNumberFormatter(unitConverter);
+            } else {
+                factory = new NumberFormatter(DecimalFormat.getNumberInstance());
+            }
+            return factory;
+        }
     }
 
     private class UnitChangeListener implements ItemListener {
