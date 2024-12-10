@@ -10,6 +10,8 @@ import UI.Widgets.PixelNoUnitInputField;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 /**
  * Represents an export window that displays a 3D renderer for visualizing
@@ -39,6 +41,7 @@ public class ExportWindow {
         init();
         calculateGcode();
         setButtonAction();
+
     }
 
     public JSplitPane getMainSplitPane() {
@@ -89,7 +92,9 @@ public class ExportWindow {
         splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 2);
         mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 3 * 2);
         mainSplitPane.setResizeWeight(1);
-
+        gcodeWindow.setFocusable(false);
+        gcodeDisplay.setFocusable(false);
+        rendering3DWindow.requestFocusInWindow();
     }
 
     public void calculateGcode() {

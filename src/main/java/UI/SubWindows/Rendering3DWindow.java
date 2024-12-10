@@ -65,6 +65,17 @@ public class Rendering3DWindow extends JPanel {
                 Rendering3DWindow.this.add(mouselabel);
             }
         });
+        requestFocusOnClicked();
+    }
+
+    private void requestFocusOnClicked(){
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                grabFocus();
+            }
+        });
     }
 
     /**
