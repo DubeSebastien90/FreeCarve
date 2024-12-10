@@ -34,6 +34,7 @@ public class MeasurementInputField extends BasicWindow {
     private DimensionDTO minDimension;
     private final IUnitConverter unitConverter;
     private final IMemorizer memorizer;
+    private final ImperialFractionalNumberFormatter imperialFractionalNumberFormatter;
 
     private UiUnits currentUnit;
 
@@ -50,6 +51,7 @@ public class MeasurementInputField extends BasicWindow {
         this.currentUnit = unit;
         this.minDimension = new DimensionDTO(minimumValue, unit.getUnit());
         this.maxDimension = new DimensionDTO(maximumValue, unit.getUnit());
+        this.imperialFractionalNumberFormatter = new ImperialFractionalNumberFormatter(unitConverter);
         this.init(nameOfInput, value);
         setCurrentUnit(UIConfig.INSTANCE.getDefaultUnit());
     }
@@ -135,9 +137,9 @@ public class MeasurementInputField extends BasicWindow {
         JFormattedTextField.AbstractFormatter formatter = numericInput.getFormatter();
 
         if (formatter instanceof NumberFormatter numberFormatter) {
-            numberFormatter.setMinimum(unitConverter.convertUnit(maxDimension, maxDimension.unit()).value());
+            numberFormatter.setMinimum(unitConverter.convertUnit(minDimension, currentUnit.getUnit()).value());
         } else if (formatter instanceof ImperialFractionalNumberFormatter imperialFormatter) {
-            imperialFormatter.setMinimum(unitConverter.convertUnit(maxDimension, maxDimension.unit()).value());
+            imperialFormatter.setMinimum(unitConverter.convertUnit(minDimension, currentUnit.getUnit()).value());
         }
         this.minDimension = minDimension;
     }
@@ -162,7 +164,9 @@ public class MeasurementInputField extends BasicWindow {
         public JFormattedTextField.AbstractFormatter getFormatter(JFormattedTextField tf) {
             JFormattedTextField.AbstractFormatter factory;
             if (currentUnit == UiUnits.INCHES) {
-                factory = new ImperialFractionalNumberFormatter(unitConverter);
+                // Cache last value in case of bad input
+                imperialFractionalNumberFormatter.stringToValue(tf.getText());
+                factory = imperialFractionalNumberFormatter;
             } else {
                 factory = new NumberFormatter(DecimalFormat.getNumberInstance());
             }
