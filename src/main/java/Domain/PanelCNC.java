@@ -130,11 +130,13 @@ class PanelCNC {
             if (list.get(i).getId() == id) {
                 int finalI = i;
                 Cut ct = list.get(finalI);
+                List<Cut> ct2 = findReferee(ct, cncMachine, new ArrayList<>());
                 memorizer.executeAndMemorize(() -> {
-                    cleanupRemove(list.get(finalI), cncMachine);
                     list.remove(finalI);
                     verifyCuts(cncMachine);
+                    cleanupRemove(ct, cncMachine);
                 }, () -> {
+                    restoreRefList(ct2);
                     this.cutList.add(ct);
                     verifyCuts(cncMachine);
                 });
@@ -143,6 +145,37 @@ class PanelCNC {
             }
         }
         return false;
+    }
+
+    private void restoreRefList(List<Cut> goodCut) {
+        HashMap<Integer, Cut> dic = new HashMap<>();
+        for (Cut c : cutList) {
+            for (Cut oldC : goodCut) {
+                if (oldC.getId() == c.getId()) {
+                    int i = cutList.indexOf(c);
+                    dic.put(i, oldC);
+                }
+            }
+        }
+        for (Integer i : dic.keySet()) {
+            cutList.remove(i.intValue());
+            cutList.add(i, dic.get(i));
+        }
+    }
+
+    private List<Cut> findReferee(Cut cut, CNCMachine cncMachine, List<Cut> li) {
+        for (Cut c : cutList) {
+            for (RefCut ref : c.getRefs()) {
+                if (ref.getCut() == cut) {
+                    ArrayList<RefCut> r = new ArrayList<>();
+                    r.add(ref);
+                    li.add(new Cut(c.getDTO(), getCutAndBorderList()));
+                    findReferee(c, cncMachine, li);
+                    break;
+                }
+            }
+        }
+        return li;
     }
 
     /**

@@ -1,10 +1,6 @@
 package UI.Display2D.DrawCutWrapper;
 
-import Common.DTO.CutDTO;
-import Common.DTO.DimensionDTO;
-import Common.DTO.RefCutDTO;
-import Common.DTO.PanelDTO;
-import Common.DTO.VertexDTO;
+import Common.DTO.*;
 import Common.Units;
 import Domain.CutType;
 import UI.Display2D.Drawing;
@@ -32,12 +28,12 @@ public class DrawCutStraight extends DrawCutWrapper {
 
     @Override
     public void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer) {
-            if (!cut.getRefsDTO().isEmpty()) { // drawing the first anchor point
-                VertexDTO offset = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
-                PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
-                referenceAnchorPoint.setColor(strokeColor);
-                referenceAnchorPoint.drawMM(graphics2D, renderer, false);
-            }
+        if (!cut.getRefsDTO().isEmpty()) { // drawing the first anchor point
+            VertexDTO offset = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
+            PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
+            referenceAnchorPoint.setColor(strokeColor);
+            referenceAnchorPoint.drawMM(graphics2D, renderer, false);
+        }
     }
 
     public DrawCutStraight(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
@@ -79,6 +75,8 @@ public class DrawCutStraight extends DrawCutWrapper {
 
     @Override
     public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
+//        Optional<CutDTO> ct = mainWindow.getController().findSpecificCut(cut.getId());
+//        ct.ifPresent(cutDTO -> cut = cutDTO);
         VertexDTO anchorAbsolutePosition = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
         double anchorDiameter = mainWindow.getController().getBitDiameter(cut.getRefsDTO().getFirst().getCut().getBitIndex());
         if (cut.getCutType() == CutType.LINE_HORIZONTAL) {
@@ -128,28 +126,25 @@ public class DrawCutStraight extends DrawCutWrapper {
 
     @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
-        if (refs.isEmpty()){
+        if (refs.isEmpty()) {
             refs = cut.getRefsDTO();
             VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
             RefCutDTO ref = mainWindow.getController().getRefCutsAndBorderOnPoint(p1).getFirst();
-            if(refs.size() <= 0){
+            if (refs.size() <= 0) {
                 refs.add(ref);
-            }
-            else{
+            } else {
                 refs.set(0, ref);
             }
 
-        }
-        else{
-            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(),pointInMM.getLocationY(),  0.0f);
+        } else {
+            VertexDTO newPoint = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
             temporaryCreationPoints.add(newPoint);
             List<RefCutDTO> listRefs = mainWindow.getController().getRefCutsAndBorderOnPoint(newPoint);
-            if(!listRefs.isEmpty() && !temporaryCreationPoints.isEmpty()){
+            if (!listRefs.isEmpty() && !temporaryCreationPoints.isEmpty()) {
                 int refIndex = temporaryCreationPoints.size();
-                if(refs.size() > refIndex){
+                if (refs.size() > refIndex) {
                     refs.set(refIndex, listRefs.getFirst());
-                }
-                else{
+                } else {
                     refs.add(listRefs.getFirst());
                 }
             }
