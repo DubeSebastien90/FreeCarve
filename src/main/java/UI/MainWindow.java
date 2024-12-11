@@ -91,7 +91,7 @@ public class MainWindow {
         frame.add(mainInsidePanel);
         frame.setFocusable(true);
         showFileSelectionWindow();
-
+        controller.flushAllUndoRedo();
     }
 
     /**

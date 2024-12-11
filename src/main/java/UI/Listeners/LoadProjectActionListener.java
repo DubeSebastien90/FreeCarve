@@ -1,9 +1,13 @@
 package UI.Listeners;
 
+import Common.DTO.VertexDTO;
 import Common.Exceptions.InvalidFileExtensionException;
+import UI.Display2D.Rendering2DWindow;
+import UI.Events.ChangeAttributeEvent;
 import UI.FileCache;
 import UI.MainWindow;
 import UI.Utils;
+import UI.Widgets.ChooseDimension;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,7 +34,11 @@ public class LoadProjectActionListener implements ActionListener {
             } catch (ClassNotFoundException ex) {
                 System.out.println("File content is not valid");
             }
+            Rendering2DWindow rend = mainWindow.getMiddleContent().getConfigChoiceWindow().getRendering2DWindow();
+            rend.getAttributeListener().changeAttributeEventOccurred(new ChangeAttributeEvent(rend, new ChooseDimension(rend, mainWindow.getController().getGrid().isActive())));
             mainWindow.getMiddleContent().getCutWindow().notifyObservers();
+            VertexDTO v = mainWindow.getController().getPanelDTO().getPanelDimension();
+            mainWindow.getMiddleContent().getConfigChoiceWindow().getRendering2DWindow().resizePanneau(v.getX(), v.getY());
             FileCache.INSTANCE.setLastProjectSave(file);
         }
     }

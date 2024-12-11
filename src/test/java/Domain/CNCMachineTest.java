@@ -47,7 +47,7 @@ public class CNCMachineTest {
         pointList.add(new VertexDTO(13, 14, 15));
         pointList.add(new VertexDTO(16, 17, 18));
 
-        cncMachine.getPanel().requestCut(new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 0.0f, new ArrayList<RefCutDTO>()));
+        cncMachine.getPanel().requestCut(new CNCMachine(new UndoRedoManager()),new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 0.0f, new ArrayList<RefCutDTO>()));
         Assertions.assertEquals(0.2f, cncMachine.getBitStorage().getBitList()[1].getDiameter());
         Assertions.assertEquals(1, cncMachine.getPanel().getCutList().size());
 

@@ -82,10 +82,16 @@ class PanelCNC {
      *
      * @param cut The RequestCut that needs to be valid.
      */
-    public Optional<UUID> requestCut(RequestCutDTO cut) {
+    public Optional<UUID> requestCut(CNCMachine cncMachine, RequestCutDTO cut) {
         UUID newUUID = UUID.randomUUID();
         CutDTO cutDTO = new CutDTO(newUUID, cut);
-        memorizer.executeAndMemorize(() -> this.cutList.add(createPanelCut(cutDTO)), () -> this.cutList.removeIf(e -> e.getId() == newUUID));
+        memorizer.executeAndMemorize(() -> {
+            this.cutList.add(createPanelCut(cutDTO));
+            verifyCuts(cncMachine);
+        }, () -> {
+            this.cutList.removeIf(e -> e.getId() == newUUID);
+            verifyCuts(cncMachine);
+        });
         return Optional.of(newUUID);
     }
 
@@ -95,10 +101,17 @@ class PanelCNC {
      * @param cut The new CutDTO need to be valid
      * @return Optional<UUID>
      */
-    Optional<UUID> modifyCut(CutDTO cut) {
+    Optional<UUID> modifyCut(CNCMachine cncMachine, CutDTO cut) {
         for (int i = 0; i < this.cutList.size(); i++) {
             if (cut.getId() == this.cutList.get(i).getId()) {
-                this.cutList.get(i).modifyCut(cut, this.getCutAndBorderList());
+                int finalI = i;
+                CutDTO ct = this.cutList.get(finalI).getDTO();
+                memorizer.executeAndMemorize(() -> {
+                    this.cutList.get(finalI).modifyCut(cut, this.getCutAndBorderList());
+                    verifyCuts(cncMachine);
+                }, () -> this.cutList.get(finalI).modifyCut(ct, this.getCutAndBorderList()));
+
+
                 return Optional.of(cut.getId());
             }
         }
@@ -115,10 +128,17 @@ class PanelCNC {
         List<Cut> list = getCutList();
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId() == id) {
-                cleanupRemove(list.get(i), cncMachine);
-                list.remove(i);
-                //todo look for potential non removable cut
-                verifyCuts(cncMachine);
+                int finalI = i;
+                Cut ct = list.get(finalI);
+                memorizer.executeAndMemorize(() -> {
+                    cleanupRemove(list.get(finalI), cncMachine);
+                    list.remove(finalI);
+                    verifyCuts(cncMachine);
+                }, () -> {
+                    this.cutList.add(ct);
+                    verifyCuts(cncMachine);
+                });
+
                 return true;
             }
         }

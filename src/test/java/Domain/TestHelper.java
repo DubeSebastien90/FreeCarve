@@ -16,7 +16,8 @@ public class TestHelper {
         pointList.add(new VertexDTO(16, 17, 18));
 
         RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>());
-        panelCNC.requestCut(rcDTO);
+        CNCMachine cnc = new CNCMachine(new UndoRedoManager());
+        panelCNC.requestCut(cnc, rcDTO);
         return panelCNC.getDTO();
     }
 }

@@ -15,8 +15,8 @@ import java.util.*;
  * @since 2024-11-08
  */
 class UndoRedoManager implements IMemorizer {
-    private final Deque<ActionPair> undoStack;
-    private final Deque<ActionPair> redoStack;
+    private Deque<ActionPair> undoStack;
+    private Deque<ActionPair> redoStack;
     private final Collection<IRefreshable> refreshables;
 
     /**
@@ -77,6 +77,11 @@ class UndoRedoManager implements IMemorizer {
             throw new NullPointerException("Cannot register null refreshable");
 
         refreshables.add(refreshable);
+    }
+
+    public void flushAll(){
+        this.redoStack = new LinkedList<>();
+        this.undoStack = new LinkedList<>();
     }
 
     record ActionPair(IDoAction doAction, IUndoAction undoAction) {}

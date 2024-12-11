@@ -78,8 +78,7 @@ class CNCMachine {
     }
 
     public Optional<UUID> requestCut(RequestCutDTO requestCutDTO) {
-        Optional<UUID> id = panel.requestCut(requestCutDTO);
-        this.panel.verifyCuts(this);
+        Optional<UUID> id = panel.requestCut(this, requestCutDTO);
         if (id.isPresent()) {
             Optional<CutDTO> cou = panel.findSpecificCut(id.get());
             if (cou.isPresent() && cou.get().getState() != CutState.NOT_VALID) {
@@ -90,8 +89,7 @@ class CNCMachine {
     }
 
     public Optional<UUID> modifyCut(CutDTO cutDTO) {
-        Optional<UUID> id = panel.modifyCut(cutDTO);
-        this.panel.verifyCuts(this);
+        Optional<UUID> id = panel.modifyCut(this, cutDTO);
         if (id.isPresent()) {
             Optional<CutDTO> cou = panel.findSpecificCut(id.get());
             if (cou.isPresent() && cou.get().getState() != CutState.NOT_VALID) {

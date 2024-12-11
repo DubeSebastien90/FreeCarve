@@ -571,5 +571,9 @@ public class Controller implements IUnitConverter, IMemorizer {
     public boolean isRoundedCutDTOHoveredByCursor(CutDTO cutDTO, VertexDTO cursor) {
         return RoundedCut.isRoundedCutHoveredByMouse(cutDTO, cursor, cncMachine);
     }
+
+    public void flushAllUndoRedo(){
+        undoRedoManager.flushAll();
+    }
 }
 

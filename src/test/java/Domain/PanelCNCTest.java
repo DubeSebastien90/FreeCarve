@@ -43,7 +43,7 @@ public class PanelCNCTest {
         pointList.add(new VertexDTO(16, 17, 18));
 
         RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>());
-        panelCNC.requestCut(rcDTO);
+        panelCNC.requestCut(new CNCMachine(new UndoRedoManager()),rcDTO);
 
         PanelDTO panelDTO = panelCNC.getDTO();
 
@@ -67,7 +67,7 @@ public class PanelCNCTest {
         pointList.add(new VertexDTO(13, 14, 15));
         pointList.add(new VertexDTO(16, 17, 18));
         RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>());
-        panelCNC.requestCut(rcDTO);
+        panelCNC.requestCut(new CNCMachine(new UndoRedoManager()),rcDTO);
         ArrayList<Cut> refCutList = (ArrayList<Cut>) panelCNC.getCutList();
 
         // Assert
@@ -84,7 +84,7 @@ public class PanelCNCTest {
         // Act
         Assertions.assertEquals(panelCNC.getCutList().size(), 0);
         RequestCutDTO rcDTO = new RequestCutDTO(pointList, CutType.LINE_VERTICAL, 0, 3.0f, new ArrayList<RefCutDTO>());
-        panelCNC.requestCut(rcDTO);
+        panelCNC.requestCut(new CNCMachine(new UndoRedoManager()),rcDTO);
         PanelDTO pDTO = panelCNC.getDTO();
 
         // Assert
@@ -117,7 +117,7 @@ public class PanelCNCTest {
                 0);
 
 
-        panelCNC.requestCut(rq);
+        panelCNC.requestCut(new CNCMachine(new UndoRedoManager()),rq);
 
         // Act
         //boolean result = panelCNC.cutInClampZone( cut, panelCNC.getCutList().get(0));
@@ -148,7 +148,7 @@ public class PanelCNCTest {
                 0);
 
 
-        panelCNC.requestCut(rq);
+        panelCNC.requestCut(new CNCMachine(new UndoRedoManager()),rq);
 
         // Act
         //boolean result = panelCNC.cutInClampZone(cut, panelCNC.getCutList().get(0));

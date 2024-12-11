@@ -4,8 +4,6 @@ import Common.DTO.GridDTO;
 import Common.DTO.VertexDTO;
 import Common.Interfaces.IPanelObserver;
 import Domain.CutType;
-
-import UI.Display2D.DrawCutWrapper.DrawCutRectangular;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutListener;
@@ -24,7 +22,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static UI.UiUtil.getIcon;
 
@@ -67,6 +64,8 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         super();
         //references to other windows
         this.mainWindow = mainWindow;
+//        VertexDTO v = mainWindow.getController().getPanelDTO().getPanelDimension();
+//        resizePanneau(v.getX(), v.getY());
         this.changeCutListener = changeCutListener;
         this.changeAttributeListener = changeAttributeListener;
         //rendering variables
