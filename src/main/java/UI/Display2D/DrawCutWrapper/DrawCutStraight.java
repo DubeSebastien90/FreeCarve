@@ -212,17 +212,28 @@ public class DrawCutStraight extends DrawCutWrapper {
 
     @Override
     public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint) {
+        int nbRefs = mainWindow.getController().getCutDTOById(cut.getId()).getRefsDTO().size();
         if (getCutType() == CutType.LINE_VERTICAL) {
             List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
             Point2D mmE = renderer.pixelTomm(pixP);
             VertexDTO p1;
             VertexDTO p2;
             if (indexPoint == 0) {
-                p1 = new VertexDTO(listPoints.get(0).getX(), mmE.getY(), 0);
-                p2 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
+                if (nbRefs <= 1) {
+                    p1 = new VertexDTO(listPoints.get(0).getX(), mmE.getY(), 0);
+                    p2 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
+                } else {
+                    p1 = new VertexDTO(mmE.getX(), listPoints.get(0).getY(), 0);
+                    p2 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
+                }
             } else {
-                p1 = new VertexDTO(listPoints.get(0).getX(), listPoints.get(0).getY(), 0);
-                p2 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
+                if (nbRefs <= 2) {
+                    p1 = new VertexDTO(listPoints.get(0).getX(), listPoints.get(0).getY(), 0);
+                    p2 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
+                }else {
+                    p1 = new VertexDTO(mmE.getX(), listPoints.get(0).getY(), 0);
+                    p2 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
+                }
             }
             CutDTO c = getCutDTO();
 
@@ -237,11 +248,21 @@ public class DrawCutStraight extends DrawCutWrapper {
             VertexDTO p1;
             VertexDTO p2;
             if (indexPoint == 0) {
-                p1 = new VertexDTO(mmE.getX(), listPoints.get(0).getY(), 0);
-                p2 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
+                if (nbRefs <= 1) {
+                    p1 = new VertexDTO(mmE.getX(), listPoints.get(0).getY(), 0);
+                    p2 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
+                } else{
+                    p1 = new VertexDTO(listPoints.get(0).getX(), mmE.getY(), 0);
+                    p2 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
+                }
             } else {
-                p1 = new VertexDTO(listPoints.get(0).getX(), listPoints.get(0).getY(), 0);
-                p2 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
+                if (nbRefs <= 2) {
+                    p1 = new VertexDTO(listPoints.get(0).getX(), listPoints.get(0).getY(), 0);
+                    p2 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
+                } else{
+                    p1 = new VertexDTO(listPoints.get(0).getX(), mmE.getY(), 0);
+                    p2 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
+                }
             }
             CutDTO c = getCutDTO();
 

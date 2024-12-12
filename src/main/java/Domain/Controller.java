@@ -596,5 +596,14 @@ public class Controller implements IUnitConverter, IMemorizer {
         double dist = Math.sqrt(Math.pow(mouse_x - pointX, 2) + Math.pow(mouse_y - pointY, 2));
         return dist <= pointRadius;
     }
+
+    public CutDTO getCutDTOById(UUID cutId) {
+        for(CutDTO cut : getCutListDTO()){
+            if(cut.getId().equals(cutId)){
+                return cut;
+            }
+        }
+        return null;
+    }
 }
 
