@@ -302,22 +302,18 @@ public class Drawing {
 
     private void activateModifyPointCutListener() {
         renderer.addMouseMotionListener(pointMoveListener);
-        System.out.println("activateModifyPointCutListener");
     }
 
     private void deactivateModifyPointCutListener() {
         renderer.removeMouseMotionListener(pointMoveListener);
-        System.out.println("deactivateModifyPointCutListener");
     }
 
     private void activateModifyCutListener() {
         renderer.addMouseMotionListener(cutMoveListener);
-        System.out.println("activateModifyCutListener");
     }
 
     private void deactivateModifyCutListener() {
         renderer.removeMouseMotionListener(cutMoveListener);
-        System.out.println("deactivateModifyCutListener");
     }
 
     public void setState(DrawingState state) {
