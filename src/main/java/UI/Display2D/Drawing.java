@@ -274,8 +274,8 @@ public class Drawing {
     public void closeModifyPoint() {
         setState(DrawingState.IDLE);
         CutDTO copyUndo = new CutDTO(prevCut);
-        CutDTO copyRedo = new CutDTO(currentModifiedCut.getCutDTO());
-        //mainWindow.getController().executeAndMemorize(()->mainWindow.getController().modifyCut(copyRedo), ()->mainWindow.getController().modifyCut(copyUndo));
+        CutDTO copyRedo = new CutDTO(mainWindow.getController().getCutDTOById(currentModifiedCut.getCutDTO().getId()));
+        mainWindow.getController().executeAndMemorize(()->mainWindow.getController().modifyCut(copyRedo), ()->mainWindow.getController().modifyCut(copyUndo));
         currentModifiedCut.emptyRefs();
         deactivateModifyPointCutListener();
     }
@@ -294,8 +294,8 @@ public class Drawing {
     public void closeModifyCut() {
         setState(DrawingState.IDLE);
         CutDTO copyUndo = new CutDTO(prevCut);
-        CutDTO copyRedo = new CutDTO(currentModifiedCut.getCutDTO());
-        //mainWindow.getController().executeAndMemorize(()->mainWindow.getController().modifyCut(copyRedo), ()->mainWindow.getController().modifyCut(copyUndo));
+        CutDTO copyRedo = new CutDTO(mainWindow.getController().getCutDTOById(currentModifiedCut.getCutDTO().getId()));
+        mainWindow.getController().executeAndMemorize(()->mainWindow.getController().modifyCut(copyRedo), ()->mainWindow.getController().modifyCut(copyUndo));
         currentModifiedCut.emptyRefs();
         deactivateModifyCutListener();
     }
