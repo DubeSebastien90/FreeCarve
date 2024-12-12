@@ -201,14 +201,19 @@ class PanelCNC {
      *
      * @param cncMachine the machine
      */
-    void validateCuts(CNCMachine cncMachine) {
+    void validateCutBasedOnBits(CNCMachine cncMachine) {
         Map<Integer, BitDTO> configuredBits = cncMachine.getBitStorage().getConfiguredBits();
+
+        /// print fest
+        for(Integer key : configuredBits.keySet()) {
+            System.out.println("key : " + key + " - " + configuredBits.get(key).getName() + "  - " + configuredBits.get(key).getDiameter());
+        }
+
         for (Cut c : cutList) {
-            if (!c.getRefs().isEmpty()) {
-                if (c.getCutState() != CutState.NOT_VALID) {
-                    c.setCutState(configuredBits.containsKey(c.getBitIndex()) ? CutState.VALID : CutState.NOT_VALID);
-                }
-            }
+            System.out.println("Cut: " + c.getId());
+            System.out.println("Cut State : " + c.getCutState() + " - " + c.getBitIndex());
+            c.setCutState(configuredBits.containsKey(c.getBitIndex()) ? CutState.VALID : CutState.NOT_VALID);
+            System.out.println("Cut State After: " + c.getCutState());
         }
     }
 

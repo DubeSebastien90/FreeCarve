@@ -65,7 +65,7 @@ class CNCMachine {
 
     void setPanel(PanelCNC panel) {
         this.panel = panel;
-        this.panel.validateCuts(this);
+        this.panel.validateCutBasedOnBits(this);
     }
 
     public BitStorage getBitStorage() {
@@ -74,7 +74,7 @@ class CNCMachine {
 
     public void setBitStorage(BitStorage bitStorage) {
         this.bitStorage = bitStorage;
-        this.panel.validateCuts(this);
+        this.panel.validateCutBasedOnBits(this);
     }
 
     public Optional<UUID> requestCut(RequestCutDTO requestCutDTO) {
@@ -82,7 +82,7 @@ class CNCMachine {
         if (id.isPresent()) {
             Optional<CutDTO> cou = panel.findSpecificCut(id.get());
             if (cou.isPresent() && cou.get().getState() != CutState.NOT_VALID) {
-                this.panel.validateCuts(this);
+                this.panel.validateCutBasedOnBits(this);
             }
         }
         return id;
@@ -93,7 +93,7 @@ class CNCMachine {
         if (id.isPresent()) {
             Optional<CutDTO> cou = panel.findSpecificCut(id.get());
             if (cou.isPresent() && cou.get().getState() != CutState.NOT_VALID) {
-                this.panel.validateCuts(this);
+                this.panel.validateCutBasedOnBits(this);
             }
         }
         return id;

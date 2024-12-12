@@ -49,7 +49,15 @@ public class AttributePanel extends BasicWindow implements IPanelObserver {
             gc.weightx = 1;
             this.panel.add(newAttributable.showName(), gc);
 
-            gc.gridx = 0; gc.gridy = 1;
+            JPanel showErrorsPanel = newAttributable.showErrors();
+            if(showErrorsPanel.getComponentCount() > 0){ // Only draw the showErrors panel if there is any errors
+                gc.gridx = 0; gc.gridy = 1;
+                gc.fill = GridBagConstraints.HORIZONTAL;
+                gc.weightx = 1;
+                this.panel.add(newAttributable.showErrors(), gc);
+            }
+
+            gc.gridx = 0; gc.gridy = 2;
             gc.fill = GridBagConstraints.HORIZONTAL;
             gc.weightx = 1;
             this.panel.add(newAttributable.showAttribute(), gc);

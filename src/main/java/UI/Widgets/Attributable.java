@@ -22,6 +22,12 @@ public interface Attributable {
 
     /**
      * virtual function that needs to be overriden by every child of Attributable
+     * @return {@Code JPanel} of the erros that can be seen
+     */
+    public JPanel showErrors();
+
+    /**
+     * virtual function that needs to be overriden by every child of Attributable
      * @return {@Code JPanel} of the possible attributs that can be modified
      */
     public JPanel showAttribute();

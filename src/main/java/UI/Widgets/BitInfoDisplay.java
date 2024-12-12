@@ -239,7 +239,6 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
         widthTextArea.getNumericInput().setValue(0.0);
         bitConfigurationPanel.refresh();
         mainWindow.getMiddleContent().getCutWindow().notifyObservers();
-        //mainWindow.getMiddleContent().getCutWindow().getCutListPanel().refreshAttributeContainer();
     }
 
     /**
@@ -250,6 +249,11 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
     @Override
     public JLabel showName() {
         return new JLabel("Bit modification");
+    }
+
+    @Override
+    public JPanel showErrors() {
+        return new JPanel();
     }
 
     /**

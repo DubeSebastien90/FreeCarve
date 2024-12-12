@@ -101,6 +101,11 @@ public class CutBox implements Attributable {
         return label;
     }
 
+    @Override
+    public JPanel showErrors() {
+        return new AttributeContainerError(mainWindow, cutListPanel, cut, this);
+    }
+
     /**
      * Function override of the Attributable interface
      *
@@ -108,12 +113,7 @@ public class CutBox implements Attributable {
      */
     @Override
     public JPanel showAttribute() {
-        if(this.cut.getState() == CutState.VALID){
-            return attributeContainer;
-        }
-        else{
-            return new AttributeContainerError(mainWindow, cutListPanel, cut, this);
-        }
+        return attributeContainer;
     }
 
     /**

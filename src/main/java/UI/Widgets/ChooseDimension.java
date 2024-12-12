@@ -127,6 +127,11 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
         return new JLabel("");
     }
 
+    @Override
+    public JPanel showErrors() {
+        return new JPanel();
+    }
+
     /**
      * @return JPanel representation of this component's attribute view.
      */
