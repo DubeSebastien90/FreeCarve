@@ -61,6 +61,7 @@ public abstract class DrawCutWrapper {
     protected final int ARROW_DIMENSION = 2;
     public static final double CLAMP_STROKE_WIDTH = 10.0;
 
+
     /**
      * Basic constructor with CutDTO
      *

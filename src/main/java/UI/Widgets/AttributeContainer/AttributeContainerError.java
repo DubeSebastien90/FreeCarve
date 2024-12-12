@@ -26,11 +26,16 @@ public class AttributeContainerError extends AttributeContainer {
 
 
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO){
+<<<<<<< HEAD
         errorBoxes = new ArrayList<>();
         List<InvalidCutState> invalidCutState =  mainWindow.getController().getInvalidCutStates(cutDTO.getId());
         for(InvalidCutState state : invalidCutState){
             errorBoxes.add(new ErrorBox(true, "Erreur", generateErrorMessage(state)));
         }
+=======
+        InvalidCutState invalidCutState =  InvalidCutState.INVALID_REF;//mainWindow.getController().getInvalidCutState(cutDTO);
+        errorBox = new ErrorBox(true, "Erreur", generateErrorMessage(invalidCutState));
+>>>>>>> 1878b31 (debut gestion erreurs)
     }
 
     private String generateErrorMessage(InvalidCutState invalidCutState){
@@ -42,10 +47,14 @@ public class AttributeContainerError extends AttributeContainer {
                 return "Référence non valide pour la coupe";
             }
             case INVALID_BIT -> {
+<<<<<<< HEAD
                 return "Index de l'outil sélectionné n'existe pas";
             }
             case OUT_OF_BOARD -> {
                 return "Coupe à l'extérieur du panneau";
+=======
+                return "Index du bit sélectionné n'existe pas";
+>>>>>>> 1878b31 (debut gestion erreurs)
             }
             default -> {
                 return "Coupe Invalide";

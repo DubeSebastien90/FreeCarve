@@ -295,11 +295,11 @@ class PanelCNC {
      * @param id id of the cut
      * @return Optional<CutDTO> : CutDTO if found, null if not found
      */
-    Optional<Cut> findSpecificCut(UUID id) {
+    Optional<CutDTO> findSpecificCut(UUID id) {
         List<Cut> cuts = getCutList();
         for (Cut c : cuts) {
             if (c.getId() == id) {
-                return Optional.of(c);
+                return Optional.of(c.getDTO());
             }
         }
         return Optional.empty();

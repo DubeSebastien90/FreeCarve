@@ -66,7 +66,10 @@ class CNCMachine implements IRefreshable {
 
     void setPanel(PanelCNC panel) {
         this.panel = panel;
+        //pas ca sur ma branche..a voir
         this.panel.validateAll(this);
+        //cetait ca sur ma branche...a voir
+        this.panel.validateCutBasedOnBits(this);
     }
 
     public BitStorage getBitStorage() {
@@ -75,16 +78,28 @@ class CNCMachine implements IRefreshable {
 
     public void setBitStorage(BitStorage bitStorage) {
         this.bitStorage = bitStorage;
-        this.panel.validateAll(this);
+        this.panel.validateCutBasedOnBits(this);
     }
 
     public Optional<UUID> requestCut(RequestCutDTO requestCutDTO) {
         Optional<UUID> id = panel.requestCut(this, requestCutDTO);
+        if (id.isPresent()) {
+            Optional<CutDTO> cou = panel.findSpecificCut(id.get());
+            if (cou.isPresent() && cou.get().getState() != CutState.NOT_VALID) {
+                this.panel.validateCutBasedOnBits(this);
+            }
+        }
         return id;
     }
 
-    public Optional<UUID> modifyCut(CutDTO cutDTO,  boolean canMemorize) {
-        Optional<UUID> id = panel.modifyCut(this, cutDTO, canMemorize);
+    public Optional<UUID> modifyCut(CutDTO cutDTO) {
+        Optional<UUID> id = panel.modifyCut(this, cutDTO);
+        if (id.isPresent()) {
+            Optional<CutDTO> cou = panel.findSpecificCut(id.get());
+            if (cou.isPresent() && cou.get().getState() != CutState.NOT_VALID) {
+                this.panel.validateCutBasedOnBits(this);
+            }
+        }
         return id;
     }
 
