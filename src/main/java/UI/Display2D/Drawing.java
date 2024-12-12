@@ -253,6 +253,9 @@ public class Drawing {
 
     public void initModifyPoint(DrawCutWrapper cutToChangePoint, PersoPoint pointToChange) {
         currentModifiedCut = cutToChangePoint;
+        currentModifiedCut.setState(DrawCutWrapper.DrawCutState.SELECTED,renderer);
+        Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(currentModifiedCut.getCutDTO().getId());
+        cutBox.get().select();
         currentModifiedCut.setPointDepart(renderer.getMmMousePt());
         prevCut = cutToChangePoint.getCutDTO();
         prevPts = mainWindow.getController().getAbsolutePointsPosition(prevCut);
@@ -279,6 +282,8 @@ public class Drawing {
 
     public void initModifyCut(DrawCutWrapper cutToChangePoint) {
         currentModifiedCut = cutToChangePoint;
+        Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(currentModifiedCut.getCutDTO().getId());
+        cutBox.get().select();
         currentModifiedCut.setPointDepart(renderer.getMmMousePt());
         setState(DrawingState.MODIFY_CUT);
         activateModifyCutListener();
