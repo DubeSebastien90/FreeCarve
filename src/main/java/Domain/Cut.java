@@ -171,6 +171,20 @@ class Cut {
 
     public void setCutState(CutState cutState){this.cutState = cutState;}
 
+    public boolean areCutRefsValid(){
+        switch (type){
+            case LINE_VERTICAL, LINE_HORIZONTAL, LINE_FREE -> {
+                return !refs.isEmpty();
+            }
+            case RECTANGULAR, L_SHAPE -> {
+                return refs.size() >= 2;
+            }
+            default -> {
+                return true;
+            }
+        }
+    }
+
     /**
      * Get the copied absolute points of the cut, based on it's references
      * @return List<VertexDTO> of the copied absolute points

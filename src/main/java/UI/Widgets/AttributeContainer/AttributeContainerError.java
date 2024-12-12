@@ -10,11 +10,13 @@ import UI.Widgets.CutBox;
 import UI.Widgets.ErrorBox;
 import org.w3c.dom.Attr;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.*;
 
 public class AttributeContainerError extends AttributeContainer {
 
-    ErrorBox errorBox;
+    List<ErrorBox> errorBoxes;
 
     public AttributeContainerError(MainWindow mainWindow, CutListPanel cutListPanel, CutDTO cutDTO, CutBox cutBox) {
         super(mainWindow, cutListPanel, cutDTO, cutBox);
@@ -24,8 +26,11 @@ public class AttributeContainerError extends AttributeContainer {
 
 
     private void init_attribute(MainWindow mainWindow, CutDTO cutDTO){
-        InvalidCutState invalidCutState =  InvalidCutState.INVALID_REF;//mainWindow.getController().getInvalidCutState(cutDTO);
-        errorBox = new ErrorBox(true, "Erreur", generateErrorMessage(invalidCutState));
+        errorBoxes = new ArrayList<>();
+        List<InvalidCutState> invalidCutState =  mainWindow.getController().getInvalidCutStates(cutDTO.getId());
+        for(InvalidCutState state : invalidCutState){
+            errorBoxes.add(new ErrorBox(true, "Erreur", generateErrorMessage(state)));
+        }
     }
 
     private String generateErrorMessage(InvalidCutState invalidCutState){
@@ -37,7 +42,7 @@ public class AttributeContainerError extends AttributeContainer {
                 return "Référence non valide pour la coupe";
             }
             case INVALID_BIT -> {
-                return "Index du bit sélectionné n'existe pas";
+                return "Index de l'outil sélectionné n'existe pas";
             }
             default -> {
                 return "Coupe Invalide";
@@ -51,13 +56,17 @@ public class AttributeContainerError extends AttributeContainer {
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gc = new GridBagConstraints();
         setLayout(layout);
-        gc.gridx = 0;
-        gc.gridy = 0;
-        gc.weightx = 1;
-        gc.weighty = 1;
-        gc.fill = GridBagConstraints.HORIZONTAL;
-        gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
-        add(errorBox, gc);
+
+        for(int i =0; i < errorBoxes.size(); i++){
+            gc.gridx = 0;
+            gc.gridy = i;
+            gc.weightx = 1;
+            gc.weighty = 1;
+            gc.fill = GridBagConstraints.HORIZONTAL;
+            gc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
+            add(errorBoxes.get(i), gc);
+        }
+
     }
 
     @Override

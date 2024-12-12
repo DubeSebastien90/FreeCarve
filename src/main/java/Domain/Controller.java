@@ -83,7 +83,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @return Optional<CutDTO> : CutDTO if found, null if not found
      */
     public Optional<CutDTO> findSpecificCut(UUID id) {
-        return this.cncMachine.getPanel().findSpecificCut(id);
+        return this.cncMachine.getPanel().findSpecificCutDTO(id);
     }
 
     /**
@@ -577,8 +577,13 @@ public class Controller implements IUnitConverter, IMemorizer {
         undoRedoManager.flushAll();
     }
 
+    /**
+     * Get a list of all the invalid cut states of a specific cut
+     * @param cutID cut to check
+     * @return List of all the invalid states of the cut
+     */
     public List<InvalidCutState> getInvalidCutStates(UUID cutID) {
-        return cncMachine
+        return cncMachine.getPanel().getInvalidCutStates(cncMachine, cutID);
     }
 }
 

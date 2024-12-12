@@ -75,8 +75,6 @@ public class DrawCutStraight extends DrawCutWrapper {
 
     @Override
     public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
-//        Optional<CutDTO> ct = mainWindow.getController().findSpecificCut(cut.getId());
-//        ct.ifPresent(cutDTO -> cut = cutDTO);
         VertexDTO anchorAbsolutePosition = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
         double anchorDiameter = mainWindow.getController().getBitDiameter(cut.getRefsDTO().getFirst().getCut().getBitIndex());
         if (cut.getCutType() == CutType.LINE_HORIZONTAL) {

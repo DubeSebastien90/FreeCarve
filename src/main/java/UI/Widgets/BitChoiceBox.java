@@ -67,7 +67,6 @@ public class BitChoiceBox extends GenericAttributeBox {
     }
 
     private void safeSelect(int index, Map<Integer, BitDTO> bitList){
-        System.out.println("Selected index: " + index);
         if(bitList.containsKey(index)){
             for(int i =0; i < comboBox.getItemCount(); i++){
                 ComboBitItem comboBitItem = (ComboBitItem) comboBox.getItemAt(i);

@@ -3,6 +3,7 @@ package Domain;
 import Common.CutState;
 import Common.DTO.*;
 import Common.Interfaces.IMemorizer;
+import Common.InvalidCutState;
 import Common.Util;
 
 import java.util.*;
@@ -202,19 +203,42 @@ class PanelCNC {
      * @param cncMachine the machine
      */
     void validateCutBasedOnBits(CNCMachine cncMachine) {
-        Map<Integer, BitDTO> configuredBits = cncMachine.getBitStorage().getConfiguredBits();
-
-        /// print fest
-        for(Integer key : configuredBits.keySet()) {
-            System.out.println("key : " + key + " - " + configuredBits.get(key).getName() + "  - " + configuredBits.get(key).getDiameter());
-        }
-
         for (Cut c : cutList) {
-            System.out.println("Cut: " + c.getId());
-            System.out.println("Cut State : " + c.getCutState() + " - " + c.getBitIndex());
-            c.setCutState(configuredBits.containsKey(c.getBitIndex()) ? CutState.VALID : CutState.NOT_VALID);
-            System.out.println("Cut State After: " + c.getCutState());
+            c.setCutState(validateCutBasedOnBits(cncMachine, c.getDTO()) ? CutState.VALID : CutState.NOT_VALID);
         }
+    }
+
+    boolean validateCutBasedOnBits(CNCMachine cncMachine, CutDTO cutDTO) {
+        Map<Integer, BitDTO> configuredBits = cncMachine.getBitStorage().getConfiguredBits();
+        return configuredBits.containsKey(cutDTO.getBitIndex());
+    }
+
+    boolean validateCutBasedOnRefs(Cut cut){
+        return cut.areCutRefsValid();
+    }
+
+    /**
+     * Returns a list of all of the errors related to the cut
+     * @param cncMachine ref to CNCMachine
+     * @param cutToCheck cut to analyse to find it's errors
+     * @return List of the possible cutInvalidStates
+     */
+    List<InvalidCutState> getInvalidCutStates(CNCMachine cncMachine, UUID cutToCheck) {
+        List<InvalidCutState> outputList = new ArrayList<>();
+        Optional<Cut> cut = findSpecificCut(cutToCheck);
+
+        if(cut.isPresent()){
+            if(!validateCutBasedOnBits(cncMachine, cut.get().getDTO())){
+                outputList.add(InvalidCutState.INVALID_BIT);
+            }
+            if(!validateCutWithClamps(cncMachine, cut.get())){
+                outputList.add(InvalidCutState.CLAMPED);
+            }
+            if(!validateCutBasedOnRefs(cut.get())){
+                outputList.add(InvalidCutState.INVALID_REF);
+            }
+        }
+        return outputList;
     }
 
     /**
@@ -223,9 +247,25 @@ class PanelCNC {
      * @param id id of the cut
      * @return Optional<CutDTO> : CutDTO if found, null if not found
      */
-    Optional<CutDTO> findSpecificCut(UUID id) {
+    Optional<CutDTO> findSpecificCutDTO(UUID id) {
         List<CutDTO> cutsDTO = getDTO().getCutsDTO();
         for (CutDTO c : cutsDTO) {
+            if (c.getId() == id) {
+                return Optional.of(c);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Finds a specific cut with id
+     *
+     * @param id id of the cut
+     * @return Optional<CutDTO> : CutDTO if found, null if not found
+     */
+    Optional<Cut> findSpecificCut(UUID id) {
+        List<Cut> cuts= getCutList();
+        for (Cut c : cuts) {
             if (c.getId() == id) {
                 return Optional.of(c);
             }

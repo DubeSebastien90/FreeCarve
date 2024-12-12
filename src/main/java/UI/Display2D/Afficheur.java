@@ -99,7 +99,6 @@ public class Afficheur {
 
     void drawCutAnchors(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing, MainWindow mainWindow){
         for(DrawCutWrapper wrapper : drawing.getCutWrappers()){
-
             VertexDTO cursor = new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0);
             if(mainWindow.getController().isRoundedCutDTOHoveredByCursor(wrapper.getCutDTO(), cursor) ||
                     wrapper.getState() == DrawCutWrapper.DrawCutState.SELECTED ||
