@@ -609,7 +609,6 @@ public class Controller implements IUnitConverter, IMemorizer {
         return dist <= pointRadius;
     }
 
-
     public CutDTO getCutDTOById(UUID cutId) {
         for(CutDTO cut : getCutListDTO()){
             if(cut.getId().equals(cutId)){
