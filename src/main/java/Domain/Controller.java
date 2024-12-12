@@ -4,6 +4,7 @@ import Common.DTO.*;
 import Common.Exceptions.InvalidBitException;
 import Common.Exceptions.InvalidFileExtensionException;
 import Common.Interfaces.*;
+import Common.InvalidCutState;
 import Common.Units;
 import Domain.IO.GcodeGenerator;
 import Domain.IO.ProjectFileManager;
@@ -574,6 +575,10 @@ public class Controller implements IUnitConverter, IMemorizer {
 
     public void flushAllUndoRedo(){
         undoRedoManager.flushAll();
+    }
+
+    public List<InvalidCutState> getInvalidCutStates(UUID cutID) {
+        return cncMachine
     }
 }
 

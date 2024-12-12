@@ -46,7 +46,7 @@ public class BitChoiceBox extends GenericAttributeBox {
         }
 
         comboBox = new JComboBox(model);
-        comboBox.setSelectedIndex(index);
+        safeSelect(index, bitList);
         GridBagConstraints gc = new GridBagConstraints();
 
         gc.gridx = 0; gc.gridy = 1;
@@ -63,7 +63,25 @@ public class BitChoiceBox extends GenericAttributeBox {
         }
 
         comboBox.setModel(model);
-        comboBox.setSelectedIndex(index);
+        safeSelect(index, bitList);
+    }
+
+    private void safeSelect(int index, Map<Integer, BitDTO> bitList){
+        System.out.println("Selected index: " + index);
+        if(bitList.containsKey(index)){
+            for(int i =0; i < comboBox.getItemCount(); i++){
+                ComboBitItem comboBitItem = (ComboBitItem) comboBox.getItemAt(i);
+                if(comboBitItem.getIndex() == index){
+                    comboBox.setSelectedIndex(i);
+                    comboBox.setBackground(null);
+                    return;
+                }
+            }
+        }
+
+        comboBox.setSelectedIndex(-1); // invalid cut
+        comboBox.setBackground(Color.RED);
+
     }
 
     /**
