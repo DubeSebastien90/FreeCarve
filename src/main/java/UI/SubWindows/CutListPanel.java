@@ -141,9 +141,8 @@ public class CutListPanel extends BasicWindow implements ChangeAttributeListener
 
         Optional<CutDTO> cut = mainWindow.getController().findSpecificCut(c.getCutUUID());
         cut.ifPresent(c::updatePanel);
-
-        listener.modifiedAttributeEventOccured(event);
         mainWindow.getMiddleContent().getCutWindow().notifyObservers();
+        listener.modifiedAttributeEventOccured(event);
     }
 
     /**

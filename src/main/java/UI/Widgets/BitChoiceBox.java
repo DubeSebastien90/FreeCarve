@@ -72,14 +72,12 @@ public class BitChoiceBox extends GenericAttributeBox {
                 ComboBitItem comboBitItem = (ComboBitItem) comboBox.getItemAt(i);
                 if(comboBitItem.getIndex() == index){
                     comboBox.setSelectedIndex(i);
-                    comboBox.setBackground(null);
                     return;
                 }
             }
         }
 
         comboBox.setSelectedIndex(-1); // invalid cut
-        comboBox.setBackground(Color.RED);
 
     }
 

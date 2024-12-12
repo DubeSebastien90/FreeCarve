@@ -5,6 +5,7 @@ import Common.DTO.CutDTO;
 import Common.DTO.RequestCutDTO;
 import Common.DTO.VertexDTO;
 import Common.Interfaces.IMemorizer;
+import Common.Interfaces.IRefreshable;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,7 @@ import java.util.UUID;
  * @author Kamran Charles Nayebi
  * @since 2024-10-20
  */
-class CNCMachine {
+class CNCMachine implements IRefreshable {
     private PanelCNC panel;
     private BitStorage bitStorage;
     private final IMemorizer memorizer;
@@ -65,7 +66,7 @@ class CNCMachine {
 
     void setPanel(PanelCNC panel) {
         this.panel = panel;
-        this.panel.validateCutBasedOnBits(this);
+        this.panel.validateAll(this);
     }
 
     public BitStorage getBitStorage() {
@@ -74,7 +75,7 @@ class CNCMachine {
 
     public void setBitStorage(BitStorage bitStorage) {
         this.bitStorage = bitStorage;
-        this.panel.validateCutBasedOnBits(this);
+        this.panel.validateAll(this);
     }
 
     public Optional<UUID> requestCut(RequestCutDTO requestCutDTO) {
@@ -84,12 +85,6 @@ class CNCMachine {
 
     public Optional<UUID> modifyCut(CutDTO cutDTO) {
         Optional<UUID> id = panel.modifyCut(this, cutDTO);
-        if (id.isPresent()) {
-            Optional<CutDTO> cou = panel.findSpecificCutDTO(id.get());
-            if (cou.isPresent() && cou.get().getState() != CutState.NOT_VALID) {
-                this.panel.validateCutBasedOnBits(this);
-            }
-        }
         return id;
     }
 
@@ -112,5 +107,10 @@ class CNCMachine {
     public List<VertexDTO> getAbsolutePointsPositionOfCutDTO(CutDTO cutDTO) {
         Cut c = this.getPanel().createPanelCut(cutDTO);
         return c.getAbsolutePointsPosition(this);
+    }
+
+    @Override
+    public void refresh() {
+        panel.validateAll(this);
     }
 }

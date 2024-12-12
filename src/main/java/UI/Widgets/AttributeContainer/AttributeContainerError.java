@@ -44,6 +44,9 @@ public class AttributeContainerError extends AttributeContainer {
             case INVALID_BIT -> {
                 return "Index de l'outil sélectionné n'existe pas";
             }
+            case OUT_OF_BOARD -> {
+                return "Coupe à l'extérieur du panneau";
+            }
             default -> {
                 return "Coupe Invalide";
             }

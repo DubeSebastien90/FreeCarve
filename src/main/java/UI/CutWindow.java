@@ -1,6 +1,7 @@
 package UI;
 
 import Common.DTO.CutDTO;
+import Common.Interfaces.IRefreshable;
 import UI.Display2D.Rendering2DWindow;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
@@ -152,9 +153,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
             if (cutDTO.isPresent()) {
                 c.updateAttributeContainerPanel(cutDTO.get());
             }
-
             changeAttributeEventOccurred(event);
-
         }
     }
 
@@ -238,4 +237,5 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
     public void notifyObservers() {
         this.panelObservers.notifyObservers();
     }
+
 }

@@ -72,6 +72,9 @@ public abstract class DrawCutWrapper {
         this.update(renderer);
         this.refs = new ArrayList<>();
         temporaryCreationPoints = new ArrayList<>();
+        if(cut.getState() == CutState.NOT_VALID){
+            setState(DrawCutState.INVALID, renderer);
+        }
 
     }
 

@@ -143,7 +143,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      */
     public void removeBit(int index) throws InvalidBitException {
         cncMachine.getBitStorage().removeBit(index);
-        cncMachine.getPanel().validateCutBasedOnBits(cncMachine);
+        cncMachine.getPanel().validateAll(cncMachine);
     }
 
     /**
@@ -154,7 +154,7 @@ public class Controller implements IUnitConverter, IMemorizer {
      */
     public void modifyBit(int index, BitDTO bit) {
         cncMachine.getBitStorage().updateBit(index, bit);
-        cncMachine.getPanel().validateCutBasedOnBits(cncMachine);
+        cncMachine.getPanel().validateAll(cncMachine);
     }
 
     /**

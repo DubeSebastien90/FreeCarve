@@ -3,6 +3,7 @@ package Domain;
 import Common.CutState;
 import Common.DTO.*;
 import Common.Interfaces.IMemorizer;
+import Common.Interfaces.IRefreshable;
 import Common.InvalidCutState;
 import Common.Util;
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @since 2024-10-20
  */
-class PanelCNC {
+class PanelCNC{
     private final List<Cut> cutList;
     private VertexDTO panelDimension;
     private Cut borderCut; // This is to generalise the concept of reference cut, the panelCNC has a rectangular Cut that represents it's borders. When the panel is resized, you need to resize the cut as well
@@ -110,7 +111,10 @@ class PanelCNC {
                 memorizer.executeAndMemorize(() -> {
                     this.cutList.get(finalI).modifyCut(cut, this.getCutAndBorderList());
                     validateAll(cncMachine);
-                }, () -> this.cutList.get(finalI).modifyCut(ct, this.getCutAndBorderList()));
+                }, () -> {
+                    this.cutList.get(finalI).modifyCut(ct, this.getCutAndBorderList());
+                    validateAll(cncMachine);
+                });
 
 
                 return Optional.of(cut.getId());
@@ -197,17 +201,6 @@ class PanelCNC {
         }
     }
 
-    /**
-     * Updates the validity state of the cuts depending on the bits
-     *
-     * @param cncMachine the machine
-     */
-    void validateCutBasedOnBits(CNCMachine cncMachine) {
-        for (Cut c : cutList) {
-            c.setCutState(validateCutBasedOnBits(cncMachine, c.getDTO()) ? CutState.VALID : CutState.NOT_VALID);
-        }
-    }
-
     boolean validateCutBasedOnBits(CNCMachine cncMachine, CutDTO cutDTO) {
         Map<Integer, BitDTO> configuredBits = cncMachine.getBitStorage().getConfiguredBits();
         return configuredBits.containsKey(cutDTO.getBitIndex());
@@ -215,6 +208,15 @@ class PanelCNC {
 
     boolean validateCutBasedOnRefs(Cut cut){
         return cut.areCutRefsValid();
+    }
+
+    boolean validateCutOnBoard(Cut cut, CNCMachine cncMachine) {
+        for (VertexDTO absPoints : cut.getAbsolutePointsPosition(cncMachine)) {
+            if(!isPointOnPanel(absPoints)){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -236,6 +238,9 @@ class PanelCNC {
             }
             if(!validateCutBasedOnRefs(cut.get())){
                 outputList.add(InvalidCutState.INVALID_REF);
+            }
+            if(!validateCutOnBoard(cut.get(), cncMachine)){
+                outputList.add(InvalidCutState.OUT_OF_BOARD);
             }
         }
         return outputList;
@@ -465,4 +470,5 @@ class PanelCNC {
         }
         return false;
     }
+
 }
