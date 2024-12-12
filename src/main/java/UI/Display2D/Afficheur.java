@@ -106,7 +106,6 @@ public class Afficheur {
                 if(wrapper.getCutDTO().getState() != CutState.NOT_VALID){
                     wrapper.drawAnchor(graphics2D, renderer);
                 }
-
             }
         }
     }

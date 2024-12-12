@@ -154,9 +154,9 @@ public class Drawing {
                             Optional<UUID> id = currentDrawingCut.end();
                             if (id.isPresent()) {
                                 updateCuts();
+                                mainWindow.getMiddleContent().getCutWindow().notifyObservers();
                                 renderer.getChangeCutListener().addCutEventOccured(new ChangeCutEvent(renderer, id.get()));
                                 setState(DrawingState.IDLE);
-                                mainWindow.getMiddleContent().getCutWindow().notifyObservers();
                             }
                         }
                     }

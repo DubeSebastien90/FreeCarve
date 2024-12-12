@@ -88,10 +88,10 @@ class PanelCNC {
         CutDTO cutDTO = new CutDTO(newUUID, cut);
         memorizer.executeAndMemorize(() -> {
             this.cutList.add(createPanelCut(cutDTO));
-            verifyCuts(cncMachine);
+            validateAll(cncMachine);
         }, () -> {
             this.cutList.removeIf(e -> e.getId() == newUUID);
-            verifyCuts(cncMachine);
+            validateAll(cncMachine);
         });
         return Optional.of(newUUID);
     }
@@ -109,7 +109,7 @@ class PanelCNC {
                 CutDTO ct = this.cutList.get(finalI).getDTO();
                 memorizer.executeAndMemorize(() -> {
                     this.cutList.get(finalI).modifyCut(cut, this.getCutAndBorderList());
-                    verifyCuts(cncMachine);
+                    validateAll(cncMachine);
                 }, () -> this.cutList.get(finalI).modifyCut(ct, this.getCutAndBorderList()));
 
 
@@ -134,12 +134,12 @@ class PanelCNC {
                 List<Cut> ct2 = findReferee(ct, cncMachine, new ArrayList<>());
                 memorizer.executeAndMemorize(() -> {
                     list.remove(finalI);
-                    verifyCuts(cncMachine);
+                    validateAll(cncMachine);
                     cleanupRemove(ct, cncMachine);
                 }, () -> {
                     restoreRefList(ct2);
                     this.cutList.add(ct);
-                    verifyCuts(cncMachine);
+                    validateAll(cncMachine);
                 });
 
                 return true;
@@ -239,6 +239,18 @@ class PanelCNC {
             }
         }
         return outputList;
+    }
+
+    void validateAll(CNCMachine cncMachine) {
+        for(Cut c: this.cutList){
+            List<InvalidCutState> invalidCutStates = getInvalidCutStates(cncMachine, c.getId());
+            if(invalidCutStates.isEmpty()){
+                c.setCutState(CutState.VALID);
+            }
+            else{
+                c.setCutState(CutState.NOT_VALID);
+            }
+        }
     }
 
     /**
@@ -430,24 +442,6 @@ class PanelCNC {
             }
         }
         return false;
-    }
-
-    /**
-     * Verify if the cuts are valid with the clamps
-     *
-     * @param cncMachine the current cncMachine
-     */
-    public void verifyCuts(CNCMachine cncMachine) {
-        for (Cut cut : this.getCutList()) {
-            if (cut.getType() == CutType.CLAMP)
-                continue;
-
-            if (!validateCutWithClamps(cncMachine, cut)) {
-                cut.setCutState(CutState.NOT_VALID);
-            } else {
-                cut.setCutState(CutState.VALID);
-            }
-        }
     }
 
     /**
