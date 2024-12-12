@@ -3,6 +3,7 @@ package UI.Display2D;
 import Common.DTO.GridDTO;
 import Common.DTO.VertexDTO;
 import Common.Interfaces.IPanelObserver;
+import Common.Interfaces.IRefreshable;
 import Domain.CutType;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.Events.ChangeAttributeListener;
@@ -34,7 +35,7 @@ import static UI.UiUtil.getIcon;
  * @version 1.2
  * @since 2024-10-22
  */
-public class Rendering2DWindow extends JPanel implements IPanelObserver {
+public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefreshable {
 
     private Rectangle2D board = new Rectangle2D.Double(0, 0, 1219.2, 914.4); //board to render
     private Point2D mousePt; //pixel mouse point
@@ -66,6 +67,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         this.mainWindow = mainWindow;
 //        VertexDTO v = mainWindow.getController().getPanelDTO().getPanelDimension();
 //        resizePanneau(v.getX(), v.getY());
+        mainWindow.getController().addRefreshListener(this); // to upate the size of the panel if necessary
         this.changeCutListener = changeCutListener;
         this.changeAttributeListener = changeAttributeListener;
         //rendering variables
@@ -553,6 +555,14 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver {
         updateCuts();
         this.revalidate();
         this.repaint();
+    }
+
+    @Override
+    public void refresh() {
+        // Every undo/redo, updates the size of the panel
+        VertexDTO dim = mainWindow.getController().getPanelDTO().getPanelDimension();
+        board.setRect(board.getX(), board.getY(), dim.getX(), dim.getY());
+        repaint();
     }
 }
 

@@ -116,7 +116,6 @@ class PanelCNC{
                     validateAll(cncMachine);
                 });
 
-
                 return Optional.of(cut.getId());
             }
         }

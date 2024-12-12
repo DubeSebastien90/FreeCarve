@@ -71,9 +71,9 @@ public class DrawCutClamp extends DrawCutWrapper{
         double xPos = centerPoint.getX();
         double yPos = centerPoint.getY();
 
-        UiUtil.drawNumber(graphics2D, rendering2DWindow, cut.getPoints().get(1), cut.getPoints().get(2), width, ARROW_COLOR, DIMENSION_COLOR);
-        UiUtil.drawNumber(graphics2D, rendering2DWindow, cut.getPoints().get(0), cut.getPoints().get(1), height, ARROW_COLOR, DIMENSION_COLOR);
-        UiUtil.drawNumberXY(graphics2D, rendering2DWindow, midBottom, centerPoint, xPos, yPos, ARROW_COLOR, DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, cut.getPoints().get(2), cut.getPoints().get(1), width, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, cut.getPoints().get(2), cut.getPoints().get(3), height, ARROW_COLOR,ARROW_DIMENSION, DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumberXY(graphics2D, rendering2DWindow, VertexDTO.zero(), centerPoint, xPos, yPos, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
     }
 
     @Override
@@ -176,7 +176,10 @@ public class DrawCutClamp extends DrawCutWrapper{
     public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
         this.update(renderer);
         graphics2D.setStroke(new BasicStroke((float) CLAMP_STROKE_WIDTH));
-        graphics2D.setColor(CLAMP_COLOR);
+        graphics2D.setColor(strokeColor);
+        if(state == DrawCutState.NOT_SELECTED){
+            graphics2D.setColor(CLAMP_COLOR);
+        }
 
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(points.get(0).getLocationX(), points.get(0).getLocationY()));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(points.get(2).getLocationX(), points.get(2).getLocationY()));

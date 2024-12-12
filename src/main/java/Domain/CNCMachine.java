@@ -94,6 +94,7 @@ class CNCMachine implements IRefreshable {
             this.panel = new PanelCNC(memorizer);
         }, () -> {
             this.panel = copy;
+
         });
     }
 
