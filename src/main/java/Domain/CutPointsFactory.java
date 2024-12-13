@@ -116,12 +116,45 @@ public class CutPointsFactory {
     public static List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsolute(int bitIndex, Controller controller, CNCMachine cncMachine){
         VertexDTO panelDimension = cncMachine.getPanel().getPanelDimension();
         double baseBorderSize = 30;
-        VertexDTO widthLeftHeightBottom = new VertexDTO(panelDimension.getX() / 2 - baseBorderSize, panelDimension.getY() / 2 - baseBorderSize, 0);
-        VertexDTO widhtRightHeightTop = new VertexDTO(panelDimension.getX() / 2 - baseBorderSize, panelDimension.getY() / 2 - baseBorderSize, 0);
-        List<VertexDTO> outputList = new ArrayList<>();
-        outputList.add(widhtRightHeightTop);
-        outputList.add(widthLeftHeightBottom);
-        return  outputList;
+        double diameter1 = cncMachine.getBitStorage().getBitDiameter(bitIndex);
+        VertexDTO compensation = new VertexDTO(diameter1/2, diameter1/2, 0);
+
+        VertexDTO p1Abs = new VertexDTO(baseBorderSize, baseBorderSize, 0);
+        VertexDTO p3Abs = new VertexDTO(panelDimension.getX() - baseBorderSize, panelDimension.getY() - baseBorderSize, 0);
+
+        p1Abs = p1Abs.sub(compensation);
+        p3Abs = p3Abs.add(compensation);
+
+        return CutPointsFactory.generateBorderPointsRelativeEdgeEdgeFromAbsoluteCorners(p1Abs, p3Abs, bitIndex, controller, cncMachine);
+    }
+
+    /**
+     * Generate the relative points of the retaille cut, based on it's two diagonal points :
+     *      - p3
+     *  |       |
+     *  p1  -
+     * @param p1Abs
+     * @param p3abs
+     * @param bitIndex
+     * @param controller
+     * @param cncMachine
+     * @return
+     */
+    public static List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsoluteCorners(VertexDTO p1Abs, VertexDTO p3abs, int bitIndex, Controller controller, CNCMachine cncMachine){
+        VertexDTO middlePoint = p3abs.add(p1Abs).mul(0.5);
+        VertexDTO vectorWidthLeftHeightBottom = p1Abs.sub(middlePoint);
+        VertexDTO vectorWidthRightHeightTop = p3abs.sub(middlePoint);
+
+        VertexDTO absWidthLeftHeightBottom = new VertexDTO(Math.abs(vectorWidthLeftHeightBottom.getX()), Math.abs(vectorWidthLeftHeightBottom.getY()), 0);
+        VertexDTO absWidthRightHeightTop = new VertexDTO(Math.abs(vectorWidthRightHeightTop.getX()), Math.abs(vectorWidthRightHeightTop.getY()), 0);
+
+        double diameter1 = cncMachine.getBitStorage().getBitDiameter(bitIndex);
+        VertexDTO compensation = new VertexDTO(diameter1/2, diameter1/2, 0);
+
+        VertexDTO compensatedWidthLeftHeightBottom = absWidthLeftHeightBottom.sub(compensation);
+        VertexDTO compensatedWidthRightHeightTop = absWidthRightHeightTop.sub(compensation);
+
+        return List.of(compensatedWidthLeftHeightBottom, compensatedWidthRightHeightTop);
     }
 
     /**
