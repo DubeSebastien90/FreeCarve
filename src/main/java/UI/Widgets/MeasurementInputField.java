@@ -18,6 +18,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 /**
  * Small widget class that offers an interface for inputting measurements
@@ -35,6 +37,7 @@ public class MeasurementInputField extends BasicWindow {
     private final IUnitConverter unitConverter;
     private final IMemorizer memorizer;
     private final ImperialFractionalNumberFormatter imperialFractionalNumberFormatter;
+    private final CustomNumberFormatter customNumberFormatter;
 
     private UiUnits currentUnit;
 
@@ -52,6 +55,7 @@ public class MeasurementInputField extends BasicWindow {
         this.minDimension = new DimensionDTO(minimumValue, unit.getUnit());
         this.maxDimension = new DimensionDTO(maximumValue, unit.getUnit());
         this.imperialFractionalNumberFormatter = new ImperialFractionalNumberFormatter(unitConverter);
+        this.customNumberFormatter = new CustomNumberFormatter(new DecimalFormat());
         this.init(nameOfInput, value);
         setCurrentUnit(UIConfig.INSTANCE.getDefaultUnit());
     }
@@ -121,7 +125,7 @@ public class MeasurementInputField extends BasicWindow {
     public void setMaxDimension(DimensionDTO maxDimension) {
         JFormattedTextField.AbstractFormatter formatter = numericInput.getFormatter();
 
-        if (formatter instanceof NumberFormatter numberFormatter) {
+        if (formatter instanceof CustomNumberFormatter numberFormatter) {
             numberFormatter.setMaximum(unitConverter.convertUnit(maxDimension, currentUnit.getUnit()).value());
         } else if (formatter instanceof ImperialFractionalNumberFormatter imperialFormatter) {
             imperialFormatter.setMaximum(unitConverter.convertUnit(maxDimension, currentUnit.getUnit()).value());
@@ -136,7 +140,7 @@ public class MeasurementInputField extends BasicWindow {
     public void setMinDimension(DimensionDTO minDimension) {
         JFormattedTextField.AbstractFormatter formatter = numericInput.getFormatter();
 
-        if (formatter instanceof NumberFormatter numberFormatter) {
+        if (formatter instanceof CustomNumberFormatter numberFormatter) {
             numberFormatter.setMinimum(unitConverter.convertUnit(minDimension, currentUnit.getUnit()).value());
         } else if (formatter instanceof ImperialFractionalNumberFormatter imperialFormatter) {
             imperialFormatter.setMinimum(unitConverter.convertUnit(minDimension, currentUnit.getUnit()).value());
@@ -164,13 +168,44 @@ public class MeasurementInputField extends BasicWindow {
         public JFormattedTextField.AbstractFormatter getFormatter(JFormattedTextField tf) {
             JFormattedTextField.AbstractFormatter factory;
             if (currentUnit == UiUnits.INCHES) {
-                // Cache last value in case of bad input
-                imperialFractionalNumberFormatter.stringToValue(tf.getText());
                 factory = imperialFractionalNumberFormatter;
             } else {
-                factory = new NumberFormatter(DecimalFormat.getNumberInstance());
+                factory = customNumberFormatter;
+            }
+            // Cache last value in case of bad input
+            try {
+                factory.stringToValue(tf.getText());
+            } catch (ParseException ignored) {
             }
             return factory;
+        }
+    }
+
+    private class CustomNumberFormatter extends NumberFormatter {
+        private double lastValue = 0.0;
+        private double min = -Double.MAX_VALUE;
+        private double max = Double.MAX_VALUE;
+        CustomNumberFormatter(NumberFormat format){
+            super(format);
+        }
+        @Override
+        public Object stringToValue(String text) {
+            try {
+                double newValue = Double.parseDouble(text);
+                lastValue = Math.clamp(newValue, min, max);
+            } catch (NumberFormatException ignored) {
+            }
+            return lastValue;
+        }
+
+        public void setMinimum(double minimum) {
+            this.min = minimum;
+            lastValue = Math.clamp(lastValue, min, max);
+        }
+
+        public void setMaximum(double maximum) {
+            this.max = maximum;
+            lastValue = Math.clamp(lastValue, min, max);
         }
     }
 
