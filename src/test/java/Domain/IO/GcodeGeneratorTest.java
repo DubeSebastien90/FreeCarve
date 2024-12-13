@@ -21,8 +21,11 @@ public class GcodeGeneratorTest {
         list.add(new VertexDTO(100, 100, 0));
         list.add(new VertexDTO(50, 100, 0));
         list.add(new VertexDTO(50, 50, 0));
-        RequestCutDTO cut1 = new RequestCutDTO( list, CutType.LINE_FREE, 1, 5, new ArrayList<>());
+        List<RefCutDTO> refs = new ArrayList<>();
         Controller controller = Controller.initialize();
+        refs.add(new RefCutDTO(controller.getPanelDTO().getBorderCut(), 0, 0));
+        RequestCutDTO cut1 = new RequestCutDTO( list, CutType.LINE_FREE, 0, 5, refs);
+
         controller.requestCut(cut1);
         //act
         String actual = GcodeGenerator.convertToGCode(controller);
@@ -33,7 +36,7 @@ public class GcodeGeneratorTest {
                 G90;
                 G92 Z0;
                 F3;
-                T2 M06;
+                T1 M06;
                 G00 X100.0 Y100.0;
                 M03 S20000;
                 G82 X100.0 Y100.0 Z-5.5;
