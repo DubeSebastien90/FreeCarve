@@ -6,6 +6,7 @@ import UI.Events.ChangeAttributeListener;
 import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
 import UI.SubWindows.AttributePanel;
+import UI.SubWindows.BasicWindow;
 import UI.SubWindows.BitConfigurationPanel;
 import UI.Widgets.Attributable;
 import UI.Widgets.BigButton;
@@ -67,9 +68,10 @@ public class ConfigChoiceWindow implements ChangeCutListener, ChangeAttributeLis
      */
     public void init() {
 
-
+        BasicWindow rendHeaderWrapper = new BasicWindow(true);
+        rendHeaderWrapper.setupHeader("Vue 2D", rend);
         JSplitPane splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, attributePanel, bitWindow);
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rend, splitPane1);
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rendHeaderWrapper, splitPane1);
         splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 3);
         mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 3 * 2);
         mainSplitPane.setResizeWeight(0);

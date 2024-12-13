@@ -40,7 +40,6 @@ public class RefCut {
                 this.cut = c;
             }
         }
-        System.out.println(refCutDTO.getCut().getCutType() + " - " + refCutDTO.getCut().getId() + " - " + cutList.size());
         if(cut == null) throw new InvalidParameterException("The reference of the Domain Cut was not found");
         this.index = refCutDTO.getIndex();
         this.interpolation = refCutDTO.getInterpolation();

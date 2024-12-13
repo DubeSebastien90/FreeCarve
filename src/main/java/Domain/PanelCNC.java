@@ -384,7 +384,8 @@ class PanelCNC {
      * @return True if the point is on the board.
      */
     boolean isPointOnPanel(VertexDTO point) {
-        return point.getX() >= 0 && point.getY() >= 0 && point.getX() <= getWidth() && point.getY() <= getHeight();
+        return point.getX() + VertexDTO.doubleTolerance >= 0 && point.getY() + VertexDTO.doubleTolerance >= 0 &&
+                point.getX()  - VertexDTO.doubleTolerance <= getWidth() && point.getY() - VertexDTO.doubleTolerance  <= getHeight();
     }
 
     void updateBorderCut() {

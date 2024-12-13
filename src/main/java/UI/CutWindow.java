@@ -9,6 +9,7 @@ import UI.Events.ChangeCutEvent;
 import UI.Events.ChangeCutListener;
 import UI.Listeners.PanelObservers;
 import UI.SubWindows.AttributePanel;
+import UI.SubWindows.BasicWindow;
 import UI.SubWindows.BitSelectionPanel;
 import UI.SubWindows.CutListPanel;
 import UI.Widgets.Attributable;
@@ -198,6 +199,9 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         panel1 = new Rendering2DWindow(mainWindow, this, this);
         rendering2DWindow = new Rendering2DWindow(mainWindow, this, this);
         panel1 = rendering2DWindow;
+        BasicWindow rendHeaderWrapper = new BasicWindow(true);
+        rendHeaderWrapper.setupHeader("Vue 2D", rendering2DWindow);
+
 
         bitSelectionPanel = new BitSelectionPanel(true, this, mainWindow);
         bitPanel = bitSelectionPanel;
@@ -210,7 +214,7 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
 
         cutInformationSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, bitPanel, panel2);
         splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, cutInformationSplitPane, panel3);
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel1, splitPane1);
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rendHeaderWrapper, splitPane1);
 
         cutInformationSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 8);
         splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 2);

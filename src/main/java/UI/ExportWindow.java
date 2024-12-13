@@ -80,14 +80,21 @@ public class ExportWindow {
         gcodeWindow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         gcodeWindow.setBorder(null);
         gcodeWindow.getViewport().setViewPosition(new Point(0, 0));
+        BasicWindow tempGCodeWindow = new BasicWindow(true);
+        tempGCodeWindow.setupHeader("Aperçu du GCODE", gcodeWindow);
+
 
         rendering3DWindow = new Rendering3DWindow(mainWindow.getController().getCameraId(), mainWindow);
+        BasicWindow tempRender3D = new BasicWindow(true);
+        tempRender3D.setupHeader("Vue 3D", rendering3DWindow);
 
         cncCutSpecChooser = new CNCCutSpecChooser(mainWindow);
+        BasicWindow tempSpecChooser = new BasicWindow(true);
+        tempSpecChooser.setupHeader("Paramètres d'exportation", cncCutSpecChooser);
 
-        JSplitPane splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gcodeWindow, nextButton);
-        JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, cncCutSpecChooser, splitPane1);
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, rendering3DWindow, splitPane2);
+        JSplitPane splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tempGCodeWindow, nextButton);
+        JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tempSpecChooser, splitPane1);
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tempRender3D, splitPane2);
         splitPane2.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 10 * 2);
         splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 2);
         mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 3 * 2);
