@@ -84,7 +84,7 @@ public class MainWindow {
         frame.setSize(uiConfig.getDefaultWindowWidth(), uiConfig.getDefaultWindowHeight());
         frame.setLocationRelativeTo(null);
         frame.setJMenuBar(topBar);
-        ImageIcon image = UiUtil.getIcon("freecarve2", 200);
+        ImageIcon image = UiUtil.getIcon("freecarve2", 300);
         frame.setIconImage(image.getImage());
 
         mainInsidePanel.add(leftBar, BorderLayout.WEST);
