@@ -7,9 +7,11 @@ import Common.Units;
 import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
+import UI.Events.ChangeAttributeEvent;
 import UI.MainWindow;
 import UI.UIConfig;
 import UI.UiUtil;
+import UI.Widgets.CutBox;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
@@ -31,18 +33,17 @@ public class DrawCutBorder extends DrawCutWrapper {
         super(cut, renderer, mainWindow);
     }
 
-    @Override
-    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
-        this.update(renderer);
-        graphics2D.setStroke(stroke);
-        graphics2D.setColor(this.strokeColor);
-
-        for(int i =0; i  < points.size() - 1; i++){
-            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1));
-
-        }
-
-    }
+//    @Override
+//    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
+//        this.update(renderer);
+//        graphics2D.setStroke(stroke);
+//        graphics2D.setColor(this.strokeColor);
+//
+//        for(int i =0; i  < points.size() - 1; i++){
+//            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1));
+//        }
+//
+//    }
 
     @Override
     public void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer) {
@@ -67,13 +68,13 @@ public class DrawCutBorder extends DrawCutWrapper {
         VertexDTO yP2 = new VertexDTO(yP1.getX(), yP1.getY() + downLeft.getY() + upRight.getY(), 0);
 
         VertexDTO xP1 = new VertexDTO(centralPoint).sub(downLeft);
-        VertexDTO xP2 = new VertexDTO(xP1.getX() + downLeft.getX() + upRight.getX(),  xP1.getY(), 0);
+        VertexDTO xP2 = new VertexDTO(xP1.getX() + downLeft.getX() + upRight.getX(), xP1.getY(), 0);
 
         DimensionDTO widthUnit = mainWindow.getController().convertUnit(new DimensionDTO((downLeft.getX() + upRight.getX()), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
-        DimensionDTO heightUnit = mainWindow.getController().convertUnit(new DimensionDTO((downLeft.getY()+ upRight.getY()) , Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
-        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  xP1, xP2, widthUnit.value(),
-                ARROW_COLOR,ARROW_DIMENSION, DIMENSION_COLOR);
-        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow,  yP1, yP2, heightUnit.value(),
+        DimensionDTO heightUnit = mainWindow.getController().convertUnit(new DimensionDTO((downLeft.getY() + upRight.getY()), Units.MM), UIConfig.INSTANCE.getDefaultUnit().getUnit());
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, xP1, xP2, widthUnit.value(),
+                ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, yP1, yP2, heightUnit.value(),
                 ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
     }
 
@@ -133,11 +134,9 @@ public class DrawCutBorder extends DrawCutWrapper {
 
     @Override
     public void moveUpdate(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow) {
-
     }
 
     @Override
     public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint) {
-
     }
 }

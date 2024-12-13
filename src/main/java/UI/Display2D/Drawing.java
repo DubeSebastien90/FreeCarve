@@ -14,6 +14,7 @@ import UI.SubWindows.CutListPanel;
 import UI.Widgets.CutBox;
 import UI.Widgets.PersoPoint;
 
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -223,6 +224,8 @@ public class Drawing {
             @Override
             public void mouseDragged(MouseEvent e) {
                 //super.mouseMoved(e);
+                Point2D pixP = renderer.pixelTomm(e.getPoint());
+                System.out.println(mainWindow.getController().getGridPointNearAllBorderAndCuts(new VertexDTO(pixP.getX(),pixP.getY(),0), 10));
                 currentModifiedCut.movePoint(e.getPoint(), renderer, mainWindow, indexPoint);
             }
         };
