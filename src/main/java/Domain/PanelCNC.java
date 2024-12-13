@@ -3,7 +3,6 @@ package Domain;
 import Common.CutState;
 import Common.DTO.*;
 import Common.Interfaces.IMemorizer;
-import Common.Interfaces.IRefreshable;
 import Common.InvalidCutState;
 import Common.Util;
 
@@ -17,14 +16,15 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @since 2024-10-20
  */
-class PanelCNC{
-    private final List<Cut> cutList;
+class PanelCNC {
+    private List<Cut> cutList;
     private VertexDTO panelDimension;
     private Cut borderCut; // This is to generalise the concept of reference cut, the panelCNC has a rectangular Cut that represents it's borders. When the panel is resized, you need to resize the cut as well
     private final IMemorizer memorizer;
     private static final int MAX_FEET_WIDTH = 10;
     private static final int MAX_FEET_HEIGHT = 5;
     private static final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 50); // dimension in mm
+    private final List<List<CutDTO>> savedCut = new ArrayList<>();
 
     PanelCNC(IMemorizer memorizer) {
         this(defaultPanelDimension, memorizer);
@@ -133,15 +133,27 @@ class PanelCNC{
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId() == id) {
                 int finalI = i;
-                Cut ct = list.get(finalI);
-                List<Cut> ct2 = findReferee(ct, cncMachine, new ArrayList<>());
+                final Cut[] ct = {list.get(finalI)};
+                List<Cut> ct2 = findReferee(ct[0], cncMachine, new ArrayList<>());
                 memorizer.executeAndMemorize(() -> {
+                    ArrayList<CutDTO> a = new ArrayList<>();
+                    for (Cut c : cutList) {
+                        a.add(c.getDTO());
+                    }
+                    savedCut.add(a);
                     list.remove(finalI);
                     validateAll(cncMachine);
-                    cleanupRemove(ct, cncMachine);
+                    cleanupRemove(ct[0], cncMachine);
                 }, () -> {
-                    restoreRefList(ct2);
-                    this.cutList.add(ct);
+                    //restoreRefList(ct2);
+                    cutList.clear();
+                    for (CutDTO c : savedCut.removeLast()) {
+                        Cut cte = new Cut(c, getCutAndBorderList());
+                        cutList.add(cte);
+                        if (cte.equals(ct[0])){
+                            ct[0] = cte;
+                        }
+                    }
                     validateAll(cncMachine);
                 });
 
@@ -205,13 +217,13 @@ class PanelCNC{
         return configuredBits.containsKey(cutDTO.getBitIndex());
     }
 
-    boolean validateCutBasedOnRefs(Cut cut){
+    boolean validateCutBasedOnRefs(Cut cut) {
         return cut.areCutRefsValid();
     }
 
     boolean validateCutOnBoard(Cut cut, CNCMachine cncMachine) {
         for (VertexDTO absPoints : cut.getAbsolutePointsPosition(cncMachine)) {
-            if(!isPointOnPanel(absPoints)){
+            if (!isPointOnPanel(absPoints)) {
                 return false;
             }
         }
@@ -220,6 +232,7 @@ class PanelCNC{
 
     /**
      * Returns a list of all of the errors related to the cut
+     *
      * @param cncMachine ref to CNCMachine
      * @param cutToCheck cut to analyse to find it's errors
      * @return List of the possible cutInvalidStates
@@ -228,17 +241,17 @@ class PanelCNC{
         List<InvalidCutState> outputList = new ArrayList<>();
         Optional<Cut> cut = findSpecificCut(cutToCheck);
 
-        if(cut.isPresent()){
-            if(!validateCutBasedOnBits(cncMachine, cut.get().getDTO())){
+        if (cut.isPresent()) {
+            if (!validateCutBasedOnBits(cncMachine, cut.get().getDTO())) {
                 outputList.add(InvalidCutState.INVALID_BIT);
             }
-            if(!validateCutWithClamps(cncMachine, cut.get())){
+            if (!validateCutWithClamps(cncMachine, cut.get())) {
                 outputList.add(InvalidCutState.CLAMPED);
             }
-            if(!validateCutBasedOnRefs(cut.get())){
+            if (!validateCutBasedOnRefs(cut.get())) {
                 outputList.add(InvalidCutState.INVALID_REF);
             }
-            if(!validateCutOnBoard(cut.get(), cncMachine)){
+            if (!validateCutOnBoard(cut.get(), cncMachine)) {
                 outputList.add(InvalidCutState.OUT_OF_BOARD);
             }
         }
@@ -246,12 +259,11 @@ class PanelCNC{
     }
 
     void validateAll(CNCMachine cncMachine) {
-        for(Cut c: this.cutList){
+        for (Cut c : this.cutList) {
             List<InvalidCutState> invalidCutStates = getInvalidCutStates(cncMachine, c.getId());
-            if(invalidCutStates.isEmpty()){
+            if (invalidCutStates.isEmpty()) {
                 c.setCutState(CutState.VALID);
-            }
-            else{
+            } else {
                 c.setCutState(CutState.NOT_VALID);
             }
         }
@@ -280,7 +292,7 @@ class PanelCNC{
      * @return Optional<CutDTO> : CutDTO if found, null if not found
      */
     Optional<Cut> findSpecificCut(UUID id) {
-        List<Cut> cuts= getCutList();
+        List<Cut> cuts = getCutList();
         for (Cut c : cuts) {
             if (c.getId() == id) {
                 return Optional.of(c);
