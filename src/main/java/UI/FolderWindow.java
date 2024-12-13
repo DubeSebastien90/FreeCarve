@@ -5,6 +5,10 @@ import UI.Listeners.LoadProjectActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.util.Objects;
 
 import static UI.UiUtil.createSVGButton;
 
@@ -34,12 +38,15 @@ public class FolderWindow extends JPanel {
         this.mainWindow = mainWindow;
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridheight = 5;
         gbc.weightx = 1;
         gbc.gridy = 2;
         this.add(westPanel, gbc);
 
         gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.CENTER;
         this.add(eastPanel, gbc);
 
         this.setVisible(true);
@@ -90,25 +97,35 @@ public class FolderWindow extends JPanel {
      * Initiates the eastPanel using a GridBagConstraint
      */
     private void initRecentRight() {
-        scrollRecentProject.setViewportView(recentProject);
         GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.gridwidth = 3;
-        gbc.insets = new Insets(0, 20, 20, 0);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-
-        gbc.fill = GridBagConstraints.BOTH;
-        JLabel projets = new JLabel("Récents");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JLabel projets = new JLabel("Free Carve", JLabel.CENTER);
         projets.setFont(projets.getFont().deriveFont(40f));
+
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
         eastPanel.add(projets, gbc);
 
-        gbc.weighty = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
+        JLabel iconLabel = new JLabel();
+        resizePane(iconLabel);
+        iconLabel.setVerticalAlignment(JLabel.TOP);
+        iconLabel.setHorizontalAlignment(JLabel.CENTER);
+        eastPanel.add(iconLabel, gbc);
+        eastPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                resizePane(iconLabel);
+            }
+        });
+    }
 
-        eastPanel.add(scrollRecentProject, gbc);
-        addRecentProject("no Recent Project");
-
+    private void resizePane(JLabel jLabel) {
+        int min = Math.min(eastPanel.getWidth(), eastPanel.getHeight());
+        ImageIcon icon = UiUtil.getIcon("freecarve2", (int) (min/1.89));
+        jLabel.setIcon(icon);
     }
 
     /**

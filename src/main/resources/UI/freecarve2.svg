@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+<g>
+<title>Layer 1</title>
+<rect x="25" y="25" width="450" height="450" rx="30" fill="#3f3f3f" stroke="#000" stroke-width="0"/>
+<path d="m261.09 130.75" fill="#ce6029" opacity="1" stroke="#000" stroke-width="0"/>
+<path d="m260.16 129.89-8.6415-11.71" fill="#ce6029" opacity="1" stroke="#000" stroke-width="0"/>
+<path d="m193.51 125.93" fill="#ce6029" opacity="1" stroke="#000" stroke-width="0"/>
+<g stroke="#000" stroke-width="0">
+<path d="m93.104 379.14-7.1474-5.5734v-113.01l19.653-0.86705" fill="#96461e" opacity="1"/>
+<path d="m217.27 213.93-13.115-8.3291h-65.793l0.75624 13.858 15.881 17.978 21.175-2.2472 23.065-2.6217" fill="#ce6029" opacity="1"/>
+<path d="m93.308 130.05-10.283-10.229c0.25098 0.31906-1.0435 94.46-0.71989 94.79 0.32362 0.33032 15.534 2.3122 15.607-0.31906" fill="#96461e" opacity="1"/>
+<rect x="92.621" y="129.33" width="50" height="250" fill="#e97132"/>
+<path d="m242.62 129.85-12.717-9.5092h-146.44l10.507 10.526" fill="#ce6029" opacity="1"/>
+<path d="m93.748 215.55-10.829-6.7744h-24.573l11.263 6.6434" fill="#ce6029" opacity="1"/>
+<rect x="92.621" y="129.33" width="150" height="50" fill="#e97132"/>
+<rect x="67.621" y="214.22" width="150" height="50" fill="#e97132"/>
+<path d="m68.817 213.66-9.981-5.3167v51.864c0 0.10296 8.8636 3.9447 8.8636 3.9447" fill="#96461e" opacity="1"/>
+</g>
+<g stroke="#000" stroke-width="0">
+<path d="m429.4 338.31-17.952-9.6887h-90.887v18.375" fill="#ce6029" opacity="1"/>
+<rect x="278.86" y="338" width="150" height="50" fill="#e97132"/>
+<rect x="278.86" y="129" width="50" height="250" fill="#e97132"/>
+<rect x="278.86" y="129" width="150" height="50" fill="#e97132"/>
+<path d="m428 129.15-15.598-10.717h-141.18l8.2353 11.373" fill="#ce6029" opacity="1"/>
+<path d="m280.26 128.98-8.9611-10.873v264.2l8.2304 5.7613" fill="#96461e" opacity="1"/>
+</g>
+<g fill="#fff" stroke="#000" stroke-width="0">
+<ellipse cx="276.02" cy="380.23" rx="20" ry="20"/>
+<ellipse cx="426.02" cy="380" rx="20" ry="20"/>
+<ellipse cx="279.58" cy="122" rx="20" ry="20"/>
+<ellipse cx="426.02" cy="122" rx="20" ry="20"/>
+<ellipse cx="144" cy="380" rx="20" ry="20"/>
+<ellipse cx="89.499" cy="127" rx="20" ry="20"/>
+<ellipse cx="235" cy="122" rx="20" ry="20"/>
+<ellipse cx="89" cy="380" rx="20" ry="20"/>
+</g>
+</g>
+</svg>

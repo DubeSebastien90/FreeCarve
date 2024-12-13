@@ -92,6 +92,16 @@ public class UiUtil {
     }
 
     /**
+     * Get an icon with an icon name
+     * @param iconName naem of the icon
+     * @return FlatSVGIcon
+     */
+    public static FlatSVGIcon getIcon(String iconName, int size){
+        FlatSVGIcon icon = new FlatSVGIcon("UI/" + iconName + ".svg", size, size);
+        return icon;
+    }
+
+    /**
      * Draws a RoundRect of a JPanel
      * @param panel JPanel that wants to be drawned
      * @param graphics2D reference to the graphics2d object
