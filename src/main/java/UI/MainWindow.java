@@ -196,7 +196,7 @@ public class MainWindow {
             }
         });
 
-        DefaultKeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new UndoRedoDispatcher(getController()));
+        DefaultKeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new UndoRedoDispatcher(this,getController()));
         DefaultKeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new SaveDispatcher(this));
     }
 }

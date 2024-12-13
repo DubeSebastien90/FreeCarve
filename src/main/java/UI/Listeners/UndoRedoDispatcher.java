@@ -1,6 +1,7 @@
 package UI.Listeners;
 
 import Domain.Controller;
+import UI.MainWindow;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -13,17 +14,24 @@ import java.awt.event.KeyEvent;
  */
 public class UndoRedoDispatcher implements KeyEventDispatcher {
     private final Controller controller;
-    public UndoRedoDispatcher(Controller controller){
+    private final MainWindow mainWindow;
+
+    public UndoRedoDispatcher(MainWindow mainWindow, Controller controller) {
         this.controller = controller;
+        this.mainWindow = mainWindow;
     }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
-        if (e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z){
+        if (e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z) {
             controller.undo();
+            mainWindow.getMiddleContent().getExportWindow().calculateGcode();
+            controller.setScene();
             return true;
-        } else if (e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Y){
+        } else if (e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Y) {
             controller.redo();
+            mainWindow.getMiddleContent().getExportWindow().calculateGcode();
+            controller.setScene();
             return true;
         }
         return false;

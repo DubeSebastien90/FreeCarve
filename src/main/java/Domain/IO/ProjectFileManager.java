@@ -61,7 +61,6 @@ public class ProjectFileManager {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(location))) {
             panelDTO = (PanelDTO) in.readObject();
         }
-
         return panelDTO;
     }
 

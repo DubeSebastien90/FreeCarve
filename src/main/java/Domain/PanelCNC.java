@@ -53,6 +53,8 @@ class PanelCNC {
         }
         cuts.remove(borderCut);
         this.cutList = cuts;
+
+
     }
 
     public PanelDTO getDTO() {
@@ -154,7 +156,7 @@ class PanelCNC {
                     for (CutDTO c : savedCut.removeLast()) {
                         Cut cte = new Cut(c, getCutAndBorderList());
                         cutList.add(cte);
-                        if (cte.equals(ct[0])){
+                        if (cte.equals(ct[0])) {
                             ct[0] = cte;
                         }
                     }
