@@ -9,9 +9,8 @@ import UI.Widgets.GenericAttributeBox;
 import UI.Widgets.PixelNoUnitInputField;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 
 /**
  * Represents an export window that displays a 3D renderer for visualizing
@@ -95,6 +94,7 @@ public class ExportWindow {
         JSplitPane splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tempGCodeWindow, nextButton);
         JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tempSpecChooser, splitPane1);
         mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tempRender3D, splitPane2);
+
         splitPane2.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 10 * 2);
         splitPane1.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowHeight() / 2);
         mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 3 * 2);
@@ -129,7 +129,7 @@ public class ExportWindow {
         private final MainWindow mainWindow;
 
         public CNCCutSpecChooser(MainWindow mainWindow) {
-            super(false, "Spécifications CNC");
+            super(false, "");
             this.mainWindow = mainWindow;
             init();
         }
@@ -151,15 +151,31 @@ public class ExportWindow {
 
             });
 
+            JPanel panel = new JPanel();
+            GridBagLayout layout = new GridBagLayout();
+            JScrollPane scrollPane = new JScrollPane(panel);
+            this.setupHeader("Spécification CNC", scrollPane);
+            panel.setLayout(layout);
+            panel.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
+                    UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding()));
+            panel.setBackground(UIManager.getColor("SubWindow.background"));
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            scrollPane.setBorder(null);
+            scrollPane.getVerticalScrollBar().setUnitIncrement(UIConfig.INSTANCE.getScrollbarSpeed());
+            panel.setAlignmentX(0);
+            scrollPane.setAlignmentX(0);
+
+
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.weightx = 1.0;
             gbc.weighty = 1.0;
             gbc.fill = GridBagConstraints.NONE;
             gbc.gridx = 0;
             gbc.gridy = 1;
-            add(rotationSpeed, gbc);
+            panel.add(rotationSpeed, gbc);
             gbc.gridy = 2;
-            add(feedRate, gbc);
+            panel.add(feedRate, gbc);
         }
 
         public void refreshAttributes() {
