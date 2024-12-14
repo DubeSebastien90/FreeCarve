@@ -71,27 +71,17 @@ public class DrawCutRectangular extends DrawCutWrapper {
             p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
             p2 = new VertexDTO(mmE.getX(), listPoints.get(3).getY(), 0);
         } else {
-            if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 0, 1)) {
-                p1 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
-                p2 = new VertexDTO(listPoints.get(2).getX(), listPoints.get(3).getY(), 0);
-            } else if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 1, 2)) {
-                p1 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
-                p2 = new VertexDTO(listPoints.get(2).getX(), listPoints.get(3).getY(), 0);
-            } else if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 2, 3)) {
-                p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
-                p2 = new VertexDTO(mmE.getX(), listPoints.get(3).getY(), 0);
-            } else {
-                p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
-                p2 = new VertexDTO(listPoints.get(3).getX(), mmE.getY(), 0);
-            }
-            CutDTO c = getCutDTO();
-
-            List<VertexDTO> relativePts = mainWindow.getController().generateRectanglePointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
-            mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()), false);
-
-            Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
-            mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
+            p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
+            p2 = new VertexDTO(listPoints.get(3).getX(), mmE.getY(), 0);
         }
+        CutDTO c = getCutDTO();
+
+        List<VertexDTO> relativePts = mainWindow.getController().generateRectanglePointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
+        mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()), false);
+
+        Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
+        mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
+
     }
 
     @Override
