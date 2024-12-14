@@ -168,6 +168,10 @@ public class DrawCutBorder extends DrawCutWrapper {
         Point2D mmE = renderer.pixelTomm(pixP);
         VertexDTO p1;
         VertexDTO p2;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 081277c (debut coupe bordure)
         if (indexPoint == 0) {
             p1 = new VertexDTO(mmE.getX(), listPoints.get(2).getY(), 0);
             p2 = new VertexDTO(listPoints.get(2).getX(), mmE.getY(), 0);

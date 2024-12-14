@@ -224,8 +224,8 @@ public class Drawing {
             @Override
             public void mouseDragged(MouseEvent e) {
                 //super.mouseMoved(e);
-                Point2D pixP = renderer.pixelTomm(e.getPoint());
-                System.out.println(mainWindow.getController().getGridPointNearAllBorderAndCuts(new VertexDTO(pixP.getX(),pixP.getY(),0), 10));
+                //Point2D pixP = renderer.pixelTomm(e.getPoint());
+                //System.out.println(mainWindow.getController().getGridPointNearAllBorderAndCuts(new VertexDTO(pixP.getX(),pixP.getY(),0), 10));
                 currentModifiedCut.movePoint(e.getPoint(), renderer, mainWindow, indexPoint);
             }
         };
