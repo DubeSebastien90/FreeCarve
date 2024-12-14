@@ -189,9 +189,11 @@ public class DrawCutBorder extends DrawCutWrapper {
         PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(),1,true);
         Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(),p.getLocationY(),0), threshold);
         VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(),p.getLocationY(),0));
-        Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint1, true);
-        if (otherPoint.isPresent()) {
-            closestPoint = otherPoint.get();
+        if (mainWindow.getController().getGrid().isMagnetic()) {
+            Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint1, true);
+            if (otherPoint.isPresent()) {
+                closestPoint = otherPoint.get();
+            }
         }
 
 
