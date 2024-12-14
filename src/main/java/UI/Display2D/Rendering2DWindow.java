@@ -39,7 +39,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
 
     private Rectangle2D board = new Rectangle2D.Double(0, 0, 1219.2, 914.4); //board to render
     private Point2D mousePt; //pixel mouse point
-    private final Point2D mmMousePt; //mm mouse point
+    private Point2D mmMousePt; //mm mouse point
     private double offsetX = 100; //offset of the board on the screen
     private double offsetY = 100; // offset of the board on the screen
     private double zoom = 1; // ]0, infinite[
@@ -265,6 +265,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
                     super.mouseReleased(e);
                     drawing.closeModifyPoint();
                     mousePt = e.getPoint();
+                    mmMousePt = pixelTomm(mousePt);
                     repaint();
                 }
                 if (drawing.getState() == Drawing.DrawingState.MODIFY_CUT) {
@@ -272,6 +273,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
                     drawing.closeModifyCut();
                     drawing.setState(Drawing.DrawingState.IDLE);
                     mousePt = e.getPoint();
+                    mmMousePt = pixelTomm(mousePt);
                     repaint();
                 }
             }
