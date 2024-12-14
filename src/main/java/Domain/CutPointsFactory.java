@@ -105,6 +105,19 @@ public class CutPointsFactory {
         return new ArrayList<>(List.of(p1,p2,p3,p4,p5));
     }
 
+    /**
+     * From the diagonal points, generate the absolute rectanglePoints
+     * @param interiorAbs1
+     * @param interiorAbs3
+     * @return
+     */
+    public static List<VertexDTO> generateRectanglePoints(VertexDTO interiorAbs1, VertexDTO interiorAbs3){
+
+        VertexDTO p2 = new VertexDTO(interiorAbs1.getX(), interiorAbs3.getY(), 0);
+        VertexDTO p4 = new VertexDTO(interiorAbs3.getX(), interiorAbs1.getY(), 0);
+        return new ArrayList<>(List.of(interiorAbs1, p2, interiorAbs3, p4, interiorAbs1));
+    }
+
 
     /**
      * Generate the relative points of the retaille cut
