@@ -142,8 +142,17 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param index The index of the bit that needs to be removed.
      */
     public void removeBit(int index) throws InvalidBitException {
-        cncMachine.getBitStorage().removeBit(index);
-        cncMachine.getPanel().validateCutBasedOnBits(cncMachine);
+        BitDTO currB = getBitsDTO()[index];
+        undoRedoManager.executeAndMemorize(() -> {
+            try {
+                cncMachine.getBitStorage().removeBit(index);
+                cncMachine.getPanel().validateAll(cncMachine);
+            } catch (InvalidBitException ignored) {
+            }
+        }, () -> {
+            cncMachine.getBitStorage().updateBit(index, currB);
+            cncMachine.getPanel().validateAll(cncMachine);
+        });
     }
 
     /**
@@ -153,8 +162,24 @@ public class Controller implements IUnitConverter, IMemorizer {
      * @param bit   A DTO representing the new {@code Bit}
      */
     public void modifyBit(int index, BitDTO bit) {
-        cncMachine.getBitStorage().updateBit(index, bit);
-        cncMachine.getPanel().validateCutBasedOnBits(cncMachine);
+
+        BitDTO currB = getBitsDTO()[index];
+        undoRedoManager.executeAndMemorize(() -> {
+            cncMachine.getBitStorage().updateBit(index, bit);
+            cncMachine.getPanel().validateAll(cncMachine);
+        }, () -> {
+            if (currB.getDiameter() > 0) {
+                cncMachine.getBitStorage().updateBit(index, currB);
+                cncMachine.getPanel().validateAll(cncMachine);
+            } else {
+                try {
+                    cncMachine.getBitStorage().removeBit(index);
+                    cncMachine.getPanel().validateAll(cncMachine);
+                } catch (InvalidBitException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 
@@ -211,7 +236,8 @@ public class Controller implements IUnitConverter, IMemorizer {
     public void loadProject(File path) throws InvalidFileExtensionException, IOException, ClassNotFoundException {
         PanelDTO result = ProjectFileManager.loadProject(path);
         PanelDTO copy = getPanelDTO();
-        undoRedoManager.executeAndMemorize(() -> cncMachine.setPanel(new PanelCNC(result, undoRedoManager)), () -> cncMachine.setPanel(new PanelCNC(copy, undoRedoManager)));
+        cncMachine.setPanel(new PanelCNC(result, undoRedoManager));
+        //undoRedoManager.executeAndMemorize(() -> cncMachine.setPanel(new PanelCNC(result, undoRedoManager)), () -> cncMachine.setPanel(new PanelCNC(copy, undoRedoManager)));
     }
 
     /**
@@ -227,7 +253,8 @@ public class Controller implements IUnitConverter, IMemorizer {
     public void loadTools(File path) throws InvalidFileExtensionException, IOException, ClassNotFoundException {
         BitDTO[] result = ProjectFileManager.loadBits(path);
         BitDTO[] copy = getBitsDTO();
-        undoRedoManager.executeAndMemorize(() -> cncMachine.setBitStorage(new BitStorage(result)), () -> cncMachine.setBitStorage(new BitStorage(copy)));
+        cncMachine.setBitStorage(new BitStorage(result));
+        //undoRedoManager.executeAndMemorize(() -> cncMachine.setBitStorage(new BitStorage(result)), () -> cncMachine.setBitStorage(new BitStorage(copy)));
     }
 
     /**
@@ -602,7 +629,6 @@ public class Controller implements IUnitConverter, IMemorizer {
     public boolean isRoundedCutDTOHoveredByCursor(CutDTO cutDTO, VertexDTO cursor) {
         return RoundedCut.isRoundedCutHoveredByMouse(cutDTO, cursor, cncMachine);
     }
-
 
     public void flushAllUndoRedo() {
         undoRedoManager.flushAll();

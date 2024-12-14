@@ -1,6 +1,7 @@
 package Common.Interfaces;
 
 import Common.Exceptions.ClampZoneException;
+import Common.Exceptions.InvalidBitException;
 
 /**
  * Functional interface that represents an action to be done

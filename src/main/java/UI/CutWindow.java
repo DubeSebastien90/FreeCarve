@@ -1,7 +1,6 @@
 package UI;
 
 import Common.DTO.CutDTO;
-import Common.Interfaces.IRefreshable;
 import UI.Display2D.Rendering2DWindow;
 import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeAttributeListener;
@@ -16,6 +15,7 @@ import UI.Widgets.Attributable;
 import UI.Widgets.CutBox;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.Optional;
 import java.util.UUID;
@@ -110,7 +110,8 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
                 ActionListener[] actions = mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.TRASH).getActionListeners();
                 for (ActionListener act : actions) {
                     mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.TRASH).removeActionListener(act);
-                }                mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.TRASH).addActionListener(e -> {
+                }
+                mainWindow.getLeftBar().getToolBar().getTool(LeftBar.ToolBar.Tool.TRASH).addActionListener(e -> {
                     deleteCutEventOccured(new ChangeCutEvent(eventCasted, eventCasted.getCutUUID()));
                 });
 
@@ -242,4 +243,15 @@ public class CutWindow implements ChangeAttributeListener, ChangeCutListener {
         this.panelObservers.notifyObservers();
     }
 
+    public void verifyWithBitChange() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        bitSelectionPanel.update(gbc);
+        bitPanel = bitSelectionPanel;
+        this.mainSplitPane.revalidate();
+        this.mainSplitPane.repaint();
+    }
 }

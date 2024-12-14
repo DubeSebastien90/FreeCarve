@@ -73,7 +73,7 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
         mmMousePt = new Point2D.Double(0, 0);
         offsetY = 100;
         offsetX = 100;
-        mainWindow.getController().putGrid(76.2, 5);
+        mainWindow.getController().putGrid(76.2, 10);
         addMouseListener();
         addMouseMotionListener();
         addMouseWheelListener();

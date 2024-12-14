@@ -26,19 +26,19 @@ public class OptionWindow extends JPanel {
         add(titleLabel);
 
         add(Box.createRigidArea(new Dimension(0, 20)));
-
-        JPanel dimensionsPanel = createGroupPanel("Dimensions par défaut");
-        add(dimensionsPanel);
-
-        MeasurementInputField defaultPanelWidth = new MeasurementInputField(mainWindow, "Largeur par défaut", UIConfig.INSTANCE.getDefaultBoardWidthMM(), UiUnits.MILLIMETERS);
-        configureMeasurementField(defaultPanelWidth, evt -> UIConfig.INSTANCE.setDefaultBoardWidthMM(defaultPanelWidth.getMMValue()));
-        dimensionsPanel.add(defaultPanelWidth);
-
-        MeasurementInputField defaultPanelHeight = new MeasurementInputField(mainWindow, "Hauteur par défaut", UIConfig.INSTANCE.getDefaultBoardHeightMM(), UiUnits.MILLIMETERS);
-        configureMeasurementField(defaultPanelHeight, evt -> UIConfig.INSTANCE.setDefaultBoardHeightMM(defaultPanelHeight.getMMValue()));
-        dimensionsPanel.add(defaultPanelHeight);
-
-        add(Box.createRigidArea(new Dimension(0, 20)));
+//
+//        JPanel dimensionsPanel = createGroupPanel("Dimensions par défaut");
+//        add(dimensionsPanel);
+//
+//        MeasurementInputField defaultPanelWidth = new MeasurementInputField(mainWindow, "Largeur par défaut", UIConfig.INSTANCE.getDefaultBoardWidthMM(), UiUnits.MILLIMETERS);
+//        configureMeasurementField(defaultPanelWidth, evt -> UIConfig.INSTANCE.setDefaultBoardWidthMM(defaultPanelWidth.getMMValue()));
+//        dimensionsPanel.add(defaultPanelWidth);
+//
+//        MeasurementInputField defaultPanelHeight = new MeasurementInputField(mainWindow, "Hauteur par défaut", UIConfig.INSTANCE.getDefaultBoardHeightMM(), UiUnits.MILLIMETERS);
+//        configureMeasurementField(defaultPanelHeight, evt -> UIConfig.INSTANCE.setDefaultBoardHeightMM(defaultPanelHeight.getMMValue()));
+//        dimensionsPanel.add(defaultPanelHeight);
+//
+//        add(Box.createRigidArea(new Dimension(0, 20)));
 
         JPanel unitPanel = createGroupPanel("Unités");
         add(unitPanel);

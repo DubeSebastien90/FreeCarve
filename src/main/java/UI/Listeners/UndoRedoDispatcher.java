@@ -27,11 +27,19 @@ public class UndoRedoDispatcher implements KeyEventDispatcher {
             controller.undo();
             mainWindow.getMiddleContent().getExportWindow().calculateGcode();
             controller.setScene();
+            mainWindow.getMiddleContent().getConfigChoiceWindow().getBitWindow().refresh();
+            mainWindow.getMiddleContent().getConfigChoiceWindow().getBitWindow().repaint();
+            mainWindow.getMiddleContent().getCutWindow().notifyObservers();
+            mainWindow.getMiddleContent().getCutWindow().verifyWithBitChange();
             return true;
         } else if (e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Y) {
             controller.redo();
             mainWindow.getMiddleContent().getExportWindow().calculateGcode();
             controller.setScene();
+            mainWindow.getMiddleContent().getConfigChoiceWindow().getBitWindow().refresh();
+            mainWindow.getMiddleContent().getConfigChoiceWindow().getBitWindow().repaint();
+            mainWindow.getMiddleContent().getCutWindow().notifyObservers();
+            mainWindow.getMiddleContent().getCutWindow().verifyWithBitChange();
             return true;
         }
         return false;

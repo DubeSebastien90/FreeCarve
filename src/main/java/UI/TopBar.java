@@ -1,5 +1,6 @@
 package UI;
 
+import Common.DTO.VertexDTO;
 import Common.Exceptions.InvalidFileExtensionException;
 import UI.Listeners.ExportGcodeActionListener;
 import UI.Listeners.LoadProjectActionListener;
@@ -68,6 +69,9 @@ public class TopBar extends JMenuBar {
         nouveau.addActionListener(e -> {
             mainWindow.getController().resetPanelCNC();
             mainWindow.getMiddleContent().getCutWindow().notifyObservers();
+            VertexDTO v = mainWindow.getController().getPanelDTO().getPanelDimension();
+            mainWindow.getMiddleContent().getConfigChoiceWindow().getRendering2DWindow().resizePanneau(v.getX(), v.getY());
+            mainWindow.getMiddleContent().getConfigChoiceWindow().getRendering2DWindow().clearPoints();
         });
         enregistrer.addActionListener(new SaveProjectActionListener(mainWindow));
         enregistrerSous.addActionListener(new SaveProjectAsActionListener(mainWindow));
