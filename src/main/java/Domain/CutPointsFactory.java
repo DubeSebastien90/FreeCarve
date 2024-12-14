@@ -171,6 +171,28 @@ public class CutPointsFactory {
     }
 
     /**
+     * Generate the relative points of the retaille cut, based on a single point
+     * @param cursorAbs
+     * @param bitIndex
+     * @param controller
+     * @param cncMachine
+     * @return
+     */
+    public static List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsoluteSinglePoint(VertexDTO cursorAbs, int bitIndex, Controller controller, CNCMachine cncMachine){
+        VertexDTO panelDimension = cncMachine.getPanel().getPanelDimension();
+        VertexDTO midpoint = panelDimension.mul(0.5);
+        double diameter1 = cncMachine.getBitStorage().getBitDiameter(bitIndex);
+        VertexDTO compensation = new VertexDTO(diameter1/2, diameter1/2, 0);
+
+        VertexDTO diff = cursorAbs.sub(midpoint);
+        VertexDTO absDiff = new VertexDTO(Math.abs(diff.getX()), Math.abs(diff.getY()), 0);
+        VertexDTO compensatedWidthLeftHeightBottom = absDiff.sub(compensation);
+        VertexDTO compensatedWidthRightHeightTop = new VertexDTO(compensatedWidthLeftHeightBottom);
+
+        return List.of(compensatedWidthLeftHeightBottom, compensatedWidthRightHeightTop);
+    }
+
+    /**
      * Generate the relative points of the free cut, based on two absolute points and the refs
      * @param p1Abs
      * @param p2Abs

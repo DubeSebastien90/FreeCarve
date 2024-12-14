@@ -1,6 +1,7 @@
 package Domain;
 
 import Common.DTO.*;
+import Common.Exceptions.ClampZoneException;
 import Common.Exceptions.InvalidBitException;
 import Common.Exceptions.InvalidFileExtensionException;
 import Common.Interfaces.*;
@@ -561,6 +562,16 @@ public class Controller implements IUnitConverter, IMemorizer {
      */
     public List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsoluteCorners(VertexDTO p1Abs, VertexDTO p3Abs, int bitIndex){
         return CutPointsFactory.generateBorderPointsRelativeEdgeEdgeFromAbsoluteCorners(p1Abs, p3Abs, bitIndex, this, cncMachine);
+    }
+
+    /**
+     * Compute the modified border relative points based on two absolutes points : the p1 and the p3 of the rectangle diagonal
+     * @param cursor
+     * @param bitIndex
+     * @return
+     */
+    public List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsoluteSinglePoint(VertexDTO cursor, int bitIndex){
+        return CutPointsFactory.generateBorderPointsRelativeEdgeEdgeFromAbsoluteSinglePoint(cursor, bitIndex, this, cncMachine);
     }
 
     /**
