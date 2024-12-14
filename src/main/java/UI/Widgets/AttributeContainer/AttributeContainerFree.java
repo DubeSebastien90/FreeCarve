@@ -115,7 +115,7 @@ public class AttributeContainerFree extends AttributeContainer {
                 VertexDTO oldVertex = c.getPoints().get(index);
                 VertexDTO newPoint = new VertexDTO(pb.getxInput().getMMValue(), oldVertex.getY(), oldVertex.getZ());
                 c.getPoints().set(index, newPoint);
-                mainWindow.getController().modifyCut(c);
+                mainWindow.getController().modifyCut(c, true);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });
@@ -127,7 +127,7 @@ public class AttributeContainerFree extends AttributeContainer {
                 VertexDTO oldVertex = c.getPoints().get(index);
                 VertexDTO newPoint = new VertexDTO(oldVertex.getX(), pb.getyInput().getMMValue(), oldVertex.getZ());
                 c.getPoints().set(index, newPoint);
-                mainWindow.getController().modifyCut(c);
+                mainWindow.getController().modifyCut(c, true);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });

@@ -221,7 +221,7 @@ public class DrawCutL extends DrawCutWrapper {
         CutDTO c = getCutDTO();
 
         List<VertexDTO> relativePts = mainWindow.getController().generateLPointsRelativeEdgeEdgeFromAbsolute(p1, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
-        mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()));
+        mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()), false);
 
         Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
         mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
@@ -243,7 +243,7 @@ public class DrawCutL extends DrawCutWrapper {
         CutDTO c = getCutDTO();
 
         List<VertexDTO> relativePts = mainWindow.getController().generateLPointsRelativeEdgeEdgeFromAbsolute(p1, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
-        mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()));
+        mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()), false);
 
         Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
         mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));

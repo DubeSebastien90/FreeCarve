@@ -103,18 +103,23 @@ class PanelCNC {
      * @param cut The new CutDTO need to be valid
      * @return Optional<UUID>
      */
-    Optional<UUID> modifyCut(CNCMachine cncMachine, CutDTO cut) {
+    Optional<UUID> modifyCut(CNCMachine cncMachine, CutDTO cut, boolean canMemorize) {
         for (int i = 0; i < this.cutList.size(); i++) {
             if (cut.getId() == this.cutList.get(i).getId()) {
                 int finalI = i;
                 CutDTO ct = this.cutList.get(finalI).getDTO();
-                memorizer.executeAndMemorize(() -> {
+                if (canMemorize) {
+                    memorizer.executeAndMemorize(() -> {
+                        this.cutList.get(finalI).modifyCut(cut, this.getCutAndBorderList());
+                        validateAll(cncMachine);
+                    }, () -> {
+                        this.cutList.get(finalI).modifyCut(ct, this.getCutAndBorderList());
+                        validateAll(cncMachine);
+                    });
+                } else{
                     this.cutList.get(finalI).modifyCut(cut, this.getCutAndBorderList());
                     validateAll(cncMachine);
-                }, () -> {
-                    this.cutList.get(finalI).modifyCut(ct, this.getCutAndBorderList());
-                    validateAll(cncMachine);
-                });
+                }
 
                 return Optional.of(cut.getId());
             }

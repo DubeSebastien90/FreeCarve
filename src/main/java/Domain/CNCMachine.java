@@ -83,8 +83,8 @@ class CNCMachine implements IRefreshable {
         return id;
     }
 
-    public Optional<UUID> modifyCut(CutDTO cutDTO) {
-        Optional<UUID> id = panel.modifyCut(this, cutDTO);
+    public Optional<UUID> modifyCut(CutDTO cutDTO,  boolean canMemorize) {
+        Optional<UUID> id = panel.modifyCut(this, cutDTO, canMemorize);
         return id;
     }
 

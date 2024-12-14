@@ -99,7 +99,7 @@ public class AttributeContainerClamp extends AttributeContainer{
                     cutDTO.getCutType(),
                     mainWindow.getController().generateRectanglePoints(getCenterPoint(), getWidthEdgeEdge(), value),
                     new ArrayList<>(), cutDTO.getState());
-            mainWindow.getController().modifyCut(newClamp);
+            mainWindow.getController().modifyCut(newClamp, true);
             cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
         });
     }
@@ -113,7 +113,7 @@ public class AttributeContainerClamp extends AttributeContainer{
                     cutDTO.getCutType(),
                     mainWindow.getController().generateRectanglePoints(getCenterPoint(), value, getHeightEdgeEdge()),
                     new ArrayList<>(), cutDTO.getState());
-            mainWindow.getController().modifyCut(newClamp);
+            mainWindow.getController().modifyCut(newClamp, true);
             cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
         });
     }
@@ -127,7 +127,7 @@ public class AttributeContainerClamp extends AttributeContainer{
                     cutDTO.getCutType(),
                     mainWindow.getController().generateRectanglePoints(new VertexDTO(value, getCenterPoint().getY(), getCenterPoint().getZ()), getWidthEdgeEdge(), getHeightEdgeEdge()),
                     new ArrayList<>(), cutDTO.getState());
-            mainWindow.getController().modifyCut(newClamp);
+            mainWindow.getController().modifyCut(newClamp, true);
             cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
         });
 
@@ -139,7 +139,7 @@ public class AttributeContainerClamp extends AttributeContainer{
                     cutDTO.getCutType(),
                     mainWindow.getController().generateRectanglePoints(new VertexDTO(getCenterPoint().getX(), value, getCenterPoint().getZ()), getWidthEdgeEdge(), getHeightEdgeEdge()),
                     new ArrayList<>(), cutDTO.getState());
-            mainWindow.getController().modifyCut(newClamp);
+            mainWindow.getController().modifyCut(newClamp, true);
             cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
 
         });

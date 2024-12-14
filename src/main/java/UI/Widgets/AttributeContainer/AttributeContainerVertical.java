@@ -122,7 +122,7 @@ public class AttributeContainerVertical extends AttributeContainer {
                     VertexDTO newVertex = new VertexDTO(newEdgeEdge, oldVertex.getY(), oldVertex.getZ());
                     c.getPoints().set(i, newVertex);
                 }
-                mainWindow.getController().modifyCut(c);
+                mainWindow.getController().modifyCut(c, true);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });

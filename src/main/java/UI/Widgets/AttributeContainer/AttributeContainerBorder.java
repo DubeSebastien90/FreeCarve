@@ -107,7 +107,7 @@ public class AttributeContainerBorder extends AttributeContainer{
                     VertexDTO newVertex = new VertexDTO(newWidth/2, oldVertex.getY(), oldVertex.getZ());
                     c.getPoints().set(i, newVertex);
                 }
-                mainWindow.getController().modifyCut(c);
+                mainWindow.getController().modifyCut(c, true);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });
@@ -125,7 +125,7 @@ public class AttributeContainerBorder extends AttributeContainer{
                     VertexDTO newVertex = new VertexDTO(oldVertex.getX(), newHeight/2, oldVertex.getZ());
                     c.getPoints().set(i, newVertex);
                 }
-                mainWindow.getController().modifyCut(c);
+                mainWindow.getController().modifyCut(c, true);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });

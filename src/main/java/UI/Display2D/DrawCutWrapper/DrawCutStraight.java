@@ -184,7 +184,7 @@ public class DrawCutStraight extends DrawCutWrapper {
             CutDTO c = getCutDTO();
             CutDTO newCut = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState());
             cut = new CutDTO(newCut);
-            mainWindow.getController().modifyCut(newCut);
+            mainWindow.getController().modifyCut(newCut, false);
             } else if (getCutType() == CutType.LINE_HORIZONTAL) {
             List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
             Point2D mmE = renderer.pixelTomm(pixP);
@@ -194,7 +194,7 @@ public class DrawCutStraight extends DrawCutWrapper {
             CutDTO c = getCutDTO();
             CutDTO newCut = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState());
             cut = new CutDTO(newCut);
-            mainWindow.getController().modifyCut(newCut);
+            mainWindow.getController().modifyCut(newCut, false);
         } else if(getCutType() == CutType.LINE_FREE){
             Point2D mmE = renderer.pixelTomm(pixP);
             VertexDTO p1 = new VertexDTO(renderer.getDrawing().getPrevPts().get(0).getX()+mmE.getX()-pointDepart.getX(), renderer.getDrawing().getPrevPts().get(0).getY()+mmE.getY()-pointDepart.getY(), 0);
@@ -203,7 +203,7 @@ public class DrawCutStraight extends DrawCutWrapper {
             CutDTO c = getCutDTO();
             CutDTO newCut = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState());
             cut = new CutDTO(newCut);
-            mainWindow.getController().modifyCut(newCut);
+            mainWindow.getController().modifyCut(newCut, false);
         }
         //update board
         Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
@@ -240,7 +240,7 @@ public class DrawCutStraight extends DrawCutWrapper {
             List<VertexDTO> relativePts = mainWindow.getController().generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
             CutDTO newCut = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState());
             cut = new CutDTO(newCut);
-            mainWindow.getController().modifyCut(newCut);
+            mainWindow.getController().modifyCut(newCut, false);
         } else if (getCutType() == CutType.LINE_HORIZONTAL) {
             List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
             Point2D mmE = renderer.pixelTomm(pixP);
@@ -268,7 +268,7 @@ public class DrawCutStraight extends DrawCutWrapper {
             List<VertexDTO> relativePts = mainWindow.getController().generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
             CutDTO newCut = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState());
             cut = new CutDTO(newCut);
-            mainWindow.getController().modifyCut(newCut);
+            mainWindow.getController().modifyCut(newCut, false);
         } else if (getCutType() == CutType.LINE_FREE) {
             List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
             Point2D mmE = renderer.pixelTomm(pixP);
@@ -286,7 +286,7 @@ public class DrawCutStraight extends DrawCutWrapper {
             List<VertexDTO> relativePts = mainWindow.getController().generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
             CutDTO newCut = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState());
             cut = new CutDTO(newCut);
-            mainWindow.getController().modifyCut(newCut);
+            mainWindow.getController().modifyCut(newCut, false);
         }
         Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
         mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));

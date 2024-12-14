@@ -127,8 +127,8 @@ public class Controller implements IUnitConverter, IMemorizer {
      *
      * @param cut The modified Cut.
      */
-    public Optional<UUID> modifyCut(CutDTO cut) {
-        return this.cncMachine.modifyCut(cut);
+    public Optional<UUID> modifyCut(CutDTO cut, boolean canMemorize) {
+        return this.cncMachine.modifyCut(cut, canMemorize);
     }
 
     /**

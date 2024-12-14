@@ -170,7 +170,7 @@ public class AttributeContainerRectangle extends AttributeContainer {
             public void propertyChange(PropertyChangeEvent evt) {
                 double n = sb.getInput().getMMValue();
                 CutDTO c = pointsWidthResizeEdgeEdge(n);
-                mainWindow.getController().modifyCut(c);
+                mainWindow.getController().modifyCut(c, true);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });
@@ -182,7 +182,7 @@ public class AttributeContainerRectangle extends AttributeContainer {
             public void propertyChange(PropertyChangeEvent evt) {
                 double n = sb.getInput().getMMValue();
                 CutDTO c = pointsHeightResizeEdgeEdge(n);
-                mainWindow.getController().modifyCut(c);
+                mainWindow.getController().modifyCut(c, true);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });
@@ -193,7 +193,7 @@ public class AttributeContainerRectangle extends AttributeContainer {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = moveAllPointsCenterCenter(pb.getxInput().getMMValue(), VertexDTO.AXIS.X);
-                mainWindow.getController().modifyCut(c);
+                mainWindow.getController().modifyCut(c, true);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });
@@ -202,7 +202,7 @@ public class AttributeContainerRectangle extends AttributeContainer {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 CutDTO c = moveAllPointsCenterCenter(pb.getyInput().getMMValue(), VertexDTO.AXIS.Y);
-                mainWindow.getController().modifyCut(c);
+                mainWindow.getController().modifyCut(c, true);
                 cutListPanel.modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox));
             }
         });
