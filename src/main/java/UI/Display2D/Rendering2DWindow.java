@@ -63,20 +63,15 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
 
     public Rendering2DWindow(MainWindow mainWindow, ChangeAttributeListener changeAttributeListener, ChangeCutListener changeCutListener) {
         super();
-        //references to other windows
         this.mainWindow = mainWindow;
-//        VertexDTO v = mainWindow.getController().getPanelDTO().getPanelDimension();
-//        resizePanneau(v.getX(), v.getY());
         mainWindow.getController().addRefreshListener(this); // to upate the size of the panel if necessary
         this.changeCutListener = changeCutListener;
         this.changeAttributeListener = changeAttributeListener;
-        //rendering variables
         zoom = 1;
         mousePt = new Point(0, 0);
         mmMousePt = new Point2D.Double(0, 0);
         offsetY = 100;
         offsetX = 100;
-        //
         mainWindow.getController().putGrid(76.2, 5);
         addMouseListener();
         addMouseMotionListener();

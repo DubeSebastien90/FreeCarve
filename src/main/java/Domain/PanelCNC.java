@@ -145,7 +145,6 @@ class PanelCNC {
                     validateAll(cncMachine);
                     cleanupRemove(ct[0], cncMachine);
                 }, () -> {
-                    //restoreRefList(ct2);
                     cutList.clear();
                     for (CutDTO c : savedCut.removeLast()) {
                         Cut cte = new Cut(c, getCutAndBorderList());
