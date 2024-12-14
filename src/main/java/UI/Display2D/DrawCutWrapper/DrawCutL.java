@@ -230,15 +230,34 @@ public class DrawCutL extends DrawCutWrapper {
     @Override
     public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint) {
         List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
-        Point2D mmE = renderer.pixelTomm(pixP);
         VertexDTO p1;
 
+        double threshold;
+        if (mainWindow.getController().getGrid().isMagnetic()) {
+            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
+        } else {
+            threshold = renderer.scalePixelToMM(snapThreshold);
+        }
+
+        //List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
+        Point2D mmE = renderer.pixelTomm(pixP);
+        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(),1,true);
+
+        PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(),1,true);
+        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(),p.getLocationY(),0), threshold);
+        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(),p.getLocationY(),0));
+        Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint1, true);
+        if (otherPoint.isPresent()) {
+            closestPoint = otherPoint.get();
+        }
+
+
         if (indexPoint == 1){
-            p1 = new VertexDTO(mmE.getX(), mmE.getY(), 0);
+            p1 = new VertexDTO(closestPoint.getX(), closestPoint.getY(), 0);
         } else if (indexPoint == 0){
-            p1 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
+            p1 = new VertexDTO(listPoints.get(1).getX(), closestPoint.getY(), 0);
         } else{
-            p1 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
+            p1 = new VertexDTO(closestPoint.getX(), listPoints.get(1).getY(), 0);
         }
         CutDTO c = getCutDTO();
 

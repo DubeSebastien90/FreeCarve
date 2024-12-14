@@ -248,6 +248,8 @@ public class Drawing {
             @Override
             public void mouseDragged(MouseEvent e) {
                 Point2D pixP = renderer.pixelTomm(e.getPoint());
+
+
 //                currentModifiedCut.setCursorPoint(new PersoPoint(pixP.getX(),pixP.getY(),currentDrawingCut.getPointsRadius(),false));
 //                double threshold;
 //                if (mainWindow.getController().getGrid().isMagnetic()) {
