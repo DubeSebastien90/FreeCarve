@@ -245,6 +245,6 @@ public class DrawCutClamp extends DrawCutWrapper{
         VertexDTO center = new VertexDTO((p1.getX() + p3.getX()) / 2, (p1.getY() + p3.getY()) / 2, 0.0f);
         PersoPoint referenceAnchorPoint = new PersoPoint(center.getX(), center.getY(), cursorRadius, true);
         referenceAnchorPoint.setColor(ANCHOR_COLOR);
-        referenceAnchorPoint.drawMM(graphics2D, renderer);
+        //referenceAnchorPoint.drawMM(graphics2D, renderer);
     }
 }
