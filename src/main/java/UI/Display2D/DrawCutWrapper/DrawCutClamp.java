@@ -1,10 +1,8 @@
 package UI.Display2D.DrawCutWrapper;
 
 import Common.CutState;
-import Common.DTO.ClampZoneDTO;
 import Common.DTO.CutDTO;
 import Common.DTO.VertexDTO;
-import Common.Exceptions.ClampZoneException;
 import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
@@ -26,6 +24,11 @@ public class DrawCutClamp extends DrawCutWrapper{
     }
     public DrawCutClamp(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(cut, renderer, mainWindow);
+    }
+
+    @Override
+    public double getStrokeWidthBruh(Rendering2DWindow renderer){
+        return (CLAMP_STROKE_WIDTH*renderer.getZoom());
     }
 
     @Override
@@ -185,11 +188,8 @@ public class DrawCutClamp extends DrawCutWrapper{
     @Override
     public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
         this.update(renderer);
-        graphics2D.setStroke(new BasicStroke((float) CLAMP_STROKE_WIDTH));
-        graphics2D.setColor(strokeColor);
-        if(state == DrawCutState.NOT_SELECTED){
-            graphics2D.setColor(CLAMP_COLOR);
-        }
+        graphics2D.setStroke(new BasicStroke((float) (CLAMP_STROKE_WIDTH*renderer.getZoom())));
+        graphics2D.setColor(CLAMP_COLOR);
 
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(points.get(0).getLocationX(), points.get(0).getLocationY()));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(points.get(2).getLocationX(), points.get(2).getLocationY()));
@@ -200,6 +200,39 @@ public class DrawCutClamp extends DrawCutWrapper{
         int yMin = (int) temp2.getY();
 
         graphics2D.fillRect(xMin, yMin, width, height);
+
+        //draw line
+        Color c = Color.black;
+        for (int i = 0; i < points.size() - 1; i++) {
+            if (this.points.get(i).getColor() != HOVER_VIEW_COLOR) {
+                c = this.points.get(i).getColor();
+            }
+        }
+        for (int i = 0; i < points.size() - 1; i++) {
+            Color c2 = c;
+            if (renderer.getDrawing().getState() == Drawing.DrawingState.IDLE && hoveredView && mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), i, i + 1)) {
+                c = HOVER_VIEW_COLOR;
+            }
+            graphics2D.setColor(c);
+            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i + 1));
+            c = c2;
+        }
+
+        //draw points
+        for (int i = 0; i < points.size() - 1; i++) {
+            if (this.points.get(i).getColor() != HOVER_VIEW_COLOR) {
+                c = this.points.get(i).getColor();
+            }
+        }
+        for (VertexDTO point : renderer.getMainWindow().getController().getAbsolutePointsPosition(cut)) {
+            graphics2D.setColor(c);
+            Point2D temp = renderer.mmTopixel(new Point2D.Double(point.getX(), point.getY()));
+            PersoPoint _point = new PersoPoint(point.getX(), point.getY(), this.pointsRadius / renderer.getZoom(), true);
+            if (renderer.getDrawing().getState() == Drawing.DrawingState.IDLE && renderer.isPointonPanel() && mainWindow.getController().mouse_on_top(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp.getX(), temp.getY(), _point.getRadius() * renderer.getZoom())) {
+                graphics2D.setColor(HOVER_VIEW_COLOR);
+            }
+            _point.drawMM(graphics2D, renderer);
+        }
     }
 
     @Override

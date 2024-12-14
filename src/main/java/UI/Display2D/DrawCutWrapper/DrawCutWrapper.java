@@ -62,7 +62,7 @@ public abstract class DrawCutWrapper {
     protected final Color CLAMP_COLOR = new Color(255, 0, 0, 200);
     protected final Color HOVER_VIEW_COLOR = Color.MAGENTA;
     protected final int ARROW_DIMENSION = 2;
-    protected final double CLAMP_STROKE_WIDTH = 1.0;
+    public static final double CLAMP_STROKE_WIDTH = 10.0;
 
     /**
      * Basic constructor with CutDTO
@@ -73,7 +73,7 @@ public abstract class DrawCutWrapper {
      */
     public DrawCutWrapper(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
         this.cut = cut;
-        this.strokeWidth = mainWindow.getController().getBitsDTO()[cut.getBitIndex()].getDiameter() * (double) renderer.getZoom();
+        this.strokeWidth = getStrokeWidthBruh(renderer);
         this.stroke = new BasicStroke((float) renderer.scalePixelToMM(strokeWidth), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         this.mainWindow = mainWindow;
         cursorPoint = null;
@@ -84,6 +84,10 @@ public abstract class DrawCutWrapper {
             setState(DrawCutState.INVALID, renderer);
         }
         pointsRadius = strokeWidth / 2 + 8 * renderer.getZoom();
+    }
+
+    public double getStrokeWidthBruh(Rendering2DWindow renderer) {
+        return mainWindow.getController().getBitsDTO()[cut.getBitIndex()].getDiameter() * (double) renderer.getZoom();
     }
 
     /**
@@ -184,6 +188,7 @@ public abstract class DrawCutWrapper {
      * @param renderer   ref to renderer
      */
     public abstract void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer);
+
 
     /**
      * Draw the cut that is still being created
