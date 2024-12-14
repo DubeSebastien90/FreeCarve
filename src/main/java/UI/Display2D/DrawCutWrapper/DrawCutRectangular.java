@@ -16,7 +16,6 @@ import UI.Widgets.CutBox;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,14 +106,16 @@ public class DrawCutRectangular extends DrawCutWrapper {
 
         //List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
         Point2D mmE = renderer.pixelTomm(pixP);
-        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(),1,true);
+        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
 
-        PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(),1,true);
-        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(),p.getLocationY(),0), threshold);
-        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(),p.getLocationY(),0));
-        Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint1, true);
-        if (otherPoint.isPresent()) {
-            closestPoint = otherPoint.get();
+        PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
+        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
+        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
+        if (mainWindow.getController().getGrid().isMagnetic()) {
+            Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint1, true);
+            if (otherPoint.isPresent()) {
+                closestPoint = otherPoint.get();
+            }
         }
 
         VertexDTO p1;
@@ -144,14 +145,14 @@ public class DrawCutRectangular extends DrawCutWrapper {
                 p2 = new VertexDTO(closestPoint.getX(), closestPoint.getY(), 0);
             }
         }
-            CutDTO c = getCutDTO();
+        CutDTO c = getCutDTO();
 
-            List<VertexDTO> relativePts = mainWindow.getController().generateRectanglePointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
-            mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()), false);
+        List<VertexDTO> relativePts = mainWindow.getController().generateRectanglePointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
+        mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()), false);
 
-            Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
-            mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
-        }
+        Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
+        mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
+    }
 
 
     @Override
