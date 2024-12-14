@@ -251,6 +251,10 @@ public class DrawCutClamp extends DrawCutWrapper{
         int xMin = (int) temp1.getX();
         int yMin = (int) temp2.getY();
 
+        if(temp2.getX() < _temp1.getX()) {
+            xMin -= width;
+        }
+
         if(_temp1.getY() > temp1.getY()){
             yMin -= height;
         }

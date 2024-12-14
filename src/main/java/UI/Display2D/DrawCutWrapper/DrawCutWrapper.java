@@ -410,6 +410,14 @@ public abstract class DrawCutWrapper {
         return oldClosest;
     }
 
+    public double getSnapThreshold(){
+        return snapThreshold;
+    }
+
+    public void setCursorPoint(PersoPoint point) {
+        this.cursorPoint = point;
+    }
+
     public abstract void moveUpdate(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow);
 
     public abstract void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint);
