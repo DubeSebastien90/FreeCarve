@@ -114,7 +114,7 @@ public class CreateCutTest {
         double offset = 40;
         moveCutDTO = moveCutDTO.addOffsetToPoints(new VertexDTO(offset, offset , 0));
 
-        Optional<UUID> id = controller.modifyCut(moveCutDTO);
+        Optional<UUID> id = controller.modifyCut(moveCutDTO, true);
 
         cuts = controller.getCutListDTO();
 
