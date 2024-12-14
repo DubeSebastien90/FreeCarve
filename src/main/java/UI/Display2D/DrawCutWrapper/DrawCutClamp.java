@@ -186,7 +186,7 @@ public class DrawCutClamp extends DrawCutWrapper{
 
         if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 0, 1)) {
             p1 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
-            p2 = new VertexDTO(listPoints.get(2).getX(), listPoints.get(3).getY(), 0);
+            p2 = new VertexDTO(listPoints.get(3).getX(), listPoints.get(3).getY(), 0);
         } else if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 1, 2)) {
             p1 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
             p2 = new VertexDTO(listPoints.get(2).getX(), listPoints.get(3).getY(), 0);
@@ -208,7 +208,31 @@ public class DrawCutClamp extends DrawCutWrapper{
 
     @Override
     public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint) {
+        List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
+        Point2D mmE = renderer.pixelTomm(pixP);
+        VertexDTO p1;
+        VertexDTO p2;
 
+        if (indexPoint == 0) {
+            p1 = new VertexDTO(mmE.getX(), listPoints.get(2).getY(), 0);
+            p2 = new VertexDTO(listPoints.get(2).getX(), mmE.getY(), 0);
+        } else if (indexPoint == 1) {
+            p1 = new VertexDTO(mmE.getX(), mmE.getY(), 0);
+            p2 = new VertexDTO(listPoints.get(3).getX(), listPoints.get(3).getY(), 0);
+        } else if (indexPoint == 2) {
+            p1 = new VertexDTO(listPoints.get(0).getX(), mmE.getY(), 0);
+            p2 = new VertexDTO(mmE.getX(), listPoints.get(0).getY(), 0);
+        } else {
+            p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
+            p2 = new VertexDTO(mmE.getX(), mmE.getY(), 0);
+        }
+        CutDTO c = getCutDTO();
+
+        List<VertexDTO> relativePts = mainWindow.getController().generateRectanglePoints(p1, p2);
+        mainWindow.getController().modifyCut(new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState()));
+
+        Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
+        mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
     }
 
     @Override
@@ -218,12 +242,18 @@ public class DrawCutClamp extends DrawCutWrapper{
         graphics2D.setColor(CLAMP_COLOR);
 
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(points.get(0).getLocationX(), points.get(0).getLocationY()));
+        Point2D _temp1 = renderer.mmTopixel(new Point2D.Double(points.get(1).getLocationX(), points.get(1).getLocationY()));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(points.get(2).getLocationX(), points.get(2).getLocationY()));
+        Point2D _temp2 =  renderer.mmTopixel(new Point2D.Double(points.get(3).getLocationX(), points.get(3).getLocationY()));
 
         int height = (int) Math.abs(temp2.getY() - temp1.getY());
         int width = (int) Math.abs(temp2.getX() - temp1.getX());
         int xMin = (int) temp1.getX();
         int yMin = (int) temp2.getY();
+
+        if(_temp1.getY() > temp1.getY()){
+            yMin -= height;
+        }
 
         graphics2D.fillRect(xMin, yMin, width, height);
 
