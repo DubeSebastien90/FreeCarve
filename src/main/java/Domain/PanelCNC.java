@@ -25,6 +25,7 @@ class PanelCNC {
     private static final int MAX_FEET_HEIGHT = 5;
     private static final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 50); // dimension in mm
     private final List<List<CutDTO>> savedCut = new ArrayList<>();
+    private final List<Integer> pos = new ArrayList<>();
 
     PanelCNC(IMemorizer memorizer) {
         this(defaultPanelDimension, memorizer);
@@ -93,7 +94,17 @@ class PanelCNC {
             this.cutList.add(createPanelCut(cutDTO));
             validateAll(cncMachine);
         }, () -> {
-            this.cutList.removeIf(e -> e.getId() == newUUID);
+            int index = -1;
+            for (Cut ct : cutList) {
+                if (ct.getId() == newUUID) {
+                    index = cutList.indexOf(ct);
+                }
+            }
+            if (index > -1) {
+                this.cutList.remove(index);
+                this.pos.add(index);
+                //this.cutList.removeIf(e -> e.getId() == newUUID);
+            }
             validateAll(cncMachine);
         });
         return Optional.of(newUUID);
@@ -120,6 +131,7 @@ class PanelCNC {
                     });
                 } else{
                     this.cutList.get(finalI).modifyCut(cut, this.getCutAndBorderList());
+                    replaceWithModifiedRef(new Cut(ct,getCutAndBorderList()), new Cut(cut,getCutAndBorderList()));
                     validateAll(cncMachine);
                 }
 
@@ -127,6 +139,19 @@ class PanelCNC {
             }
         }
         return Optional.empty();
+    }
+
+
+    private void replaceWithModifiedRef(Cut oldRef, Cut newRef) {
+        for (Cut ct : cutList) {
+            for (RefCut rfc : ct.getRefs()){
+                Cut currCutRef = rfc.getCut();
+                if (currCutRef.equals(oldRef)){
+                    rfc.setCut(newRef);
+                }
+            }
+        }
+
     }
 
     /**
@@ -147,10 +172,10 @@ class PanelCNC {
                     for (Cut c : cutList) {
                         a.add(c.getDTO());
                     }
+                    cleanupRemove(list.get(finalI), cncMachine);
                     savedCut.add(a);
                     list.remove(finalI);
                     validateAll(cncMachine);
-                    cleanupRemove(ct[0], cncMachine);
                 }, () -> {
                     cutList.clear();
                     for (CutDTO c : savedCut.removeLast()) {
@@ -209,7 +234,8 @@ class PanelCNC {
     void cleanupRemove(Cut cut, CNCMachine cncMachine) {
         for (Cut c : cutList) {
             for (RefCut ref : c.getRefs()) {
-                if (ref.getCut() == cut) {
+                Cut refc = ref.getCut();
+                if (refc.getBitIndex() == cut.getBitIndex() && Double.compare(refc.getDepth(), cut.getDepth()) == 0 && refc.getType() == cut.getType() && Objects.equals(refc.getPoints(), cut.getPoints()) && Objects.equals(refc.getId(), cut.getId()) && Objects.equals(refc.getRefs(), cut.getRefs())) {
                     c.setInvalidAndNoRef(cncMachine);
                     cleanupRemove(c, cncMachine);
                     break;
