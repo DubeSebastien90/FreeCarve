@@ -80,6 +80,7 @@ public class MeasurementInputField extends BasicWindow {
         this.add(this.numericInput);
         this.unitComboBox = new JComboBox<>(UiUnits.values());
         this.unitComboBox.setSelectedItem(currentUnit);
+        this.unitComboBox.addItemListener(new UnitChangeListener());
         this.add(this.unitComboBox);
 
     }
@@ -205,6 +206,17 @@ public class MeasurementInputField extends BasicWindow {
         public void setMaximum(double maximum) {
             this.max = maximum;
             lastValue = Math.clamp(lastValue, min, max);
+        }
+    }
+
+    private class UnitChangeListener implements ItemListener {
+        @Override
+        public void itemStateChanged(ItemEvent event) {
+            if (event.getStateChange() == ItemEvent.SELECTED) {
+                UiUnits newUnit = (UiUnits) event.getItem();
+                UiUnits oldUnit = currentUnit; // Make explicit copy for undo redo
+                memorizer.executeAndMemorize(() -> setCurrentUnit(newUnit), () -> setCurrentUnit(oldUnit));
+            }
         }
     }
 }
