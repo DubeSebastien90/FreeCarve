@@ -89,7 +89,7 @@ public class ExportWindow {
 
         cncCutSpecChooser = new CNCCutSpecChooser(mainWindow);
         BasicWindow tempSpecChooser = new BasicWindow(true);
-        tempSpecChooser.setupHeader("Paramètres d'exportation", cncCutSpecChooser);
+        tempSpecChooser.setupHeader("Paramètres d'exportation", cncCutSpecChooser.getScrollPane());
 
         JSplitPane splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tempGCodeWindow, nextButton);
         JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tempSpecChooser, splitPane1);
@@ -126,6 +126,7 @@ public class ExportWindow {
 
         private PixelNoUnitInputField rotationSpeed;
         private PixelNoUnitInputField feedRate;
+        private JScrollPane scrollPane;
         private final MainWindow mainWindow;
 
         public CNCCutSpecChooser(MainWindow mainWindow) {
@@ -153,7 +154,7 @@ public class ExportWindow {
 
             JPanel panel = new JPanel();
             GridBagLayout layout = new GridBagLayout();
-            JScrollPane scrollPane = new JScrollPane(panel);
+            scrollPane = new JScrollPane(panel);
             this.setupHeader("Spécification CNC", scrollPane);
             panel.setLayout(layout);
             panel.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
@@ -181,6 +182,10 @@ public class ExportWindow {
         public void refreshAttributes() {
             rotationSpeed.getNumericInput().setText("" + mainWindow.getController().getCNCrotationSpeed());
             feedRate.getNumericInput().setText("" + mainWindow.getController().getCNCCuttingSpeed());
+        }
+
+        public JScrollPane getScrollPane() {
+            return scrollPane;
         }
 
         /**
