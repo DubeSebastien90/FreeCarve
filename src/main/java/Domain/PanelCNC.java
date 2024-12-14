@@ -134,7 +134,7 @@ class PanelCNC {
             if (list.get(i).getId() == id) {
                 int finalI = i;
                 final Cut[] ct = {list.get(finalI)};
-                List<Cut> ct2 = findReferee(ct[0], cncMachine, new ArrayList<>());
+                List<Cut> ct2 = findReference(ct[0], cncMachine, new ArrayList<>());
                 memorizer.executeAndMemorize(() -> {
                     ArrayList<CutDTO> a = new ArrayList<>();
                     for (Cut c : cutList) {
@@ -178,14 +178,14 @@ class PanelCNC {
         }
     }
 
-    private List<Cut> findReferee(Cut cut, CNCMachine cncMachine, List<Cut> li) {
+    private List<Cut> findReference(Cut cut, CNCMachine cncMachine, List<Cut> li) {
         for (Cut c : cutList) {
             for (RefCut ref : c.getRefs()) {
                 if (ref.getCut() == cut) {
                     ArrayList<RefCut> r = new ArrayList<>();
                     r.add(ref);
                     li.add(new Cut(c.getDTO(), getCutAndBorderList()));
-                    findReferee(c, cncMachine, li);
+                    findReference(c, cncMachine, li);
                     break;
                 }
             }
