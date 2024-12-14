@@ -213,9 +213,7 @@ public class MeasurementInputField extends BasicWindow {
         @Override
         public void itemStateChanged(ItemEvent event) {
             if (event.getStateChange() == ItemEvent.SELECTED) {
-                UiUnits newUnit = (UiUnits) event.getItem();
-                UiUnits oldUnit = currentUnit; // Make explicit copy for undo redo
-                memorizer.executeAndMemorize(() -> setCurrentUnit(newUnit), () -> setCurrentUnit(oldUnit));
+                setCurrentUnit((UiUnits) event.getItem());
             }
         }
     }
