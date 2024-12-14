@@ -469,6 +469,16 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
+     * Generate a fixed list of points used by the rectangle cut according to the p1 and p3 of the diagonal lines of the rectangle
+     * @param interiorAbs1 first point
+     * @param interiorAbs2 third point (diagonal to p1)
+     * @return
+     */
+    public List<VertexDTO> generateRectanglePoints(VertexDTO interiorAbs1, VertexDTO interiorAbs2){
+        return CutPointsFactory.generateRectanglePoints(interiorAbs1, interiorAbs2);
+    }
+
+    /**
      * From a reference, and absolute positions, computes the valid relative vertical cuts points
      *
      * @param p1Abs    first absolute point
