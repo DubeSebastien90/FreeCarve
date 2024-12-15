@@ -255,7 +255,7 @@ public class Drawing {
         currentModifiedCut.setState(DrawCutWrapper.DrawCutState.SELECTED,renderer);
         Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(currentModifiedCut.getCutDTO().getId());
         cutBox.get().select();
-        currentModifiedCut.setPointDepart(renderer.getMmMousePt());
+        currentModifiedCut.setPointDepart(new Point2D.Double(pointToChange.getLocationX(), pointToChange.getLocationY()));
         prevCut = cutToChangePoint.getCutDTO();
         prevPts = mainWindow.getController().getAbsolutePointsPosition(prevCut);
         currentModifiedPoint = pointToChange;

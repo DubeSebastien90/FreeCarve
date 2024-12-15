@@ -163,8 +163,8 @@ public class DrawCutRectangular extends DrawCutWrapper {
             p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
             p2 = new VertexDTO(closestPoint.getX(), closestPoint.getY(), 0);
         } else {
-            p1 = new VertexDTO(renderer.getDrawing().getPrevPts().get(1).getX() + mmE.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(1).getY() + mmE.getY() - pointDepart.getY(), 0);
-            p2 = new VertexDTO(renderer.getDrawing().getPrevPts().get(3).getX() + mmE.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(3).getY() + mmE.getY() - pointDepart.getY(), 0);
+            p1 = new VertexDTO(renderer.getDrawing().getPrevPts().get(1).getX() + closestPoint.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(1).getY() + closestPoint.getY() - pointDepart.getY(), 0);
+            p2 = new VertexDTO(renderer.getDrawing().getPrevPts().get(3).getX() + closestPoint.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(3).getY() + closestPoint.getY() - pointDepart.getY(), 0);
         }
         CutDTO c = getCutDTO();
 
