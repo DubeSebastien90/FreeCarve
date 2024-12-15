@@ -50,6 +50,46 @@ public class DrawCutRectangular extends DrawCutWrapper {
 
     }
 
+    @Override
+    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
+        this.update(renderer);
+        graphics2D.setStroke(stroke);
+        graphics2D.setColor(this.strokeColor);
+
+        //draw line
+        Color c = Color.black;
+        for (int i = 0; i < points.size() - 1; i++) {
+            if (this.points.get(i).getColor() != HOVER_VIEW_COLOR) {
+                c = this.points.get(i).getColor();
+            }
+        }
+        for (int i = 0; i < points.size() - 2; i++) {
+            Color c2 = c;
+            if (renderer.getDrawing().getState() == Drawing.DrawingState.IDLE && hoveredView && mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), i, i + 1)) {
+                c = HOVER_VIEW_COLOR;
+            }
+            graphics2D.setColor(c);
+            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i + 1));
+            c = c2;
+        }
+
+        //draw points
+        for (int i = 0; i < points.size() - 1; i++) {
+            if (this.points.get(i).getColor() != HOVER_VIEW_COLOR) {
+                c = this.points.get(i).getColor();
+            }
+        }
+        for (VertexDTO point : renderer.getMainWindow().getController().getAbsolutePointsPosition(cut)) {
+            graphics2D.setColor(c);
+            Point2D temp = renderer.mmTopixel(new Point2D.Double(point.getX(), point.getY()));
+            PersoPoint _point = new PersoPoint(point.getX(), point.getY(), this.pointsRadius / renderer.getZoom(), true);
+            if (renderer.getDrawing().getState() == Drawing.DrawingState.IDLE && renderer.isPointonPanel() && mainWindow.getController().mouse_on_top(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp.getX(), temp.getY(), _point.getRadius() * renderer.getZoom())) {
+                graphics2D.setColor(HOVER_VIEW_COLOR);
+            }
+            _point.drawMM(graphics2D, renderer);
+        }
+    }
+
     public DrawCutRectangular(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(cut, renderer, mainWindow);
     }
@@ -119,20 +159,12 @@ public class DrawCutRectangular extends DrawCutWrapper {
         } else if (indexPoint == 2) {
             p1 = new VertexDTO(listPoints.get(0).getX(), closestPoint.getY(), 0);
             p2 = new VertexDTO(closestPoint.getX(), listPoints.get(0).getY(), 0);
+        } else if (indexPoint == 3){
+            p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
+            p2 = new VertexDTO(closestPoint.getX(), closestPoint.getY(), 0);
         } else {
-            if (indexPoint == 0) {
-                p1 = new VertexDTO(closestPoint.getX(), listPoints.get(2).getY(), 0);
-                p2 = new VertexDTO(listPoints.get(2).getX(), closestPoint.getY(), 0);
-            } else if (indexPoint == 1) {
-                p1 = new VertexDTO(closestPoint.getX(), closestPoint.getY(), 0);
-                p2 = new VertexDTO(listPoints.get(3).getX(), listPoints.get(3).getY(), 0);
-            } else if (indexPoint == 2) {
-                p1 = new VertexDTO(listPoints.get(0).getX(), closestPoint.getY(), 0);
-                p2 = new VertexDTO(closestPoint.getX(), listPoints.get(0).getY(), 0);
-            } else {
-                p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
-                p2 = new VertexDTO(closestPoint.getX(), closestPoint.getY(), 0);
-            }
+            p1 = new VertexDTO(renderer.getDrawing().getPrevPts().get(1).getX() + mmE.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(1).getY() + mmE.getY() - pointDepart.getY(), 0);
+            p2 = new VertexDTO(renderer.getDrawing().getPrevPts().get(3).getX() + mmE.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(3).getY() + mmE.getY() - pointDepart.getY(), 0);
         }
         CutDTO c = getCutDTO();
 

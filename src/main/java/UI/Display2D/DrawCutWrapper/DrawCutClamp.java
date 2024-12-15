@@ -244,9 +244,12 @@ public class DrawCutClamp extends DrawCutWrapper{
         } else if (indexPoint == 2) {
             p1 = new VertexDTO(listPoints.get(0).getX(), closestPoint.getY(), 0);
             p2 = new VertexDTO(closestPoint.getX(), listPoints.get(0).getY(), 0);
-        } else {
+        } else if (indexPoint == 3) {
             p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
             p2 = new VertexDTO(closestPoint.getX(), closestPoint.getY(), 0);
+        } else{
+            p1 = new VertexDTO(renderer.getDrawing().getPrevPts().get(1).getX() + mmE.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(1).getY() + mmE.getY() - pointDepart.getY(), 0);
+            p2 = new VertexDTO(renderer.getDrawing().getPrevPts().get(3).getX() + mmE.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(3).getY() + mmE.getY() - pointDepart.getY(), 0);
         }
         CutDTO c = getCutDTO();
 
@@ -290,7 +293,7 @@ public class DrawCutClamp extends DrawCutWrapper{
                 c = this.points.get(i).getColor();
             }
         }
-        for (int i = 0; i < points.size() - 1; i++) {
+        for (int i = 0; i < points.size() - 2; i++) {
             Color c2 = c;
             if (renderer.getDrawing().getState() == Drawing.DrawingState.IDLE && hoveredView && mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), i, i + 1)) {
                 c = HOVER_VIEW_COLOR;
