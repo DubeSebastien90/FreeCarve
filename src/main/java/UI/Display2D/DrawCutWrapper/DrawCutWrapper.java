@@ -6,13 +6,10 @@ import Common.Exceptions.BitNotSelectedException;
 import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
-import UI.Events.ChangeAttributeEvent;
 import UI.MainWindow;
-import UI.Widgets.CutBox;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +77,7 @@ public abstract class DrawCutWrapper {
         this.update(renderer);
         this.refs = new ArrayList<>();
         temporaryCreationPoints = new ArrayList<>();
-        if(cut.getState() == CutState.NOT_VALID){
+        if (cut.getState() == CutState.NOT_VALID) {
             setState(DrawCutState.INVALID, renderer);
         }
         pointsRadius = strokeWidth / 2 + 8 * renderer.getZoom();
@@ -410,7 +407,47 @@ public abstract class DrawCutWrapper {
         return oldClosest;
     }
 
-    public double getSnapThreshold(){
+    public Optional<VertexDTO> changeClosestLineIfMagnetic(double threshold, Optional<VertexDTO> oldClosest, boolean priority, boolean horizontal) {
+        PersoPoint p = this.cursorPoint;
+        mainWindow.getController().setIntersectionMagnetic();
+        VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+        Optional<VertexDTO> closestPoint2 = mainWindow.getController().getPointNearGridLine(p1, threshold, horizontal);
+        if (closestPoint2.isPresent()) {
+            oldClosest = oldClosest
+                    .filter(point -> !priority && p.getDistance(new PersoPoint(closestPoint2.get().getX(), closestPoint2.get().getY(), 0, false)) >= p.getDistance(new PersoPoint(point.getX(), point.getY(), 0, false)))
+                    .or(() -> closestPoint2);
+        }
+        return oldClosest;
+    }
+
+    VertexDTO changeClosestLineMaybe(Optional<VertexDTO> closestOld, double threshold, boolean horizontal) {
+        if (mainWindow.getController().getGrid().isMagnetic()) {
+            Optional<VertexDTO> otherPoint = changeClosestLineIfMagnetic(threshold, closestOld, true, horizontal);
+            if (otherPoint.isPresent()) {
+                return otherPoint.get();
+            }
+        }
+        return null;
+    }
+
+    VertexDTO changeClosestPointMaybe(double threshold, Optional<VertexDTO> closestPoint1, boolean priority) {
+        if (mainWindow.getController().getGrid().isMagnetic()) {
+            Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint1, true);
+            if (otherPoint.isPresent()) {
+                return otherPoint.get();
+            }
+        }
+        return null;
+    }
+
+    double getThresholdForMagnet(Rendering2DWindow renderer) {
+        if (mainWindow.getController().getGrid().isMagnetic()) {
+            return renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
+        }
+        return renderer.scalePixelToMM(snapThreshold);
+    }
+
+    public double getSnapThreshold() {
         return snapThreshold;
     }
 

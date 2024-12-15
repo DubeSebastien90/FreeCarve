@@ -57,22 +57,31 @@ public class DrawCutRectangular extends DrawCutWrapper {
     @Override
     public void moveUpdate(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow) {
         List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
+        double threshold = getThresholdForMagnet(renderer);
         Point2D mmE = renderer.pixelTomm(pixP);
+        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
+        PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
+        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
+        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
         VertexDTO p1;
         VertexDTO p2;
 
         if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 0, 1)) {
-            p1 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
+            p1 = new VertexDTO(closestPoint.getX(), listPoints.get(1).getY(), 0);
             p2 = new VertexDTO(listPoints.get(2).getX(), listPoints.get(3).getY(), 0);
         } else if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 1, 2)) {
-            p1 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, true)).orElse(closestPoint);
+            p1 = new VertexDTO(listPoints.get(1).getX(), closestPoint.getY(), 0);
             p2 = new VertexDTO(listPoints.get(2).getX(), listPoints.get(3).getY(), 0);
         } else if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 2, 3)) {
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
             p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
-            p2 = new VertexDTO(mmE.getX(), listPoints.get(3).getY(), 0);
+            p2 = new VertexDTO(closestPoint.getX(), listPoints.get(3).getY(), 0);
         } else {
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, true)).orElse(closestPoint);
             p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
-            p2 = new VertexDTO(listPoints.get(3).getX(), mmE.getY(), 0);
+            p2 = new VertexDTO(listPoints.get(3).getX(), closestPoint.getY(), 0);
         }
         CutDTO c = getCutDTO();
 

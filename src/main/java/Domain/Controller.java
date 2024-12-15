@@ -1,7 +1,6 @@
 package Domain;
 
 import Common.DTO.*;
-import Common.Exceptions.ClampZoneException;
 import Common.Exceptions.InvalidBitException;
 import Common.Exceptions.InvalidFileExtensionException;
 import Common.Interfaces.*;
@@ -13,7 +12,6 @@ import Domain.ThirdDimension.Camera;
 import Domain.ThirdDimension.Mesh;
 import Domain.ThirdDimension.Scene;
 
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -373,6 +371,10 @@ public class Controller implements IUnitConverter, IMemorizer {
         return this.grid.isPointNearIntersections(point, threshold);
     }
 
+    public Optional<VertexDTO> getPointNearGridLine(VertexDTO point, double threshold, boolean horizontal) {
+        return this.grid.isPointNearLine(point, threshold, horizontal);
+    }
+
     public void setIntersectionMagnetic() {
         this.grid.setIntersectionIfGrid(this.cncMachine);
     }
@@ -471,11 +473,12 @@ public class Controller implements IUnitConverter, IMemorizer {
 
     /**
      * Generate a fixed list of points used by the rectangle cut according to the p1 and p3 of the diagonal lines of the rectangle
+     *
      * @param interiorAbs1 first point
      * @param interiorAbs2 third point (diagonal to p1)
      * @return
      */
-    public List<VertexDTO> generateRectanglePoints(VertexDTO interiorAbs1, VertexDTO interiorAbs2){
+    public List<VertexDTO> generateRectanglePoints(VertexDTO interiorAbs1, VertexDTO interiorAbs2) {
         return CutPointsFactory.generateRectanglePoints(interiorAbs1, interiorAbs2);
     }
 
@@ -555,22 +558,24 @@ public class Controller implements IUnitConverter, IMemorizer {
 
     /**
      * Compute the modified border relative points based on two absolutes points : the p1 and the p3 of the rectangle diagonal
+     *
      * @param p1Abs
      * @param p3Abs
      * @param bitIndex
      * @return
      */
-    public List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsoluteCorners(VertexDTO p1Abs, VertexDTO p3Abs, int bitIndex){
+    public List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsoluteCorners(VertexDTO p1Abs, VertexDTO p3Abs, int bitIndex) {
         return CutPointsFactory.generateBorderPointsRelativeEdgeEdgeFromAbsoluteCorners(p1Abs, p3Abs, bitIndex, this, cncMachine);
     }
 
     /**
      * Compute the modified border relative points based on two absolutes points : the p1 and the p3 of the rectangle diagonal
+     *
      * @param cursor
      * @param bitIndex
      * @return
      */
-    public List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsoluteSinglePoint(VertexDTO cursor, int bitIndex){
+    public List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsoluteSinglePoint(VertexDTO cursor, int bitIndex) {
         return CutPointsFactory.generateBorderPointsRelativeEdgeEdgeFromAbsoluteSinglePoint(cursor, bitIndex, this, cncMachine);
     }
 
@@ -607,12 +612,13 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
 
-    public void flushAllUndoRedo(){
+    public void flushAllUndoRedo() {
         undoRedoManager.flushAll();
     }
 
     /**
      * Get a list of all the invalid cut states of a specific cut
+     *
      * @param cutID cut to check
      * @return List of all the invalid states of the cut
      */
@@ -631,8 +637,8 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     public CutDTO getCutDTOById(UUID cutId) {
-        for(CutDTO cut : getCutListDTO()){
-            if(cut.getId().equals(cutId)){
+        for (CutDTO cut : getCutListDTO()) {
+            if (cut.getId().equals(cutId)) {
                 return cut;
             }
         }

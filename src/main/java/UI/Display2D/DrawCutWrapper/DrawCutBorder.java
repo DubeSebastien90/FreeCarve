@@ -133,32 +133,27 @@ public class DrawCutBorder extends DrawCutWrapper {
 
     @Override
     public void moveUpdate(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow) {
-        this.cursorPoint = new PersoPoint(pixP.getX(), pixP.getY(),1,true);
-        double threshold;
-        if (mainWindow.getController().getGrid().isMagnetic()) {
-            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
-        } else {
-            threshold = renderer.scalePixelToMM(snapThreshold);
-        }
-
+        double threshold = getThresholdForMagnet(renderer);
         List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
         Point2D mmE = renderer.pixelTomm(pixP);
-        PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(),1,true);
-        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(),p.getLocationY(),0), threshold);
-        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(),p.getLocationY(),0));
-        Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint1, true);
-        if (otherPoint.isPresent() && (otherPoint.get().getX() == 0 || otherPoint.get().getX() == mainWindow.getController().getPanelDTO().getPanelDimension().getX() || otherPoint.get().getY() == 0 || otherPoint.get().getY() == mainWindow.getController().getPanelDTO().getPanelDimension().getY())) {
-            closestPoint = otherPoint.get();
-        }
+        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
+
+        PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
+        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
+        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
         VertexDTO p1;
 
         if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 0, 1)) {
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
             p1 = new VertexDTO(closestPoint.getX(), listPoints.get(0).getY(), 0);
         } else if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 1, 2)) {
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, true)).orElse(closestPoint);
             p1 = new VertexDTO(listPoints.get(1).getX(), closestPoint.getY(), 0);
         } else if (mainWindow.getController().isRoundedCutDTOSegmentHoveredByCursor(cut, new VertexDTO(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY(), 0), 2, 3)) {
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
             p1 = new VertexDTO(closestPoint.getX(), listPoints.get(2).getY(), 0);
         } else {
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, true)).orElse(closestPoint);
             p1 = new VertexDTO(listPoints.get(3).getX(), closestPoint.getY(), 0);
         }
 
@@ -170,6 +165,7 @@ public class DrawCutBorder extends DrawCutWrapper {
         Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
         mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
     }
+
 
     @Override
     public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint) {
@@ -184,11 +180,11 @@ public class DrawCutBorder extends DrawCutWrapper {
 
         //List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
         Point2D mmE = renderer.pixelTomm(pixP);
-        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(),1,true);
+        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
 
-        PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(),1,true);
-        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(),p.getLocationY(),0), threshold);
-        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(),p.getLocationY(),0));
+        PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
+        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
+        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
         if (mainWindow.getController().getGrid().isMagnetic()) {
             Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint1, true);
             if (otherPoint.isPresent()) {
