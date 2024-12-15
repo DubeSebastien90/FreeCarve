@@ -219,6 +219,7 @@ public class DrawCutStraight extends DrawCutWrapper {
             this.cursorPoint = new PersoPoint(listPoints.get(indexPoint).getX(), mmE.getY(), 1, true);
             Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(cursorPoint.getLocationX(), cursorPoint.getLocationY(), 0), threshold);
             VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, true)).orElse(closestPoint);
             closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
 
             VertexDTO p1;
@@ -250,6 +251,7 @@ public class DrawCutStraight extends DrawCutWrapper {
             this.cursorPoint = new PersoPoint(mmE.getX(), listPoints.get(indexPoint).getY(), 1, true);
             Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(cursorPoint.getLocationX(), cursorPoint.getLocationY(), 0), threshold);
             VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
             closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
             VertexDTO p1;
             VertexDTO p2;
@@ -280,6 +282,8 @@ public class DrawCutStraight extends DrawCutWrapper {
             this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
             Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
             VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, true)).orElse(closestPoint);
             closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
             VertexDTO p1;
             VertexDTO p2;
