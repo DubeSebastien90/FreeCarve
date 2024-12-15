@@ -229,6 +229,34 @@ public class Grid {
     }
 
     /**
+     * Checks if a certain vertexDTO point is near a vertical or horizontal line of the grid
+     * @param point the point which is maybe close
+     * @param threshold the value that is the limit before stopping clamping
+     * @param horizontal if set to true, checks for horizontal line, else for vertical line
+     * @return A non-empty optionnal if the point was close enough to a line.
+     */
+    public Optional<VertexDTO> isPointNearLine(VertexDTO point, double threshold, boolean horizontal) {
+        double coordinate = horizontal ? point.getY() : point.getX();
+        double lower = Math.floor(coordinate / size) * size;
+        double upper = lower + size;
+        VertexDTO lowerVertex = horizontal
+                ? new VertexDTO(point.getX(), lower, point.getZ())
+                : new VertexDTO(lower, point.getY(), point.getZ());
+
+        VertexDTO upperVertex = horizontal
+                ? new VertexDTO(point.getX(), upper, point.getZ())
+                : new VertexDTO(upper, point.getY(), point.getZ());
+
+        if (point.getDistance(lowerVertex) < threshold) {
+            return Optional.of(lowerVertex);
+        } else if (point.getDistance(upperVertex) < threshold) {
+            return Optional.of(upperVertex);
+        }
+        return Optional.empty();
+    }
+
+
+    /**
      * Returns an optional closest point to the cut lines based on a reference point
      *
      * @param point      reference point
@@ -241,7 +269,9 @@ public class Grid {
 
         // Testing all of the cuts
         for (Cut wrapper : cncMachine.getPanel().getCutList()) {
-            if(wrapper.getCutState() == CutState.NOT_VALID || wrapper.getType() == CutType.CLAMP ){continue;} // don't check for invalid lines
+            if (wrapper.getCutState() == CutState.NOT_VALID || wrapper.getType() == CutType.CLAMP) {
+                continue;
+            } // don't check for invalid lines
             List<VertexDTO> points = wrapper.getAbsolutePointsPosition(cncMachine);
             if (points.size() > 1) {
                 for (int i = 0; i < points.size() - 1; i++) {
@@ -346,8 +376,10 @@ public class Grid {
 
         List<Cut> allLineList = cncMachine.getPanel().getCutList();
 
-        for(Cut cut : allLineList){
-            if(cut.getCutState() == CutState.NOT_VALID || cut.getType() == CutType.CLAMP){continue;} // don't check for invalid lines
+        for (Cut cut : allLineList) {
+            if (cut.getCutState() == CutState.NOT_VALID || cut.getType() == CutType.CLAMP) {
+                continue;
+            } // don't check for invalid lines
             List<VertexDTO> points = cut.getAbsolutePointsPosition(cncMachine);
             for (int i = 0; i < points.size() - 1; i++) {
                 Optional<Pair<VertexDTO, Double>> isPointOnLine = isPointOnLineGetRef(point, points.get(i), points.get(i + 1));
@@ -389,10 +421,14 @@ public class Grid {
         allLineList.add(borderCut); // adding the border as cuts to consider any line intersection on the border of the board
         for (Cut cuts : allLineList) {
             List<VertexDTO> points = cuts.getAbsolutePointsPosition(cncMachine);
-            if(cuts.getCutState() == CutState.NOT_VALID || cuts.getType() == CutType.CLAMP){continue;} // don't check for invalid lines
-            if(points.size() > 1){
-                for(Cut cuts2 : allLineList){
-                    if(cuts2.getCutState() == CutState.NOT_VALID || cuts2.getType() == CutType.CLAMP){continue;} // don't check for invalid lines
+            if (cuts.getCutState() == CutState.NOT_VALID || cuts.getType() == CutType.CLAMP) {
+                continue;
+            } // don't check for invalid lines
+            if (points.size() > 1) {
+                for (Cut cuts2 : allLineList) {
+                    if (cuts2.getCutState() == CutState.NOT_VALID || cuts2.getType() == CutType.CLAMP) {
+                        continue;
+                    } // don't check for invalid lines
                     List<VertexDTO> points2 = cuts2.getAbsolutePointsPosition(cncMachine);
                     if (points2.size() > 1) {
                         for (int i = 0; i < points.size() - 1; i++) {

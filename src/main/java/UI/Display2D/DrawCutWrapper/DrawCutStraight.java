@@ -174,36 +174,33 @@ public class DrawCutStraight extends DrawCutWrapper {
 
     @Override
     public void moveUpdate(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow) {
+        List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
+        double threshold = getThresholdForMagnet(renderer);
+        Point2D mmE = renderer.pixelTomm(pixP);
+        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
+        PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
+        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
+        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
+        List<VertexDTO> relativePts;
         if (getCutType() == CutType.LINE_VERTICAL) {
-            List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
-            Point2D mmE = renderer.pixelTomm(pixP);
-            VertexDTO p1 = new VertexDTO(mmE.getX(), listPoints.get(0).getY(), 0);
-            VertexDTO p2 = new VertexDTO(mmE.getX(), listPoints.get(1).getY(), 0);
-            List<VertexDTO> relativePts = mainWindow.getController().generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
-            CutDTO c = getCutDTO();
-            CutDTO newCut = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState());
-            cut = new CutDTO(newCut);
-            mainWindow.getController().modifyCut(newCut, false);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
+            VertexDTO p1 = new VertexDTO(closestPoint.getX(), listPoints.get(0).getY(), 0);
+            VertexDTO p2 = new VertexDTO(closestPoint.getX(), listPoints.get(1).getY(), 0);
+            relativePts = mainWindow.getController().generateVerticalPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
         } else if (getCutType() == CutType.LINE_HORIZONTAL) {
-            List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
-            Point2D mmE = renderer.pixelTomm(pixP);
-            VertexDTO p1 = new VertexDTO(listPoints.get(0).getX(), mmE.getY(), 0);
-            VertexDTO p2 = new VertexDTO(listPoints.get(1).getX(), mmE.getY(), 0);
-            List<VertexDTO> relativePts = mainWindow.getController().generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
-            CutDTO c = getCutDTO();
-            CutDTO newCut = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState());
-            cut = new CutDTO(newCut);
-            mainWindow.getController().modifyCut(newCut, false);
-        } else if (getCutType() == CutType.LINE_FREE) {
-            Point2D mmE = renderer.pixelTomm(pixP);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, true)).orElse(closestPoint);
+            VertexDTO p1 = new VertexDTO(listPoints.get(0).getX(), closestPoint.getY(), 0);
+            VertexDTO p2 = new VertexDTO(listPoints.get(1).getX(), closestPoint.getY(), 0);
+            relativePts = mainWindow.getController().generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
+        } else {
             VertexDTO p1 = new VertexDTO(renderer.getDrawing().getPrevPts().get(0).getX() + mmE.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(0).getY() + mmE.getY() - pointDepart.getY(), 0);
             VertexDTO p2 = new VertexDTO(renderer.getDrawing().getPrevPts().get(1).getX() + mmE.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(1).getY() + mmE.getY() - pointDepart.getY(), 0);
-            List<VertexDTO> relativePts = mainWindow.getController().generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
-            CutDTO c = getCutDTO();
-            CutDTO newCut = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState());
-            cut = new CutDTO(newCut);
-            mainWindow.getController().modifyCut(newCut, false);
+            relativePts = mainWindow.getController().generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
         }
+        CutDTO c = getCutDTO();
+        CutDTO newCut = new CutDTO(c.getId(), c.getDepth(), c.getBitIndex(), c.getCutType(), relativePts, c.getRefsDTO(), c.getState());
+        cut = new CutDTO(newCut);
+        mainWindow.getController().modifyCut(newCut, false);
         //update board
         Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(getCutDTO().getId());
         mainWindow.getMiddleContent().getCutWindow().modifiedAttributeEventOccured(new ChangeAttributeEvent(cutBox, cutBox.get()));
@@ -211,30 +208,18 @@ public class DrawCutStraight extends DrawCutWrapper {
 
     @Override
     public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint) {
+        List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
         int nbRefs = mainWindow.getController().getCutDTOById(cut.getId()).getRefsDTO().size();
-        double tolerance = 0.00001;
-        double threshold;
-        if (mainWindow.getController().getGrid().isMagnetic()) {
-            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
-        } else {
-            threshold = renderer.scalePixelToMM(snapThreshold);
-        }
+        double threshold = getThresholdForMagnet(renderer);
         List<VertexDTO> v = mainWindow.getController().getAbsolutePointsPosition(cut);
         Point2D mmE = renderer.pixelTomm(pixP);
-        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
-
         PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
-        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
-        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
-        if (mainWindow.getController().getGrid().isMagnetic()) {
-            Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint1, true);
-            if (otherPoint.isPresent()) {
-                closestPoint = otherPoint.get();
-            }
-        }
+
         if (getCutType() == CutType.LINE_VERTICAL) {
-            List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
-            //List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
+            this.cursorPoint = new PersoPoint(listPoints.get(indexPoint).getX(), mmE.getY(), 1, true);
+            Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(cursorPoint.getLocationX(), cursorPoint.getLocationY(), 0), threshold);
+            VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
+            closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
 
             VertexDTO p1;
             VertexDTO p2;
@@ -262,7 +247,10 @@ public class DrawCutStraight extends DrawCutWrapper {
             cut = new CutDTO(newCut);
             mainWindow.getController().modifyCut(newCut, false);
         } else if (getCutType() == CutType.LINE_HORIZONTAL) {
-            List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
+            this.cursorPoint = new PersoPoint(mmE.getX(), listPoints.get(indexPoint).getY(), 1, true);
+            Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(cursorPoint.getLocationX(), cursorPoint.getLocationY(), 0), threshold);
+            VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
+            closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
             VertexDTO p1;
             VertexDTO p2;
             if (indexPoint == 0) {
@@ -289,7 +277,10 @@ public class DrawCutStraight extends DrawCutWrapper {
             cut = new CutDTO(newCut);
             mainWindow.getController().modifyCut(newCut, false);
         } else if (getCutType() == CutType.LINE_FREE) {
-            List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
+            this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
+            Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
+            VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
+            closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
             VertexDTO p1;
             VertexDTO p2;
             if (indexPoint == 0) {
