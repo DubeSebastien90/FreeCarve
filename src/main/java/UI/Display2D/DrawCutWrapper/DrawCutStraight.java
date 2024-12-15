@@ -193,8 +193,8 @@ public class DrawCutStraight extends DrawCutWrapper {
             VertexDTO p2 = new VertexDTO(listPoints.get(1).getX(), closestPoint.getY(), 0);
             relativePts = mainWindow.getController().generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
         } else {
-            VertexDTO p1 = new VertexDTO(renderer.getDrawing().getPrevPts().get(0).getX() + mmE.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(0).getY() + mmE.getY() - pointDepart.getY(), 0);
-            VertexDTO p2 = new VertexDTO(renderer.getDrawing().getPrevPts().get(1).getX() + mmE.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(1).getY() + mmE.getY() - pointDepart.getY(), 0);
+            VertexDTO p1 = new VertexDTO(renderer.getDrawing().getPrevPts().get(0).getX() + closestPoint.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(0).getY() + closestPoint.getY() - pointDepart.getY(), 0);
+            VertexDTO p2 = new VertexDTO(renderer.getDrawing().getPrevPts().get(1).getX() + closestPoint.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(1).getY() + closestPoint.getY() - pointDepart.getY(), 0);
             relativePts = mainWindow.getController().generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
         }
         CutDTO c = getCutDTO();

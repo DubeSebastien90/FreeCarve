@@ -223,52 +223,14 @@ public class Drawing {
         pointMoveListener = new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                Point2D pixP = renderer.pixelTomm(e.getPoint());
-//                currentModifiedCut.setCursorPoint(new PersoPoint(pixP.getX(),pixP.getY(),1,true));
-//                double threshold;
-//                if (mainWindow.getController().getGrid().isMagnetic()) {
-//                    threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
-//                } else {
-//                    threshold = renderer.scalePixelToMM(currentModifiedCut.getSnapThreshold());
-//                }
-//                VertexDTO p1 = new VertexDTO(pixP.getX(), pixP.getY(), 0.0f);
-//                Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
-//                closestPoint = currentModifiedCut.changeClosestPointIfMagnetic(threshold, closestPoint, true);
-//
-//                if(closestPoint.isPresent()){
-//                        pixP = new Point2D.Double(closestPoint.get().getX(), closestPoint.get().getY());
-//                }
-
-                Point2D newPoint = renderer.mmTopixel(pixP);
-                currentModifiedCut.movePoint(newPoint, renderer, mainWindow, indexPoint);
+                currentModifiedCut.movePoint(e.getPoint(), renderer, mainWindow, indexPoint);
             }
         };
 
         cutMoveListener = new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                Point2D pixP = renderer.pixelTomm(e.getPoint());
-
-
-//                currentModifiedCut.setCursorPoint(new PersoPoint(pixP.getX(),pixP.getY(),currentDrawingCut.getPointsRadius(),false));
-//                double threshold;
-//                if (mainWindow.getController().getGrid().isMagnetic()) {
-//                    threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
-//                } else {
-//                    threshold = renderer.scalePixelToMM(currentModifiedCut.getSnapThreshold());
-//                }
-//
-//                VertexDTO p1 = new VertexDTO(pixP.getX(), pixP.getY(), 0.0f);
-//                Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
-//                closestPoint = currentModifiedCut.changeClosestPointIfMagnetic(threshold, closestPoint, true);
-//
-//
-//                if(closestPoint.isPresent()){
-//                    pixP = new Point2D.Double(closestPoint.get().getX(), closestPoint.get().getY());
-//                }
-//
-                Point2D newPoint = renderer.mmTopixel(pixP);
-                currentModifiedCut.moveUpdate(newPoint, renderer, mainWindow);
+                currentModifiedCut.moveUpdate(e.getPoint(), renderer, mainWindow);
             }
         };
 
@@ -293,7 +255,7 @@ public class Drawing {
         currentModifiedCut.setState(DrawCutWrapper.DrawCutState.SELECTED,renderer);
         Optional<CutBox> cutBox = mainWindow.getMiddleContent().getCutWindow().getCutListPanel().getCutBoxWithId(currentModifiedCut.getCutDTO().getId());
         cutBox.get().select();
-        currentModifiedCut.setPointDepart(renderer.getMmMousePt());
+        currentModifiedCut.setPointDepart(new Point2D.Double(pointToChange.getLocationX(), pointToChange.getLocationY()));
         prevCut = cutToChangePoint.getCutDTO();
         prevPts = mainWindow.getController().getAbsolutePointsPosition(prevCut);
         currentModifiedPoint = pointToChange;

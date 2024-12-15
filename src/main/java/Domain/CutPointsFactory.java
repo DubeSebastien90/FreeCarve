@@ -82,7 +82,8 @@ public class CutPointsFactory {
         VertexDTO p3 = new VertexDTO(centerAnchor.getX() + width/2, centerAnchor.getY()  + height/2, centerAnchor.getZ());
         VertexDTO p4 = new VertexDTO(centerAnchor.getX() + width/2, centerAnchor.getY()  - height/2, centerAnchor.getZ());
         VertexDTO p5 = new VertexDTO(p1);
-        return new ArrayList<>(List.of(p1,p2,p3,p4,p5));
+        VertexDTO p6 = new VertexDTO(centerAnchor.getX(),centerAnchor.getY(),0);
+        return new ArrayList<>(List.of(p1,p2,p3,p4,p5,p6));
     }
 
     /**
@@ -115,7 +116,8 @@ public class CutPointsFactory {
 
         VertexDTO p2 = new VertexDTO(interiorAbs1.getX(), interiorAbs3.getY(), 0);
         VertexDTO p4 = new VertexDTO(interiorAbs3.getX(), interiorAbs1.getY(), 0);
-        return new ArrayList<>(List.of(interiorAbs1, p2, interiorAbs3, p4, interiorAbs1));
+        VertexDTO p6 = new VertexDTO((interiorAbs3.getX()+interiorAbs1.getX())/2, (interiorAbs3.getY()+interiorAbs1.getY())/2, 0);
+        return new ArrayList<>(List.of(interiorAbs1, p2, interiorAbs3, p4, interiorAbs1, p6));
     }
 
 
