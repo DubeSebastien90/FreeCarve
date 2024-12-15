@@ -171,12 +171,7 @@ public class DrawCutBorder extends DrawCutWrapper {
     public void movePoint(Point2D pixP, Rendering2DWindow renderer, MainWindow mainWindow, int indexPoint) {
 
 
-        double threshold;
-        if (mainWindow.getController().getGrid().isMagnetic()) {
-            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
-        } else {
-            threshold = renderer.scalePixelToMM(snapThreshold);
-        }
+        double threshold = getThresholdForMagnet(renderer);
 
         //List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
         Point2D mmE = renderer.pixelTomm(pixP);
@@ -185,12 +180,9 @@ public class DrawCutBorder extends DrawCutWrapper {
         PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
         Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
         VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
-        if (mainWindow.getController().getGrid().isMagnetic()) {
-            Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint1, true);
-            if (otherPoint.isPresent()) {
-                closestPoint = otherPoint.get();
-            }
-        }
+        closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
+        closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, true)).orElse(closestPoint);
+        closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
 
 
         CutDTO c = getCutDTO();
