@@ -54,7 +54,7 @@ public class Grid {
      * @param threshold  distance threshold
      * @return Optional<VertexDTO> : null if not close to the threshold, a Point if close enough
      */
-    private Optional<VertexDTO> isPointNearLine(VertexDTO point, VertexDTO linePoint1, VertexDTO linePoint2,
+    public Optional<VertexDTO> isPointNearLine(VertexDTO point, VertexDTO linePoint1, VertexDTO linePoint2,
                                                 double threshold) {
         double projector_t_numerator = (point.getX() - linePoint1.getX()) * (linePoint2.getX() - linePoint1.getX()) +
                 (point.getY() - linePoint1.getY()) * (linePoint2.getY() - linePoint1.getY());

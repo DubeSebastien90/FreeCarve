@@ -399,6 +399,11 @@ public class Controller implements IUnitConverter, IMemorizer {
         return this.grid.isPointNearIntersections(point, threshold);
     }
 
+    public Optional<VertexDTO> isPointNearLine(VertexDTO point, VertexDTO linePoint1, VertexDTO linePoint2,
+                                               double threshold) {
+        return grid.isPointNearLine(point, linePoint1, linePoint2, threshold);
+    }
+
     public Optional<VertexDTO> getPointNearGridLine(VertexDTO point, double threshold, boolean horizontal) {
         return this.grid.isPointNearLine(point, threshold, horizontal);
     }
