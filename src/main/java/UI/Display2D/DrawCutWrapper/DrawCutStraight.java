@@ -321,13 +321,13 @@ public class DrawCutStraight extends DrawCutWrapper {
                 for (CutDTO cut : mainWindow.getController().getPanelDTO().getCutsDTO()) {
                     if (cut.getCutType() == CutType.LINE_FREE) {
                         List<VertexDTO> points = mainWindow.getController().getAbsolutePointsPosition(cut);
-                        if (mainWindow.getController().isPointNearLine(closestPoint.get(), points.get(0), points.get(1), tolerance).isPresent()) {
+                        if (mainWindow.getController().isPointNearLine(closestPoint.get(), points.get(0), points.get(1), threshold).isPresent()) {
                             b = false;
                         }
                     }
                 }
             }
-            Optional<VertexDTO> otherPoint = Optional.empty();
+            Optional<VertexDTO> otherPoint = closestPoint;
             Optional<VertexDTO> ve = Optional.empty();
             Optional<VertexDTO> ho = Optional.empty();
             if (b) {
@@ -337,10 +337,9 @@ public class DrawCutStraight extends DrawCutWrapper {
                 otherPoint = Optional.ofNullable(changeClosestLineMaybe(otherPoint, threshold, true))
                         .or(() -> closestPoint);
                 ho = otherPoint;
+                otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, true))
+                        .or(() -> closestPoint);
             }
-            otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, b))
-                    .or(() -> closestPoint);
-
             if (otherPoint.isPresent()) {
                 p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
 
