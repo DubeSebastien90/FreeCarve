@@ -246,8 +246,6 @@ public class DrawCutL extends DrawCutWrapper {
         VertexDTO p1;
 
         double threshold = getThresholdForMagnet(renderer);
-
-        //List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
         Point2D mmE = renderer.pixelTomm(pixP);
         this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
 

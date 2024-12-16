@@ -122,7 +122,7 @@ public class CutPointsFactory {
 
 
     /**
-     * Generate the relative points of the retaille cut
+     * Generate the relative points of the border cut
      * @param bitIndex
      * @param controller
      * @param cncMachine
@@ -144,7 +144,7 @@ public class CutPointsFactory {
     }
 
     /**
-     * Generate the relative points of the retaille cut, based on it's two diagonal points :
+     * Generate the relative points of the border cut, based on its two diagonal points :
      *      - p3
      *  |       |
      *  p1  -
