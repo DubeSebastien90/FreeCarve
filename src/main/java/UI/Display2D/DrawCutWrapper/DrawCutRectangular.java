@@ -159,7 +159,7 @@ public class DrawCutRectangular extends DrawCutWrapper {
         } else if (indexPoint == 2) {
             p1 = new VertexDTO(listPoints.get(0).getX(), closestPoint.getY(), 0);
             p2 = new VertexDTO(closestPoint.getX(), listPoints.get(0).getY(), 0);
-        } else if (indexPoint == 3){
+        } else if (indexPoint == 3) {
             p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
             p2 = new VertexDTO(closestPoint.getX(), closestPoint.getY(), 0);
         } else {
@@ -315,19 +315,20 @@ public class DrawCutRectangular extends DrawCutWrapper {
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
         mainWindow.getController().setIntersectionMagnetic();
-        double threshold;
-        if (mainWindow.getController().getGrid().isMagnetic()) {
-            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
-        } else {
-            threshold = renderer.scalePixelToMM(snapThreshold);
-        }
+        double threshold = getThresholdForMagnet(renderer);
+        p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
+        VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+
         if (refs.isEmpty()) {
-            p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-
-            VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
             Optional<VertexDTO> closestPoint = mainWindow.getController().getPointNearIntersections(p1, threshold);
-
-            if (closestPoint.isPresent()) {
+            Optional<VertexDTO> finalClosestPoint = closestPoint;
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false, false))
+                    .or(() -> finalClosestPoint);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, true, false))
+                    .or(() -> finalClosestPoint);
+            closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint, false))
+                    .or(() -> finalClosestPoint);
+            if (closestPoint.isPresent() && renderer.isPointonPanel()) {
                 p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
                 p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
                 List<RefCutDTO> refsDTO = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
@@ -343,47 +344,46 @@ public class DrawCutRectangular extends DrawCutWrapper {
                 p.setColor(INVALID_COLOR);
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
-        } else if (this.points.isEmpty()) { // First point after anchor
-            p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-
-            VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-
+        } else {
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
-            closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
+            Optional<VertexDTO> finalClosestPoint = closestPoint;
 
-            if (closestPoint.isPresent()) {
-                p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
-                p.setColor(VALID_COLOR);
-                p.setValid(PersoPoint.Valid.VALID);
-            }
-        } else { // Rest of the rectangle points
-            p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
+                    .or(() -> finalClosestPoint);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, true))
+                    .or(() -> finalClosestPoint);
+            closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint, true))
+                    .or(() -> finalClosestPoint);
 
-            // For the snap area
-            // Get the possible closest point
-            VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
+            if (this.points.isEmpty()) { // First point after anchor
+                if (closestPoint.isPresent() && renderer.isPointonPanel()) {
+                    p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
+                    p.setColor(VALID_COLOR);
+                    p.setValid(PersoPoint.Valid.VALID);
+                }
+            } else { // Rest of the rectangle points
+                // For the snap area
+                // Get the possible closest point
 
-            closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
+                // Snap
+                if (closestPoint.isPresent() && renderer.isPointonPanel()) {
+                    p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
+                    p.setColor(SNAP_COLOR);
+                    p.setValid(PersoPoint.Valid.VALID);
+                    return;
+                }
 
-            // Snap
-            if (closestPoint.isPresent()) {
-                p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
-                p.setColor(SNAP_COLOR);
-                p.setValid(PersoPoint.Valid.VALID);
-                return;
-            }
-
-            // Test if on board
-            VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-            if (mainWindow.getController().isPointOnPanel(pointDTO)) {
-                // Inside of the board
-                p.setColor(VALID_COLOR);
-                p.setValid(PersoPoint.Valid.VALID);
-            } else {
-                // Outside of the board
-                p.setColor(INVALID_COLOR);
-                p.setValid(PersoPoint.Valid.NOT_VALID);
+                // Test if on board
+                VertexDTO pointDTO = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+                if (mainWindow.getController().isPointOnPanel(pointDTO)) {
+                    // Inside of the board
+                    p.setColor(VALID_COLOR);
+                    p.setValid(PersoPoint.Valid.VALID);
+                } else {
+                    // Outside of the board
+                    p.setColor(INVALID_COLOR);
+                    p.setValid(PersoPoint.Valid.NOT_VALID);
+                }
             }
         }
     }

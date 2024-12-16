@@ -309,21 +309,30 @@ public class DrawCutStraight extends DrawCutWrapper {
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
         double tolerance = 0.000001;
-        double threshold;
-        if (mainWindow.getController().getGrid().isMagnetic()) {
-            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
-        } else {
-            threshold = renderer.scalePixelToMM(snapThreshold);
-        }
-        if (refs.isEmpty()) { // Get the reference point
+        double threshold = getThresholdForMagnet(renderer);
+        if (refs.isEmpty()) {
             p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
 
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
-            Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
+            Optional<VertexDTO> otherPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
+                    .or(() -> closestPoint);
+            Optional<VertexDTO> ve = otherPoint;
+            otherPoint = Optional.ofNullable(changeClosestLineMaybe(otherPoint, threshold, true))
+                    .or(() -> closestPoint);
+            otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, true))
+                    .or(() -> closestPoint);
+
             if (otherPoint.isPresent()) {
                 p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
+                if (ve.equals(otherPoint)) {
+                    double size = mainWindow.getController().getGrid().getSize();
+                    double lower = Math.floor(cursorPoint.getLocationX() / size) * size;
+                    double upper = lower + size;
+                    double x = Math.abs(cursorPoint.getLocationX()-lower) < Math.abs(cursorPoint.getLocationX()-upper)? lower : upper;
+                    //otherPoint = Optional.of(new VertexDTO(x,otherPoint.get()))
+                }
                 if (closestPoint.isPresent() && (Math.abs(otherPoint.get().getX() - closestPoint.get().getX()) < tolerance || Math.abs(otherPoint.get().getY() - closestPoint.get().getY()) < tolerance)) {
                     p.setColor(ANCHOR_COLOR);
                     p.setValid(PersoPoint.Valid.VALID);
@@ -341,7 +350,13 @@ public class DrawCutStraight extends DrawCutWrapper {
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
-            Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
+            Optional<VertexDTO> otherPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
+                    .or(() -> closestPoint);
+            otherPoint = Optional.ofNullable(changeClosestLineMaybe(otherPoint, threshold, true))
+                    .or(() -> closestPoint);
+            otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, true))
+                    .or(() -> closestPoint);
+
             if (otherPoint.isPresent()) {
                 p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
                 if (closestPoint.isPresent() && (Math.abs(otherPoint.get().getX() - closestPoint.get().getX()) < tolerance || Math.abs(otherPoint.get().getY() - closestPoint.get().getY()) < tolerance)) {

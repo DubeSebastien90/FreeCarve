@@ -148,19 +148,21 @@ public class DrawCutL extends DrawCutWrapper {
     @Override
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
-        double threshold;
-        if (mainWindow.getController().getGrid().isMagnetic()) {
-            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
-        } else {
-            threshold = renderer.scalePixelToMM(snapThreshold);
-        }
-        if (points.isEmpty()) { // First point
-            p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
+        double threshold = getThresholdForMagnet(renderer);
+        p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
+        VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
-            VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+        if (points.isEmpty()) { // First point
             Optional<VertexDTO> closestPoint = mainWindow.getController().getPointNearIntersections(p1, threshold);
-            closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, false);
-            if (closestPoint.isPresent()) {
+            Optional<VertexDTO> finalClosestPoint = closestPoint;
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false, false))
+                    .or(() -> finalClosestPoint);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, true, false))
+                    .or(() -> finalClosestPoint);
+            closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint, false))
+                    .or(() -> finalClosestPoint);
+
+            if (closestPoint.isPresent() && renderer.isPointonPanel()) {
                 p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
                 p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
                 List<RefCutDTO> testRefs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
@@ -176,15 +178,21 @@ public class DrawCutL extends DrawCutWrapper {
                 p.setValid(PersoPoint.Valid.NOT_VALID);
             }
         } else { // Second L cut point
-            p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
             // For the snap area
 
             // Get the possible closest point
-            VertexDTO cursor = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(cursor, threshold);
+            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
+            Optional<VertexDTO> finalClosestPoint = closestPoint;
+
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
+                    .or(() -> finalClosestPoint);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, true))
+                    .or(() -> finalClosestPoint);
+            closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint, true))
+                    .or(() -> finalClosestPoint);
             closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
             // Snap
-            if (closestPoint.isPresent()) {
+            if (closestPoint.isPresent() && renderer.isPointonPanel()) {
                 p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
                 p.setColor(SNAP_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
