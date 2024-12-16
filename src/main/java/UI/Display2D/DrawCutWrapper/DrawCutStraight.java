@@ -316,19 +316,41 @@ public class DrawCutStraight extends DrawCutWrapper {
             VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
-            Optional<VertexDTO> otherPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
-                    .or(() -> closestPoint);
-            Optional<VertexDTO> ve = otherPoint;
-            otherPoint = Optional.ofNullable(changeClosestLineMaybe(otherPoint, threshold, true))
-                    .or(() -> closestPoint);
-            otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, true))
+            boolean b = true;
+            if (closestPoint.isPresent()) {
+                for (CutDTO cut : mainWindow.getController().getPanelDTO().getCutsDTO()) {
+                    if (cut.getCutType() == CutType.LINE_FREE) {
+                        List<VertexDTO> points = mainWindow.getController().getAbsolutePointsPosition(cut);
+                        if (mainWindow.getController().isPointNearLine(closestPoint.get(), points.get(0), points.get(1), tolerance).isPresent()) {
+                            b = false;
+                        }
+                    }
+                }
+            }
+            Optional<VertexDTO> otherPoint = Optional.empty();
+            Optional<VertexDTO> ve = Optional.empty();
+            Optional<VertexDTO> ho = Optional.empty();
+            if (b) {
+                otherPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
+                        .or(() -> closestPoint);
+                ve = otherPoint;
+                otherPoint = Optional.ofNullable(changeClosestLineMaybe(otherPoint, threshold, true))
+                        .or(() -> closestPoint);
+                ho = otherPoint;
+            }
+            otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, b))
                     .or(() -> closestPoint);
 
             if (otherPoint.isPresent()) {
                 p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
-                if (ve.equals(otherPoint) && closestPoint.isPresent()) {
 
+                if (ve.equals(otherPoint) && closestPoint.isPresent()) {
                     otherPoint = Optional.of(new VertexDTO(otherPoint.get().getX(), closestPoint.get().getY(), 0));
+                    p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
+                }
+                if (ho.equals(otherPoint) && closestPoint.isPresent()) {
+                    otherPoint = Optional.of(new VertexDTO(closestPoint.get().getX(), otherPoint.get().getY(), 0));
+                    p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
                 }
                 if (closestPoint.isPresent() && (Math.abs(otherPoint.get().getX() - closestPoint.get().getX()) < tolerance || Math.abs(otherPoint.get().getY() - closestPoint.get().getY()) < tolerance)) {
                     p.setColor(ANCHOR_COLOR);
@@ -349,13 +371,23 @@ public class DrawCutStraight extends DrawCutWrapper {
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
             Optional<VertexDTO> otherPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
                     .or(() -> closestPoint);
+            Optional<VertexDTO> ve = otherPoint;
             otherPoint = Optional.ofNullable(changeClosestLineMaybe(otherPoint, threshold, true))
                     .or(() -> closestPoint);
+            Optional<VertexDTO> ho = otherPoint;
             otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, true))
                     .or(() -> closestPoint);
 
             if (otherPoint.isPresent()) {
                 p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
+                if (ve.equals(otherPoint) && closestPoint.isPresent()) {
+                    otherPoint = Optional.of(new VertexDTO(otherPoint.get().getX(), closestPoint.get().getY(), 0));
+                    p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
+                }
+                if (ho.equals(otherPoint) && closestPoint.isPresent()) {
+                    otherPoint = Optional.of(new VertexDTO(closestPoint.get().getX(), otherPoint.get().getY(), 0));
+                    p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
+                }
                 if (closestPoint.isPresent() && (Math.abs(otherPoint.get().getX() - closestPoint.get().getX()) < tolerance || Math.abs(otherPoint.get().getY() - closestPoint.get().getY()) < tolerance)) {
                     p.setColor(ANCHOR_COLOR);
                     p.setValid(PersoPoint.Valid.VALID);
@@ -388,28 +420,20 @@ public class DrawCutStraight extends DrawCutWrapper {
             );
             Optional<VertexDTO> otherPoint = Optional.empty();
             PanelDTO board = mainWindow.getController().getPanelDTO();
-            if (Math.abs((p1.getX()) % mainWindow.getController().getGrid().getSize()) < tolerance || Math.abs((p1.getY()) % mainWindow.getController().getGrid().getSize()) < tolerance || p1.getX() == board.getPanelDimension().getX() || p1.getY() == board.getPanelDimension().getY()) {
-                Optional<VertexDTO> finalClosestPoint = closestPoint;
-                otherPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
-                        .or(() -> finalClosestPoint);
-                Optional<VertexDTO> ve = otherPoint;
-                otherPoint = Optional.ofNullable(changeClosestLineMaybe(otherPoint, threshold, true))
-                        .or(() -> finalClosestPoint);
-                otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, true))
-                        .or(() -> finalClosestPoint);
-            }
-            if (otherPoint.isPresent() && (otherPoint.get().getX() == points.getFirst().getLocationX() || otherPoint.get().getY() == points.getFirst().getLocationY())) {
-                closestPoint = otherPoint;
+            Optional<VertexDTO> finalClosestPoint = closestPoint;
+            otherPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
+                    .or(() -> finalClosestPoint);
+            otherPoint = Optional.ofNullable(changeClosestLineMaybe(otherPoint, threshold, true))
+                    .or(() -> finalClosestPoint);
+            otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, true))
+                    .or(() -> finalClosestPoint);
+
+            if (otherPoint.isPresent()) {
+                if (otherPoint.isPresent() && (otherPoint.get().getX() == points.getFirst().getLocationX() || otherPoint.get().getY() == points.getFirst().getLocationY())) {
+                    closestPoint = otherPoint;
+                }
             }
             if (this.cut.getCutType() == CutType.LINE_FREE) {
-                Optional<VertexDTO> finalClosestPoint = closestPoint;
-                otherPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
-                        .or(() -> finalClosestPoint);
-                Optional<VertexDTO> ve = otherPoint;
-                otherPoint = Optional.ofNullable(changeClosestLineMaybe(otherPoint, threshold, true))
-                        .or(() -> finalClosestPoint);
-                otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, true))
-                        .or(() -> finalClosestPoint);
                 closestPoint = otherPoint;
             }
 
