@@ -31,18 +31,6 @@ public class DrawCutBorder extends DrawCutWrapper {
         super(cut, renderer, mainWindow);
     }
 
-//    @Override
-//    public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
-//        this.update(renderer);
-//        graphics2D.setStroke(stroke);
-//        graphics2D.setColor(this.strokeColor);
-//
-//        for(int i =0; i  < points.size() - 1; i++){
-//            this.points.get(i).drawLineMM(graphics2D, renderer, this.points.get(i+1));
-//        }
-//
-//    }
-
 
     @Override
     public void drawAnchor(Graphics2D graphics2D, Rendering2DWindow renderer) {
