@@ -83,7 +83,7 @@ public class DrawCutRectangular extends DrawCutWrapper {
             graphics2D.setColor(c);
             Point2D temp = renderer.mmTopixel(new Point2D.Double(point.getX(), point.getY()));
             PersoPoint _point = new PersoPoint(point.getX(), point.getY(), this.pointsRadius / renderer.getZoom(), true);
-            if (renderer.getDrawing().getState() == Drawing.DrawingState.IDLE && renderer.isPointonPanel() && mainWindow.getController().mouse_on_top(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp.getX(), temp.getY(), _point.getRadius() * renderer.getZoom())) {
+            if (renderer.getDrawing().getState() == Drawing.DrawingState.IDLE && renderer.isPointonPanel() && mainWindow.getController().mouseOnTop(renderer.getMousePt().getX(), renderer.getMousePt().getY(), temp.getX(), temp.getY(), _point.getRadius() * renderer.getZoom())) {
                 graphics2D.setColor(HOVER_VIEW_COLOR);
             }
             _point.drawMM(graphics2D, renderer);
