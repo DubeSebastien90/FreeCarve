@@ -430,6 +430,16 @@ public abstract class DrawCutWrapper {
         return null;
     }
 
+    VertexDTO changeClosestLineMaybe(Optional<VertexDTO> closestOld, double threshold, boolean horizontal, boolean priority) {
+        if (mainWindow.getController().getGrid().isMagnetic()) {
+            Optional<VertexDTO> otherPoint = changeClosestLineIfMagnetic(threshold, closestOld, priority, horizontal);
+            if (otherPoint.isPresent()) {
+                return otherPoint.get();
+            }
+        }
+        return null;
+    }
+
     VertexDTO changeClosestPointMaybe(double threshold, Optional<VertexDTO> closestPoint1, boolean priority) {
         if (mainWindow.getController().getGrid().isMagnetic()) {
             Optional<VertexDTO> otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint1, true);

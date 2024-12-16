@@ -19,18 +19,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class DrawCutClamp extends DrawCutWrapper{
+public class DrawCutClamp extends DrawCutWrapper {
 
     public DrawCutClamp(CutType type, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(type, renderer, mainWindow);
     }
+
     public DrawCutClamp(CutDTO cut, Rendering2DWindow renderer, MainWindow mainWindow) {
         super(cut, renderer, mainWindow);
     }
 
     @Override
-    public double getStrokeWidthBruh(Rendering2DWindow renderer){
-        return (CLAMP_STROKE_WIDTH*renderer.getZoom());
+    public double getStrokeWidthBruh(Rendering2DWindow renderer) {
+        return (CLAMP_STROKE_WIDTH * renderer.getZoom());
     }
 
     @Override
@@ -38,8 +39,8 @@ public class DrawCutClamp extends DrawCutWrapper{
         graphics2D.setStroke(stroke);
         graphics2D.setColor(cursor.getColor());
 
-        if(!this.temporaryCreationPoints.isEmpty()){
-            this.points= new ArrayList<>();
+        if (!this.temporaryCreationPoints.isEmpty()) {
+            this.points = new ArrayList<>();
             VertexDTO absPos = temporaryCreationPoints.getFirst();
             this.points.add(new PersoPoint(absPos.getX(), absPos.getY(), 10.0f, true, strokeColor));
 
@@ -56,7 +57,7 @@ public class DrawCutClamp extends DrawCutWrapper{
             p2.drawMM(graphics2D, renderer); //drawing the points
         }
 
-        for (PersoPoint point : this.points){ // drawing the points
+        for (PersoPoint point : this.points) { // drawing the points
             point.drawMM(graphics2D, renderer);
         }
     }
@@ -64,12 +65,12 @@ public class DrawCutClamp extends DrawCutWrapper{
     @Override
     public void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow) {
         VertexDTO midBottom = new VertexDTO((cut.getPoints().get(0).getX() + cut.getPoints().get(2).getX()) / 2,
-                (cut.getPoints().get(3).getY()) ,
+                (cut.getPoints().get(3).getY()),
                 0.0f);
 
         VertexDTO centerPoint = new VertexDTO((cut.getPoints().get(0).getX() + cut.getPoints().get(2).getX()) / 2,
-                                                (cut.getPoints().get(0).getY() + cut.getPoints().get(2).getY()) / 2,
-                                                0.0f);
+                (cut.getPoints().get(0).getY() + cut.getPoints().get(2).getY()) / 2,
+                0.0f);
         double width = Math.abs(cut.getPoints().get(0).getX() - cut.getPoints().get(2).getX());
         double height = Math.abs(cut.getPoints().get(0).getY() - cut.getPoints().get(2).getY());
 
@@ -77,21 +78,20 @@ public class DrawCutClamp extends DrawCutWrapper{
         double yPos = centerPoint.getY();
 
         UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, cut.getPoints().get(2), cut.getPoints().get(1), width, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
-        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, cut.getPoints().get(2), cut.getPoints().get(3), height, ARROW_COLOR,ARROW_DIMENSION, DIMENSION_COLOR);
+        UiUtil.drawArrowWidthNumber(graphics2D, rendering2DWindow, cut.getPoints().get(2), cut.getPoints().get(3), height, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
         UiUtil.drawArrowWidthNumberXY(graphics2D, rendering2DWindow, VertexDTO.zero(), centerPoint, xPos, yPos, ARROW_COLOR, ARROW_DIMENSION, DIMENSION_COLOR);
     }
 
     @Override
     public boolean addPoint(Drawing drawing, Rendering2DWindow renderer, PersoPoint pointInMM) {
-        if (temporaryCreationPoints.isEmpty()){
+        if (temporaryCreationPoints.isEmpty()) {
             temporaryCreationPoints.add(new VertexDTO(
                     pointInMM.getLocationX(),
                     pointInMM.getLocationY(),
                     0.0f
             ));
             return false;
-        }
-        else {
+        } else {
             temporaryCreationPoints.add(new VertexDTO(
                     pointInMM.getLocationX(),
                     pointInMM.getLocationY(),
@@ -122,56 +122,31 @@ public class DrawCutClamp extends DrawCutWrapper{
     @Override
     public void cursorUpdate(Rendering2DWindow renderer, Drawing drawing) {
         PersoPoint p = this.cursorPoint;
-        double threshold;
-        if (mainWindow.getController().getGrid().isMagnetic()) {
-            threshold = renderer.scalePixelToMM(mainWindow.getController().getGrid().getMagnetPrecision());
+        double threshold = getThresholdForMagnet(renderer);
+        p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
+
+        VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+        Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
+        Optional<VertexDTO> finalClosestPoint = closestPoint;
+
+        closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
+                .or(() -> finalClosestPoint);
+        closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, true))
+                .or(() -> finalClosestPoint);
+        closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint, true))
+                .or(() -> finalClosestPoint);
+
+        if (closestPoint.isPresent() && renderer.isPointonPanel()) {
+            p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
+            p.setColor(SNAP_COLOR);
+            p.setValid(PersoPoint.Valid.VALID);
         } else {
-            threshold = renderer.scalePixelToMM(snapThreshold);
-        }
-        if(points.isEmpty()){
-            p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-
-            VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
-            closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
-
-
-            if(closestPoint.isPresent()){
-                p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
-                p.setColor(SNAP_COLOR);
+            if (renderer.isPointonPanel()) {
+                p.setColor(VALID_COLOR);
                 p.setValid(PersoPoint.Valid.VALID);
-            }
-            else{
-                if(renderer.isPointonPanel()){
-                    p.setColor(VALID_COLOR);
-                    p.setValid(PersoPoint.Valid.VALID);
-                }
-                else{
-                    p.setColor(INVALID_COLOR);
-                    p.setValid(PersoPoint.Valid.NOT_VALID);
-                }
-            }
-        }
-        else{
-            p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
-            VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
-            Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
-            closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
-
-            if(closestPoint.isPresent()){
-                p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
-                p.setColor(SNAP_COLOR);
-                p.setValid(PersoPoint.Valid.VALID);
-            }
-            else{
-                if (renderer.isPointonPanel()){
-                    p.setColor(VALID_COLOR);
-                    p.setValid(PersoPoint.Valid.VALID);
-                }
-                else {
-                    p.setColor(INVALID_COLOR);
-                    p.setValid(PersoPoint.Valid.NOT_VALID);
-                }
+            } else {
+                p.setColor(INVALID_COLOR);
+                p.setValid(PersoPoint.Valid.NOT_VALID);
             }
         }
 
@@ -225,11 +200,11 @@ public class DrawCutClamp extends DrawCutWrapper{
 
         //List<VertexDTO> listPoints = mainWindow.getController().getAbsolutePointsPosition(getCutDTO());
         Point2D mmE = renderer.pixelTomm(pixP);
-        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(),1,true);
+        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
 
-        PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(),1,true);
-        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(),p.getLocationY(),0), threshold);
-        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(),p.getLocationY(),0));
+        PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
+        Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
+        VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
         closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
         closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, true)).orElse(closestPoint);
         closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
@@ -247,7 +222,7 @@ public class DrawCutClamp extends DrawCutWrapper{
         } else if (indexPoint == 3) {
             p1 = new VertexDTO(listPoints.get(1).getX(), listPoints.get(1).getY(), 0);
             p2 = new VertexDTO(closestPoint.getX(), closestPoint.getY(), 0);
-        } else{
+        } else {
             p1 = new VertexDTO(renderer.getDrawing().getPrevPts().get(1).getX() + closestPoint.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(1).getY() + closestPoint.getY() - pointDepart.getY(), 0);
             p2 = new VertexDTO(renderer.getDrawing().getPrevPts().get(3).getX() + closestPoint.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(3).getY() + closestPoint.getY() - pointDepart.getY(), 0);
         }
@@ -263,24 +238,24 @@ public class DrawCutClamp extends DrawCutWrapper{
     @Override
     public void draw(Graphics2D graphics2D, Rendering2DWindow renderer) {
         this.update(renderer);
-        graphics2D.setStroke(new BasicStroke((float) (CLAMP_STROKE_WIDTH*renderer.getZoom())));
+        graphics2D.setStroke(new BasicStroke((float) (CLAMP_STROKE_WIDTH * renderer.getZoom())));
         graphics2D.setColor(CLAMP_COLOR);
 
         Point2D temp1 = renderer.mmTopixel(new Point2D.Double(points.get(0).getLocationX(), points.get(0).getLocationY()));
         Point2D _temp1 = renderer.mmTopixel(new Point2D.Double(points.get(1).getLocationX(), points.get(1).getLocationY()));
         Point2D temp2 = renderer.mmTopixel(new Point2D.Double(points.get(2).getLocationX(), points.get(2).getLocationY()));
-        Point2D _temp2 =  renderer.mmTopixel(new Point2D.Double(points.get(3).getLocationX(), points.get(3).getLocationY()));
+        Point2D _temp2 = renderer.mmTopixel(new Point2D.Double(points.get(3).getLocationX(), points.get(3).getLocationY()));
 
         int height = (int) Math.abs(temp2.getY() - temp1.getY());
         int width = (int) Math.abs(temp2.getX() - temp1.getX());
         int xMin = (int) temp1.getX();
         int yMin = (int) temp2.getY();
 
-        if(temp2.getX() < _temp1.getX()) {
+        if (temp2.getX() < _temp1.getX()) {
             xMin -= width;
         }
 
-        if(_temp1.getY() > temp1.getY()){
+        if (_temp1.getY() > temp1.getY()) {
             yMin -= height;
         }
 
