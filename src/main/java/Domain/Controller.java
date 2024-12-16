@@ -565,10 +565,6 @@ public class Controller implements IUnitConverter, IMemorizer {
 
     /**
      * Compute the modified border relative points based on two absolutes points : the p1 and the p3 of the rectangle diagonal
-     *
-     * @param cursor
-     * @param bitIndex
-     * @return
      */
     public List<VertexDTO> generateBorderPointsRelativeEdgeEdgeFromAbsoluteSinglePoint(VertexDTO cursor, int bitIndex) {
         return CutPointsFactory.generateBorderPointsRelativeEdgeEdgeFromAbsoluteSinglePoint(cursor, bitIndex, this, cncMachine);
