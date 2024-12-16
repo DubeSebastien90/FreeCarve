@@ -326,12 +326,9 @@ public class DrawCutStraight extends DrawCutWrapper {
 
             if (otherPoint.isPresent()) {
                 p.movePoint(otherPoint.get().getX(), otherPoint.get().getY());
-                if (ve.equals(otherPoint)) {
-                    double size = mainWindow.getController().getGrid().getSize();
-                    double lower = Math.floor(cursorPoint.getLocationX() / size) * size;
-                    double upper = lower + size;
-                    double x = Math.abs(cursorPoint.getLocationX()-lower) < Math.abs(cursorPoint.getLocationX()-upper)? lower : upper;
-                    //otherPoint = Optional.of(new VertexDTO(x,otherPoint.get()))
+                if (ve.equals(otherPoint) && closestPoint.isPresent()) {
+
+                    otherPoint = Optional.of(new VertexDTO(otherPoint.get().getX(), closestPoint.get().getY(), 0));
                 }
                 if (closestPoint.isPresent() && (Math.abs(otherPoint.get().getX() - closestPoint.get().getX()) < tolerance || Math.abs(otherPoint.get().getY() - closestPoint.get().getY()) < tolerance)) {
                     p.setColor(ANCHOR_COLOR);
@@ -392,13 +389,28 @@ public class DrawCutStraight extends DrawCutWrapper {
             Optional<VertexDTO> otherPoint = Optional.empty();
             PanelDTO board = mainWindow.getController().getPanelDTO();
             if (Math.abs((p1.getX()) % mainWindow.getController().getGrid().getSize()) < tolerance || Math.abs((p1.getY()) % mainWindow.getController().getGrid().getSize()) < tolerance || p1.getX() == board.getPanelDimension().getX() || p1.getY() == board.getPanelDimension().getY()) {
-                otherPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
+                Optional<VertexDTO> finalClosestPoint = closestPoint;
+                otherPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
+                        .or(() -> finalClosestPoint);
+                Optional<VertexDTO> ve = otherPoint;
+                otherPoint = Optional.ofNullable(changeClosestLineMaybe(otherPoint, threshold, true))
+                        .or(() -> finalClosestPoint);
+                otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, true))
+                        .or(() -> finalClosestPoint);
             }
             if (otherPoint.isPresent() && (otherPoint.get().getX() == points.getFirst().getLocationX() || otherPoint.get().getY() == points.getFirst().getLocationY())) {
                 closestPoint = otherPoint;
             }
             if (this.cut.getCutType() == CutType.LINE_FREE) {
-                closestPoint = changeClosestPointIfMagnetic(threshold, closestPoint, true);
+                Optional<VertexDTO> finalClosestPoint = closestPoint;
+                otherPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint, threshold, false))
+                        .or(() -> finalClosestPoint);
+                Optional<VertexDTO> ve = otherPoint;
+                otherPoint = Optional.ofNullable(changeClosestLineMaybe(otherPoint, threshold, true))
+                        .or(() -> finalClosestPoint);
+                otherPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, otherPoint, true))
+                        .or(() -> finalClosestPoint);
+                closestPoint = otherPoint;
             }
 
             // Snap
