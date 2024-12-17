@@ -121,6 +121,7 @@ public class MiddleContent {
                 ((CardLayout) panel.getLayout()).show(panel, "config");
                 current = MiddleWindowType.CONFIG;
                 configChoiceWindow.getRendering2DWindow().setAll(cutWindow.getRenderer());
+                configChoiceWindow.getRendering2DWindow().clearPoints();
                 configChoiceWindow.getMainSplitPane().requestFocusInWindow();
                 db.setButtonBlueToIndex(0);
                 lb.getToolBar().enableTools(new Tool[]{Tool.ZOOMIN, Tool.ZOOMOUT, Tool.SCALE, Tool.MAGNET, Tool.GRID});
