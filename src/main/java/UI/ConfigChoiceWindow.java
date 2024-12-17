@@ -27,7 +27,6 @@ import javax.swing.*;
  */
 public class ConfigChoiceWindow implements ChangeCutListener, ChangeAttributeListener {
     private final Rendering2DWindow rend;
-    private final BigButton nextButton = new BigButton("Suivant");
     private final MainWindow mainWindow;
     private final BitConfigurationPanel bitWindow;
     private final AttributePanel attributePanel;
@@ -42,7 +41,6 @@ public class ConfigChoiceWindow implements ChangeCutListener, ChangeAttributeLis
         attributePanel = new AttributePanel(true, mainWindow);
         this.mainWindow = mainWindow;
         init();
-        setButtonEventHandlers();
     }
 
     /**
@@ -76,13 +74,6 @@ public class ConfigChoiceWindow implements ChangeCutListener, ChangeAttributeLis
         mainSplitPane.setDividerLocation(UIConfig.INSTANCE.getDefaultWindowWidth() / 3 * 2);
         mainSplitPane.setResizeWeight(0);
 
-    }
-
-    /**
-     * Sets the event handler for the buttons
-     */
-    private void setButtonEventHandlers() {
-        nextButton.getButton().addActionListener(e -> mainWindow.getMiddleContent().nextWindow());
     }
 
     public int getSelectedBit() {

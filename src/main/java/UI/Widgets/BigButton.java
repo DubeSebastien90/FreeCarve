@@ -1,8 +1,10 @@
 package UI.Widgets;
 
+import UI.UIConfig;
 import UI.UiUtil;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -38,6 +40,13 @@ public class BigButton extends JPanel {
         button.setBackground(UIManager.getColor("Button.secondaryBackground"));
         button.setForeground(this.getBackground());
         addHoverListener();
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        button.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding() * 3,
+                UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding() * 3));
+        add(button, gbc);
     }
 
     /**
@@ -51,15 +60,6 @@ public class BigButton extends JPanel {
         Graphics2D graphics2D = ((Graphics2D) graphics);
         UiUtil.makeJPanelRoundCorner(this, graphics2D);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.CENTER;
-
-        button.setPreferredSize(new Dimension(this.getWidth() / 3 * 2, this.getHeight() / 2));
-        add(button, gbc);
     }
 
     private void addHoverListener() {
