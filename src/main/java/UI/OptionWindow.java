@@ -123,7 +123,7 @@ public class OptionWindow extends JPanel {
     }
 
     public static OptionWrapper loadOptions(MainWindow mainWindow) throws IOException, ClassNotFoundException {
-        String filePath = "./.settingsOptions.txt";
+        String filePath = "./.settingsOptions.fcv";
         File f = new File(filePath);
         if (f.exists()) {
             try {
@@ -141,7 +141,7 @@ public class OptionWindow extends JPanel {
     }
 
     private void sauvegarderOptions() throws IOException {
-        String filePath = "./.settingsOptions.txt";
+        String filePath = "./.settingsOptions.fcv";
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath));
         out.writeObject(this.optionWrapper);
         out.close();
