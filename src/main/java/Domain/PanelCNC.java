@@ -129,9 +129,8 @@ class PanelCNC {
                         this.cutList.get(finalI).modifyCut(ct, this.getCutAndBorderList());
                         validateAll(cncMachine);
                     });
-                } else{
+                } else {
                     this.cutList.get(finalI).modifyCut(cut, this.getCutAndBorderList());
-                    //replaceWithModifiedRef(new Cut(ct,getCutAndBorderList()), new Cut(cut,getCutAndBorderList()));
                     validateAll(cncMachine);
                 }
 
@@ -144,9 +143,9 @@ class PanelCNC {
 
     private void replaceWithModifiedRef(Cut oldRef, Cut newRef) {
         for (Cut ct : cutList) {
-            for (RefCut rfc : ct.getRefs()){
+            for (RefCut rfc : ct.getRefs()) {
                 Cut currCutRef = rfc.getCut();
-                if (currCutRef.equals(oldRef)){
+                if (currCutRef.equals(oldRef)) {
                     rfc.setCut(newRef);
                 }
             }
@@ -417,7 +416,7 @@ class PanelCNC {
      */
     boolean isPointOnPanel(VertexDTO point) {
         return point.getX() + VertexDTO.doubleTolerance >= 0 && point.getY() + VertexDTO.doubleTolerance >= 0 &&
-                point.getX()  - VertexDTO.doubleTolerance <= getWidth() && point.getY() - VertexDTO.doubleTolerance  <= getHeight();
+                point.getX() - VertexDTO.doubleTolerance <= getWidth() && point.getY() - VertexDTO.doubleTolerance <= getHeight();
     }
 
     void updateBorderCut() {
@@ -501,8 +500,25 @@ class PanelCNC {
      * @return True if it is in the clamp zone, false otherwise
      */
     public boolean cutInClampZone(CNCMachine cncMachine, Cut cut, Cut clampZone) {
-        VertexDTO topLeft = clampZone.getPoints().get(1);
-        VertexDTO bottomRight = clampZone.getPoints().get(3);
+        double smolX = clampZone.getPoints().stream()
+                .mapToDouble(VertexDTO::getX)
+                .min()
+                .orElse(0);
+        double bigX = clampZone.getPoints().stream()
+                .mapToDouble(VertexDTO::getX)
+                .max()
+                .orElse(Double.MAX_VALUE);
+        double smoly = clampZone.getPoints().stream()
+                .mapToDouble(VertexDTO::getY)
+                .min()
+                .orElse(0);
+        double bigY = clampZone.getPoints().stream()
+                .mapToDouble(VertexDTO::getY)
+                .max()
+                .orElse(Double.MAX_VALUE);
+
+        VertexDTO topLeft = new VertexDTO(smolX, bigY,0);
+        VertexDTO bottomRight = new VertexDTO(bigX, smoly,0);
 
         for (VertexDTO point : cut.getAbsolutePointsPosition(cncMachine)) {
             if (point.getX() >= topLeft.getX() &&
