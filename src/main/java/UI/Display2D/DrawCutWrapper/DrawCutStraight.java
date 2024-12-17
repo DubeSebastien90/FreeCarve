@@ -193,6 +193,9 @@ public class DrawCutStraight extends DrawCutWrapper {
             VertexDTO p2 = new VertexDTO(listPoints.get(1).getX(), closestPoint.getY(), 0);
             relativePts = mainWindow.getController().generateHorizontalPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
         } else {
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, true)).orElse(closestPoint);
+            closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
             VertexDTO p1 = new VertexDTO(renderer.getDrawing().getPrevPts().get(0).getX() + closestPoint.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(0).getY() + closestPoint.getY() - pointDepart.getY(), 0);
             VertexDTO p2 = new VertexDTO(renderer.getDrawing().getPrevPts().get(1).getX() + closestPoint.getX() - pointDepart.getX(), renderer.getDrawing().getPrevPts().get(1).getY() + closestPoint.getY() - pointDepart.getY(), 0);
             relativePts = mainWindow.getController().generateFreeCutPointsRelativeEdgeEdgeFromAbsolute(p1, p2, getCutDTO().getBitIndex(), getCutDTO().getRefsDTO());
@@ -214,15 +217,14 @@ public class DrawCutStraight extends DrawCutWrapper {
         List<VertexDTO> v = mainWindow.getController().getAbsolutePointsPosition(cut);
         Point2D mmE = renderer.pixelTomm(pixP);
         PersoPoint p = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
+        this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
 
         if (getCutType() == CutType.LINE_VERTICAL) {
-            this.cursorPoint = new PersoPoint(listPoints.get(indexPoint).getX(), mmE.getY(), 1, true);
             Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
             VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
-            System.out.println(threshold);
-            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
-            System.out.println("closestPoints2 ; " + closestPoint);
-            //closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(Optional.of(closestPoint), threshold, true)).orElse(closestPoint);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(Optional.of(closestPoint), threshold, false)).orElse(closestPoint);
+            closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
 
             VertexDTO p1;
             VertexDTO p2;
@@ -250,11 +252,12 @@ public class DrawCutStraight extends DrawCutWrapper {
             cut = new CutDTO(newCut);
             mainWindow.getController().modifyCut(newCut, false);
         } else if (getCutType() == CutType.LINE_HORIZONTAL) {
-            this.cursorPoint = new PersoPoint(mmE.getX(), listPoints.get(indexPoint).getY(), 1, true);
             Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(cursorPoint.getLocationX(), cursorPoint.getLocationY(), 0), threshold);
             VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
-            closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(Optional.of(closestPoint), threshold, true)).orElse(closestPoint);
+            closestPoint = Optional.ofNullable(changeClosestLineMaybe(Optional.of(closestPoint), threshold, false)).orElse(closestPoint);
             closestPoint = Optional.ofNullable(changeClosestPointMaybe(threshold, closestPoint1, true)).orElse(closestPoint);
+
             VertexDTO p1;
             VertexDTO p2;
             if (indexPoint == 0) {
@@ -281,7 +284,6 @@ public class DrawCutStraight extends DrawCutWrapper {
             cut = new CutDTO(newCut);
             mainWindow.getController().modifyCut(newCut, false);
         } else if (getCutType() == CutType.LINE_FREE) {
-            this.cursorPoint = new PersoPoint(mmE.getX(), mmE.getY(), 1, true);
             Optional<VertexDTO> closestPoint1 = mainWindow.getController().getGridPointNearBorder(new VertexDTO(p.getLocationX(), p.getLocationY(), 0), threshold);
             VertexDTO closestPoint = closestPoint1.orElse(new VertexDTO(p.getLocationX(), p.getLocationY(), 0));
             closestPoint = Optional.ofNullable(changeClosestLineMaybe(closestPoint1, threshold, false)).orElse(closestPoint);
