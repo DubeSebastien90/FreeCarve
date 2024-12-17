@@ -15,5 +15,6 @@ public class App {
 
         MainWindow mainWindow = new MainWindow();
         mainWindow.start();
+        mainWindow.getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
