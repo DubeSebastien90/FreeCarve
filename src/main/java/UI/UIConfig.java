@@ -52,7 +52,7 @@ public enum UIConfig {
     private final Color DIMENSION_COLOR = Color.BLACK;
     private final Color CLAMP_COLOR = new Color(255, 0, 0, 200);
     private final Color HOVER_VIEW_COLOR = Color.MAGENTA;
-    private final Color PANEL_COLOR = new Color(222, 184, 135);
+    private Color PANEL_COLOR = new Color(222, 184, 135);
 
     private final int ARROW_DIMENSION = 2;
     private final double CLAMP_STROKE_WIDTH = 10.0;
@@ -252,6 +252,10 @@ public enum UIConfig {
 
     public void setDefaultBoardHeightMM(double defaultBoardHeightMM) {
         this.defaultBoardHeightMM = defaultBoardHeightMM;
+    }
+
+    public void setPANEL_COLOR(Color PANEL_COLOR) {
+        this.PANEL_COLOR = PANEL_COLOR;
     }
 
     public UiUnits getDefaultUnit() {

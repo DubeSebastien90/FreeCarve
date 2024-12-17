@@ -1,5 +1,6 @@
 package UI;
 
+import java.awt.*;
 import java.io.Serializable;
 
 public class OptionWrapper implements Serializable {
@@ -7,6 +8,7 @@ public class OptionWrapper implements Serializable {
     private UiUnits units;
     private int rotation;
     private int vitesse;
+    private Color panelColor;
 
     public OptionWrapper(OptionWrapper option){
         units = option.units;
@@ -18,11 +20,12 @@ public class OptionWrapper implements Serializable {
         this.units = UiUnits.MILLIMETERS;
         this.rotation = 20000;
         this.vitesse = 3;
+        this.panelColor = UIConfig.INSTANCE.getPANEL_COLOR();
     }
 
     @Override
     public String toString() {
-        return "Units: " + units + ", Rotation: " + rotation + ", Vitesse: " + vitesse;
+        return "Units: " + units + ", Rotation: " + rotation + ", Vitesse: " + vitesse + ", PanelColor: " + panelColor;
     }
 
     public void setRotation(int rotation){
@@ -37,6 +40,10 @@ public class OptionWrapper implements Serializable {
         this.units = units;
     }
 
+    public void setPanelColor(Color color){
+        this.panelColor = color;
+    }
+
     public UiUnits getUnits(){
         return units;
     }
@@ -47,6 +54,10 @@ public class OptionWrapper implements Serializable {
 
     public int getVitesse(){
         return vitesse;
+    }
+
+    public Color getPanelColor(){
+        return panelColor;
     }
 
 }

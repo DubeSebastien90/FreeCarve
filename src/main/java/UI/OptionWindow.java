@@ -8,11 +8,14 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class OptionWindow extends JPanel {
+public class OptionWindow extends JScrollPane {
 
     OptionWrapper optionWrapper;
+    JPanel panel;
 
     public OptionWindow(MainWindow mainWindow) {
         try {
@@ -25,16 +28,20 @@ public class OptionWindow extends JPanel {
     }
 
     private void init(MainWindow mainWindow) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(new EmptyBorder(20, 20, 20, 20));
-        setBackground(null);
+        // TODO implement undo redo for settings
+        panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        panel.setBackground(null);
 
         JLabel titleLabel = new JLabel("Panneau d'Options");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(titleLabel);
+        panel.add(titleLabel);
 
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
 //
 //        JPanel dimensionsPanel = createGroupPanel("Dimensions par défaut");
 //        add(dimensionsPanel);
@@ -50,7 +57,7 @@ public class OptionWindow extends JPanel {
 //        add(Box.createRigidArea(new Dimension(0, 20)));
 
         JPanel unitPanel = createGroupPanel("Unités");
-        add(unitPanel);
+        panel.add(unitPanel);
 
         JComboBox<UiUnits> unit = new JComboBox<>(UiUnits.values());
         unit.setSelectedItem(UIConfig.INSTANCE.getDefaultUnit());
@@ -62,11 +69,11 @@ public class OptionWindow extends JPanel {
         unit.setFont(new Font("Arial", Font.PLAIN, 14));
         unitPanel.add(unit);
 
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
 
         JPanel cncPanel = createGroupPanel("Paramètres CNC");
-        add(cncPanel);
+        panel.add(cncPanel);
 
         PixelNoUnitInputField gcodeRotationRate = new PixelNoUnitInputField(mainWindow, "Rotation outil CNC", mainWindow.getController().getCNCrotationSpeed(), "rotation per second");
         configurePixelField(gcodeRotationRate, evt -> {
@@ -84,8 +91,21 @@ public class OptionWindow extends JPanel {
         });
         cncPanel.add(gcodeFeedRate);
 
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
+        JPanel colorPanel = createGroupPanel("Couleurs");
+        panel.add(colorPanel);
+        JColorChooser colorChooser = new JColorChooser();
+        colorChooser.setColor(UIConfig.INSTANCE.getPANEL_COLOR());
+        colorChooser.getSelectionModel().addChangeListener(event -> {
+            UIConfig.INSTANCE.setPANEL_COLOR(colorChooser.getColor());
+            optionWrapper.setPanelColor(colorChooser.getColor());
+        });
+        colorChooser.setMaximumSize(new Dimension(400, 400));
+        colorChooser.setFont(new Font("Arial", Font.PLAIN, 14));
+        colorPanel.add(colorChooser);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
         JButton returnButton = new JButton("Sauvegarder et revenir à l'application principale");
         returnButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -98,7 +118,9 @@ public class OptionWindow extends JPanel {
             }
             mainWindow.showTrueMode();
         });
-        add(returnButton);
+        panel.add(returnButton);
+
+        this.setViewportView(panel);
     }
 
     private JPanel createGroupPanel(String title) {
@@ -151,7 +173,7 @@ public class OptionWindow extends JPanel {
         mainWindow.getController().setCNCrotationSpeed(optionWrapper.getRotation());
         mainWindow.getController().setCNCCuttingSpeed(optionWrapper.getVitesse());
         mainWindow.getMiddleContent().getExportWindow().refreshGcodeParam();
-
+        UIConfig.INSTANCE.setPANEL_COLOR(optionWrapper.getPanelColor());
         mainWindow.getMiddleContent().getConfigChoiceWindow().getAttributePanel().update();
     }
 }
