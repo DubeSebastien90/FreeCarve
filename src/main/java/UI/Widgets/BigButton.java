@@ -4,6 +4,8 @@ import UI.UiUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * This class is used to create a button which respect certain conditions, so it is the same throughout the project
@@ -35,6 +37,7 @@ public class BigButton extends JPanel {
         button.setFont(button.getFont().deriveFont(20f));
         button.setBackground(UIManager.getColor("Button.secondaryBackground"));
         button.setForeground(this.getBackground());
+        addHoverListener();
     }
 
     /**
@@ -57,5 +60,19 @@ public class BigButton extends JPanel {
 
         button.setPreferredSize(new Dimension(this.getWidth() / 3 * 2, this.getHeight() / 2));
         add(button, gbc);
+    }
+
+    private void addHoverListener() {
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(UIManager.getColor("Button.secondaryBackgroundHover"));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(UIManager.getColor("Button.secondaryBackground"));
+            }
+        });
     }
 }
