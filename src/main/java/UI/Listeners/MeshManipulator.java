@@ -5,6 +5,7 @@ import Domain.Controller;
 import UI.MainWindow;
 import UI.SubWindows.Rendering3DWindow;
 
+import javax.swing.*;
 import java.awt.event.*;
 import java.security.InvalidKeyException;
 import java.security.KeyException;
@@ -14,92 +15,56 @@ public class MeshManipulator implements KeyListener, MouseListener, MouseWheelLi
 
     private final Rendering3DWindow rendering3DWindow;
     private final Controller controller;
-
-    private static final double GIMBAL_ROTATION = 0.1f;
     private static final double MESH_TRANSLATION = 3;
-    private static final double MESH_ROTATION = 0.1f;
+    private static final double MESH_ROTATION = 1;
+    private static final double TIME_BEFORE_DISPLAY = 3;
 
-    private enum MovementType {TRANSLATION, ROTATION, NO_MESH}
-
+    private enum MovementType {MANUAL, DISPLAY}
     private UUID selectedMesh;
-    private MovementType movementType = MovementType.NO_MESH;
-    private final MainWindow mainWindow;
+    private KeyEvent currentEvent = null;
+    private MovementType movementType = MovementType.DISPLAY;
+    private double clock = 0;
     private double mousePosX = 0;
     private double mousePosY = 0;
 
     public MeshManipulator(Rendering3DWindow rendering3DWindow, MainWindow mainWindow) {
-        this.mainWindow = mainWindow;
         this.rendering3DWindow = rendering3DWindow;
-        this.selectedMesh = null;
         controller = mainWindow.getController();
+        startAnimation();
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        try {
-
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_RIGHT:
-                    controller.panTransform(rendering3DWindow.getCameraId(), 0, GIMBAL_ROTATION);
-                    break;
-                case KeyEvent.VK_LEFT:
-                    controller.panTransform(rendering3DWindow.getCameraId(), 0, -GIMBAL_ROTATION);
-                    break;
-                case KeyEvent.VK_UP:
-                    controller.panTransform(rendering3DWindow.getCameraId(), GIMBAL_ROTATION, 0);
-                    break;
-                case KeyEvent.VK_DOWN:
-                    controller.panTransform(rendering3DWindow.getCameraId(), -GIMBAL_ROTATION, 0);
-                    break;
-                case KeyEvent.VK_W:
-                    if (movementType == MovementType.TRANSLATION) {
-                        controller.applyTransform(selectedMesh, new VertexDTO(0, MESH_TRANSLATION, 0), VertexDTO.zero(), 0);
-                    } else if (movementType == MovementType.ROTATION) {
-                        controller.applyTransform(selectedMesh, VertexDTO.zero(), new VertexDTO(MESH_ROTATION, 0, 0), 0);
-                    }
-                    break;
-                case KeyEvent.VK_A:
-                    if (movementType == MovementType.TRANSLATION) {
-                        controller.applyTransform(selectedMesh, new VertexDTO(-MESH_TRANSLATION, 0, 0), VertexDTO.zero(), 0);
-                    } else if (movementType == MovementType.ROTATION) {
-                        controller.applyTransform(selectedMesh, VertexDTO.zero(), new VertexDTO(0, -MESH_ROTATION, 0), 0);
-                    }
-                    break;
-                case KeyEvent.VK_S:
-                    if (movementType == MovementType.TRANSLATION) {
-                        controller.applyTransform(selectedMesh, new VertexDTO(0, -MESH_TRANSLATION, 0), VertexDTO.zero(), 0);
-                    } else if (movementType == MovementType.ROTATION) {
-                        controller.applyTransform(selectedMesh, VertexDTO.zero(), new VertexDTO(-MESH_ROTATION, 0, 0), 0);
-                    }
-                    break;
-                case KeyEvent.VK_D:
-                    if (movementType == MovementType.TRANSLATION) {
-                        controller.applyTransform(selectedMesh, new VertexDTO(MESH_TRANSLATION, 0, 0), VertexDTO.zero(), 0);
-                    } else if (movementType == MovementType.ROTATION) {
-                        controller.applyTransform(selectedMesh, VertexDTO.zero(), new VertexDTO(0, MESH_ROTATION, 0), 0);
-                    }
-                    break;
-                case KeyEvent.VK_1:
-                    if (movementType != MovementType.NO_MESH) {
-                        if (movementType == MovementType.TRANSLATION) {
-                            movementType = MovementType.ROTATION;
-                        } else {
-                            movementType = MovementType.TRANSLATION;
-                        }
-                    }
-                    break;
-            }
-        } catch (KeyException keyException) {
-            keyException.printStackTrace();
+        TransformRequest transform = getMovementForKeyCode(e.getKeyCode(), e.isShiftDown());
+        if (transform != null) {
+            currentEvent = e;
+            movementType = MovementType.MANUAL;
+            clock = 0;
         }
-        rendering3DWindow.repaint();
+    }
+
+    private TransformRequest getMovementForKeyCode(int keycode, boolean isShiftDown) {
+        if (isShiftDown) {
+            return switch (keycode) {
+                case KeyEvent.VK_RIGHT -> new TransformRequest(new VertexDTO(MESH_TRANSLATION, 0, 0), VertexDTO.zero(), 0);
+                case KeyEvent.VK_LEFT -> new TransformRequest(new VertexDTO(-MESH_TRANSLATION, 0, 0), VertexDTO.zero(), 0);
+                case KeyEvent.VK_UP -> new TransformRequest(new VertexDTO(0, MESH_TRANSLATION, 0), VertexDTO.zero(), 0);
+                case KeyEvent.VK_DOWN -> new TransformRequest(new VertexDTO(0, -MESH_TRANSLATION, 0), VertexDTO.zero(), 0);
+                default -> null;
+            };
+        }
+        return switch (keycode) {
+            case KeyEvent.VK_RIGHT -> new TransformRequest(VertexDTO.zero(), new VertexDTO(0, MESH_ROTATION, 0), 0);
+            case KeyEvent.VK_LEFT -> new TransformRequest(VertexDTO.zero(), new VertexDTO(0, -MESH_ROTATION, 0), 0);
+            case KeyEvent.VK_UP -> new TransformRequest(VertexDTO.zero(), new VertexDTO(MESH_ROTATION, 0, 0), 0);
+            case KeyEvent.VK_DOWN -> new TransformRequest(VertexDTO.zero(), new VertexDTO(-MESH_ROTATION, 0, 0), 0);
+            default -> null;
+        };
+
     }
 
     public void setSelectedMesh(UUID selectedMesh) {
         this.selectedMesh = selectedMesh;
-        if (movementType == MovementType.NO_MESH) {
-            movementType = MovementType.TRANSLATION;
-        }
     }
 
     @Override
@@ -108,39 +73,43 @@ public class MeshManipulator implements KeyListener, MouseListener, MouseWheelLi
         rendering3DWindow.repaint();
     }
 
-    // Empty classes to fulfill the listener contract
+    public void startAnimation() {
+        SwingWorker<Object, Object> sw = new SwingWorker<>() {
+            private long lastTimeMillis = System.currentTimeMillis();
+            @Override
+            protected Object doInBackground() throws Exception {
+                while (true) {
+                    double delta = (System.currentTimeMillis() - lastTimeMillis)/1000.0;
+                    lastTimeMillis = System.currentTimeMillis();
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        rendering3DWindow.setMousePos(new VertexDTO(e.getX(), e.getY(), 1));
-        rendering3DWindow.repaint();
-        mousePosX = e.getPoint().x;
-        mousePosY = e.getPoint().y;
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
+                    if (!Double.isNaN(clock)){
+                        clock += delta;
+                        if (clock > TIME_BEFORE_DISPLAY){
+                            clock = Double.NaN;
+                            movementType = MovementType.DISPLAY;
+                        }
+                    }
+                    TransformRequest movement = null;
+                    if (currentEvent != null){
+                        movement = getMovementForKeyCode(currentEvent.getKeyCode(), currentEvent.isShiftDown());
+                        movementType = MovementType.MANUAL;
+                    }
+                    if (movementType == MovementType.DISPLAY) {
+                        movement = getMovementForKeyCode(KeyEvent.VK_LEFT, false);
+                    }
+                    if (movement != null) {
+                        try {
+                            controller.applyTransform(controller.getMeshesOfScene().getFirst(), movement.positionChange, movement.rotationChange.mul(delta), movement.scaleChange);
+                            rendering3DWindow.repaint();
+                        } catch (KeyException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Thread.sleep(33);
+                }
+            }
+        };
+        sw.execute();
     }
 
     @Override
@@ -177,7 +146,47 @@ public class MeshManipulator implements KeyListener, MouseListener, MouseWheelLi
     }
 
     @Override
+    public void mousePressed(MouseEvent e) {
+        rendering3DWindow.setMousePos(new VertexDTO(e.getX(), e.getY(), 1));
+        rendering3DWindow.repaint();
+        mousePosX = e.getPoint().x;
+        mousePosY = e.getPoint().y;
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (currentEvent != null && currentEvent.getKeyCode() == e.getKeyCode() && getMovementForKeyCode(e.getKeyCode(), false) != null){
+            currentEvent = null;
+        }
+    }
+
+    record TransformRequest(VertexDTO positionChange, VertexDTO rotationChange, double scaleChange) {}
+
+    // Empty classes to fulfill the listener contract
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
     public void mouseMoved(MouseEvent e) {
 
     }
+
 }
