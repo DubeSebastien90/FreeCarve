@@ -167,7 +167,7 @@ public class Mesh extends Transform {
      * @param bits       the available CNC machine bits used for cutting
      * @return The Mesh representing the panel
      */
-    public static List<Mesh> PanelToMesh(Controller controller, PanelDTO panel, BitDTO[] bits) {
+    public static List<Mesh> PanelToMesh(Controller controller, PanelDTO panel, BitDTO[] bits, Color color) {
         List<Vertex[]> meshes = new ArrayList<>();
         meshes.add(new Vertex[]{new Vertex(0, 0, 0), new Vertex(0, panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), panel.getPanelDimension().getY(), 0), new Vertex(panel.getPanelDimension().getX(), 0, 0)});
 
@@ -195,7 +195,7 @@ public class Mesh extends Transform {
                 }
             }
         }
-        Mesh finalMesh = new Mesh(new Vertex(50, 50, 0), 0.5, new Color(222, 184, 135), convertStringToVertex(panneau.toStlString()));
+        Mesh finalMesh = new Mesh(new Vertex(50, 50, 0), 0.5, color, convertStringToVertex(panneau.toStlString(),color));
         List<Mesh> arr = new ArrayList<>();
         arr.add(finalMesh);
         return arr;
@@ -400,7 +400,7 @@ public class Mesh extends Transform {
      * @param stlString The string which represent the mesh in stl format.
      * @return A list of triangle formed based on the stl String.
      */
-    public static List<Triangle> convertStringToVertex(String stlString) {
+    public static List<Triangle> convertStringToVertex(String stlString, Color color) {
         stlString = stlString.replaceAll("v3d.csg", "");
         stlString = stlString.replaceAll("normal ", "\\$");
         stlString = stlString.replaceAll("vertex ", "_");
@@ -439,7 +439,7 @@ public class Mesh extends Transform {
                     Vertex vert = new Vertex(d1, d2, d3);
                     li.add(vert);
                 }
-                allVertex.add(new Triangle(li.get(1), li.get(2), li.get(3), li.get(0), new Color(222, 184, 135)));
+                allVertex.add(new Triangle(li.get(1), li.get(2), li.get(3), li.get(0), color));
             }
         }
         return allVertex;

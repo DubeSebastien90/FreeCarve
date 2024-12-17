@@ -2,6 +2,7 @@ package UI.Listeners;
 
 import Domain.Controller;
 import UI.MainWindow;
+import UI.UIConfig;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -26,7 +27,7 @@ public class UndoRedoDispatcher implements KeyEventDispatcher {
         if (e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z) {
             controller.undo();
             mainWindow.getMiddleContent().getExportWindow().calculateGcode();
-            controller.setScene();
+            controller.setScene(UIConfig.INSTANCE.getPANEL_COLOR());
             mainWindow.getMiddleContent().getConfigChoiceWindow().getBitWindow().refresh();
             mainWindow.getMiddleContent().getConfigChoiceWindow().getBitWindow().repaint();
             mainWindow.getMiddleContent().getCutWindow().notifyObservers();
@@ -35,7 +36,7 @@ public class UndoRedoDispatcher implements KeyEventDispatcher {
         } else if (e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Y) {
             controller.redo();
             mainWindow.getMiddleContent().getExportWindow().calculateGcode();
-            controller.setScene();
+            controller.setScene(UIConfig.INSTANCE.getPANEL_COLOR());
             mainWindow.getMiddleContent().getConfigChoiceWindow().getBitWindow().refresh();
             mainWindow.getMiddleContent().getConfigChoiceWindow().getBitWindow().repaint();
             mainWindow.getMiddleContent().getCutWindow().notifyObservers();

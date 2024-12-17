@@ -12,6 +12,7 @@ import Domain.ThirdDimension.Camera;
 import Domain.ThirdDimension.Mesh;
 import Domain.ThirdDimension.Scene;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -50,8 +51,8 @@ public class Controller implements IUnitConverter, IMemorizer {
         return new Controller(undoRedoManager, new CNCMachine(undoRedoManager), new Scene());
     }
 
-    public void setScene() {
-        this.scene = new Scene(Mesh.PanelToMesh(this, getPanelDTO(), getBitsDTO()));
+    public void setScene(Color color) {
+        this.scene = new Scene(Mesh.PanelToMesh(this, getPanelDTO(), getBitsDTO(), color));
         this.camera.setScene(this.scene);
     }
 
