@@ -17,7 +17,7 @@ public class MeshManipulator implements KeyListener, MouseListener, MouseWheelLi
     private final Controller controller;
     private static final double MESH_TRANSLATION = 3;
     private static final double MESH_ROTATION = 1;
-    private static final double TIME_BEFORE_DISPLAY = 3;
+    private static final double TIME_BEFORE_DISPLAY = 20;
 
     private enum MovementType {MANUAL, DISPLAY}
 
@@ -129,10 +129,14 @@ public class MeshManipulator implements KeyListener, MouseListener, MouseWheelLi
             if (wheel < 0) {
                 for (UUID id : controller.getMeshesOfScene()) {
                     controller.applyTransform(id, new VertexDTO(0, 0, 0), VertexDTO.zero(), 0.01);
+                    movementType = MovementType.MANUAL;
+                    clock = 0;
                 }
             } else if (wheel > 0) {
                 for (UUID id : controller.getMeshesOfScene()) {
                     controller.applyTransform(id, new VertexDTO(0, 0, 0), VertexDTO.zero(), -0.01);
+                    movementType = MovementType.MANUAL;
+                    clock = 0;
                 }
             }
             rendering3DWindow.repaint();
@@ -147,6 +151,8 @@ public class MeshManipulator implements KeyListener, MouseListener, MouseWheelLi
         double offsetY = ((mousePosY - e.getPoint().y));
         try {
             controller.applyTransform(selectedMesh, new VertexDTO(offsetX, offsetY, 0), VertexDTO.zero(), 0);
+            movementType = MovementType.MANUAL;
+            clock = 0;
         } catch (InvalidKeyException ex) {
             System.out.println("Nothing selected for movement");
         }
