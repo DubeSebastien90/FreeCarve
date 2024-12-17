@@ -20,6 +20,7 @@ public class MeshManipulator implements KeyListener, MouseListener, MouseWheelLi
     private static final double TIME_BEFORE_DISPLAY = 3;
 
     private enum MovementType {MANUAL, DISPLAY}
+
     private UUID selectedMesh;
     private KeyEvent currentEvent = null;
     private MovementType movementType = MovementType.DISPLAY;
@@ -46,10 +47,13 @@ public class MeshManipulator implements KeyListener, MouseListener, MouseWheelLi
     private TransformRequest getMovementForKeyCode(int keycode, boolean isShiftDown) {
         if (isShiftDown) {
             return switch (keycode) {
-                case KeyEvent.VK_RIGHT -> new TransformRequest(new VertexDTO(MESH_TRANSLATION, 0, 0), VertexDTO.zero(), 0);
-                case KeyEvent.VK_LEFT -> new TransformRequest(new VertexDTO(-MESH_TRANSLATION, 0, 0), VertexDTO.zero(), 0);
+                case KeyEvent.VK_RIGHT ->
+                        new TransformRequest(new VertexDTO(MESH_TRANSLATION, 0, 0), VertexDTO.zero(), 0);
+                case KeyEvent.VK_LEFT ->
+                        new TransformRequest(new VertexDTO(-MESH_TRANSLATION, 0, 0), VertexDTO.zero(), 0);
                 case KeyEvent.VK_UP -> new TransformRequest(new VertexDTO(0, MESH_TRANSLATION, 0), VertexDTO.zero(), 0);
-                case KeyEvent.VK_DOWN -> new TransformRequest(new VertexDTO(0, -MESH_TRANSLATION, 0), VertexDTO.zero(), 0);
+                case KeyEvent.VK_DOWN ->
+                        new TransformRequest(new VertexDTO(0, -MESH_TRANSLATION, 0), VertexDTO.zero(), 0);
                 default -> null;
             };
         }
@@ -76,21 +80,22 @@ public class MeshManipulator implements KeyListener, MouseListener, MouseWheelLi
     public void startAnimation() {
         SwingWorker<Object, Object> sw = new SwingWorker<>() {
             private long lastTimeMillis = System.currentTimeMillis();
+
             @Override
             protected Object doInBackground() throws Exception {
                 while (true) {
-                    double delta = (System.currentTimeMillis() - lastTimeMillis)/1000.0;
+                    double delta = (System.currentTimeMillis() - lastTimeMillis) / 1000.0;
                     lastTimeMillis = System.currentTimeMillis();
 
-                    if (!Double.isNaN(clock)){
+                    if (!Double.isNaN(clock)) {
                         clock += delta;
-                        if (clock > TIME_BEFORE_DISPLAY){
+                        if (clock > TIME_BEFORE_DISPLAY) {
                             clock = Double.NaN;
                             movementType = MovementType.DISPLAY;
                         }
                     }
                     TransformRequest movement = null;
-                    if (currentEvent != null){
+                    if (currentEvent != null) {
                         movement = getMovementForKeyCode(currentEvent.getKeyCode(), currentEvent.isShiftDown());
                         movementType = MovementType.MANUAL;
                     }
@@ -98,12 +103,17 @@ public class MeshManipulator implements KeyListener, MouseListener, MouseWheelLi
                         movement = getMovementForKeyCode(KeyEvent.VK_LEFT, false);
                     }
                     if (movement != null) {
-                        try {
-                            controller.applyTransform(controller.getMeshesOfScene().getFirst(), movement.positionChange, movement.rotationChange.mul(delta), movement.scaleChange);
+                        TransformRequest finalMovement = movement;
+                        SwingUtilities.invokeLater(() -> {
+                            try {
+                                controller.applyTransform(controller.getMeshesOfScene().getFirst(), finalMovement.positionChange, finalMovement.rotationChange.mul(delta), finalMovement.scaleChange);
+                            } catch (KeyException e) {
+                                e.printStackTrace();
+                            }
                             rendering3DWindow.repaint();
-                        } catch (KeyException e) {
-                            e.printStackTrace();
-                        }
+                        });
+
+
                     }
                     Thread.sleep(33);
                 }
@@ -155,12 +165,13 @@ public class MeshManipulator implements KeyListener, MouseListener, MouseWheelLi
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (currentEvent != null && currentEvent.getKeyCode() == e.getKeyCode() && getMovementForKeyCode(e.getKeyCode(), false) != null){
+        if (currentEvent != null && currentEvent.getKeyCode() == e.getKeyCode() && getMovementForKeyCode(e.getKeyCode(), false) != null) {
             currentEvent = null;
         }
     }
 
-    record TransformRequest(VertexDTO positionChange, VertexDTO rotationChange, double scaleChange) {}
+    record TransformRequest(VertexDTO positionChange, VertexDTO rotationChange, double scaleChange) {
+    }
 
     // Empty classes to fulfill the listener contract
 

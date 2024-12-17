@@ -27,6 +27,7 @@ public class Rendering3DWindow extends JPanel {
     private UUID cameraId;
     private final MainWindow mainWindow;
     private final JLabel mouselabel;
+    private int renderingTimeMillis = 10;
 
     /**
      * @return the mouse position in pixels of the last click on the viewport
@@ -99,12 +100,15 @@ public class Rendering3DWindow extends JPanel {
         UiUtil.makeJPanelRoundCorner(this, graphics2D);
         super.paintComponent(graphics2D);
 
+        long renderingStartTime = System.currentTimeMillis();
+
         BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 
         Optional<UUID> selectedMesh = mainWindow.getController().renderImage(img, mousePos);
         selectedMesh.ifPresent(meshManipulator::setSelectedMesh);
 
         graphics2D.drawImage(img, 0, 0, null);
+        renderingTimeMillis = (int) (System.currentTimeMillis() - renderingStartTime);
         setMousePos(new VertexDTO(0, 0, 0));
     }
 
@@ -120,5 +124,9 @@ public class Rendering3DWindow extends JPanel {
      */
     public void setCameraId(UUID cameraId) {
         this.cameraId = cameraId;
+    }
+
+    public int getRenderingTimeMillis() {
+        return renderingTimeMillis;
     }
 }

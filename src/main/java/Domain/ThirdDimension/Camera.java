@@ -19,7 +19,7 @@ import java.util.UUID;
 public class Camera extends Transform {
     private Scene scene;
     ;
-    Double[][] pixelsDepthMap;
+    float[] pixelsDepthMap;
     public static final float MIN_LIGHTING = 0.2f;
 
     /**
@@ -33,7 +33,8 @@ public class Camera extends Transform {
     }
 
     public Optional<UUID> renderImage(BufferedImage img, VertexDTO mousePosition) {
-        pixelsDepthMap = new Double[img.getWidth()][img.getHeight()];
+        pixelsDepthMap = new float[img.getWidth()*img.getHeight()];
+        Arrays.fill(pixelsDepthMap, Float.NaN);
         Optional<UUID> cutId = Optional.empty();
         for (Mesh m : scene.getMeshes()) {
             for (Triangle t : m.getLocalTriangles()) {
@@ -69,8 +70,8 @@ public class Camera extends Transform {
                 if (isInBarycentric(bary)) {
                     double depth = bary.getX() * t.getVertex(0).getZ() + bary.getY() * t.getVertex(1).getZ() + bary.getZ() * t.getVertex(2).getZ();
                     if (x < img.getWidth() && y < img.getHeight()) {
-                        if ((pixelsDepthMap[x][y] == null || pixelsDepthMap[x][y] < depth)) {
-                            pixelsDepthMap[x][y] = depth;
+                        if (Float.isNaN(pixelsDepthMap[x + y * img.getWidth()]) || pixelsDepthMap[x + y * img.getWidth()] < depth) {
+                            pixelsDepthMap[x + y * img.getWidth()] = (float)depth;
                             img.setRGB(x, img.getHeight() - y - 1, printedColor.getRGB());
                             if (mousePosition.getX() == x && mousePosition.getY() == img.getHeight() - y - 1) {
                                 isSelected = true;
