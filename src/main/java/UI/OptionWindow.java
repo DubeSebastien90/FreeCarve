@@ -1,5 +1,6 @@
 package UI;
 
+import UI.Events.ChangeAttributeEvent;
 import UI.Widgets.MeasurementInputField;
 import UI.Widgets.PixelNoUnitInputField;
 
@@ -151,6 +152,8 @@ public class OptionWindow extends JPanel {
         mainWindow.getController().setCNCrotationSpeed(optionWrapper.getRotation());
         mainWindow.getController().setCNCCuttingSpeed(optionWrapper.getVitesse());
         mainWindow.getMiddleContent().getExportWindow().refreshGcodeParam();
+
+        mainWindow.getMiddleContent().getConfigChoiceWindow().getAttributePanel().update();
     }
 }
 

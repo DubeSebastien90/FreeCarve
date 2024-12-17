@@ -124,4 +124,5 @@ public class AttributePanel extends BasicWindow implements IPanelObserver {
         this.panel.revalidate();
         this.panel.repaint();
     }
+
 }

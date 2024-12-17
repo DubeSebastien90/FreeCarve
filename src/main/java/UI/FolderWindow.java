@@ -120,7 +120,7 @@ public class FolderWindow extends JPanel {
                 compteur++;
                 if (compteur == UIConfig.INSTANCE.getNbClicksBeforeMusic()){
                     System.out.println("Enjoy music!");
-                    playSound("secretAudio.wav");
+                    playSound("secret.wav");
                 }
             }
         });

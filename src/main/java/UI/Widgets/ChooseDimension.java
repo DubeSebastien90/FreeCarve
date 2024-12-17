@@ -2,6 +2,7 @@ package UI.Widgets;
 
 import Common.DTO.VertexDTO;
 import UI.Display2D.Rendering2DWindow;
+import UI.UIConfig;
 import UI.UiUnits;
 
 import javax.swing.*;
@@ -65,9 +66,9 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
      */
     private void init() {
         VertexDTO panelSize = rend.getMainWindow().getController().getPanelDTO().getPanelDimension();
-        xTextField = new MeasurementInputField(rend.getMainWindow(), "Largeur   ", panelSize.getX(), UiUnits.MILLIMETERS);
-        yTextField = new MeasurementInputField(rend.getMainWindow(), "Hauteur   ", panelSize.getY(), UiUnits.MILLIMETERS);
-        zTextField = new MeasurementInputField(rend.getMainWindow(), "Épaisseur", panelSize.getZ(), UiUnits.MILLIMETERS);
+        xTextField = new MeasurementInputField(rend.getMainWindow(), "Largeur   ", panelSize.getX(), UIConfig.INSTANCE.getDefaultUnit());
+        yTextField = new MeasurementInputField(rend.getMainWindow(), "Hauteur   ", panelSize.getY(), UIConfig.INSTANCE.getDefaultUnit());
+        zTextField = new MeasurementInputField(rend.getMainWindow(), "Épaisseur", panelSize.getZ(), UIConfig.INSTANCE.getDefaultUnit());
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.weightx = 1.0;
@@ -139,5 +140,6 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
     public JPanel showAttribute() {
         return this;
     }
+
 }
 
