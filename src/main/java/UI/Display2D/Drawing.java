@@ -152,10 +152,13 @@ public class Drawing {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (currentDrawingCut.getCursorPoint() != null && getState() == DrawingState.CREATE_CUT) {
-                    if (currentDrawingCut.getCursorPoint().getValid() == PersoPoint.Valid.NOT_VALID)  // Cut invalid
-                    {
+                    if(e.getButton() == MouseEvent.BUTTON3){
+                        deactivateCreateCutListener(); // if right click, deactivate drawing
+                    }
+                    else if (currentDrawingCut.getCursorPoint().getValid() == PersoPoint.Valid.NOT_VALID) {  // Cut invalid
                         deactivateCreateCutListener();
-                    } else // Cut valid
+                    }
+                    else // Cut valid
                     {
                         boolean isOver = currentDrawingCut.addPoint(Drawing.this, renderer, new PersoPoint(currentDrawingCut.getCursorPoint()));
                         if (isOver) {
@@ -164,7 +167,8 @@ public class Drawing {
                                 updateCuts();
                                 mainWindow.getMiddleContent().getCutWindow().notifyObservers();
                                 renderer.getChangeCutListener().addCutEventOccured(new ChangeCutEvent(renderer, id.get()));
-                                setState(DrawingState.IDLE);
+                                deactivateCreateCutListener();
+                                initCut(currentDrawingCut.getCutType());
                             }
                         }
                     }

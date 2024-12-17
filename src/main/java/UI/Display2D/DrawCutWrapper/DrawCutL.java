@@ -46,7 +46,7 @@ public class DrawCutL extends DrawCutWrapper {
         if (anchor.isPresent()) {
             PersoPoint referenceAnchorPoint = new PersoPoint(anchor.get().getX(), anchor.get().getY(), cursorRadius, true);
             referenceAnchorPoint.setColor(strokeColor);
-            referenceAnchorPoint.drawMM(graphics2D, renderer);
+            referenceAnchorPoint.drawMMWithPersoPointColor(graphics2D, renderer);
         }
 
     }
@@ -122,6 +122,7 @@ public class DrawCutL extends DrawCutWrapper {
         if (refs.isEmpty()) {
             VertexDTO p1 = new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f);
             refs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
+
             return false;
         } else if (refs.size() >= 2) {
             temporaryCreationPoints.add(new VertexDTO(pointInMM.getLocationX(), pointInMM.getLocationY(), 0.0f));
@@ -152,6 +153,7 @@ public class DrawCutL extends DrawCutWrapper {
         p.movePoint(renderer.getMmMousePt().getX(), renderer.getMmMousePt().getY());
         VertexDTO p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
 
+
         if (points.isEmpty()) { // First point
             Optional<VertexDTO> closestPoint = mainWindow.getController().getPointNearIntersections(p1, threshold);
             Optional<VertexDTO> finalClosestPoint = closestPoint;
@@ -163,10 +165,11 @@ public class DrawCutL extends DrawCutWrapper {
                     .or(() -> finalClosestPoint);
 
             if (closestPoint.isPresent() && renderer.isPointonPanel()) {
-                p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
-                p1 = new VertexDTO(p.getLocationX(), p.getLocationY(), 0.0f);
+
+                p1 = new VertexDTO(closestPoint.get().getX(), closestPoint.get().getY(), 0.0f);
                 List<RefCutDTO> testRefs = mainWindow.getController().getRefCutsAndBorderOnPoint(p1);
                 if (testRefs.size() >= 2) {
+                    p.movePoint(closestPoint.get().getX(), closestPoint.get().getY());
                     p.setColor(VALID_COLOR);
                     p.setValid(PersoPoint.Valid.VALID);
                 } else {
@@ -179,6 +182,15 @@ public class DrawCutL extends DrawCutWrapper {
             }
         } else { // Second L cut point
             // For the snap area
+
+
+            /**
+             * DEBUGGING MOMENT
+             */
+            System.out.println("=======================================");
+            for(int i =0; i < refs.size(); i++){
+                System.out.println(refs.get(i).getCut().getCutType() + " -- ref -- " + i);
+            }
 
             // Get the possible closest point
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);

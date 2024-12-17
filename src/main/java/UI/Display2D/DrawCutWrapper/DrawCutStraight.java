@@ -35,7 +35,7 @@ public class DrawCutStraight extends DrawCutWrapper {
             VertexDTO offset = cut.getRefsDTO().getFirst().getAbsoluteOffset(mainWindow.getController());
             PersoPoint referenceAnchorPoint = new PersoPoint(offset.getX(), offset.getY(), cursorRadius, true);
             referenceAnchorPoint.setColor(strokeColor);
-            referenceAnchorPoint.drawMM(graphics2D, renderer);
+            referenceAnchorPoint.drawMMWithPersoPointColor(graphics2D, renderer);
         }
     }
 

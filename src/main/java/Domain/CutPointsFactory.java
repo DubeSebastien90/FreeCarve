@@ -306,6 +306,7 @@ public class CutPointsFactory {
 
         if(intersectionPoint.isPresent()){
 
+
             VertexDTO intersection = intersectionPoint.get();
             VertexDTO diff = p1Abs.sub(intersection);
             double dirX = 0;
@@ -314,6 +315,11 @@ public class CutPointsFactory {
             else if(diff.getX() > 0){dirX = 1;}
             if(diff.getY() < 0){dirY = -1;}
             else if(diff.getY() > 0){dirY = 1;}
+
+            System.out.println(" =========== ");
+            System.out.println("intersection point : " + intersectionPoint.get());
+            System.out.println("diff : " + diff);
+
 
             VertexDTO ref1Diff = p1b.sub(p1a);
             double dotX = Math.abs(ref1Diff.dotProduct(new VertexDTO(1, 0, 0)));
@@ -324,7 +330,7 @@ public class CutPointsFactory {
                 diameterRef1 = diameterTemp;
                 diameterRef2 = diameterTemp;
             }
-
+            System.out.println("dotX : " + dotX + " - dotY : " + dotY);
             // Get the internal width and height
             double width = diff.getX() - dirX * diameterL/2 - dirX * diameterRef1/2;
             double height = diff.getY() - dirY * diameterL/2 - dirY * diameterRef2/2;
@@ -335,7 +341,7 @@ public class CutPointsFactory {
             if(height < 0 && dirY > 0 || height > 0 && dirY < 0){
                 height = 0;
             }
-
+            System.out.println("width : " + width + " -- height : " + height);
             ArrayList<VertexDTO> outputs = new ArrayList<>();
             outputs.add(new VertexDTO(width, height ,0));
             return outputs;

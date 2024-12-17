@@ -101,14 +101,15 @@ public class Grid {
                 Math.pow(linePoint2.getY() - linePoint1.getY(), 2);
 
         double t = projector_t_numerator / projector_t_denominator;
-        if (t >= 0 && t <= 1) {
+        if (t >= 0 - VertexDTO.doubleTolerance && t <= 1 + VertexDTO.doubleTolerance) {
+            t = Math.max(0, t);
+            t = Math.min(1, t);
             VertexDTO closestPoint = new VertexDTO((linePoint1.getX() + t * (linePoint2.getX() - linePoint1.getX())),
                     (linePoint1.getY() + t * (linePoint2.getY() - linePoint1.getY())), 0.0f);
 
             double distanceSquared = Math.pow(closestPoint.getX() - point.getX(), 2) +
                     Math.pow(closestPoint.getY() - point.getY(), 2);
-
-            if (distanceSquared <= VertexDTO.doubleTolerance * VertexDTO.doubleTolerance) {
+            if (distanceSquared <= VertexDTO.doubleTolerance) {
                 return Optional.of(new Pair<>(closestPoint, t));
             }
         }
@@ -211,11 +212,11 @@ public class Grid {
         VertexDTO closestPoint = null;
         for (VertexDTO intersectionPoint : intersectionPoints) {
             double distancePointIntersection = point.getDistance(intersectionPoint);
-            if (distancePointIntersection < threshold) {
+            if (distancePointIntersection <= threshold + VertexDTO.doubleTolerance) {
                 if (closestPoint == null) {
                     closestPoint = intersectionPoint;
                 } else {
-                    if (distancePointIntersection < point.getDistance(closestPoint)) {
+                    if (distancePointIntersection <= point.getDistance(closestPoint) + VertexDTO.doubleTolerance) {
                         closestPoint = intersectionPoint;
                     }
                 }
@@ -384,7 +385,7 @@ public class Grid {
             for (int i = 0; i < points.size() - 1; i++) {
                 Optional<Pair<VertexDTO, Double>> isPointOnLine = isPointOnLineGetRef(point, points.get(i), points.get(i + 1));
                 if (isPointOnLine.isPresent()) {
-                    ref.add(new RefCutDTO(cut.getDTO(), i, isPointOnLine.get().getSecond())); // add the ref to the ref list with the index, the get secodn is to get the interpolation
+                    ref.add(new RefCutDTO(cut.getDTO(), i, isPointOnLine.get().getSecond())); // add the ref to the ref list with the index, the get second is to get the interpolation
                 }
             }
         }
@@ -438,12 +439,19 @@ public class Grid {
                                         points.get(i), points.get(i + 1));
                                 checkPoint.ifPresent(vertexDTO -> intersectionPoints.add(vertexDTO));
 
+                                if(checkPoint.isPresent()){
+                                    System.out.println(checkPoint.get() + " - " + cuts.getType() + " - " + cuts2.getType());
+                                }
+
                             }
                         }
                     }
                 }
             }
         }
+        System.out.println( " ====================== ");
+        System.out.println(" AMOUNT OF INTERSECTIONS : " + intersectionPoints.size());
+        System.out.println( " ========================== ");
     }
 
     /**

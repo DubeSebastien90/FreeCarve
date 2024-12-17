@@ -45,7 +45,7 @@ public class DrawCutRectangular extends DrawCutWrapper {
         if (anchor.isPresent()) {
             PersoPoint referenceAnchorPoint = new PersoPoint(anchor.get().getX(), anchor.get().getY(), cursorRadius, true);
             referenceAnchorPoint.setColor(strokeColor);
-            referenceAnchorPoint.drawMM(graphics2D, renderer);
+            referenceAnchorPoint.drawMMWithPersoPointColor(graphics2D, renderer);
         }
 
     }
