@@ -3,6 +3,10 @@ package UI;
 import Common.DTO.DimensionDTO;
 import Common.DTO.VertexDTO;
 import Common.Units;
+import Domain.Controller;
+
+import java.awt.*;
+
 
 /**
  * The {@code UIConfig} enum encapsulates a singleton instance of the configurations
@@ -18,8 +22,14 @@ public enum UIConfig {
     private final String windowTitle = "FreeCarve";
     private final int defaultWindowWidth = 1200;
     private final int defaultWindowHeight = 800;
-    private double defaultBoardWidthMM = 1219.2;
-    private double defaultBoardHeightMM = 914.4;
+
+    private double defaultBoardWidthMM = Controller.getDefaultPanelDimension().getX();
+    private double defaultBoardHeightMM = Controller.getDefaultPanelDimension().getY();
+    private final double defaultPanelOffsetX = 100;
+    private final double defaultPanelOffsetY = 100;
+    private final double defaultGridSize = 76.2;
+    private final int defaultMagnetPrecision = 10;
+
     private UiUnits defaultUnit = UiUnits.MILLIMETERS;
     private final int toolIconSize = 20;
     private final int projectSelectionMenuButtonSize = 50;
@@ -29,11 +39,129 @@ public enum UIConfig {
     private final int MAX_NB_BITS = 12;
     private final double MAGIC_ICON_NUMBER = 1.89;
     private final int NB_CLICKS_BEFORE_MUSIC = 5;
+    private final double cursorRadius = 25;
+    private final double defaultSnapThreshold = 10;
+
+    private final Color INVALID_COLOR = Color.RED;
+    private final Color ANCHOR_COLOR = Color.BLACK;
+    private final Color SNAP_COLOR = Color.YELLOW;
+    private final Color SELECTED_COLOR = Color.GREEN;
+    private final Color VALID_COLOR = Color.GREEN;
+    private final Color HOVER_COLOR = Color.BLUE;
+    private final Color ARROW_COLOR = Color.white;
+    private final Color DIMENSION_COLOR = Color.BLACK;
+    private final Color CLAMP_COLOR = new Color(255, 0, 0, 200);
+    private final Color HOVER_VIEW_COLOR = Color.MAGENTA;
+    private final Color PANEL_COLOR = new Color(222, 184, 135);
+
+    private final int ARROW_DIMENSION = 2;
+    private final double CLAMP_STROKE_WIDTH = 10.0;
+    private final Color strokeColor = Color.BLACK;
+    private final double defaultStrokeWidth = 3.0f;
+
+    private final double scalingPanelPointRadius = 30;
+
 
     private final int CREATE_CUT_ICON_SIZE = 15;
     private final VertexDTO CREATE_CUT_ICON_OFFSET = new VertexDTO(12, 12, 0);
 
     private UIConfig() {
+    }
+
+    public double getScalingPanelPointRadius() {
+        return scalingPanelPointRadius;
+    }
+
+    public double getDefaultGridSize() {
+        return defaultGridSize;
+    }
+
+    public int getDefaultMagnetPrecision() {
+        return defaultMagnetPrecision;
+    }
+
+    public double getDefaultPanelOffsetX() {
+        return defaultPanelOffsetX;
+    }
+
+    public double getDefaultPanelOffsetY() {
+        return defaultPanelOffsetY;
+    }
+
+    public Color getPANEL_COLOR() {
+        return PANEL_COLOR;
+    }
+
+    public double getDefaultStrokeWidth() {
+        return defaultStrokeWidth;
+    }
+
+    public Color getStrokeColor() {
+        return strokeColor;
+    }
+
+    public double getCLAMP_STROKE_WIDTH() {
+        return CLAMP_STROKE_WIDTH;
+    }
+
+    public Color getINVALID_COLOR() {
+        return INVALID_COLOR;
+    }
+
+    public Color getANCHOR_COLOR() {
+        return ANCHOR_COLOR;
+    }
+
+    public Color getSNAP_COLOR() {
+        return SNAP_COLOR;
+    }
+
+    public Color getSELECTED_COLOR() {
+        return SELECTED_COLOR;
+    }
+
+    public Color getVALID_COLOR() {
+        return VALID_COLOR;
+    }
+
+    public Color getHOVER_COLOR() {
+        return HOVER_COLOR;
+    }
+
+    public Color getARROW_COLOR() {
+        return ARROW_COLOR;
+    }
+
+    public Color getDIMENSION_COLOR() {
+        return DIMENSION_COLOR;
+    }
+
+    public Color getCLAMP_COLOR() {
+        return CLAMP_COLOR;
+    }
+
+    public Color getHOVER_VIEW_COLOR() {
+        return HOVER_VIEW_COLOR;
+    }
+
+    public int getARROW_DIMENSION() {
+        return ARROW_DIMENSION;
+    }
+
+    public double getDefaultSnapThreshold() {
+        return defaultSnapThreshold;
+    }
+
+    public double getMAGIC_ICON_NUMBER() {
+        return MAGIC_ICON_NUMBER;
+    }
+
+    public int getNB_CLICKS_BEFORE_MUSIC() {
+        return NB_CLICKS_BEFORE_MUSIC;
+    }
+
+    public double getCursorRadius() {
+        return cursorRadius;
     }
 
     /**
@@ -102,9 +230,13 @@ public enum UIConfig {
     /**
      * @return the default padding of the element of this application
      */
-    public int getDefaultPadding() {return defaultPadding;}
+    public int getDefaultPadding() {
+        return defaultPadding;
+    }
 
-    public int getMAX_NB_BITS() { return MAX_NB_BITS; }
+    public int getMAX_NB_BITS() {
+        return MAX_NB_BITS;
+    }
 
     public double getDefaultBoardWidthMM() {
         return defaultBoardWidthMM;
@@ -135,4 +267,5 @@ public enum UIConfig {
     }
 
     public VertexDTO getCREATE_CUT_ICON_OFFSET(){return CREATE_CUT_ICON_OFFSET;}
+
 }

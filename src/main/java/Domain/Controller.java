@@ -667,5 +667,13 @@ public class Controller implements IUnitConverter, IMemorizer {
         }
         return null;
     }
+
+    public static VertexDTO getDefaultPanelDimension() {
+        return PanelCNC.getDefaultPanelDimensions();
+    }
+
+    public static void setDefaulPanelDimension(VertexDTO v) {
+        PanelCNC.setDefaultPanelDimension(v);
+    }
 }
 

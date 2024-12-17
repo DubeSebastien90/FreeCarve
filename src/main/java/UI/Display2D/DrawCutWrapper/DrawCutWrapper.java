@@ -7,6 +7,7 @@ import Domain.CutType;
 import UI.Display2D.Drawing;
 import UI.Display2D.Rendering2DWindow;
 import UI.MainWindow;
+import UI.UIConfig;
 import UI.Widgets.PersoPoint;
 
 import java.awt.*;
@@ -24,12 +25,12 @@ import java.util.UUID;
 public abstract class DrawCutWrapper {
 
     protected PersoPoint cursorPoint;
-    protected double cursorRadius = 25;
-    protected double snapThreshold = 10;
+    protected double cursorRadius = UIConfig.INSTANCE.getCursorRadius();
+    protected double snapThreshold = UIConfig.INSTANCE.getDefaultSnapThreshold();
     protected ArrayList<PersoPoint> points; // Stores the PersoPoint in MM - necessary to keep precision
     protected CutDTO cut;
-    protected Color strokeColor = Color.BLACK;
-    protected double strokeWidth = 3.0f;
+    protected Color strokeColor = UIConfig.INSTANCE.getStrokeColor();
+    protected double strokeWidth = UIConfig.INSTANCE.getDefaultStrokeWidth();
     protected Stroke stroke;
     protected MainWindow mainWindow;
     protected List<RefCutDTO> refs;
@@ -48,18 +49,18 @@ public abstract class DrawCutWrapper {
         INVALID,
     }
 
-    protected final Color INVALID_COLOR = Color.RED;
-    protected final Color ANCHOR_COLOR = Color.BLACK;
-    protected final Color SNAP_COLOR = Color.YELLOW;
-    protected final Color SELECTED_COLOR = Color.GREEN;
-    protected final Color VALID_COLOR = Color.GREEN;
-    protected final Color HOVER_COLOR = Color.BLUE;
-    protected final Color ARROW_COLOR = Color.white;
-    protected final Color DIMENSION_COLOR = Color.BLACK;
-    protected final Color CLAMP_COLOR = new Color(255, 0, 0, 200);
-    public static final Color HOVER_VIEW_COLOR = Color.MAGENTA;
-    protected final int ARROW_DIMENSION = 2;
-    public static final double CLAMP_STROKE_WIDTH = 10.0;
+    protected final Color INVALID_COLOR = UIConfig.INSTANCE.getINVALID_COLOR();
+    protected final Color ANCHOR_COLOR = UIConfig.INSTANCE.getANCHOR_COLOR();
+    protected final Color SNAP_COLOR = UIConfig.INSTANCE.getSNAP_COLOR();
+    protected final Color SELECTED_COLOR = UIConfig.INSTANCE.getSELECTED_COLOR();
+    protected final Color VALID_COLOR = UIConfig.INSTANCE.getVALID_COLOR();
+    protected final Color HOVER_COLOR = UIConfig.INSTANCE.getHOVER_COLOR();
+    protected final Color ARROW_COLOR = UIConfig.INSTANCE.getARROW_COLOR();
+    protected final Color DIMENSION_COLOR = UIConfig.INSTANCE.getDIMENSION_COLOR();
+    protected final Color CLAMP_COLOR = UIConfig.INSTANCE.getCLAMP_COLOR();
+    protected final Color HOVER_VIEW_COLOR = UIConfig.INSTANCE.getHOVER_VIEW_COLOR();
+    protected final int ARROW_DIMENSION = UIConfig.INSTANCE.getARROW_DIMENSION();
+    public static final double CLAMP_STROKE_WIDTH = UIConfig.INSTANCE.getCLAMP_STROKE_WIDTH();
 
 
     /**
@@ -81,7 +82,7 @@ public abstract class DrawCutWrapper {
         if (cut.getState() == CutState.NOT_VALID) {
             setState(DrawCutState.INVALID, renderer);
         }
-        if(cut.getCutType() == CutType.CLAMP){
+        if (cut.getCutType() == CutType.CLAMP) {
             pointsRadius = CLAMP_STROKE_WIDTH / 2 + 8 * renderer.getZoom();
         } else {
             pointsRadius = strokeWidth / 2 + 8 * renderer.getZoom();
@@ -276,7 +277,7 @@ public abstract class DrawCutWrapper {
 
     public void setStrokeSize(double newSize) {
         this.stroke = new BasicStroke((float) newSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-        if(cut.getCutType() == CutType.CLAMP){
+        if (cut.getCutType() == CutType.CLAMP) {
             pointsRadius = CLAMP_STROKE_WIDTH / 2 + 8 * mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getZoom();
         } else {
             this.pointsRadius = newSize / 2 + 8 * mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getZoom();

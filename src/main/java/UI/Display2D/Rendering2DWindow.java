@@ -37,12 +37,12 @@ import static UI.UiUtil.getIcon;
  */
 public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefreshable {
 
-    private Rectangle2D board = new Rectangle2D.Double(0, 0, 1219.2, 914.4); //board to render
+    private Rectangle2D board = new Rectangle2D.Double(0, 0, UIConfig.INSTANCE.getDefaultBoardWidthMM(), UIConfig.INSTANCE.getDefaultBoardHeightMM()); //board to render
     private Point2D mousePt; //pixel mouse point
     private Point2D mmMousePt; //mm mouse point
-    private double offsetX = 100; //offset of the board on the screen
-    private double offsetY = 100; // offset of the board on the screen
-    private double zoom = 1; // ]0, infinite[
+    private double offsetX; //offset of the board on the screen
+    private double offsetY; // offset of the board on the screen
+    private double zoom; // ]0, infinite[
     private final ChangeCutListener changeCutListener;
     private final ChangeAttributeListener changeAttributeListener;
     private final MainWindow mainWindow;
@@ -71,9 +71,9 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
         zoom = 1;
         mousePt = new Point(0, 0);
         mmMousePt = new Point2D.Double(0, 0);
-        offsetY = 100;
-        offsetX = 100;
-        mainWindow.getController().putGrid(76.2, 10);
+        offsetY = UIConfig.INSTANCE.getDefaultPanelOffsetY();
+        offsetX = UIConfig.INSTANCE.getDefaultPanelOffsetX();
+        mainWindow.getController().putGrid(UIConfig.INSTANCE.getDefaultGridSize(), UIConfig.INSTANCE.getDefaultMagnetPrecision());
         addMouseListener();
         addMouseMotionListener();
         addMouseWheelListener();
@@ -306,24 +306,24 @@ public class Rendering2DWindow extends JPanel implements IPanelObserver, IRefres
                 }
 
                 //select the part
-                if(drawing.getState() == Drawing.DrawingState.IDLE) {
+                if (drawing.getState() == Drawing.DrawingState.IDLE) {
                     boolean foundSomething = false;
-                    for(DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
+                    for (DrawCutWrapper cutWrapper : drawing.getCutWrappers()) {
                         for (PersoPoint point : cutWrapper.getPersoPoints()) {
                             Point2D temp = mmTopixel(new Point2D.Double(point.getLocationX(), point.getLocationY()));
-                            if(!foundSomething && mainWindow.getController().mouseOnTop(e.getX(),e.getY(),temp.getX(),temp.getY(),cutWrapper.getPointsRadius())) {
+                            if (!foundSomething && mainWindow.getController().mouseOnTop(e.getX(), e.getY(), temp.getX(), temp.getY(), cutWrapper.getPointsRadius())) {
                                 foundSomething = true;
                                 point.setHoveredView(true);
-                            } else{
+                            } else {
                                 point.setHoveredView(false);
                             }
                         }
                     }
-                    for (DrawCutWrapper drawCutWrapper : drawing.getCutWrappers()){
-                        if (!foundSomething && mainWindow.getController().isRoundedCutDTOHoveredByCursor(drawCutWrapper.getCutDTO(),new VertexDTO(mmMousePt.getX(), mmMousePt.getY(),0))){
+                    for (DrawCutWrapper drawCutWrapper : drawing.getCutWrappers()) {
+                        if (!foundSomething && mainWindow.getController().isRoundedCutDTOHoveredByCursor(drawCutWrapper.getCutDTO(), new VertexDTO(mmMousePt.getX(), mmMousePt.getY(), 0))) {
                             drawCutWrapper.setHoveredView(true);
                             foundSomething = true;
-                        } else{
+                        } else {
                             drawCutWrapper.setHoveredView(false);
                         }
                     }

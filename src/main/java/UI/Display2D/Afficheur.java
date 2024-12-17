@@ -1,13 +1,12 @@
 package UI.Display2D;
 
-import Common.DTO.ClampZoneDTO;
-import Common.DTO.VertexDTO;
-import Domain.CutType;
 import Common.CutState;
+import Common.DTO.VertexDTO;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.MainWindow;
 import UI.UIConfig;
 import UI.UiUtil;
+
 import UI.Widgets.PersoPoint;
 
 import javax.swing.*;
@@ -15,7 +14,6 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class Afficheur {
 
@@ -31,7 +29,7 @@ public class Afficheur {
      * @param graphics2D A graphics object which is painted on this JPanel.
      */
     void drawRectangle(Graphics2D graphics2D) {
-        Color color = new Color(222, 184, 135);
+        Color color = UIConfig.INSTANCE.getPANEL_COLOR();
         graphics2D.setColor(color);
         Rectangle2D panneauOffset = rend.convertBoardTomm(rend.getBoard());
         graphics2D.draw(panneauOffset);

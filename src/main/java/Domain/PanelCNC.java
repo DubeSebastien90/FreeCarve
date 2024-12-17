@@ -23,7 +23,7 @@ class PanelCNC {
     private final IMemorizer memorizer;
     private static final int MAX_FEET_WIDTH = 10;
     private static final int MAX_FEET_HEIGHT = 5;
-    private static final VertexDTO defaultPanelDimension = new VertexDTO(1219.2, 914.4, 50); // dimension in mm
+    private static VertexDTO defaultPanelDimension = new VertexDTO(2438.4, 1219.2, 50); // dimension in mm
     private final List<List<CutDTO>> savedCut = new ArrayList<>();
     private final List<Integer> pos = new ArrayList<>();
 
@@ -56,6 +56,14 @@ class PanelCNC {
         this.cutList = cuts;
 
 
+    }
+
+    public static VertexDTO getDefaultPanelDimensions() {
+        return defaultPanelDimension;
+    }
+
+    public static void setDefaultPanelDimension(VertexDTO v) {
+        defaultPanelDimension = v;
     }
 
     public PanelDTO getDTO() {

@@ -1,6 +1,7 @@
 package UI.Display2D;
 
 import UI.Events.ChangeAttributeEvent;
+import UI.UIConfig;
 import UI.Widgets.ChooseDimension;
 import UI.Widgets.PersoPoint;
 
@@ -13,7 +14,7 @@ public class Scaling {
     private MouseMotionListener scaleListener;
     private final Rendering2DWindow rend;
     private ChooseDimension chooseDimension;
-    private double radius = 30;
+    private final double radius = UIConfig.INSTANCE.getScalingPanelPointRadius();
 
     /**
      * Construcs a new Scaling object
@@ -63,10 +64,10 @@ public class Scaling {
                     super.mouseDragged(e);
                     PersoPoint p = rend.getPoints().get(1);
                     double ratio = 1 / zoom;
-                    double newWidth = Math.max((e.getX()*ratio - offsetX), 0);
-                    double newHeight = Math.max((rend.getHeight() - e.getY() - offsetY * zoom) * ratio , 0);
+                    double newWidth = Math.max((e.getX() * ratio - offsetX), 0);
+                    double newHeight = Math.max((rend.getHeight() - e.getY() - offsetY * zoom) * ratio, 0);
 
-                    p.movePoint(Math.min(p.getLocationX()-p.getRadius()/2, rend.getMainWindow().getController().getPanelDTO().getMaxMMWidth()-p.getRadius()/2), p.getLocationY()-p.getRadius()/2);
+                    p.movePoint(Math.min(p.getLocationX() - p.getRadius() / 2, rend.getMainWindow().getController().getPanelDTO().getMaxMMWidth() - p.getRadius() / 2), p.getLocationY() - p.getRadius() / 2);
                     rend.getPoints().get(0).movePoint(offsetX * zoom - p.getRadius() / 2, p.getLocationY());
                     rend.getPoints().get(2).movePoint(p.getLocationX(), rend.getHeight() - offsetY * zoom - p.getRadius() / 2);
                     rend.resizePanneau(newWidth, newHeight);
