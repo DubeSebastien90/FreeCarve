@@ -82,14 +82,12 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
         gbc.gridy = 3;
         add(zTextField, gbc);
 
-        if (gridDisplayed) {
-            gridPrecision = new MeasurementInputField(rend.getMainWindow(), "Taille grille", rend.getMainWindow().getController().getGrid().getSize(), UiUnits.MILLIMETERS);
-            magnetPrecision = new PixelNoUnitInputField(rend.getMainWindow(), "Précision aimant", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), "px");
-            gbc.gridy = 4;
-            add(gridPrecision, gbc);
-            gbc.gridy = 5;
-            add(magnetPrecision, gbc);
-        }
+        gridPrecision = new MeasurementInputField(rend.getMainWindow(), "Taille grille", rend.getMainWindow().getController().getGrid().getSize(), UiUnits.MILLIMETERS);
+        magnetPrecision = new PixelNoUnitInputField(rend.getMainWindow(), "Précision aimant", rend.getMainWindow().getController().getGrid().getMagnetPrecision(), "px");
+        gbc.gridy = 4;
+        add(gridPrecision, gbc);
+        gbc.gridy = 5;
+        add(magnetPrecision, gbc);
     }
 
     private void addEventListenerToPointBox() {
