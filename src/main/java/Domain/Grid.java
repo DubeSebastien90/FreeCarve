@@ -438,20 +438,12 @@ public class Grid {
                                 Optional<VertexDTO> checkPoint = VertexDTO.isLineIntersectLimited(points2.get(j), points2.get(j + 1),
                                         points.get(i), points.get(i + 1));
                                 checkPoint.ifPresent(vertexDTO -> intersectionPoints.add(vertexDTO));
-
-                                if(checkPoint.isPresent()){
-                                    System.out.println(checkPoint.get() + " - " + cuts.getType() + " - " + cuts2.getType());
-                                }
-
                             }
                         }
                     }
                 }
             }
         }
-        System.out.println( " ====================== ");
-        System.out.println(" AMOUNT OF INTERSECTIONS : " + intersectionPoints.size());
-        System.out.println( " ========================== ");
     }
 
     /**

@@ -6,6 +6,8 @@ import Domain.CutType;
 import Common.CutState;
 import UI.Display2D.DrawCutWrapper.DrawCutWrapper;
 import UI.MainWindow;
+import UI.UIConfig;
+import UI.UiUtil;
 import UI.Widgets.PersoPoint;
 
 import javax.swing.*;
@@ -130,6 +132,15 @@ public class Afficheur {
         }
     }
 
+
+    void drawCursor(Graphics2D graphics2D, Rendering2DWindow renderer, Drawing drawing, MainWindow mainWindow){
+        if (drawing.getState() == Drawing.DrawingState.CREATE_CUT) {
+            VertexDTO iconPos = new VertexDTO(renderer.getMousePt().getX(), renderer.getMousePt().getY(), 0);
+            iconPos = iconPos.add(UIConfig.INSTANCE.getCREATE_CUT_ICON_OFFSET());
+            UiUtil.drawIcon(graphics2D, iconPos,
+                    drawing.getCursorIcon());
+        }
+    }
 
     /**
      * Draws the grid on the board

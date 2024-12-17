@@ -11,8 +11,11 @@ import UI.Events.ChangeAttributeEvent;
 import UI.Events.ChangeCutEvent;
 import UI.MainWindow;
 import UI.SubWindows.CutListPanel;
+import UI.UIConfig;
+import UI.UiUtil;
 import UI.Widgets.CutBox;
 import UI.Widgets.PersoPoint;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -37,7 +40,7 @@ public class Drawing {
     private MouseListener modifyAnchorActionListener;
     private MouseMotionListener pointMoveListener;
     private MouseMotionListener cutMoveListener;
-    private List<DrawCutWrapper> cutWrappers; //todo change to map so that you can retrieve them with ID - for faster usage
+    private List<DrawCutWrapper> cutWrappers;
     private DrawCutWrapper currentDrawingCut;
     private DrawCutWrapper currentModifiedCut;
     private final Rendering2DWindow renderer;
@@ -46,6 +49,7 @@ public class Drawing {
     private CutDTO prevCut;
     private int indexPoint = 0;
     private List<VertexDTO> prevPts;
+    private FlatSVGIcon cursorIcon;
 
     public enum DrawingState {
         CREATE_CUT,
@@ -128,6 +132,10 @@ public class Drawing {
         return this.currentModifiedCut;
     }
 
+    public FlatSVGIcon getCursorIcon(){
+        return this.cursorIcon;
+    }
+
     /**
      * Initialize all of the mouse listeners : both MouseAdapter(s)
      */
@@ -167,8 +175,7 @@ public class Drawing {
                                 updateCuts();
                                 mainWindow.getMiddleContent().getCutWindow().notifyObservers();
                                 renderer.getChangeCutListener().addCutEventOccured(new ChangeCutEvent(renderer, id.get()));
-                                deactivateCreateCutListener();
-                                initCut(currentDrawingCut.getCutType());
+                                againCreateAnotherCut();
                             }
                         }
                     }
@@ -331,6 +338,8 @@ public class Drawing {
         renderer.addMouseMotionListener(createCutMoveListener);
         renderer.addMouseListener(createCutActionListener);
         currentDrawingCut.createCursorPoint(this.renderer);
+        String iconName = UiUtil.getIconFileName(currentDrawingCut.getCutType());
+        cursorIcon = new FlatSVGIcon(UiUtil.getIcon(iconName, UIConfig.INSTANCE.getCREATE_CUT_ICON_SIZE()));
     }
 
     private void activateModifyAnchorCutListener() {
@@ -348,6 +357,19 @@ public class Drawing {
         currentDrawingCut.destroyCursorPoint();
         setState(DrawingState.IDLE);
         renderer.repaint();
+    }
+
+    /**
+     * Cleanup the necessary components to draw another cut of the same type
+     */
+    public void againCreateAnotherCut(){
+        if(currentDrawingCut == null) {return;}
+        renderer.removeMouseMotionListener(createCutMoveListener);
+        renderer.removeMouseListener(createCutActionListener);
+        currentDrawingCut.destroyCursorPoint();
+        currentDrawingCut = DrawCutFactory.createEmptyWrapper(currentDrawingCut.getCutType(), renderer, mainWindow);
+        activateCreateCutListener();
+
     }
 
     private void deactivateModifyAnchorCutListener() {

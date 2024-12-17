@@ -1,6 +1,7 @@
 package UI;
 
 import Common.DTO.DimensionDTO;
+import Common.DTO.VertexDTO;
 import Common.Units;
 
 /**
@@ -28,6 +29,9 @@ public enum UIConfig {
     private final int MAX_NB_BITS = 12;
     private final double MAGIC_ICON_NUMBER = 1.89;
     private final int NB_CLICKS_BEFORE_MUSIC = 5;
+
+    private final int CREATE_CUT_ICON_SIZE = 15;
+    private final VertexDTO CREATE_CUT_ICON_OFFSET = new VertexDTO(12, 12, 0);
 
     private UIConfig() {
     }
@@ -125,4 +129,10 @@ public enum UIConfig {
     public void setDefaultUnit(UiUnits defaultUnit) {
         this.defaultUnit = defaultUnit;
     }
+
+    public int getCREATE_CUT_ICON_SIZE() {
+        return CREATE_CUT_ICON_SIZE;
+    }
+
+    public VertexDTO getCREATE_CUT_ICON_OFFSET(){return CREATE_CUT_ICON_OFFSET;}
 }

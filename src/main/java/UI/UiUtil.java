@@ -258,4 +258,10 @@ public class UiUtil {
         drawArrow(g, renderer, p1, p2, arrowColor, arrowDiameter);
         drawNumberXY(g, renderer, p1, p2, valueX, valueY, arrowColor, textColor);
     }
+
+    public static void drawIcon(Graphics2D g, VertexDTO positionInPixel, FlatSVGIcon icon){
+        int posX = (int) positionInPixel.getX();
+        int posY = (int) positionInPixel.getY();
+         g.drawImage(icon.getImage(), posX, posY, null);
+    }
 }

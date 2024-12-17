@@ -264,8 +264,10 @@ public class CutPointsFactory {
         double diameter2 = cncMachine.getBitStorage().getBitDiameter(bit2Index);
         VertexDTO directionAnchor = (new VertexDTO(p1Abs.getX() - anchor.getX(), 0, 0)).normalize();
 
-        anchor = anchor.add(directionAnchor.mul(diameter1/2));
-        anchor = anchor.add(directionAnchor.mul(diameter2/2));
+        if(p1Abs.getX() - anchor.getX() != 0){
+            anchor = anchor.add(directionAnchor.mul(diameter1/2));
+            anchor = anchor.add(directionAnchor.mul(diameter2/2));
+        }
 
         VertexDTO p1Relative = p1Abs.sub(anchor);
         VertexDTO p2Relative = p2Abs.sub(anchor);
@@ -326,10 +328,6 @@ public class CutPointsFactory {
             if(diff.getY() < 0){dirY = -1;}
             else if(diff.getY() > 0){dirY = 1;}
 
-            System.out.println(" =========== ");
-            System.out.println("intersection point : " + intersectionPoint.get());
-            System.out.println("diff : " + diff);
-
 
             VertexDTO ref1Diff = p1b.sub(p1a);
             double dotX = Math.abs(ref1Diff.dotProduct(new VertexDTO(1, 0, 0)));
@@ -340,7 +338,7 @@ public class CutPointsFactory {
                 diameterRef1 = diameterTemp;
                 diameterRef2 = diameterTemp;
             }
-            System.out.println("dotX : " + dotX + " - dotY : " + dotY);
+
             // Get the internal width and height
             double width = diff.getX() - dirX * diameterL/2 - dirX * diameterRef1/2;
             double height = diff.getY() - dirY * diameterL/2 - dirY * diameterRef2/2;
@@ -351,7 +349,7 @@ public class CutPointsFactory {
             if(height < 0 && dirY > 0 || height > 0 && dirY < 0){
                 height = 0; // to snap at zero if the cut edgedge overlaps
             }
-            System.out.println("width : " + width + " -- height : " + height);
+
             ArrayList<VertexDTO> outputs = new ArrayList<>();
             outputs.add(new VertexDTO(width, height ,0));
             return outputs;
@@ -681,21 +679,21 @@ public class CutPointsFactory {
 
             // Find which ref is more horizontal, which is more vertical
             VertexDTO ref1Diff = p1b.sub(p1a);
-            double dotX = Math.abs(ref1Diff.dotProduct(new VertexDTO(1, 0, 0)));
-            double dotY = Math.abs(ref1Diff.dotProduct(new VertexDTO(0 , 1, 0)));
+            double slopeX = Math.abs(ref1Diff.getX());
+            double slopeY = Math.abs(ref1Diff.getY());
 
-            if(dotY < dotX){ // if the first ref is more horizontal, flip the diameters
+            if(slopeY < slopeX){ // if the first ref is more horizontal, flip the diameters
                 double diameterTemp = diameterRef1;
                 diameterRef1 = diameterTemp;
                 diameterRef2 = diameterTemp;
 
-                VertexDTO tempPoint = new VertexDTO(p1a);
-                p1a = new VertexDTO(p1b);
-                p1b = new VertexDTO(tempPoint);
+                VertexDTO tempPointa = new VertexDTO(p1a);
+                VertexDTO tempPointb = new VertexDTO(p1b);
+                p1a = new VertexDTO(p2a);
+                p1b = new VertexDTO(p2b);
 
-                tempPoint = new VertexDTO(p2a);
-                p2a = new VertexDTO(p2b);
-                p2b = new VertexDTO(tempPoint);
+                p2a = new VertexDTO(tempPointa);
+                p2b = new VertexDTO(tempPointb);
             }
 
             double centerCenterX = cornerInternal.getX() + dirX * diameterL/2 + dirX * diameterRef1/2;
@@ -711,8 +709,8 @@ public class CutPointsFactory {
             if(intersection1.isPresent() && intersection2.isPresent()){
                 outputPoints.add(intersection1.get());
                 outputPoints.add(cornerCenterCenter);
-                outputPoints.add(intersection2.get());
-            }
+                outputPoints.add(intersection2.get());}
+
             else{ // No intersection, so when the cursor points on the anchor
                 outputPoints.add(firstLineLineIntersect);
                 outputPoints.add(cornerCenterCenter);

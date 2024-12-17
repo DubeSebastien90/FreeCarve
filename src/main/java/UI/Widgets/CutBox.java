@@ -95,7 +95,7 @@ public class CutBox implements Attributable {
     @Override
     public JLabel showName() {
         JLabel label = new JLabel(this.imageLabel.getIcon());
-        label.setText("Coupe " + this.index);
+        label.setText("Coupe " + (this.index + 1));
         label.setBackground(Color.YELLOW);
         label.setBorder(new EmptyBorder(0, 0, UIConfig.INSTANCE.getDefaultPadding(), 0));
         return label;

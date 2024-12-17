@@ -3,10 +3,7 @@ package UI;
 import UI.Listeners.ExportGcodeActionListener;
 import UI.SubWindows.BasicWindow;
 import UI.SubWindows.Rendering3DWindow;
-import UI.Widgets.Attributable;
-import UI.Widgets.BigButton;
-import UI.Widgets.GenericAttributeBox;
-import UI.Widgets.PixelNoUnitInputField;
+import UI.Widgets.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -68,7 +65,8 @@ public class ExportWindow {
         gcodeDisplay.setWrapStyleWord(true);
         gcodeDisplay.setMargin(new Insets(5, 5, 5, 5));
         gcodeDisplay.setBackground(null);
-        gcodeDisplay.setBorder(null);
+        gcodeDisplay.setBorder(new EmptyBorder(UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(), UIConfig.INSTANCE.getDefaultPadding(),
+                UIConfig.INSTANCE.getDefaultPadding()));
 
         realGcodeContainer.setLayout(new BorderLayout());
         realGcodeContainer.add(gcodeDisplay, BorderLayout.CENTER);
@@ -121,8 +119,7 @@ public class ExportWindow {
         calculateGcode();
     }
 
-
-    public static class CNCCutSpecChooser extends GenericAttributeBox implements Attributable {
+    private static class CNCCutSpecChooser extends GenericAttributeBox {
 
         private PixelNoUnitInputField rotationSpeed;
         private PixelNoUnitInputField feedRate;
@@ -140,12 +137,12 @@ public class ExportWindow {
          * with real-time resizing functionality.
          */
         private void init() {
-            rotationSpeed = new PixelNoUnitInputField(mainWindow, "Vitesse de rotation", mainWindow.getController().getCNCrotationSpeed(), "rot. par sec.");
+            rotationSpeed = new PixelNoUnitInputField(mainWindow, "", mainWindow.getController().getCNCrotationSpeed(), "rotation/s");
             rotationSpeed.getNumericInput().addPropertyChangeListener("value", evt -> {
                 mainWindow.getController().setCNCrotationSpeed(((Number) evt.getNewValue()).intValue());
                 mainWindow.getMiddleContent().getExportWindow().calculateGcode();
             });
-            feedRate = new PixelNoUnitInputField(mainWindow, "Vitesse de coupe", mainWindow.getController().getCNCCuttingSpeed(), "m / min");
+            feedRate = new PixelNoUnitInputField(mainWindow, "", mainWindow.getController().getCNCCuttingSpeed(), "m/min");
             feedRate.getNumericInput().addPropertyChangeListener("value", evt -> {
                 mainWindow.getController().setCNCCuttingSpeed(((Number) evt.getNewValue()).intValue());
                 mainWindow.getMiddleContent().getExportWindow().calculateGcode();
@@ -167,16 +164,27 @@ public class ExportWindow {
             panel.setAlignmentX(0);
             scrollPane.setAlignmentX(0);
 
-
             GridBagConstraints gbc = new GridBagConstraints();
-            gbc.weightx = 1.0;
-            gbc.weighty = 1.0;
-            gbc.fill = GridBagConstraints.NONE;
+            GenericAttributeBox genRotation = new GenericAttributeBox(true, "Vitesse de rotation");
+
+            gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.gridx = 0;
             gbc.gridy = 1;
-            panel.add(rotationSpeed, gbc);
+            genRotation.add(rotationSpeed, gbc);
+
+            GenericAttributeBox genFeedRate = new GenericAttributeBox(true, "Vitesse de coupe");
+            gbc.gridx = 0;
             gbc.gridy = 2;
-            panel.add(feedRate, gbc);
+            genFeedRate.add(feedRate, gbc);
+
+            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.insets = new Insets(0, 0, UIConfig.INSTANCE.getDefaultPadding() / 3, 0);
+            gbc.weightx = 1.0;
+            gbc.gridy = 0;
+            panel.add(genRotation, gbc);
+            gbc.gridy = 1;
+            panel.add(genFeedRate, gbc);
+
         }
 
         public void refreshAttributes() {
@@ -188,25 +196,5 @@ public class ExportWindow {
             return scrollPane;
         }
 
-        /**
-         * @return JLabel representing the name of this component.
-         */
-        @Override
-        public JLabel showName() {
-            return new JLabel("");
-        }
-
-        @Override
-        public JPanel showErrors() {
-            return new JPanel();
-        }
-
-        /**
-         * @return JPanel representation of this component's attribute view.
-         */
-        @Override
-        public JPanel showAttribute() {
-            return this;
-        }
     }
 }

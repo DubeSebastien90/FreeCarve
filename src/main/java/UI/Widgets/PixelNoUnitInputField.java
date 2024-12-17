@@ -69,6 +69,7 @@ public class PixelNoUnitInputField extends BasicWindow {
         this.add(nameLabel);
         this.add(this.numericInput);
         this.unitComboBox = new JLabel(unit);
+        this.unitComboBox.setBorder(new EmptyBorder(0, UIConfig.INSTANCE.getDefaultPadding(), 0, 0));
         this.add(this.unitComboBox);
     }
 
