@@ -9,6 +9,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.util.Objects;
 
 import static UI.UiUtil.createSVGButton;
@@ -117,7 +119,7 @@ public class FolderWindow extends JPanel {
             {
                 compteur++;
                 if (compteur == UIConfig.INSTANCE.getNbClicksBeforeMusic()){
-                    System.out.println("Enjoy music!");
+                    System.out.println("Enjoy your music!");
                     playSound("secret.wav");
                 }
             }
@@ -139,8 +141,13 @@ public class FolderWindow extends JPanel {
             public void run() {
                 try {
                     Clip clip = AudioSystem.getClip();
-                    AudioInputStream inputStream = AudioSystem.getAudioInputStream(Objects.requireNonNull(FolderWindow.class.getResourceAsStream("Sounds/" + url)));
-                    clip.open(inputStream);
+                    InputStream inputStream = getClass().getResourceAsStream("Sounds/" + url);
+                    if (inputStream == null) {
+                        throw new IllegalArgumentException("Sound file not found: " + url);
+                    }
+                    BufferedInputStream bufferedIn = new BufferedInputStream(inputStream);
+                    AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+                    clip.open(audioStream);
                     clip.start();
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
