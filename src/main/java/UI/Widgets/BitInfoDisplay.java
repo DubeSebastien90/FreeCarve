@@ -223,7 +223,6 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
 
     private void removeBit() {
         if (mainWindow.getController().getConfiguredBitsMap().size() == 1)
-            //Todo: Gérer message qui dit qu'on ne peut pas delete si aucun bit configuré
             return;
 
         try {
@@ -232,7 +231,6 @@ public class BitInfoDisplay extends GenericAttributeBox implements Attributable 
                     (Integer) this.mainWindow.getController().getConfiguredBitsMap().keySet().toArray()[0]
             );
         } catch (InvalidBitException | ArrayIndexOutOfBoundsException e) {
-            //Todo: Gérer le message d'erreur, might never happen
             return;
         }
         nameTextArea.setText("Aucun outil assigné");

@@ -99,10 +99,6 @@ class Cut {
         this.cutState = CutState.VALID;
     }
 
-    public Cut(RequestCutDTO requestCutDTO) {
-        //todo
-    }
-
     public CutDTO getDTO() {
         return new CutDTO(id, depth, bitIndex, type, points.stream().toList(), refs.stream().map(RefCut::getDTO).collect(Collectors.toList()), cutState);
     }

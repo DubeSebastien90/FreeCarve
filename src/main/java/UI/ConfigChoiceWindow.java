@@ -93,15 +93,18 @@ public class ConfigChoiceWindow implements ChangeCutListener, ChangeAttributeLis
         return bitWindow;
     }
 
+    /**
+     * Important a parent of the RendererWindow2D should always implement the addCutEventOccured, add all
+     * interesting functionalities when an cut event happens in the RendererWindow2D
+     */
     @Override
     public void addCutEventOccured(ChangeCutEvent event) {
-        //todo a parent of the RendererWindow2D should always implement the addCutEventOccured, add all
-        // interesting functionalities when an cut event happens in the RendererWindow2D
+
     }
 
+    //If usefull to remove a cut in the ConfigChoiceWindow
     @Override
     public void deleteCutEventOccured(ChangeCutEvent event) {
-        //todo if usefull to remove a cut in the ConfigChoiceWindow
     }
 
     /**
@@ -118,9 +121,13 @@ public class ConfigChoiceWindow implements ChangeCutListener, ChangeAttributeLis
         this.attributePanel.updateAttribute(selectedAttributable);
     }
 
+    /**
+     * This function is called upon by the subwindows when an attribute is changed, it is currently empty
+     * because nothing to implement
+     * but could be useful when sharing informations between the CutList and the 2D Afficheur
+     * @param event
+     */
     @Override
     public void modifiedAttributeEventOccured(ChangeAttributeEvent event) {
-        //todo this function is called upon by the subwindows when an attribute is changed, it is currently empty because nothing to implement
-        // but could be useful when sharing informations between the CutList and the 2D Afficheur
     }
 }

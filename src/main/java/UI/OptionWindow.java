@@ -25,7 +25,6 @@ public class OptionWindow extends JPanel {
     }
 
     private void init(MainWindow mainWindow) {
-        // TODO implement undo redo for settings
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(20, 20, 20, 20));
         setBackground(null);

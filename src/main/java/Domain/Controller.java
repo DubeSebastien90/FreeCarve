@@ -265,15 +265,6 @@ public class Controller implements IUnitConverter, IMemorizer {
     }
 
     /**
-     * Modifies the {@code PanelCNC} of the current {@code CNCMachine}
-     *
-     * @param panel The new PanelCNC as a DTO
-     */
-    public void modifyPanel(PanelDTO panel) {
-        //todo
-    }
-
-    /**
      * Converts the current {@code CNCMachine} as GCode instructions.
      *
      * @return The String that represent the GCode instructions.
@@ -297,17 +288,6 @@ public class Controller implements IUnitConverter, IMemorizer {
 
     public void setCNCrotationSpeed(int speed) {
         cncMachine.setRotationSpeed(speed);
-    }
-
-    /**
-     * Gets the {@code Cut} or {@code ClampZone} at the specified mm position
-     *
-     * @param position The position which we want to know if there is an element.
-     * @return The id of the element if an element as been found.
-     */
-    public Optional<UUID> getElementAtmm(VertexDTO position) {
-        //todo
-        return null;
     }
 
     public Optional<UUID> renderImage(BufferedImage image, VertexDTO position) {

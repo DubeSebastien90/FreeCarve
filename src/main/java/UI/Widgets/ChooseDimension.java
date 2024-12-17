@@ -107,7 +107,6 @@ public class ChooseDimension extends GenericAttributeBox implements Attributable
         });
         if (gridPrecision != null) {
             gridPrecision.getNumericInput().addPropertyChangeListener("value", evt -> {
-                // TODO clarify what precision means and why it's an int
                 rend.getMainWindow().getController().putGrid(gridPrecision.getMMValue(), rend.getMainWindow().getController().getGrid().getMagnetPrecision());
                 rend.repaint();
             });
