@@ -131,7 +131,7 @@ class PanelCNC {
                     });
                 } else{
                     this.cutList.get(finalI).modifyCut(cut, this.getCutAndBorderList());
-                    replaceWithModifiedRef(new Cut(ct,getCutAndBorderList()), new Cut(cut,getCutAndBorderList()));
+                    //replaceWithModifiedRef(new Cut(ct,getCutAndBorderList()), new Cut(cut,getCutAndBorderList()));
                     validateAll(cncMachine);
                 }
 
