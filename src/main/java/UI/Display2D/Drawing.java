@@ -272,7 +272,7 @@ public class Drawing {
                 indexPoint = i;
             }
         }
-        pointToChange.setColor(DrawCutWrapper.HOVER_VIEW_COLOR);
+        pointToChange.setColor(UIConfig.INSTANCE.getHOVER_VIEW_COLOR());
         setState(Drawing.DrawingState.MODIFY_POINT);
         activateModifyPointCutListener();
     }
