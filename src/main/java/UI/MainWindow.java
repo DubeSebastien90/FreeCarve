@@ -155,6 +155,11 @@ public class MainWindow {
         frame.revalidate();
     }
 
+    public void showHelp(){
+        frame.setContentPane(new HelpWindow(this));
+        frame.revalidate();
+    }
+
     /**
      * Displays the File selection/ project selection window with an instance of {@link FolderWindow }
      */
