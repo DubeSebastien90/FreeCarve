@@ -5,12 +5,21 @@ import UI.Widgets.PixelNoUnitInputField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.io.*;
+
 
 public class OptionWindow extends JPanel {
 
+    OptionWrapper optionWrapper;
+
     public OptionWindow(MainWindow mainWindow) {
+        try {
+            this.optionWrapper = loadOptions(mainWindow);
+
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         init(mainWindow);
     }
 
@@ -45,7 +54,10 @@ public class OptionWindow extends JPanel {
 
         JComboBox<UiUnits> unit = new JComboBox<>(UiUnits.values());
         unit.setSelectedItem(UIConfig.INSTANCE.getDefaultUnit());
-        unit.addItemListener(event -> UIConfig.INSTANCE.setDefaultUnit((UiUnits) event.getItem()));
+        unit.addItemListener(event -> {
+            UIConfig.INSTANCE.setDefaultUnit((UiUnits) event.getItem());
+            optionWrapper.setUnits((UiUnits) event.getItem());
+        });
         unit.setMaximumSize(new Dimension(400, 40));
         unit.setFont(new Font("Arial", Font.PLAIN, 14));
         unitPanel.add(unit);
@@ -59,6 +71,7 @@ public class OptionWindow extends JPanel {
         PixelNoUnitInputField gcodeRotationRate = new PixelNoUnitInputField(mainWindow, "Rotation outil CNC", mainWindow.getController().getCNCrotationSpeed(), "rotation per second");
         configurePixelField(gcodeRotationRate, evt -> {
             mainWindow.getController().setCNCrotationSpeed(((Number) evt.getNewValue()).intValue());
+            optionWrapper.setRotation(((Number) evt.getNewValue()).intValue());
             mainWindow.getMiddleContent().getExportWindow().refreshGcodeParam();
         });
         cncPanel.add(gcodeRotationRate);
@@ -66,6 +79,7 @@ public class OptionWindow extends JPanel {
         PixelNoUnitInputField gcodeFeedRate = new PixelNoUnitInputField(mainWindow, "Vitesse coupe CNC", mainWindow.getController().getCNCCuttingSpeed(), "m/min");
         configurePixelField(gcodeFeedRate, evt -> {
             mainWindow.getController().setCNCCuttingSpeed(((Number) evt.getNewValue()).intValue());
+            optionWrapper.setVitesse(((Number) evt.getNewValue()).intValue());
             mainWindow.getMiddleContent().getExportWindow().refreshGcodeParam();
         });
         cncPanel.add(gcodeFeedRate);
@@ -73,10 +87,17 @@ public class OptionWindow extends JPanel {
         add(Box.createRigidArea(new Dimension(0, 20)));
 
 
-        JButton returnButton = new JButton("Revenir à l'application principale");
+        JButton returnButton = new JButton("Sauvegarder et revenir à l'application principale");
         returnButton.setFont(new Font("Arial", Font.BOLD, 14));
         returnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        returnButton.addActionListener(e -> mainWindow.showTrueMode());
+        returnButton.addActionListener(e -> {
+            try {
+                sauvegarderOptions();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            mainWindow.showTrueMode();
+        });
         add(returnButton);
     }
 
@@ -99,4 +120,38 @@ public class OptionWindow extends JPanel {
         field.getNumericInput().addPropertyChangeListener("value", listener);
         field.setMaximumSize(new Dimension(400, 50));
     }
+
+    public static OptionWrapper loadOptions(MainWindow mainWindow) throws IOException, ClassNotFoundException {
+        String filePath = "./.settingsOptions.txt";
+        File f = new File(filePath);
+        if (f.exists()) {
+            try {
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
+                Object object = in.readObject();
+                in.close();
+                setOptionWrapper((OptionWrapper) object, mainWindow);
+                return (OptionWrapper) object;
+            } catch (Exception ex) {
+                return new OptionWrapper();
+            }
+        } else {
+            return new OptionWrapper();
+        }
+    }
+
+    private void sauvegarderOptions() throws IOException {
+        String filePath = "./.settingsOptions.txt";
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath));
+        out.writeObject(this.optionWrapper);
+        out.close();
+    }
+
+    private static void setOptionWrapper(OptionWrapper optionWrapper, MainWindow mainWindow) {
+        UIConfig.INSTANCE.setDefaultUnit(optionWrapper.getUnits());
+        mainWindow.getController().setCNCrotationSpeed(optionWrapper.getRotation());
+        mainWindow.getController().setCNCCuttingSpeed(optionWrapper.getVitesse());
+        mainWindow.getMiddleContent().getExportWindow().refreshGcodeParam();
+    }
 }
+
+

@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 
 /**
  * This {@code MainWindow} class encapsulates the main frame of the application.
@@ -43,7 +44,11 @@ public class MainWindow {
         this.init();
         this.setupEventListener();
         frame.setVisible(true);
-
+        try {
+            OptionWindow.loadOptions(this);
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
