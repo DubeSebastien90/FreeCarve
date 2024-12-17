@@ -81,7 +81,11 @@ public abstract class DrawCutWrapper {
         if (cut.getState() == CutState.NOT_VALID) {
             setState(DrawCutState.INVALID, renderer);
         }
-        pointsRadius = strokeWidth / 2 + 8 * renderer.getZoom();
+        if(cut.getCutType() == CutType.CLAMP){
+            pointsRadius = CLAMP_STROKE_WIDTH / 2 + 8 * renderer.getZoom();
+        } else {
+            pointsRadius = strokeWidth / 2 + 8 * renderer.getZoom();
+        }
     }
 
     public double getStrokeWidthBruh(Rendering2DWindow renderer) {
@@ -274,7 +278,11 @@ public abstract class DrawCutWrapper {
 
     public void setStrokeSize(double newSize) {
         this.stroke = new BasicStroke((float) newSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-        this.pointsRadius = newSize / 2 + 8 * mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getZoom();
+        if(cut.getCutType() == CutType.CLAMP){
+            pointsRadius = CLAMP_STROKE_WIDTH / 2 + 8 * mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getZoom();
+        } else {
+            this.pointsRadius = newSize / 2 + 8 * mainWindow.getMiddleContent().getCutWindow().getRendering2DWindow().getZoom();
+        }
     }
 
     /**
