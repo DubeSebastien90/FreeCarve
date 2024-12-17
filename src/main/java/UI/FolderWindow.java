@@ -137,7 +137,7 @@ public class FolderWindow extends JPanel {
     }
 
     public static synchronized void playSound(final String url) {
-        new Thread(new Runnable() { // the wrapper thread is unnecessary, unless it blocks on the Clip finishing, see comments
+        new Thread(new Runnable() {
             public void run() {
                 try {
                     Clip clip = AudioSystem.getClip();
