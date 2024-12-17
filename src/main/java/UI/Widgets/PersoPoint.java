@@ -111,6 +111,18 @@ public class PersoPoint {
     }
 
     /**
+     * Draws the PersoPoint, converts it's coordinate from MM to pixels,
+     * set it's color to it's internal color
+     *
+     * @param graphics2D
+     * @param rendering2DWindow
+     */
+    public void drawMMWithPersoPointColor(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow){
+        graphics2D.setColor(getColor());
+        drawMM(graphics2D, rendering2DWindow);
+    }
+
+    /**
      * Draws a line between this PersoPoint and another, converts MM to pixel first
      *
      * @param graphics2D
@@ -241,5 +253,10 @@ public class PersoPoint {
     public double getDistance(PersoPoint other) {
         return Math.sqrt(Math.pow(locationX - other.getLocationX(), 2) +
                 Math.pow(locationY - other.getLocationY(), 2));
+    }
+
+    @Override
+    public String toString() {
+        return "(" + getLocationX() + " - " + getLocationY() + ")";
     }
 }

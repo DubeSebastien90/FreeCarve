@@ -40,11 +40,9 @@ public class Drawing {
     private List<DrawCutWrapper> cutWrappers; //todo change to map so that you can retrieve them with ID - for faster usage
     private DrawCutWrapper currentDrawingCut;
     private DrawCutWrapper currentModifiedCut;
-    private PersoPoint currentModifiedPoint;
     private final Rendering2DWindow renderer;
     private final MainWindow mainWindow;
     private DrawingState state;
-    private Drawing drawing;
     private CutDTO prevCut;
     private int indexPoint = 0;
     private List<VertexDTO> prevPts;
@@ -258,13 +256,12 @@ public class Drawing {
         currentModifiedCut.setPointDepart(new Point2D.Double(pointToChange.getLocationX(), pointToChange.getLocationY()));
         prevCut = cutToChangePoint.getCutDTO();
         prevPts = mainWindow.getController().getAbsolutePointsPosition(prevCut);
-        currentModifiedPoint = pointToChange;
         for (int i = 0; i<currentModifiedCut.getPersoPoints().size(); i++) {
             if (currentModifiedCut.getPersoPoints().get(i) == pointToChange) {
                 indexPoint = i;
-                //System.out.println("lol" + i);
             }
         }
+        pointToChange.setColor(DrawCutWrapper.HOVER_VIEW_COLOR);
         setState(Drawing.DrawingState.MODIFY_POINT);
         activateModifyPointCutListener();
     }

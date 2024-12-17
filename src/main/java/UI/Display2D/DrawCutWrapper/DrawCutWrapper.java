@@ -57,7 +57,7 @@ public abstract class DrawCutWrapper {
     protected final Color ARROW_COLOR = Color.white;
     protected final Color DIMENSION_COLOR = Color.BLACK;
     protected final Color CLAMP_COLOR = new Color(255, 0, 0, 200);
-    protected final Color HOVER_VIEW_COLOR = Color.MAGENTA;
+    public static final Color HOVER_VIEW_COLOR = Color.MAGENTA;
     protected final int ARROW_DIMENSION = 2;
     public static final double CLAMP_STROKE_WIDTH = 10.0;
 
@@ -210,8 +210,6 @@ public abstract class DrawCutWrapper {
     public abstract void drawDimensions(Graphics2D graphics2D, Rendering2DWindow rendering2DWindow);
 
     public void drawWhileModifyingAnchor(Graphics graphics, Rendering2DWindow rendering2DWindow, PersoPoint cursorPoint) {
-
-        System.out.println("MODIFIE POINT DE REF");
     }
 
     /**

@@ -39,7 +39,6 @@ public class DrawCutBorder extends DrawCutWrapper {
 
     @Override
     public void drawWhileChanging(Graphics2D graphics2D, Rendering2DWindow renderer, PersoPoint cursor) {
-
     }
 
     @Override
@@ -75,7 +74,6 @@ public class DrawCutBorder extends DrawCutWrapper {
         }
         return false;
     }
-
 
     @Override
     public boolean areRefsValid() {
