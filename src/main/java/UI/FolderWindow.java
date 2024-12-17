@@ -5,9 +5,7 @@ import UI.Listeners.LoadProjectActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.*;
 import java.util.Objects;
 
 import static UI.UiUtil.createSVGButton;
@@ -28,6 +26,7 @@ public class FolderWindow extends JPanel {
     private final JScrollPane scrollRecentProject = new JScrollPane();
     private final Box recentProject = Box.createVerticalBox();
     private final MainWindow mainWindow;
+    private int compteur = 0;
 
     /**
      * Constructs the window with two panel, west and east. The west panel contains the open and new project button.
@@ -110,6 +109,17 @@ public class FolderWindow extends JPanel {
 
         gbc.gridy = 2;
         JLabel iconLabel = new JLabel();
+        iconLabel.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                compteur++;
+                if (compteur == 5){
+
+                }
+            }
+        });
         resizePane(iconLabel);
         iconLabel.setVerticalAlignment(JLabel.TOP);
         iconLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -124,7 +134,7 @@ public class FolderWindow extends JPanel {
 
     private void resizePane(JLabel jLabel) {
         int min = Math.min(eastPanel.getWidth(), eastPanel.getHeight());
-        ImageIcon icon = UiUtil.getIcon("freecarve2", (int) (min/1.89));
+        ImageIcon icon = UiUtil.getIcon("freecarve2", (int) (min/UIConfig.INSTANCE.getMagicIconNumber()));
         jLabel.setIcon(icon);
     }
 

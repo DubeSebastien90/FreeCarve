@@ -26,8 +26,16 @@ public enum UIConfig {
     private final int scrollbarSpeed = 16;
     private final int defaultPadding = 10;
     private final int MAX_NB_BITS = 12;
+    private final double MAGIC_ICON_NUMBER = 1.89;
 
     private UIConfig() {
+    }
+
+    /**
+     * @return the magic icon number
+     */
+    public double getMagicIconNumber() {
+        return MAGIC_ICON_NUMBER;
     }
 
     /**
