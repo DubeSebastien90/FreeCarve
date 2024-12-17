@@ -93,7 +93,7 @@ public class OptionWindow extends JScrollPane {
 
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        JPanel colorPanel = createGroupPanel("Couleurs");
+        JPanel colorPanel = createGroupPanel("Couleur de la planche");
         panel.add(colorPanel);
         JColorChooser colorChooser = new JColorChooser();
         colorChooser.setColor(UIConfig.INSTANCE.getPANEL_COLOR());
@@ -101,7 +101,7 @@ public class OptionWindow extends JScrollPane {
             UIConfig.INSTANCE.setPANEL_COLOR(colorChooser.getColor());
             optionWrapper.setPanelColor(colorChooser.getColor());
         });
-        colorChooser.setMaximumSize(new Dimension(400, 400));
+        //colorChooser.setMaximumSize(new Dimension(600, 400));
         colorChooser.setFont(new Font("Arial", Font.PLAIN, 14));
         colorPanel.add(colorChooser);
 
