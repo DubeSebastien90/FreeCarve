@@ -228,16 +228,22 @@ public class CutPointsFactory {
         VertexDTO anchor = refs.getFirst().getAbsoluteOffset(controller);
         double diameter1 = cncMachine.getBitStorage().getBitDiameter(bit1Index);
         double diameter2 = cncMachine.getBitStorage().getBitDiameter(bit2Index);
+        VertexDTO directionAnchor = (new VertexDTO(0, p1Abs.getY() - anchor.getY(), 0)).normalize();
+
         if(p1Abs.getY() - anchor.getY() != 0){
-            VertexDTO directionAnchor = (new VertexDTO(0, p1Abs.getY() - anchor.getY(), 0)).normalize();
             anchor = anchor.add(directionAnchor.mul(diameter1/2));
             anchor = anchor.add(directionAnchor.mul(diameter2/2));
         }
 
-        List<VertexDTO> output = new ArrayList<>();
-        output.add(p1Abs.sub(anchor));
-        output.add(p2Abs.sub(anchor));
-        return output;
+        VertexDTO p1Relative = p1Abs.sub(anchor);
+        VertexDTO p2Relative = p2Abs.sub(anchor);
+
+        if(Math.signum(p1Relative.getY()) != Math.signum(directionAnchor.getY())){
+            p1Relative = new VertexDTO(p1Relative.getX(), 0,  0);
+            p2Relative = new VertexDTO(p2Relative.getX(), 0, 0);
+        }
+
+        return List.of(p1Relative, p2Relative);
     }
 
     /**
@@ -256,16 +262,20 @@ public class CutPointsFactory {
         VertexDTO anchor = refs.getFirst().getAbsoluteOffset(controller);
         double diameter1 = cncMachine.getBitStorage().getBitDiameter(bit1Index);
         double diameter2 = cncMachine.getBitStorage().getBitDiameter(bit2Index);
-        if(p1Abs.getX() - anchor.getX() != 0){
-            VertexDTO directionAnchor = (new VertexDTO(p1Abs.getX() - anchor.getX(), 0, 0)).normalize();
-            anchor = anchor.add(directionAnchor.mul(diameter1/2));
-            anchor = anchor.add(directionAnchor.mul(diameter2/2));
+        VertexDTO directionAnchor = (new VertexDTO(p1Abs.getX() - anchor.getX(), 0, 0)).normalize();
+
+        anchor = anchor.add(directionAnchor.mul(diameter1/2));
+        anchor = anchor.add(directionAnchor.mul(diameter2/2));
+
+        VertexDTO p1Relative = p1Abs.sub(anchor);
+        VertexDTO p2Relative = p2Abs.sub(anchor);
+
+        if(Math.signum(p1Relative.getX()) != Math.signum(directionAnchor.getX())){
+            p1Relative = new VertexDTO(0, p1Relative.getY(), 0);
+            p2Relative = new VertexDTO(0, p2Relative.getY(), 0);
         }
 
-        List<VertexDTO> output = new ArrayList<>();
-        output.add(p1Abs.sub(anchor));
-        output.add(p2Abs.sub(anchor));
-        return output;
+        return List.of(p1Relative, p2Relative);
     }
 
     /**
@@ -336,10 +346,10 @@ public class CutPointsFactory {
             double height = diff.getY() - dirY * diameterL/2 - dirY * diameterRef2/2;
 
             if(width < 0 && dirX > 0 || width > 0 && dirX < 0){
-                width = 0;
+                width = 0; // to snap at zero if the cut edgedge overlaps
             }
             if(height < 0 && dirY > 0 || height > 0 && dirY < 0){
-                height = 0;
+                height = 0; // to snap at zero if the cut edgedge overlaps
             }
             System.out.println("width : " + width + " -- height : " + height);
             ArrayList<VertexDTO> outputs = new ArrayList<>();
@@ -415,6 +425,13 @@ public class CutPointsFactory {
 
             double offsetX = diff.getX() - dirX * diameterRef1/2;
             double offsetY = diff.getY() - dirY * diameterRef2/2;
+
+            if(offsetX < 0 && dirX > 0 || offsetX > 0 && dirX < 0){
+                offsetX = 0; // to snap at zero if the cut edgedge overlaps
+            }
+            if(offsetY < 0 && dirY > 0 || offsetY > 0 && dirY < 0){
+                offsetY = 0; // to snap at zero if the cut edgedge overlaps
+            }
             outList.add(new VertexDTO(offsetX, offsetY, 0));
 
             double widthEdgeEdge = Math.abs(diagonal.getX()) - diameterL;

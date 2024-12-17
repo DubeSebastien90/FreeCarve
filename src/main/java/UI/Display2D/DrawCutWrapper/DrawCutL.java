@@ -184,14 +184,6 @@ public class DrawCutL extends DrawCutWrapper {
             // For the snap area
 
 
-            /**
-             * DEBUGGING MOMENT
-             */
-            System.out.println("=======================================");
-            for(int i =0; i < refs.size(); i++){
-                System.out.println(refs.get(i).getCut().getCutType() + " -- ref -- " + i);
-            }
-
             // Get the possible closest point
             Optional<VertexDTO> closestPoint = mainWindow.getController().getGridPointNearAllBorderAndCuts(p1, threshold);
             Optional<VertexDTO> finalClosestPoint = closestPoint;
