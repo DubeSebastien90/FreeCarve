@@ -26,8 +26,6 @@ public class FolderWindow extends JPanel {
     private final JButton openButton = createSpecialWindowButton("openFile", "Ouvrir");
     private final JPanel westPanel = new JPanel(new GridBagLayout());
     private final JPanel eastPanel = new JPanel(new GridBagLayout());
-    private final JScrollPane scrollRecentProject = new JScrollPane();
-    private final Box recentProject = Box.createVerticalBox();
     private final MainWindow mainWindow;
     private int compteur = 0;
 
@@ -155,26 +153,6 @@ public class FolderWindow extends JPanel {
         int min = Math.min(eastPanel.getWidth(), eastPanel.getHeight());
         ImageIcon icon = UiUtil.getIcon("freecarve2", (int) (min/UIConfig.INSTANCE.getMagicIconNumber()));
         jLabel.setIcon(icon);
-    }
-
-    /**
-     * Adds a new recent project to display.
-     *
-     * @param projectName The name of the project
-     */
-    public void addRecentProject(String projectName) {
-        JLabel project = new JLabel(projectName);
-        project.setBorder(new EmptyBorder(5, 0, 5, 0));
-        recentProject.add(project);
-    }
-
-    /**
-     * Removes a project from the display
-     *
-     * @param index the index of the removed project
-     */
-    public void removeRecentProject(int index) {
-        recentProject.remove(index);
     }
 
     /**
