@@ -3,6 +3,7 @@ package UI;
 import Domain.Controller;
 import UI.Listeners.SaveDispatcher;
 import UI.Listeners.UndoRedoDispatcher;
+import UI.Widgets.AttributionRefactorWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 
@@ -151,7 +152,7 @@ public class MainWindow {
     }
 
     public void showAttributionWindow() {
-        frame.setContentPane(new AttributionWindow(this));
+        frame.setContentPane(new AttributionRefactorWindow(this));
         frame.revalidate();
     }
 

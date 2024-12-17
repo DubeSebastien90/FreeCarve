@@ -6,7 +6,6 @@ import java.awt.*;
 
 public class HelpWindow extends JScrollPane {
 
-    OptionWrapper optionWrapper;
     JPanel panel;
 
     public HelpWindow(MainWindow mainWindow) {
