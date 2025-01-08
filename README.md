@@ -1,13 +1,11 @@
 # GLO-2004 - Équipe 02
 ## Membres de l'équipe
-- Antoine Morin - NI: 537 089 065
-- Louis-Etienne Messier - NI: 537 131 157
-- Adam Côté - NI: 537 145 036
-- Sébastien Dubé - NI: 537 153 241
-- Kamran Charles Nayebi - NI: 537 150 671
+- Sébastien Dubé 
+- Antoine Morin
+- Louis-Etienne Messier
+- Adam Côté 
+- Kamran Charles Nayebi
 
-
-## Livrable 3
 ### Lancement de l'application
 Le fichier .jar pour l'application se trouve à la racine du projet. Il suffit
 de lancer ce fichier pour lancer l'application.
