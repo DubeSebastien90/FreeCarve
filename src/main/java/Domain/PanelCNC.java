@@ -252,6 +252,7 @@ class PanelCNC {
     }
 
     boolean validateCutBasedOnBits(CNCMachine cncMachine, CutDTO cutDTO) {
+        if(cutDTO.getCutType() == CutType.CLAMP){return true;}
         Map<Integer, BitDTO> configuredBits = cncMachine.getBitStorage().getConfiguredBits();
         return configuredBits.containsKey(cutDTO.getBitIndex());
     }

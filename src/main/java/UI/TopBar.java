@@ -59,11 +59,13 @@ public class TopBar extends JMenuBar {
         JMenuItem settings = new JMenuItem("Paramètres");
         JMenuItem contact = new JMenuItem("Contactez nous");
         JMenuItem attributionLink = new JMenuItem("À propos");
+        JMenuItem guide = new JMenuItem("Guide");
         JMenuItem close_project = new JMenuItem("Fermer le projet");
 
 
         contact.addActionListener(e -> openEmailClient());
         attributionLink.addActionListener(e -> mainWindow.showAttributionWindow());
+        guide.addActionListener(e->mainWindow.showHelp());
         settings.addActionListener(e -> mainWindow.showOptionWindow());
         exit.addActionListener(e -> mainWindow.getFrame().dispatchEvent(new WindowEvent(mainWindow.getFrame(), WindowEvent.WINDOW_CLOSING)));
         nouveau.addActionListener(e -> {
@@ -92,6 +94,7 @@ public class TopBar extends JMenuBar {
 
         aide.add(contact);
         aide.add(attributionLink);
+        aide.add(guide);
 
         this.add(fichier);
         this.add(option);
