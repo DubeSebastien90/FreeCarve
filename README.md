@@ -7,7 +7,7 @@
 - Kamran Charles Nayebi - NI: 537 150 671
 
 
-## Livrable 3
+## Livrable final
 ### Lancement de l'application
 Le fichier .jar pour l'application se trouve à la racine du projet. Il suffit
 de lancer ce fichier pour lancer l'application.
